@@ -17,6 +17,15 @@ ROOT = Path(__file__).resolve().parents[1]
 BIN = ROOT / "bin" / "matenadar"
 
 
+def label_font():
+    """A font file for the sheet labels (ImageMagick may have no default)."""
+    for f in ("/System/Library/Fonts/Supplemental/Arial.ttf", "/System/Library/Fonts/Helvetica.ttc", "/Library/Fonts/Arial.ttf",
+              "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"):
+        if Path(f).exists():
+            return f
+    return None
+
+
 def main():
     sample = Path(sys.argv[1]).resolve()
     dpi = int(sys.argv[sys.argv.index("--dpi") + 1]) if "--dpi" in sys.argv else 100
@@ -46,8 +55,9 @@ def main():
         subprocess.run(["pdftocairo", "-r", str(dpi), "-png", "-singlefile", "-f", str(o), "-l", str(o), str(book / spec["pdf"]), str(orig)], check=True)
         reb = build / "rebuilt" / f"p-{r:03d}.png"
         sheet = build / f"compare-{o:03d}.png"
+        font = ["-font", label_font()] if label_font() else []
         subprocess.run(["magick", str(orig) + ".png", "-bordercolor", "#888", "-border", "1", str(reb), "-bordercolor", "#888", "-border", "1",
-                        "-background", "#ddd", "-gravity", "north", "+append", "-gravity", "northwest", "-pointsize", "14",
+                        "-background", "#ddd", "-gravity", "north", "+append", *font, "-gravity", "northwest", "-pointsize", "14",
                         "-fill", "#c00", "-annotate", "+8+4", f"original p{o}", "-gravity", "northeast", "-annotate", "+8+4", f"matenadar p{r}",
                         str(sheet)], check=True)
         sheets.append(str(sheet))

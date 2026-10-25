@@ -120,9 +120,14 @@ impl Gen<'_> {
                 format!("image({}, width: {}pt, height: {}pt)", str_lit(&path), num(w), num(h))
             }
             Element::Svg(s) => {
-                let path = match (&s.src, &s.markup) {
-                    (Some(src), _) => self.asset(src),
-                    (None, Some(m)) => Some(self.file("svg", m.clone().into_bytes())),
+                let path = match (&s.src, &s.markup, &s.viewbox) {
+                    (Some(src), _, Some(vb)) => match self.asset(src).and_then(|p| std::fs::read_to_string(self.root.join(p.trim_start_matches('/'))).ok()) {
+                        Some(text) => Some(self.file("svg", with_viewbox(&text, vb).into_bytes())),
+                        None => None,
+                    },
+                    (Some(src), _, None) => self.asset(src),
+                    (None, Some(m), Some(vb)) => Some(self.file("svg", with_viewbox(m, vb).into_bytes())),
+                    (None, Some(m), None) => Some(self.file("svg", m.clone().into_bytes())),
                     _ => None,
                 };
                 let mut args = Vec::new();
@@ -284,12 +289,15 @@ impl Gen<'_> {
         let size = style_name.as_deref().map(|n| self.doc.design.style(n)).unwrap_or_else(|| self.doc.design.style("")).text.size;
         let size_pt = size.map_or(11.0, |s| s.resolve(11.0, 0.0));
         let (it, ir, ib, il) = insets_pt(t.inset.as_ref(), size_pt);
+        let auto_w = place.w.is_none();
         let w = place.w.unwrap_or(Length::Pct(100.0));
         let wi = match w {
+            _ if auto_w => "auto".to_string(),
             Length::Pt(v) => format!("{}pt", num(v - il - ir)),
             other => other.typst(),
         };
         let shrink = t.fit.as_deref() == Some("shrink");
+        let fit_width = t.fit.as_deref() == Some("width");
         let hi = place.h.and_then(|h| h.pt()).map(|h| h - it - ib);
 
         // The frame's paragraphs.
@@ -312,13 +320,19 @@ impl Gen<'_> {
 
         let saved = std::mem::take(&mut self.out);
         let saved_notes = self.notes.take();
-        self.flow(&blocks, &st, shrink || scaled);
+        let saved_hug = std::mem::replace(&mut self.hug, fit_width || auto_w);
+        self.flow(&blocks, &st, shrink || fit_width || scaled);
+        self.hug = saved_hug;
         self.notes = saved_notes;
         let mut content = std::mem::replace(&mut self.out, saved);
         if let Some(cols) = t.columns.filter(|c| *c > 1) {
             content = format!("#columns({cols}, gutter: {})[{content}]", t.gutter.map(|g| g.typst()).unwrap_or_else(|| "12pt".into()));
         }
-        let inner = if shrink {
+        let inner = if fit_width {
+            let kmin = t.min_size.map(|m| (m.resolve(size_pt, 0.0) / size_pt).max(0.01)).unwrap_or(0.05);
+            let kmax = t.max_size.map(|m| m.resolve(size_pt, 0.0) / size_pt).unwrap_or(100.0);
+            format!("mt-fitw({wi}, {}, {}, k => [{content}])", num(kmin), num(kmax))
+        } else if shrink {
             let kmin = t
                 .min_size
                 .map(|m| (m.resolve(size_pt, 0.0) / size_pt).clamp(0.05, 1.0))
@@ -330,12 +344,13 @@ impl Gen<'_> {
         } else {
             format!("[{content}]")
         };
+        // Aligning the frame's content must not align what is inside it.
         let inner = match t.valign.as_deref() {
-            Some("middle") | Some("center") if hi.is_some() => format!("align(horizon, {inner})"),
-            Some("bottom") if hi.is_some() => format!("align(bottom, {inner})"),
+            Some("middle") | Some("center") if hi.is_some() => format!("align(horizon, {{ set align(top); {inner} }})"),
+            Some("bottom") if hi.is_some() => format!("align(bottom, {{ set align(top); {inner} }})"),
             _ => inner,
         };
-        let mut args = vec![format!("width: {}", w.typst())];
+        let mut args = vec![format!("width: {}", if auto_w { "auto".to_string() } else { w.typst() })];
         if let Some(h) = &place.h {
             args.push(format!("height: {}", h.typst()));
         }
@@ -380,6 +395,21 @@ impl Gen<'_> {
             }
             None => String::new(),
         };
+        // Anchored by the first baseline (as TikZ places text): shift the frame
+        // up by the inset and the first line's top edge.
+        let (y, fy) = match place.anchor.as_deref() {
+            Some(a) if a.starts_with("baseline") => {
+                let resolved = style_name.as_deref().map(|n| self.doc.design.style(n)).unwrap_or_else(|| self.doc.design.style(""));
+                let resolved = match &t.set {
+                    Some(over) => resolved.with(over),
+                    None => resolved,
+                };
+                let first = self.first_baseline(&resolved);
+                (format!("({y} - {}pt)", num(it + first)), 0.0)
+            }
+            _ => (y.to_string(), fy),
+        };
+        let y = y.as_str();
         let code = if shadow.is_empty() {
             format!("{{ let c = {inner}; mt-at({x}, {y}, {}, {}, {frame}){check} }}", num(fx), num(fy))
         } else {
@@ -572,6 +602,24 @@ impl Gen<'_> {
         out.push_str("})");
         out
     }
+}
+
+/// The SVG with its root `viewBox` replaced (and its fixed size dropped, so
+/// the placed box decides it).
+fn with_viewbox(svg: &str, vb: &[f64; 4]) -> String {
+    let Some(start) = svg.find("<svg") else { return svg.to_string() };
+    let Some(end) = svg[start..].find('>').map(|e| start + e) else { return svg.to_string() };
+    let mut tag = svg[start..end].to_string();
+    for attr in ["viewBox", "width", "height"] {
+        if let Some(i) = tag.find(&format!(" {attr}=")) {
+            let q = tag[i + attr.len() + 2..].chars().next().unwrap_or('"');
+            if let Some(j) = tag[i + attr.len() + 3..].find(q) {
+                tag.replace_range(i..i + attr.len() + 4 + j, "");
+            }
+        }
+    }
+    tag.push_str(&format!(r#" viewBox="{} {} {} {}""#, num(vb[0]), num(vb[1]), num(vb[2]), num(vb[3])));
+    format!("{}{}{}", &svg[..start], tag, &svg[end..])
 }
 
 fn pt_of(l: Option<Length>) -> f64 {

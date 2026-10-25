@@ -14,11 +14,25 @@ pub struct FlowCx {
     pub style: String,
     /// Inside a frame that shrinks to fit: styles take `k`.
     pub scaled: bool,
+    /// Paragraphs as wide as their text, not the column (for fitting type to a width).
+    pub hug: bool,
+}
+
+/// A height or width that may be fractional (`"1fr"`) or `"auto"`.
+pub fn track(t: &matenadar_model::block::Track) -> String {
+    match t {
+        matenadar_model::block::Track::Length(l) => l.typst(),
+        matenadar_model::block::Track::Word(w) => {
+            let w = w.trim();
+            if w == "auto" || (w.ends_with("fr") && w[..w.len() - 2].parse::<f64>().is_ok()) { w.to_string() } else { "auto".to_string() }
+        }
+    }
 }
 
 impl Gen<'_> {
     pub fn flow(&mut self, blocks: &[Block], style: &str, scaled: bool) {
-        let cx = FlowCx { style: style.to_string(), scaled };
+        let hug = self.hug;
+        let cx = FlowCx { style: style.to_string(), scaled, hug };
         let mut prev_para = false;
         for (i, b) in blocks.iter().enumerate() {
             // A margin note that sits level with this block needs a marker in it.
@@ -154,7 +168,7 @@ impl Gen<'_> {
                 let mut args = Vec::new();
                 args.push(format!("width: {}", x.w.map(|w| w.typst()).unwrap_or_else(|| "100%".into())));
                 if let Some(h) = &x.h {
-                    args.push(format!("height: {}", h.typst()));
+                    args.push(format!("height: {}", track(h)));
                 }
                 if let Some(f) = &x.fill {
                     args.push(format!("fill: {}", self.pal.fill(f)));
@@ -180,7 +194,7 @@ impl Gen<'_> {
                 }
                 self.label(x.id.as_deref());
                 marker(self);
-                let inner = FlowCx { style: x.style.as_deref().map(|n| self.style_var(n)).unwrap_or_else(|| cx.style.clone()), scaled: cx.scaled };
+                let inner = FlowCx { style: x.style.as_deref().map(|n| self.style_var(n)).unwrap_or_else(|| cx.style.clone()), scaled: cx.scaled, hug: cx.hug };
                 self.flow(&x.blocks, &inner.style.clone(), inner.scaled);
                 self.raw(if rot.is_some() { "])))\n" } else { "])\n" });
             }
@@ -248,9 +262,15 @@ impl Gen<'_> {
             }
             Block::Canvas(c) => {
                 let mut args = vec![format!("width: {}", c.w.map(|w| w.typst()).unwrap_or_else(|| "100%".into()))];
-                args.push(format!("height: {}", c.h.map(|h| h.typst()).unwrap_or_else(|| "auto".into())));
+                args.push(format!("height: {}", c.h.as_ref().map(track).unwrap_or_else(|| "auto".into())));
                 if let Some(f) = &c.fill {
                     args.push(format!("fill: {}", self.pal.fill(f)));
+                }
+                if let Some(s) = &c.stroke {
+                    args.push(format!("stroke: {}", self.pal.border(s, false)));
+                }
+                if let Some(r) = &c.radius {
+                    args.push(format!("radius: {}", radius(r, false)));
                 }
                 args.push(format!("clip: {}", c.clip.unwrap_or(false)));
                 args.push("breakable: false".into());
@@ -297,7 +317,7 @@ impl Gen<'_> {
                 Some("verso") | Some("even") => self.raw("#pagebreak(to: \"even\")\n"),
                 _ => self.raw("#pagebreak()\n"),
             },
-            Block::Space(s) => self.raw(&format!("#v({}, weak: {})\n", s.h.typst(), s.weak.unwrap_or(true))),
+            Block::Space(s) => self.raw(&format!("#v({}, weak: {})\n", track(&s.h), s.weak.unwrap_or(true))),
             Block::ColumnBreak(_) => self.raw("#colbreak()\n"),
             Block::Columns(c) => {
                 let gutter = c.gutter.map(|g| g.typst()).unwrap_or_else(|| "12pt".into());
@@ -437,7 +457,8 @@ impl Gen<'_> {
             self.raw(&format!("#metadata(none) <{a}>\n"));
             self.margin_anchor = Some(a.to_string());
         }
-        self.raw(&format!("#mt-par({st}, first: {first}{k})["));
+        let w = if cx.hug { ", w: auto" } else { "" };
+        self.raw(&format!("#mt-par({st}, first: {first}{k}{w})["));
         self.label(p.id.as_deref());
         let content = content_of(&p.text, &p.content);
         self.inlines(p.id.as_deref(), &content);
@@ -471,7 +492,14 @@ impl Gen<'_> {
             Align::Center => "center",
             _ => "left",
         }).collect();
-        let align = if aligns.is_empty() { "left".to_string() } else { format!("(x, y) => ({},).at(x, default: left)", aligns.join(", ")) };
+        let v = match t.valign.as_deref() {
+            Some("middle") | Some("center") => "horizon",
+            Some("bottom") => "bottom",
+            _ => "top",
+        };
+        // Always both axes, so an alignment around the table can't leak into its cells.
+        let align = if aligns.is_empty() { format!("left + {v}") } else { format!("(x, y) => ({},).at(x, default: left) + {v}", aligns.join(", ")) };
+        let row_gap = t.row_gap.map(|g| format!(", row-gutter: {}", g.typst())).unwrap_or_default();
         let inset = t.inset.as_ref().map(|i| insets(i, false)).unwrap_or_else(|| "(x: 4pt, y: 3pt)".into());
         self.raw(&format!(
             "#block(width: 100%, breakable: {}, above: {}, below: {})[",
@@ -484,7 +512,7 @@ impl Gen<'_> {
             self.raw(&format!("#metadata(none) <{a}>"));
         }
         self.raw(&format!(
-            "#table(columns: ({},), stroke: {stroke}, inset: {inset}, align: {align}, fill: (x, y) => if y < {hn} {{ {hf} }} else if calc.odd(y - {hn}) {{ {zf} }} else {{ none }}",
+            "#table(columns: ({},), stroke: {stroke}, inset: {inset}, align: {align}{row_gap}, fill: (x, y) => if y < {hn} {{ {hf} }} else if calc.odd(y - {hn}) {{ {zf} }} else {{ none }}",
             cols.join(", ")
         ));
         if hn > 0 {

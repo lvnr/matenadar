@@ -22,8 +22,8 @@ layout program from it on every build and never stores that program.
 ## Units, colours, coordinates
 
 - **Lengths.** A number is points. A string can be `"12pt"`, `"0.5in"`,
-  `"3mm"`, `"1.2cm"`, `"16px"` (0.75 pt), `"1.5em"` (relative to the text
-  size) or `"50%"` (of the containing box).
+  `"3mm"`, `"1.2cm"`, `"16px"` (0.75 pt), `"10tpt"` (TeX points, 1/72.27 in),
+  `"1.5em"` (relative to the text size) or `"50%"` (of the containing box).
 - **Colours.** `"#rgb"`, `"#rrggbb"`, `"#rrggbbaa"` (with alpha), a name from
   `design.colors`, `"cmyk(0%, 20%, 40%, 90%)"`, `"luma(40%)"`, or `"none"`.
 - **Coordinates.** Placed elements are measured from the top-left corner of the
@@ -35,7 +35,8 @@ layout program from it on every build and never stores that program.
   - `{"gradient": "linear", "angle": 90, "stops": [["#fff", 0], ["#000", 1]]}`
   - `{"gradient": "radial", "stops": […], "center": [0.5, 0.5], "radius": 0.5}`
 - **Strokes.** A colour, or `{"width": "0.5pt", "color": "#000", "dash":
-  "dashed" | "dotted" | [3, 2], "cap": "round", "join": "round"}`. Box borders
+  "dashed" | "dotted" | [3, 2], "dash_offset": 1.5, "cap": "round",
+  "join": "round"}`. Box borders
   can also be given per side: `{"top": …, "bottom": …}`.
 - **Insets** and **radius.** One length, or `{"top", "right", "bottom", "left",
   "x", "y"}` (insets) or `{"top_left", …}` (radius).
@@ -82,7 +83,7 @@ Paragraph settings:
 | field | meaning |
 |---|---|
 | `inherits` | another style to start from |
-| `line_height` | baseline to baseline. A bare number is a multiple of the size (CSS model: half the extra leading above, half below); a length is absolute. |
+| `line_height` | baseline to baseline. A bare number is a multiple of the size; a length is absolute. Lines sit as in CSS: half the extra leading above, half below, with the font's ascent and descent rounded to whole CSS pixels as browsers do. |
 | `align` | `left`, `right`, `center`, `justify`, `outside`, `inside` |
 | `indent` | first-line indent. Not applied after a heading, break or anything but a paragraph, unless `indent_first`. |
 | `hanging` | indent of all lines but the first |
@@ -183,7 +184,7 @@ Every element takes:
 | `id` | optional; must start with a letter and use only letters, digits, `-`, `_`, `.`, `:` |
 | `x`, `y` | position |
 | `w`, `h` | size |
-| `anchor` | which point of the element `x`/`y` place: `top-left` (default), `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right` |
+| `anchor` | which point of the element `x`/`y` place: `top-left` (default), `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right`. Text frames also take `baseline-left`, `baseline` and `baseline-right`, which place the first line's baseline (as TikZ does). |
 | `rotate` | degrees clockwise, about the centre |
 | `skew` | degrees of horizontal slant |
 | `when` | conditions, all of which must hold: `recto`, `verso`, `first`, `blank`, and their `not-` forms (`not-first`, `not-blank`) |
@@ -192,7 +193,8 @@ Every element takes:
 
 The types:
 
-- **`text`.** A frame of text, `w` wide.
+- **`text`.** A frame of text, `w` wide, or without `w` as wide as its
+  longest line (a pill, a tag).
   - Content: `text` (a blank line starts a paragraph, a newline breaks the
     line), `content` (runs), or `blocks`.
   - Options: `style`, `set` (overrides), `valign` (`top`, `middle`,
@@ -200,6 +202,8 @@ The types:
     `gutter`, `clip`.
   - `fit: "shrink"` scales the type down until the text fits `h`, no smaller
     than `min_size`.
+  - `fit: "width"` scales the type up or down until the longest line fills
+    `w`, between `min_size` and `max_size`.
   - A frame with an `h` and an `id` reports overflow when its text doesn't fit.
 - **`image`.**
   - `src` is a raster image or an SVG.
@@ -213,7 +217,8 @@ The types:
 - **`line`**: `x1`, `y1`, `x2`, `y2`, `stroke`.
 - **`path`**: `d` (SVG path data) in a `w` × `h` box, whose coordinates are
   points unless `viewbox` (`[x, y, w, h]`) is given. Also `fill` and `stroke`.
-- **`svg`**: a drawing from `src`, or inline `markup`; `fit`.
+- **`svg`**: a drawing from `src`, or inline `markup`; `fit`; `viewbox`
+  (`[x, y, w, h]`, to show part of the drawing).
 - **`group`**:
   - `children` are placed from the group's corner.
   - `scale` (1 = actual size), `clip` (needs `w` and `h`), `fill`, `stroke`,
@@ -247,13 +252,13 @@ The types:
 | `break` | a scene break: `style`, `text` (the ornament) |
 | `figure` | `src`, `w`, `h`, `fit`, `align`, `caption`/`caption_content`, `caption_style`, `float` (`top`, `bottom`), `stroke`, `radius` |
 | `box` | `blocks`, `style`, `fill`, `stroke`, `radius`, `inset`, `w`, `h`, `align`, `breakable`, `rotate`, `space_before`, `space_after` |
-| `table` | `columns` (lengths, `"auto"`, `"1fr"`), `header`, `rows` (cells: a string or `{"text"/"content"/"blocks", "colspan", "rowspan", "fill", "align", "style"}`), `style`, `header_style`, `header_fill`, `zebra`, `stroke`, `inset`, `align` (per column), `repeat_header` (default true) |
+| `table` | `columns` (lengths, `"auto"`, `"1fr"`), `header`, `rows` (cells: a string or `{"text"/"content"/"blocks", "colspan", "rowspan", "fill", "align", "style"}`), `style`, `header_style`, `header_fill`, `zebra`, `stroke`, `inset`, `align` (per column), `valign` (`top`, `middle`, `bottom`), `row_gap`, `repeat_header` (default true) |
 | `list` | `items` (strings or lists of blocks), `ordered`, `marker` (or a numbering pattern such as `"1."`), `style`, `indent`, `gap`, `spacing`, `start` |
 | `code` | `text` (spaces kept), `style`, `fill`, `stroke`, `inset`, `radius`, `breakable` |
-| `canvas` | an inline drawing: `w` (default the column's width), `h`, `elements`, `align`, `fill`, `clip` |
+| `canvas` | an inline drawing: `w` (default the column's width), `h` (a length, or `"1fr"` for what is left), `elements`, `align`, `fill`, `stroke`, `radius`, `clip`. Percentages inside are of the canvas. |
 | `use` | a component instance (made of blocks, or of elements as a canvas) |
 | `page-break` | `to`: `recto` or `verso` |
-| `space` | `h`, `weak` |
+| `space` | `h` (a length, or `"1fr"` to push what follows to the foot), `weak` |
 | `columns` | `count`, `gutter`, `blocks`, `rule` (a stroke between columns), `balance: true` (blocks shared out so the columns end level; blocks stay whole — for indexes) |
 | `column-break` | continue in the next column |
 | `margin` | a note in the master's note column, level with the block before it (`at: "here"` for where it stands); `dy`; `text`/`content`/`blocks`. Notes stack and don't overlap. |
@@ -272,13 +277,16 @@ The types:
 - **Footnote.** `{"note": [ … ]}`.
 - **Leader.** `{"leader": "."}` fills the rest of the line with dots, for
   contents and index lines; `{"leader": ""}` fills it with space, pushing what
-  follows to the right edge. Also `gap` and `span`.
+  follows to the right edge. Also `gap`, `span`, and `fixed: true` (dots
+  exactly `gap` apart, as TeX sets them).
+- **Space.** `{"space": "0.13in"}` is horizontal space inside a line.
 - **Field.** `{"field": "page" | "pages" | "heading" | "section.title" |
   "section.<var>" | "doc.title" | "doc.author"}`, filled in at layout.
 - **Page reference.** `{"ref": "node-id"}` gives the page number;
   `{"ref": "node-id", "show": "title"}` gives the title.
 - **Line break.** `{"br": true}`.
-- **Inline image.** `{"image": "path", "h": "1em", "baseline": "0.2em"}`.
+- **Inline image.** `{"image": "path", "h": "1em", "baseline": "0.2em"}`, or
+  inline SVG: `{"image": "", "markup": "<svg …>", "h": "1em"}`.
 
 ## Operations
 

@@ -50,6 +50,7 @@ impl Gen<'_> {
                     }
                 }
                 Inline::Break(_) => self.raw("#linebreak()"),
+                Inline::Space(sp) => self.raw(&format!("#h({})", sp.space.typst())),
                 Inline::Leader(l) => {
                     if l.leader.trim().is_empty() {
                         self.raw("#h(1fr)");
@@ -60,11 +61,12 @@ impl Gen<'_> {
                             None => mark,
                         };
                         let gap = l.gap.map(|g| g.typst()).unwrap_or_else(|| "0.2em".into());
-                        self.raw(&format!("#box(width: 1fr, repeat(gap: {gap}, justify: true, {mark}))"));
+                        let justify = l.fixed != Some(true);
+                        self.raw(&format!("#box(width: 1fr, repeat(gap: {gap}, justify: {justify}, {mark}))"));
                     }
                 }
                 Inline::Image(img) => {
-                    let path = self.asset(&img.image);
+                    let path = if img.image.is_empty() { None } else { self.asset(&img.image) };
                     let mut args = Vec::new();
                     if let Some(h) = &img.h {
                         args.push(format!("height: {}", h.typst()));
@@ -73,6 +75,10 @@ impl Gen<'_> {
                         args.push(format!("width: {}", w.typst()));
                     }
                     let baseline = img.baseline.map(|b| b.typst()).unwrap_or_else(|| "0pt".into());
+                    let path = match &img.markup {
+                        Some(m) if img.image.is_empty() => Some(self.file("svg", m.clone().into_bytes())),
+                        _ => path,
+                    };
                     match path {
                         Some(p) => self.raw(&format!("#box(baseline: {baseline}, image({}, {}))", str_lit(&p), args.join(", "))),
                         None => self.raw("#box(width: 1em, height: 1em, fill: red)"),

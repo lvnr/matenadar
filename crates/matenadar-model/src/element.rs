@@ -146,11 +146,15 @@ pub struct TextFrame {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radius: Option<Radius>,
     /// `"none"` (default; overflow is reported), `"shrink"` (the type
-    /// shrinks until it fits, down to `min_size`).
+    /// shrinks until it fits `h`, down to `min_size`) or `"width"` (the type
+    /// grows or shrinks so the longest line fills `w`, between `min_size`
+    /// and `max_size`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fit: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub min_size: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_size: Option<Length>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub columns: Option<u8>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -232,6 +236,9 @@ pub struct SvgEl {
     pub place: Place,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub src: Option<String>,
+    /// Show this part of the drawing: `[x, y, w, h]` in its own units.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub viewbox: Option<[f64; 4]>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub markup: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]

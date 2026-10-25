@@ -195,8 +195,9 @@ pub struct BoxBlock {
     /// Width (default the column's width).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub w: Option<Length>,
+    /// Height: a length, or `"1fr"` for what is left of the frame or page.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub h: Option<Length>,
+    pub h: Option<Track>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub align: Option<Align>,
     /// May split across pages (default false).
@@ -269,6 +270,12 @@ pub struct Table {
     /// Repeat the header on every page the table reaches (default true).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub repeat_header: Option<bool>,
+    /// Space between rows.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub row_gap: Option<Length>,
+    /// Vertical alignment in cells: `"top"` (default), `"middle"`, `"bottom"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valign: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub breakable: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -340,7 +347,12 @@ pub struct Canvas {
     /// Width (default the column's width).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub w: Option<Length>,
-    pub h: Option<Length>,
+    /// Height: a length, or `"1fr"` for what is left of the frame or page.
+    pub h: Option<Track>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stroke: Option<Border>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radius: Option<Radius>,
     pub elements: Vec<Element>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub align: Option<Align>,
@@ -374,7 +386,8 @@ pub struct PageBreak {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Space {
-    pub h: Length,
+    /// A length, or `"1fr"` to take what is left (shared with other `fr` spaces).
+    pub h: Track,
     /// Weak space disappears at the top of a page (default true).
     #[serde(default)]
     pub weak: Option<bool>,
@@ -453,6 +466,7 @@ pub enum Inline {
     Plain(String),
     Run(Run),
     Leader(Leader),
+    Space(InlineSpace),
     Note(Footnote),
     Field(Field),
     Ref(PageRef),
@@ -540,6 +554,12 @@ pub struct PageRef {
     pub show: Option<String>,
 }
 
+/// Horizontal space inside a line.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct InlineSpace {
+    pub space: Length,
+}
+
 /// Fills the rest of the line: with a repeated mark (`"."` for dot
 /// leaders), or with space (`""`), pushing what follows to the right edge.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -550,6 +570,10 @@ pub struct Leader {
     pub gap: Option<Length>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub span: Option<String>,
+    /// Keep the marks exactly `gap` apart (as TeX does) instead of spreading
+    /// them to fill the space evenly.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fixed: Option<bool>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -557,9 +581,12 @@ pub struct LineBreak {
     pub br: bool,
 }
 
+/// An image in the line: a file (`image`), or SVG written inline (`markup`, with `image` left empty).
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct InlineImage {
     pub image: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub markup: Option<String>,
     #[serde(default)]
     pub h: Option<Length>,
     #[serde(default)]

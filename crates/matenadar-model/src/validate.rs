@@ -236,7 +236,6 @@ fn check_element(
     };
     match e {
         Element::Text(t) => {
-            need(&t.place, true, false, report);
             if let Some(st) = &t.style
                 && !d.styles.contains_key(st)
             {

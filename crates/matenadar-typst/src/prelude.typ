@@ -27,6 +27,56 @@
 
 #let mt-is-recto() = calc.odd(here().page())
 
+// A paragraph at the narrowest width that keeps its number of lines.
+#let mt-balanced(al, body) = layout(size => {
+  let w = size.width
+  let full = measure(block(width: w, body)).height
+  let lo = w * 0.35
+  let hi = w
+  for _ in range(12) {
+    let mid = (lo + hi) / 2
+    if measure(block(width: mid, body)).height > full + 0.01pt { lo = mid } else { hi = mid }
+  }
+  align(al, block(width: hi, body))
+})
+
+// Blocks shared out over `n` columns that end level. Blocks stay whole.
+#let mt-balance(n, gutter, rule, items) = layout(size => {
+  let colw = (size.width - gutter * (n - 1)) / n
+  let hs = items.map(it => measure(block(width: colw, it)).height)
+  let total = hs.sum(default: 0pt)
+  // The smallest column height that fits everything in n columns, in order.
+  let fits(cap) = {
+    let cols = 1
+    let used = 0pt
+    for h in hs {
+      if used + h > cap and used > 0pt { cols += 1; used = h } else { used += h }
+    }
+    cols <= n
+  }
+  let lo = calc.max(..hs, total / n)
+  let hi = total
+  for _ in range(20) {
+    let mid = (lo + hi) / 2
+    if fits(mid) { hi = mid } else { lo = mid }
+  }
+  let cols = ((),)
+  let used = 0pt
+  for (i, h) in hs.enumerate() {
+    if used + h > hi + 0.01pt and used > 0pt { cols.push(()); used = 0pt }
+    cols.last().push(items.at(i))
+    used += h
+  }
+  while cols.len() < n { cols.push(()) }
+  grid(
+    columns: (colw,) * n,
+    column-gutter: gutter,
+    stroke: (x, y) => if x > 0 and rule != none { (left: rule) } else { none },
+    inset: (x, y) => if x > 0 and rule != none { (left: gutter / 2) } else { 0pt },
+    ..cols.map(c => stack(..c)),
+  )
+})
+
 #let mt-wrap(st, body) = {
   let w = st.at("wrap", default: none)
   if w == none { body } else { w(body) }
@@ -173,62 +223,19 @@
 
 #let mt-rot(angle, body) = if angle == 0deg { body } else { rotate(angle, origin: center + horizon, reflow: false, body) }
 
+// Content set at the scale that makes its longest line fill `w`.
+#let mt-fitw(w, kmin, kmax, make) = context {
+  let nat = measure(make(1)).width
+  let k = if nat > 0pt and type(w) == length { calc.clamp(w / nat, kmin, kmax) } else { 1 }
+  make(k)
+}
+
 // Content set at scale k until it fits `h`, down to `kmin`.
 #let mt-shrink(w, h, kmin, make) = context {
   let k = 1.0
   while k > kmin and measure(block(width: w, make(k))).height > h { k = k - 0.02 }
   make(k)
 }
-
-// A paragraph at the narrowest width that keeps its number of lines.
-#let mt-balanced(al, body) = layout(size => {
-  let w = size.width
-  let full = measure(block(width: w, body)).height
-  let lo = w * 0.35
-  let hi = w
-  for _ in range(12) {
-    let mid = (lo + hi) / 2
-    if measure(block(width: mid, body)).height > full + 0.01pt { lo = mid } else { hi = mid }
-  }
-  align(al, block(width: hi, body))
-})
-
-// Blocks shared out over `n` columns that end level. Blocks stay whole.
-#let mt-balance(n, gutter, rule, items) = layout(size => {
-  let colw = (size.width - gutter * (n - 1)) / n
-  let hs = items.map(it => measure(block(width: colw, it)).height)
-  let total = hs.sum(default: 0pt)
-  // The smallest column height that fits everything in n columns, in order.
-  let fits(cap) = {
-    let cols = 1
-    let used = 0pt
-    for h in hs {
-      if used + h > cap and used > 0pt { cols += 1; used = h } else { used += h }
-    }
-    cols <= n
-  }
-  let lo = calc.max(..hs, total / n)
-  let hi = total
-  for _ in range(20) {
-    let mid = (lo + hi) / 2
-    if fits(mid) { hi = mid } else { lo = mid }
-  }
-  let cols = ((),)
-  let used = 0pt
-  for (i, h) in hs.enumerate() {
-    if used + h > hi + 0.01pt and used > 0pt { cols.push(()); used = 0pt }
-    cols.last().push(items.at(i))
-    used += h
-  }
-  while cols.len() < n { cols.push(()) }
-  grid(
-    columns: (colw,) * n,
-    column-gutter: gutter,
-    stroke: (x, y) => if x > 0 and rule != none { (left: rule) } else { none },
-    inset: (x, y) => if x > 0 and rule != none { (left: gutter / 2) } else { 0pt },
-    ..cols.map(c => stack(..c)),
-  )
-})
 
 // Overflow of a frame of fixed height, recorded for checks.
 #let mt-overflow(id, w, h, body) = context {

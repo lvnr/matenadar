@@ -215,6 +215,7 @@ pub enum Stroke {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct StrokeSpec {
     #[serde(default)]
     pub width: Option<Length>,
@@ -230,6 +231,9 @@ pub struct StrokeSpec {
     /// `"miter"`, `"round"`, `"bevel"`.
     #[serde(default)]
     pub join: Option<String>,
+    /// Where the dash pattern starts along the stroke.
+    #[serde(default)]
+    pub dash_offset: Option<Length>,
 }
 
 /// Per-side strokes for boxes: one stroke for every side, or some sides.
@@ -241,7 +245,7 @@ pub enum Border {
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(default)]
+#[serde(default, deny_unknown_fields)]
 pub struct BorderSides {
     pub top: Option<Stroke>,
     pub right: Option<Stroke>,
@@ -286,7 +290,7 @@ pub enum Insets {
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(default)]
+#[serde(default, deny_unknown_fields)]
 pub struct InsetSides {
     pub top: Option<Length>,
     pub right: Option<Length>,
@@ -305,7 +309,7 @@ pub enum Radius {
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(default)]
+#[serde(default, deny_unknown_fields)]
 pub struct RadiusCorners {
     pub top_left: Option<Length>,
     pub top_right: Option<Length>,

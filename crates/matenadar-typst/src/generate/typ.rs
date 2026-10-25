@@ -119,7 +119,10 @@ impl Palette<'_> {
                                 .map(|l| l.typst())
                                 .collect();
                             if !lens.is_empty() {
-                                parts.push(format!("dash: ({},)", lens.join(", ")));
+                                match &spec.dash_offset {
+                                    Some(o) => parts.push(format!("dash: (array: ({},), phase: {})", lens.join(", "), o.typst())),
+                                    None => parts.push(format!("dash: ({},)", lens.join(", "))),
+                                }
                             }
                         }
                         _ => {}
@@ -232,6 +235,8 @@ pub fn anchor(word: Option<&str>) -> (f64, f64) {
         "bottom-left" => (0.0, 1.0),
         "bottom" => (0.5, 1.0),
         "bottom-right" => (1.0, 1.0),
+        "baseline" => (0.5, 0.0),
+        "baseline-right" => (1.0, 0.0),
         _ => (0.0, 0.0),
     }
 }
@@ -275,6 +280,7 @@ mod tests {
             dash: Some(serde_json::json!("dashed")),
             cap: Some("round".into()),
             join: None,
+            dash_offset: None,
         });
         assert_eq!(p.stroke(&s, false), "(paint: rgb(\"#112233\"), thickness: 0.5pt, dash: \"dashed\", cap: \"round\")");
         assert_eq!(p.svg(&Color("cmyk(0%, 0%, 0%, 100%)".into())), "#000000");

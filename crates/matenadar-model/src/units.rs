@@ -39,9 +39,11 @@ impl Length {
             "mm" => Ok(Length::Pt(n * PT_PER_MM)),
             "cm" => Ok(Length::Pt(n * PT_PER_MM * 10.0)),
             "px" => Ok(Length::Pt(n * 0.75)),
+            // TeX's point, 1/72.27 in.
+            "tpt" => Ok(Length::Pt(n * 72.0 / 72.27)),
             "em" => Ok(Length::Em(n)),
             "%" => Ok(Length::Pct(n)),
-            other => Err(format!("\"{s}\": unknown unit \"{other}\" (use pt, in, mm, cm, px, em or %)")),
+            other => Err(format!("\"{s}\": unknown unit \"{other}\" (use pt, in, mm, cm, px, tpt, em or %)")),
         }
     }
 

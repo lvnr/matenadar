@@ -118,6 +118,8 @@ pub(crate) struct Gen<'a> {
     pub labels: bool,
     /// The marker of the block a following margin note sits level with.
     pub margin_anchor: Option<String>,
+    /// Paragraphs are as wide as their text (inside frames fitted to a width).
+    pub hug: bool,
 }
 
 impl<'a> Gen<'a> {
@@ -140,6 +142,7 @@ impl<'a> Gen<'a> {
             notes: None,
             labels: true,
             margin_anchor: None,
+            hug: false,
         }
     }
 
@@ -526,7 +529,14 @@ impl<'a> Gen<'a> {
             tx.push(format!("variations: ({})", axes.join(", ")));
         }
         if let Some(lh) = line_height_em {
-            let m = self.metrics(t);
+            let mut m = self.metrics(t);
+            // Browsers round a font's ascent and descent to whole CSS pixels
+            // before sharing out the leading; do the same where the size is known.
+            if let Some(size) = t.size.and_then(|s| s.pt()).filter(|s| *s > 0.0) {
+                let px = size / 0.75;
+                m.ascender = (m.ascender * px).round() / px;
+                m.descender = (m.descender * px).round() / px;
+            }
             let half = (lh - (m.ascender + m.descender)) / 2.0;
             tx.push(format!("top-edge: {}em", num(m.ascender + half)));
             tx.push(format!("bottom-edge: -{}em", num(m.descender + half)));
@@ -559,6 +569,23 @@ impl<'a> Gen<'a> {
             format!("b => {expr}")
         };
         format!("(text: ({}), wrap: {wrap})", if tx.is_empty() { ":".into() } else { tx.join(", ") })
+    }
+
+    /// How far below a paragraph's top its first baseline sits, in points
+    /// (the top edge of the CSS line box `text_dict` sets up).
+    pub fn first_baseline(&mut self, s: &Style) -> f64 {
+        let size = s.text.size.map_or(11.0, |l| l.resolve(11.0, 0.0));
+        let mut m = self.metrics(&s.text);
+        let px = size / 0.75;
+        m.ascender = (m.ascender * px).round() / px;
+        m.descender = (m.descender * px).round() / px;
+        let lh = match s.line_height {
+            Some(LineHeight::Factor(f)) => f,
+            Some(LineHeight::Length(l)) => l.resolve(size, size * 100.0) / size,
+            None => m.ascender + m.descender,
+        };
+        let half = (lh - (m.ascender + m.descender)) / 2.0;
+        (m.ascender + half) * size
     }
 
     /// A paragraph style as the dictionary `mt-par` reads.

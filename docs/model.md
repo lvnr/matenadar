@@ -61,11 +61,11 @@ Character settings (also usable inline on runs, and as `set` overrides):
 | field | meaning |
 |---|---|
 | `font` | family, stack name, or list |
-| `size` | length |
+| `size` | length; `em` or `%` are of the surrounding size |
 | `weight` | 100–900, or `thin` … `regular` `medium` `semibold` `bold` … `black` |
 | `italic` | bool |
 | `stretch` | width in % for fonts with widths |
-| `tracking` | letter spacing (`"0.12em"`) |
+| `tracking` | letter spacing (`"0.12em"`). Every letter is followed by it, the last letter of a run included (so splitting a word into runs never changes its width), except the paragraph's last. Letter-spaced text drops ligatures unless `ligatures` is set. |
 | `word_spacing` | extra space between words |
 | `color` | colour |
 | `case` | `upper`, `lower`, `small-caps`, `all-small-caps` |
@@ -75,6 +75,8 @@ Character settings (also usable inline on runs, and as `set` overrides):
 | `lang` | BCP 47, for hyphenation and shaping |
 | `outline` | a stroke around each glyph (also fakes a bold) |
 | `hyphenate`, `ligatures` | bool |
+| `overhang` | let punctuation and hyphens hang slightly into the margin at line ends (default true) |
+| `line_height` | see paragraph settings; on a run, `0` keeps a large letter or mark from opening its line |
 | `halo` | a halo behind each glyph for type over pictures: a stroke, `{"width": 2, "color": "#fff"}` |
 | `variations` | variable-font axes, such as `{"opsz": 12, "SOFT": 50}`. `weight`, `stretch` and `size` already drive `wght`, `wdth` and `opsz`, so a variable font needs no static instances. |
 
@@ -83,7 +85,7 @@ Paragraph settings:
 | field | meaning |
 |---|---|
 | `inherits` | another style to start from |
-| `line_height` | baseline to baseline. A bare number is a multiple of the size; a length is absolute. Lines sit as in CSS: half the extra leading above, half below, with the font's ascent and descent rounded to whole CSS pixels as browsers do. |
+| `line_height` | baseline to baseline. A bare number is a multiple of the size; a length is absolute. Lines sit as in CSS: half the extra leading above, half below, with the font's ascent and descent rounded to whole CSS pixels as browsers do. A run in a larger size opens its line in proportion. |
 | `align` | `left`, `right`, `center`, `justify`, `outside`, `inside` |
 | `indent` | first-line indent. Not applied after a heading, break or anything but a paragraph, unless `indent_first`. |
 | `hanging` | indent of all lines but the first |
@@ -95,6 +97,9 @@ Paragraph settings:
 | `balance` | lines of equal length (CSS `text-wrap: balance`) |
 | `rule_above`, `rule_below` | `{"stroke", "width", "gap"}` |
 | `fill`, `inset` | a background box behind the paragraph |
+| `linebreaks` | `simple` (one line at a time, as browsers do) or `optimized` (the whole paragraph at once, Knuth–Plass, for evener lines). By default justified text is optimized and ragged text simple. |
+| `wrap` | `pretty`: the paragraph never ends on a lone word (its last two words stay together) |
+| `justification` | how far justified lines may stretch and shrink: `{"spacing": {"min": "100%", "max": "150%"}, "tracking": {"min": "-0.01em", "max": "0.02em"}}`. `min: "100%"` never tightens word spaces. |
 | `drop_cap` | `{"lines": 3, "font", "color", "weight", "gap"}`. The cap's top lines up with the first line's capitals and its foot with the baseline of line `lines`. It applies to paragraphs of plain text, and an opening quote goes with the cap. |
 
 ### Masters
@@ -105,6 +110,7 @@ A master is a page size, a flow area and what is drawn on every page:
 "body": {
   "width": "6in", "height": "9in", "bleed": "0.125in",
   "margins": {"top": "0.8in", "bottom": "0.9in", "inside": "0.8in", "outside": "0.7in"},
+  // or the same on every page: {"top", "bottom", "left", "right"}
   "columns": 1, "gutter": "12pt",
   "fill": "paper",
   "style": "body",
@@ -114,6 +120,10 @@ A master is a page size, a flow area and what is drawn on every page:
   "inherits": "another master"
 }
 ```
+
+Margins mirror (`inside` is the spine side) unless `left` or `right` is
+given. A note column's `side` is `outside` (default), `inside`, `left` or
+`right`.
 
 Elements in `background` and `foreground` can carry `"when"`. The conditions
 are listed under Elements below.
@@ -157,7 +167,8 @@ A section is a flow poured through pages of a master:
 
 - `start`: `next` (default), `recto`, `verso`, or `continue` (on the same page
   as the section before, if it uses the same master). A page left empty so a
-  section can start on the right side is a **blank** page.
+  section can start on the right side is a **blank** page. A document whose
+  first item starts on a `verso` opens with a blank page.
 - `numbering`: `1`, `i`, `I`, `a`, `A`. It carries over to later items.
 - `page_from` restarts the page count.
 - `title` and `vars` feed fields in the master's layers:
@@ -173,7 +184,7 @@ A page is laid out by hand:
 ```
 
 The master gives the page its size and bleed. `layers: true` also draws the
-master's background and foreground.
+master's background and foreground. Pages take `start` too.
 
 ## Elements (placed)
 
@@ -185,10 +196,13 @@ Every element takes:
 | `x`, `y` | position |
 | `w`, `h` | size |
 | `anchor` | which point of the element `x`/`y` place: `top-left` (default), `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right`. Text frames also take `baseline-left`, `baseline` and `baseline-right`, which place the first line's baseline (as TikZ does). |
-| `rotate` | degrees clockwise, about the centre |
+| `rotate` | degrees clockwise, about the centre or `origin` |
+| `origin` | the point `rotate` turns about, which stays put: an anchor word (`top-left`…) or `[x, y]` from the element's corner |
+| `opacity` | 0–1, for everything in the element (text, fills, strokes, drawings; not yet photographs). Printers prefer `tint` on drawings. |
+| `stroke_align` | where a stroke lies on the edge: `center` (default), `inside` (as CSS borders and most design tools draw it), `outside` |
 | `skew` | degrees of horizontal slant |
 | `when` | conditions, all of which must hold: `recto`, `verso`, `first`, `blank`, and their `not-` forms (`not-first`, `not-blank`) |
-| `decorative` | art that may cross the trim; margin checks skip it |
+| `decorative` | art, not reading text. Its text is drawn as glyph outlines in the PDF, so display type may run into the margins and bleed without KDP's previewer (or any reader) seeing text there, and margin checks skip it. The layout report still lists it. |
 | `shadow` | a hard shadow: `{"dx": 3, "dy": 3, "color": "#0004"}` (needs `w` and `h`, except on text frames) |
 
 The types:
@@ -218,20 +232,25 @@ The types:
 - **`path`**: `d` (SVG path data) in a `w` × `h` box, whose coordinates are
   points unless `viewbox` (`[x, y, w, h]`) is given. Also `fill` and `stroke`.
 - **`svg`**: a drawing from `src`, or inline `markup`; `fit`; `viewbox`
-  (`[x, y, w, h]`, to show part of the drawing).
+  (`[x, y, w, h]`, to show part of the drawing); `tint: {"color", "amount"}`
+  mixes every colour in it towards one (a print-safe fade, or a duotone).
 - **`group`**:
   - `children` are placed from the group's corner.
   - `scale` (1 = actual size), `clip` (needs `w` and `h`), `fill`, `stroke`,
     `radius`.
 - **`use`**: an instance of a component: `component`, `props`.
 - **`qr`**: `data`, `w` (the code's size), `color`, `background`, `quiet`
-  (modules), `ecc` (`L`, `M`, `Q`, `H`).
+  (modules), `ecc` (`L`, `M`, `Q`, `H`). Drawn as one vector shape.
 - **`lettering`**: display text drawn as vector outlines, not live text. Use it
   for type that runs into the bleed or must never reflow.
   - Settings: `text`, any character setting (`font`, `size`, `weight`,
-    `tracking`, `features`, `color`, `outline`, `case`), `span`, `w` with
-    `align`, `line_height`.
+    `stretch`, `variations`, `tracking`, `features`, `color`, `outline`,
+    `case`), `span`, `w` with `align`, `line_height`.
   - `x`/`y` place the top of the font's ascender, as CSS does.
+  - **Text on a path**: `path` (SVG path data, in points from `x`/`y`) sets
+    the letters standing on the path, turned to it; `start` (a length or a
+    share, `"50%"`) and `align` (`left`, `center`, `right`) say where along
+    it the text starts, centres or ends. For seals, postmarks and badges.
 - **`letter-grid`**: word searches, crosswords and letter puzzles.
   - `rows`: one string per row, or rows of cells, each `"A"` or `{"text",
     "fill", "color", "weight", "span", "number", "block"}`.
@@ -251,9 +270,9 @@ The types:
 | `h` | `level`, `style` (defaults to `h1`, `h2`… when the design has them), `text`/`content`, `outline` (listed in the contents), `short` (title for running heads and contents) |
 | `break` | a scene break: `style`, `text` (the ornament) |
 | `figure` | `src`, `w`, `h`, `fit`, `align`, `caption`/`caption_content`, `caption_style`, `float` (`top`, `bottom`), `stroke`, `radius` |
-| `box` | `blocks`, `style`, `fill`, `stroke`, `radius`, `inset`, `w`, `h`, `align`, `breakable`, `rotate`, `space_before`, `space_after` |
-| `table` | `columns` (lengths, `"auto"`, `"1fr"`), `header`, `rows` (cells: a string or `{"text"/"content"/"blocks", "colspan", "rowspan", "fill", "align", "style"}`), `style`, `header_style`, `header_fill`, `zebra`, `stroke`, `inset`, `align` (per column), `valign` (`top`, `middle`, `bottom`), `row_gap`, `repeat_header` (default true) |
-| `list` | `items` (strings or lists of blocks), `ordered`, `marker` (or a numbering pattern such as `"1."`), `style`, `indent`, `gap`, `spacing`, `start` |
+| `box` | `blocks`, `style`, `fill`, `stroke`, `stroke_align`, `radius`, `inset`, `w`, `h`, `align` (places the box; its text keeps its own alignment), `breakable`, `rotate`, `space_before`, `space_after`, `margin_left`/`margin_right` (negative hangs the box into the margins) |
+| `table` | `columns` (lengths, `"auto"`, `"1fr"`), `header`, `rows` (cells: a string or `{"text"/"content"/"blocks", "colspan", "rowspan", "fill", "align", "style", "set"}`), `style`, `header_style`, `header_fill`, `zebra`, `stroke`, `rules` (book-style horizontal rules in place of the grid: `{"top", "header", "rows", "bottom", "columns"}`, each a stroke), `inset`, `align` (per column), `valign` (`top`, `middle`, `bottom`), `row_gap`, `repeat_header` (default true) |
+| `list` | `items` (strings or lists of blocks), `ordered`, `marker` (or a numbering pattern such as `"1."`), `style`, `indent`, `gap`, `spacing`, `start`, `marker_style` (a span for the markers), `marker_shape` (`{"shape": "ellipse" \| "rect", "w", "h", "fill", "stroke", "radius"}`: a disc or tile behind each marker, centred on it), `marker_align` (`left`, or `right` for numbers, the default) |
 | `code` | `text` (spaces kept), `style`, `fill`, `stroke`, `inset`, `radius`, `breakable` |
 | `canvas` | an inline drawing: `w` (default the column's width), `h` (a length, or `"1fr"` for what is left), `elements`, `align`, `fill`, `stroke`, `radius`, `clip`. Percentages inside are of the canvas. |
 | `use` | a component instance (made of blocks, or of elements as a canvas) |
@@ -261,7 +280,7 @@ The types:
 | `space` | `h` (a length, or `"1fr"` to push what follows to the foot), `weak` |
 | `columns` | `count`, `gutter`, `blocks`, `rule` (a stroke between columns), `balance: true` (blocks shared out so the columns end level; blocks stay whole — for indexes) |
 | `column-break` | continue in the next column |
-| `margin` | a note in the master's note column, level with the block before it (`at: "here"` for where it stands); `dy`; `text`/`content`/`blocks`. Notes stack and don't overlap. |
+| `margin` | a note in the master's note column, level with the top edge of the block before it (`at: "here"` for where it stands); `dy`; `text`/`content`/`blocks`. Several notes after one block stack under each other; notes never overlap. |
 | `toc` | the contents: `depth`, `style` (default `toc-1`, `toc-2`…), `leader` (such as `"."`) |
 | `keep` | `blocks` that stay on one page |
 
@@ -278,7 +297,8 @@ The types:
 - **Leader.** `{"leader": "."}` fills the rest of the line with dots, for
   contents and index lines; `{"leader": ""}` fills it with space, pushing what
   follows to the right edge. Also `gap`, `span`, and `fixed: true` (dots
-  exactly `gap` apart, as TeX sets them).
+  exactly `gap` apart, as TeX sets them). `{"leader": "rule", "stroke",
+  "lift", "gap"}` draws a line across the space: running feet, form lines.
 - **Space.** `{"space": "0.13in"}` is horizontal space inside a line.
 - **Field.** `{"field": "page" | "pages" | "heading" | "section.title" |
   "section.<var>" | "doc.title" | "doc.author"}`, filled in at layout.

@@ -53,10 +53,12 @@ target/debug/matenadar bench tests/fixtures/smoke.json
 ## Status
 
 - The model, generator, checks, operations, `serve` and `bench` work.
-- Eight of Levon's books are partly rebuilt under `samples/`, each with notes
-  on how close it gets and which engine gaps remain.
+- Eight of Levon's books are partly rebuilt under `samples/` (39 pages), each
+  with notes on how close it gets and which engine gaps remain.
+- Print: decorative elements are drawn as outlines, so display type can
+  cross the margins and the bleed and still pass KDP's text checks.
 - Not done yet:
   - a WebAssembly build for the browser editor;
   - EPUB from the model;
-  - text on a path without SVG;
-  - opacity of whole groups.
+  - opacity on photographs, and clipping to shapes other than rectangles;
+  - hyphenation exceptions.

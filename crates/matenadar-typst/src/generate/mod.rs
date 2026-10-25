@@ -374,7 +374,18 @@ impl<'a> Gen<'a> {
             self.raw("]");
             self.labels = labels;
             let body = std::mem::replace(&mut self.out, saved);
-            parts.push(format!("{key}: {body}"));
+            // Page layers are drawn from the bleed's corner; shift them so
+            // their elements are placed from the trim's, like everything else.
+            let b = m.bleed.and_then(|b| b.pt()).unwrap_or(0.0);
+            let shifted = if b > 0.0 {
+                format!(
+                    "context place(top + left, dx: if calc.odd(here().page()) {{ 0pt }} else {{ {b}pt }}, dy: {b}pt, box({body}))",
+                    b = matenadar_model::units::num(b)
+                )
+            } else {
+                body
+            };
+            parts.push(format!("{key}: {shifted}"));
         }
         format!("({})", parts.join(", "))
     }

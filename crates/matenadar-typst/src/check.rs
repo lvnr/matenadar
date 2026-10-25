@@ -104,7 +104,7 @@ pub fn check(s: &Session, opts: &CheckOptions) -> Vec<Issue> {
     let mut lines: BTreeMap<String, BTreeMap<usize, BTreeSet<i64>>> = BTreeMap::new();
 
     for item in &all {
-        let decorative = matches!(item.node, Some((_, "decorative")));
+        let decorative = matches!(item.element, Some((_, "decorative")));
         match &item.kind {
             Kind::Text { text, family, missing, baseline, .. } => {
                 if *missing {
@@ -126,7 +126,8 @@ pub fn check(s: &Session, opts: &CheckOptions) -> Vec<Issue> {
                     let (left_min, right_min) = if recto { (gutter, opts.safe_pt) } else { (opts.safe_pt, gutter) };
                     let r = item.rect;
                     if r.x0 < left_min - 0.5 || r.x1 > w - right_min + 0.5 || r.y0 < opts.safe_pt - 0.5 || r.y1 > h - opts.safe_pt + 0.5 {
-                        let id = item.node.as_ref().map(|n| n.0.clone()).unwrap_or_default();
+                        // The element to move, or else the block that ran into the margin.
+                        let id = item.element.as_ref().or(item.node.as_ref()).map(|n| n.0.clone()).unwrap_or_default();
                         *margin_hits.entry((item.page, id)).or_default() += 1;
                     }
                 }

@@ -24,7 +24,7 @@ impl Gen<'_> {
                 p(&l.y2)
             );
             self.wrap_when(l.when.as_deref(), &body);
-            self.node(l.id.as_deref(), "line", start);
+            self.placed_node(l.id.as_deref(), "line", start);
             return;
         }
         let place = e.place().cloned().unwrap_or_default();
@@ -37,7 +37,7 @@ impl Gen<'_> {
         let body = match e {
             Element::Text(t) => {
                 self.text_frame(t, &place, &x, &y, fx, fy, rot, scaled);
-                self.node(place.id.as_deref(), if place.decorative == Some(true) { "decorative" } else { "text" }, start);
+                self.placed_node(place.id.as_deref(), if place.decorative == Some(true) { "decorative" } else { "text" }, start);
                 return;
             }
             Element::Image(i) => {
@@ -163,11 +163,11 @@ impl Gen<'_> {
                 if let Some(r) = &g.radius {
                     args.push(format!("radius: {}", radius(r, scaled)));
                 }
-                let saved = std::mem::take(&mut self.out);
-                for c in &g.children {
-                    self.element(c, scaled);
-                }
-                let inner = std::mem::replace(&mut self.out, saved);
+                let inner = self.capture(|g2| {
+                    for c in &g.children {
+                        g2.element(c, scaled);
+                    }
+                });
                 let mut body = format!("box({})[{inner}]", args.join(", "));
                 if let Some(s) = g.scale.filter(|s| *s != 1.0) {
                     body = format!("scale({}%, origin: top + left, reflow: false, {body})", num(s * 100.0));
@@ -181,15 +181,15 @@ impl Gen<'_> {
                         self.depth += 1;
                         let w = place.w.or(x.w).map(|w| format!("width: {}", w.typst())).unwrap_or_default();
                         let h = place.h.or(x.h).map(|h| format!(", height: {}", h.typst())).unwrap_or_default();
-                        let saved = std::mem::take(&mut self.out);
-                        if x.blocks.is_empty() {
-                            for c in &x.elements {
-                                self.element(c, scaled);
+                        let inner = self.capture(|g2| {
+                            if x.blocks.is_empty() {
+                                for c in &x.elements {
+                                    g2.element(c, scaled);
+                                }
+                            } else {
+                                g2.flow(&x.blocks, "mt-base", scaled);
                             }
-                        } else {
-                            self.flow(&x.blocks, "mt-base", scaled);
-                        }
-                        let inner = std::mem::replace(&mut self.out, saved);
+                        });
                         self.depth -= 1;
                         format!("box({w}{h})[{inner}]")
                     }
@@ -258,7 +258,7 @@ impl Gen<'_> {
             self.raw(&format!("#place(top + left, dx: {x}, dy: {y}, [#metadata({}) <{id}>])\n", str_lit(id)));
         }
         self.wrap_when(place.when.as_deref(), &placed);
-        self.node(place.id.as_deref(), if place.decorative == Some(true) { "decorative" } else { e.kind() }, start);
+        self.placed_node(place.id.as_deref(), if place.decorative == Some(true) { "decorative" } else { e.kind() }, start);
     }
 
     fn skew_of(&self, p: &Place) -> Option<f64> {
@@ -267,8 +267,8 @@ impl Gen<'_> {
 
     fn wrap_when(&mut self, cond: Option<&str>, body: &str) {
         match cond {
-            Some(c) if !c.trim().is_empty() => self.raw(&format!("#context if {} {{ {body} }}\n", when(c))),
-            _ => self.raw(&format!("#{body}\n")),
+            Some(c) if !c.trim().is_empty() => self.emit(&format!("#context if {} {{ {body} }}\n", when(c))),
+            _ => self.emit(&format!("#{body}\n")),
         }
     }
 
@@ -318,13 +318,11 @@ impl Gen<'_> {
             vec![Block::P(Para { content: t.content.clone(), ..Para::default() })]
         };
 
-        let saved = std::mem::take(&mut self.out);
         let saved_notes = self.notes.take();
         let saved_hug = std::mem::replace(&mut self.hug, fit_width || auto_w);
-        self.flow(&blocks, &st, shrink || fit_width || scaled);
+        let mut content = self.capture(|g2| g2.flow(&blocks, &st, shrink || fit_width || scaled));
         self.hug = saved_hug;
         self.notes = saved_notes;
-        let mut content = std::mem::replace(&mut self.out, saved);
         if let Some(cols) = t.columns.filter(|c| *c > 1) {
             content = format!("#columns({cols}, gutter: {})[{content}]", t.gutter.map(|g| g.typst()).unwrap_or_else(|| "12pt".into()));
         }

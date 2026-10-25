@@ -51,6 +51,8 @@ pub struct NodeRange {
     pub id: String,
     pub kind: &'static str,
     pub src: Range<usize>,
+    /// An element placed on a page or in a canvas, rather than a block.
+    pub placed: bool,
 }
 
 impl SourceMap {
@@ -71,6 +73,14 @@ impl SourceMap {
         self.nodes
             .iter()
             .filter(|n| n.src.start <= src_offset && src_offset < n.src.end)
+            .min_by_key(|n| n.src.end - n.src.start)
+    }
+
+    /// The innermost placed element whose source contains `src_offset`.
+    pub fn element_at(&self, src_offset: usize) -> Option<&NodeRange> {
+        self.nodes
+            .iter()
+            .filter(|n| n.placed && n.src.start <= src_offset && src_offset < n.src.end)
             .min_by_key(|n| n.src.end - n.src.start)
     }
 
@@ -120,6 +130,16 @@ pub(crate) struct Gen<'a> {
     pub margin_anchor: Option<String>,
     /// Paragraphs are as wide as their text (inside frames fitted to a width).
     pub hug: bool,
+    /// Content written to a scratch buffer, waiting to be spliced into the
+    /// source: its text, and the source-map entries made while writing it.
+    pub splices: Vec<(String, MapMark, MapMark)>,
+}
+
+/// A position in the source map's lists.
+#[derive(Clone, Copy, Debug)]
+pub struct MapMark {
+    segs: usize,
+    nodes: usize,
 }
 
 impl<'a> Gen<'a> {
@@ -143,11 +163,45 @@ impl<'a> Gen<'a> {
             labels: true,
             margin_anchor: None,
             hug: false,
+            splices: Vec::new(),
         }
     }
 
     pub fn raw(&mut self, s: &str) {
         self.out.push_str(s);
+    }
+
+    pub fn map_mark(&self) -> MapMark {
+        MapMark { segs: self.map.segments.len(), nodes: self.map.nodes.len() }
+    }
+
+    /// Writes into a scratch buffer and returns what was written. Source-map
+    /// entries made meanwhile are moved to the right place by `emit`.
+    pub fn capture(&mut self, f: impl FnOnce(&mut Self)) -> String {
+        let saved = std::mem::take(&mut self.out);
+        let m0 = self.map_mark();
+        f(self);
+        let content = std::mem::replace(&mut self.out, saved);
+        let m1 = self.map_mark();
+        self.splices.push((content.clone(), m0, m1));
+        content
+    }
+
+    /// Appends `text`, which may contain captured content; the source-map
+    /// entries of that content are shifted to where it now stands.
+    pub fn emit(&mut self, text: &str) {
+        let base = self.out.len();
+        for (content, m0, m1) in std::mem::take(&mut self.splices) {
+            let Some(at) = text.find(&content) else { continue };
+            let by = base + at;
+            for seg in &mut self.map.segments[m0.segs..m1.segs] {
+                seg.src = seg.src.start + by..seg.src.end + by;
+            }
+            for node in &mut self.map.nodes[m0.nodes..m1.nodes] {
+                node.src = node.src.start + by..node.src.end + by;
+            }
+        }
+        self.out.push_str(text);
     }
 
     pub fn problem(&mut self, msg: String) {
@@ -162,10 +216,18 @@ impl<'a> Gen<'a> {
 
     /// Records that the source from `start` to here is the node `id`.
     pub fn node(&mut self, id: Option<&str>, kind: &'static str, start: usize) {
+        self.push_node(id, kind, start, false);
+    }
+
+    pub fn placed_node(&mut self, id: Option<&str>, kind: &'static str, start: usize) {
+        self.push_node(id, kind, start, true);
+    }
+
+    fn push_node(&mut self, id: Option<&str>, kind: &'static str, start: usize, placed: bool) {
         if let Some(id) = id
             && self.labels
         {
-            self.map.nodes.push(NodeRange { id: id.to_string(), kind, src: start..self.out.len() });
+            self.map.nodes.push(NodeRange { id: id.to_string(), kind, src: start..self.out.len(), placed });
         }
     }
 

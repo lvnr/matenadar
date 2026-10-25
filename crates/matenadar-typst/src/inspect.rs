@@ -51,6 +51,8 @@ pub struct Item {
     pub span: Span,
     /// The innermost document node that made it, and that node's kind.
     pub node: Option<(String, &'static str)>,
+    /// The innermost placed element it belongs to, and that element's kind.
+    pub element: Option<(String, &'static str)>,
 }
 
 /// Every item on every page.
@@ -66,6 +68,12 @@ fn node_of(s: &Session, span: Span) -> Option<(String, &'static str)> {
     let source = s.world().main_source();
     let node = source.find(span)?;
     s.generated().map.node_at(node.offset()).map(|n| (n.id.clone(), n.kind))
+}
+
+fn element_of(s: &Session, span: Span) -> Option<(String, &'static str)> {
+    let source = s.world().main_source();
+    let node = source.find(span)?;
+    s.generated().map.element_at(node.offset()).map(|n| (n.id.clone(), n.kind))
 }
 
 fn corners(at: Point, size: Size, ts: Transform) -> Rect {
@@ -105,6 +113,7 @@ fn walk(s: &Session, frame: &Frame, ts: Transform, page: usize, out: &mut Vec<It
                     },
                     span,
                     node: node_of(s, span),
+                    element: element_of(s, span),
                 });
             }
             FrameItem::Image(image, size, span) => {
@@ -116,12 +125,12 @@ fn walk(s: &Session, frame: &Frame, ts: Transform, page: usize, out: &mut Vec<It
                 // The placed size, after any scaling of the groups above it.
                 let (w, h) = (rect.x1 - rect.x0, rect.y1 - rect.y0);
                 let (w, h) = if is_rotated(ts) { (size.x.to_pt() * scale_of(ts), size.y.to_pt() * scale_of(ts)) } else { (w, h) };
-                out.push(Item { page, rect, kind: Kind::Image { px, w, h }, span: *span, node: node_of(s, *span) });
+                out.push(Item { page, rect, kind: Kind::Image { px, w, h }, span: *span, node: node_of(s, *span), element: element_of(s, *span) });
             }
             FrameItem::Shape(shape, span) => {
                 let b = shape.bbox(true);
                 let rect = corners(*pos + b.min, Size::new(b.max.x - b.min.x, b.max.y - b.min.y), ts);
-                out.push(Item { page, rect, kind: Kind::Shape, span: *span, node: node_of(s, *span) });
+                out.push(Item { page, rect, kind: Kind::Shape, span: *span, node: node_of(s, *span), element: element_of(s, *span) });
             }
             _ => {}
         }

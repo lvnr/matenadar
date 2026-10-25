@@ -40,17 +40,22 @@
   align(al, block(width: hi, body))
 })
 
-// Blocks shared out over `n` columns that end level. Blocks stay whole.
+// Blocks shared out over `n` columns that end level. Blocks stay whole,
+// and keep the spacing between them.
 #let mt-balance(n, gutter, rule, items) = layout(size => {
   let colw = (size.width - gutter * (n - 1)) / n
   let hs = items.map(it => measure(block(width: colw, it)).height)
-  let total = hs.sum(default: 0pt)
+  // The space between each block and the next, as the flow sets it.
+  let gaps = range(calc.max(items.len() - 1, 0)).map(i =>
+    calc.max(0pt, measure(block(width: colw, items.at(i) + items.at(i + 1))).height - hs.at(i) - hs.at(i + 1)))
+  let total = hs.sum(default: 0pt) + gaps.sum(default: 0pt)
   // The smallest column height that fits everything in n columns, in order.
   let fits(cap) = {
     let cols = 1
     let used = 0pt
-    for h in hs {
-      if used + h > cap and used > 0pt { cols += 1; used = h } else { used += h }
+    for (i, h) in hs.enumerate() {
+      let add = if used > 0pt { gaps.at(i - 1) + h } else { h }
+      if used + add > cap and used > 0pt { cols += 1; used = h } else { used += add }
     }
     cols <= n
   }
@@ -63,9 +68,9 @@
   let cols = ((),)
   let used = 0pt
   for (i, h) in hs.enumerate() {
-    if used + h > hi + 0.01pt and used > 0pt { cols.push(()); used = 0pt }
+    let add = if used > 0pt { gaps.at(i - 1) + h } else { h }
+    if used + add > hi + 0.01pt and used > 0pt { cols.push(()); used = h } else { used += add }
     cols.last().push(items.at(i))
-    used += h
   }
   while cols.len() < n { cols.push(()) }
   grid(
@@ -73,8 +78,15 @@
     column-gutter: gutter,
     stroke: (x, y) => if x > 0 and rule != none { (left: rule) } else { none },
     inset: (x, y) => if x > 0 and rule != none { (left: gutter / 2) } else { 0pt },
-    ..cols.map(c => stack(..c)),
+    ..cols.map(c => c.join()),
   )
+})
+
+// A list marker drawn on a shape, centred on the marker's capitals.
+#let mt-marker(shape, body) = box({
+  set text(top-edge: "cap-height", bottom-edge: "baseline")
+  place(center + horizon, shape)
+  body
 })
 
 #let mt-wrap(st, body) = {
@@ -88,6 +100,10 @@
   body
 })
 
+// Letter spacing after a run's last letter, which Typst leaves out at run
+// boundaries. The word joiner after it keeps the line from breaking there.
+#let mt-tr = context { let t = text.tracking; if t != 0pt { h(t) + "\u{2060}" } }
+
 // A character style or inline overrides.
 #let mt-span(st, body) = mt-wrap(st, text(..st.text, body))
 
@@ -98,6 +114,10 @@
   if k != 1 {
     if "size" in tx { tx.insert("size", tx.size * k) }
     if "tracking" in tx { tx.insert("tracking", tx.tracking * k) }
+    if st.at("fixed-leading", default: false) {
+      if "top-edge" in tx { tx.insert("top-edge", tx.top-edge * k) }
+      if "bottom-edge" in tx { tx.insert("bottom-edge", tx.bottom-edge * k) }
+    }
   }
   if "costs" in st { tx.insert("costs", st.costs) }
   let indent = if first and not st.at("indent-first", default: false) { 0pt } else { st.at("indent", default: 0pt) }
@@ -120,6 +140,8 @@
   let inner = {
     set text(..tx)
     set par(justify: al == "justify", leading: 0pt, spacing: 0pt, first-line-indent: (amount: indent, all: true), hanging-indent: st.at("hanging", default: 0pt))
+    if "linebreaks" in st { set par(linebreaks: st.linebreaks) }
+    if "limits" in st { set par(justification-limits: st.limits) }
     if "rule-above" in st {
       let r = st.at("rule-above")
       block(above: 0pt, below: r.gap, line(length: r.width, stroke: r.stroke))
@@ -220,6 +242,19 @@
     })
   }
 }
+
+// A QR code: `runs` of dark modules (x, y, length) on an n × n grid.
+#let mt-qr(w, n, runs, dark, light) = box(width: w, height: w, {
+  let m = w / n
+  if light != none { place(rect(width: w, height: w, fill: light, stroke: none)) }
+  place(curve(fill: dark, stroke: none, ..runs.map(r => (
+    curve.move((r.at(0) * m, r.at(1) * m)),
+    curve.line((r.at(2) * m, 0pt), relative: true),
+    curve.line((0pt, m), relative: true),
+    curve.line((-r.at(2) * m, 0pt), relative: true),
+    curve.close(),
+  )).flatten()))
+})
 
 #let mt-rot(angle, body) = if angle == 0deg { body } else { rotate(angle, origin: center + horizon, reflow: false, body) }
 

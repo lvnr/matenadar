@@ -23,3 +23,5 @@ comemo.workspace = true
 rustybuzz.workspace = true
 ttf-parser.workspace = true
 qrcode.workspace = true
+tiny-skia = "0.12.0"
+kurbo = "0.13.1"

@@ -74,6 +74,13 @@ pub struct Session {
     compile_time: Duration,
 }
 
+/// The Typst program generated for `doc`, without laying it out (for
+/// debugging the generator when layout fails).
+pub fn source_of(doc: &Document, paths: &Paths) -> String {
+    let fonts = paths.fonts_for(doc);
+    generate(doc, &fonts, &Virtual::default(), &paths.root).source
+}
+
 impl Session {
     pub fn new(doc: Document, paths: Paths) -> Result<Self, EngineError> {
         let fonts = Arc::new(paths.fonts_for(&doc));
@@ -87,6 +94,7 @@ impl Session {
         let world = MtWorld::new(generated.source.clone(), paths.root.clone(), fonts.clone(), virt.clone());
         let start = Instant::now();
         let (layout, warnings) = compile(&world)?;
+        let layout = crate::effects::apply(layout, &generated.effects);
         let compile_time = start.elapsed();
         let hashes = page_hashes(&layout);
         Ok(Self { doc, paths, fonts, virt, generated, world, layout, hashes, warnings, compile_time })
@@ -147,6 +155,7 @@ impl Session {
         let start = Instant::now();
         match compile(&self.world) {
             Ok((layout, warnings)) => {
+                let layout = crate::effects::apply(layout, &generated.effects);
                 let compile = start.elapsed();
                 let hashes = page_hashes(&layout);
                 let changed_pages = (0..hashes.len()).filter(|&i| self.hashes.get(i) != Some(&hashes[i])).map(|i| i + 1).collect();
@@ -200,12 +209,35 @@ impl Session {
         Some(typst_svg::svg(p, &typst_svg::SvgOptions { render_bleed: bleed, ..Default::default() }))
     }
 
-    /// A page as PNG at `dpi` dots per inch.
+    /// A page as PNG at `dpi` dots per inch. Below 200 dpi the page is drawn
+    /// at twice the size and scaled down, for smooth edges: small type, hairlines
+    /// and QR codes stay legible on screen.
     pub fn png(&self, page: usize, dpi: f32, bleed: bool) -> Option<Vec<u8>> {
         let p = self.layout.pages().get(page.checked_sub(1)?)?;
-        let opts = typst_render::RenderOptions { pixel_per_pt: typst::utils::Scalar::new((dpi / 72.0).into()), render_bleed: bleed };
-        typst_render::render(p, &opts).encode_png().ok()
+        let factor = if dpi < 200.0 { 2.0 } else { 1.0 };
+        let opts = typst_render::RenderOptions { pixel_per_pt: typst::utils::Scalar::new((dpi * factor / 72.0).into()), render_bleed: bleed };
+        let pixmap = typst_render::render(p, &opts);
+        if factor == 1.0 { pixmap.encode_png().ok() } else { halve(&pixmap)?.encode_png().ok() }
     }
+}
+
+/// Halves a pixmap, each pixel the mean of four (premultiplied, so edges blend right).
+fn halve(src: &tiny_skia::Pixmap) -> Option<tiny_skia::Pixmap> {
+    let (w, h) = (src.width() / 2, src.height() / 2);
+    let mut out = tiny_skia::Pixmap::new(w.max(1), h.max(1))?;
+    let sw = src.width() as usize;
+    let s = src.data();
+    let d = out.data_mut();
+    for y in 0..h as usize {
+        for x in 0..w as usize {
+            for c in 0..4 {
+                let at = |xx: usize, yy: usize| s[(yy * sw + xx) * 4 + c] as u32;
+                let sum = at(2 * x, 2 * y) + at(2 * x + 1, 2 * y) + at(2 * x, 2 * y + 1) + at(2 * x + 1, 2 * y + 1);
+                d[(y * w as usize + x) * 4 + c] = ((sum + 2) / 4) as u8;
+            }
+        }
+    }
+    Some(out)
 }
 
 pub(crate) fn compile(world: &MtWorld) -> Result<(PagedDocument, Vec<String>), EngineError> {

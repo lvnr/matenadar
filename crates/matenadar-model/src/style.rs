@@ -102,6 +102,16 @@ pub struct TextStyle {
     /// size already set `wght`, `wdth` and `opsz`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub variations: Option<indexmap::IndexMap<String, f64>>,
+    /// Baseline to baseline. A number without a unit is a multiple of the
+    /// size (`1.4`): a larger run in the line opens it. A length (`"14pt"`)
+    /// is fixed leading: runs of any size keep to it. On a run, `0` keeps
+    /// the run from opening its line at all.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line_height: Option<LineHeight>,
+    /// Let punctuation and hyphens at line ends hang slightly into the
+    /// margin, so edges look straight (default true).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub overhang: Option<bool>,
 }
 
 /// A paragraph style: text formatting plus how lines and paragraphs sit.
@@ -113,10 +123,6 @@ pub struct Style {
     pub inherits: Option<String>,
     #[serde(flatten)]
     pub text: TextStyle,
-    /// Baseline to baseline. A number without a unit is a multiple of the
-    /// size (`1.4`); a length is absolute (`"14pt"`).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line_height: Option<LineHeight>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub align: Option<Align>,
     /// First-line indent. Book convention: a paragraph that follows a
@@ -171,6 +177,35 @@ pub struct Style {
     pub fill: Option<Fill>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inset: Option<Insets>,
+    /// `"simple"` breaks lines one at a time; `"optimized"` chooses breaks
+    /// for the whole paragraph at once (Knuth–Plass), for evener lines. By
+    /// default justified text is optimized and ragged text is simple.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub linebreaks: Option<String>,
+    /// `"pretty"`: never end the paragraph on a lone short word (the last
+    /// two words stay together).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wrap: Option<String>,
+    /// How far justification may stretch and shrink word spaces and letter
+    /// spacing.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub justification: Option<Justification>,
+}
+
+/// Limits for justified lines: word spaces as a share of a normal space
+/// (`"80%"` to `"150%"`), letter spacing as a length (`"-0.01em"`).
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Justification {
+    pub spacing: Option<Limits>,
+    pub tracking: Option<Limits>,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Limits {
+    pub min: Option<Length>,
+    pub max: Option<Length>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
@@ -326,6 +361,10 @@ pub struct Margins {
     /// The binding side.
     pub inside: Option<Length>,
     pub outside: Option<Length>,
+    /// Margins that are the same on every page instead of mirrored. Setting
+    /// either takes the place of `inside` and `outside`.
+    pub left: Option<Length>,
+    pub right: Option<Length>,
 }
 
 /// A page master: the trim, the flow area, and what is drawn on every page.

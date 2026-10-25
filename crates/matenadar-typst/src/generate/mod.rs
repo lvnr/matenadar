@@ -27,6 +27,8 @@ pub struct Generated {
     pub map: SourceMap,
     /// Things the compiler noticed (missing images, unknown fonts…).
     pub problems: Vec<String>,
+    /// Opacity and outlining, by the number in an `mt-fx-<n>` label.
+    pub effects: Vec<crate::effects::Effect>,
 }
 
 /// Maps byte offsets in the generated source back to nodes, and to offsets
@@ -34,7 +36,10 @@ pub struct Generated {
 #[derive(Default, Debug)]
 pub struct SourceMap {
     segments: Vec<Segment>,
+    /// Sorted by start (outer before inner); ranges nest.
     nodes: Vec<NodeRange>,
+    /// Each node's enclosing node.
+    parents: Vec<Option<usize>>,
 }
 
 #[derive(Debug)]
@@ -70,18 +75,41 @@ impl SourceMap {
 
     /// The innermost node whose source contains `src_offset`.
     pub fn node_at(&self, src_offset: usize) -> Option<&NodeRange> {
-        self.nodes
-            .iter()
-            .filter(|n| n.src.start <= src_offset && src_offset < n.src.end)
-            .min_by_key(|n| n.src.end - n.src.start)
+        self.nodes_at(src_offset).next()
     }
 
     /// The innermost placed element whose source contains `src_offset`.
     pub fn element_at(&self, src_offset: usize) -> Option<&NodeRange> {
-        self.nodes
-            .iter()
-            .filter(|n| n.placed && n.src.start <= src_offset && src_offset < n.src.end)
-            .min_by_key(|n| n.src.end - n.src.start)
+        self.nodes_at(src_offset).find(|n| n.placed)
+    }
+
+    /// Every node whose source contains `src_offset`, innermost first.
+    pub fn nodes_at(&self, src_offset: usize) -> impl Iterator<Item = &NodeRange> {
+        // The last node starting at or before the offset is the innermost
+        // containing node, or lies inside it: walk out until one contains it.
+        let mut at = self.nodes.partition_point(|n| n.src.start <= src_offset).checked_sub(1);
+        while let Some(i) = at
+            && src_offset >= self.nodes[i].src.end
+        {
+            at = self.parents[i];
+        }
+        std::iter::successors(at, |&i| self.parents[i]).map(|i| &self.nodes[i])
+    }
+
+    /// Sorts the nodes and links each to the node around it.
+    fn link(&mut self) {
+        self.nodes.sort_by(|a, b| a.src.start.cmp(&b.src.start).then(b.src.end.cmp(&a.src.end)));
+        self.parents = vec![None; self.nodes.len()];
+        let mut open: Vec<usize> = Vec::new();
+        for i in 0..self.nodes.len() {
+            while let Some(&top) = open.last()
+                && self.nodes[top].src.end <= self.nodes[i].src.start
+            {
+                open.pop();
+            }
+            self.parents[i] = open.last().copied();
+            open.push(i);
+        }
     }
 
     pub fn nodes(&self) -> &[NodeRange] {
@@ -97,13 +125,30 @@ impl SourceMap {
     }
 }
 
+/// Whether any style, span or run of the document sets letter spacing.
+fn uses_tracking(doc: &Document) -> bool {
+    let d = &doc.design;
+    d.base.text.tracking.is_some()
+        || d.styles.values().any(|s| s.text.tracking.is_some())
+        || d.spans.values().any(|s| s.tracking.is_some())
+        || serde_json::to_string(&doc.content).is_ok_and(|c| c.contains("\"tracking\""))
+}
+
+/// A font size as Typst takes it: a percentage is of the surrounding size.
+pub fn font_size(l: Length) -> Length {
+    match l {
+        Length::Pct(p) => Length::Em(p / 100.0),
+        other => other,
+    }
+}
+
 /// Generates the Typst program for `doc`, whose files are under `root`.
 pub fn generate(doc: &Document, fonts: &Fonts, virt: &Virtual, root: &std::path::Path) -> Generated {
     virt.clear();
     let mut g = Gen::new(doc, fonts, virt, root.to_path_buf());
     g.document();
     g.segments_sorted();
-    Generated { source: g.out, map: g.map, problems: g.problems }
+    Generated { source: g.out, map: g.map, problems: g.problems, effects: g.effects }
 }
 
 pub(crate) struct Gen<'a> {
@@ -133,6 +178,19 @@ pub(crate) struct Gen<'a> {
     /// Content written to a scratch buffer, waiting to be spliced into the
     /// source: its text, and the source-map entries made while writing it.
     pub splices: Vec<(String, MapMark, MapMark)>,
+    /// The document letter-spaces some text, so runs end with a word joiner
+    /// (which keeps the run's last letter tracked; see `inlines`).
+    pub tracked: bool,
+    /// In the paragraph being written, the plain-text offset of a space that
+    /// must not break (the last two words of a `wrap: pretty` paragraph).
+    pub nbsp_at: Option<usize>,
+    pub effects: Vec<crate::effects::Effect>,
+    /// The resolved style behind each style expression written, for settings
+    /// the generator acts on itself (`wrap`).
+    pub resolved: HashMap<String, Style>,
+    /// The opacity of the groups around what is being written, for drawings
+    /// (SVG), which fade themselves.
+    pub opacity: f64,
 }
 
 /// A position in the source map's lists.
@@ -164,11 +222,23 @@ impl<'a> Gen<'a> {
             margin_anchor: None,
             hug: false,
             splices: Vec::new(),
+            tracked: uses_tracking(doc),
+            nbsp_at: None,
+            effects: Vec::new(),
+            resolved: HashMap::new(),
+            opacity: 1.0,
         }
     }
 
     pub fn raw(&mut self, s: &str) {
         self.out.push_str(s);
+    }
+
+    /// `body` (a Typst expression) in a labelled box that the effects pass
+    /// will find after layout.
+    pub fn with_effect(&mut self, body: &str, effect: crate::effects::Effect) -> String {
+        self.effects.push(effect);
+        format!("[#box({body})<mt-fx-{}>]", self.effects.len() - 1)
     }
 
     pub fn map_mark(&self) -> MapMark {
@@ -212,6 +282,7 @@ impl<'a> Gen<'a> {
 
     fn segments_sorted(&mut self) {
         self.map.segments.sort_by_key(|s| s.src.start);
+        self.map.link();
     }
 
     /// Records that the source from `start` to here is the node `id`.
@@ -381,6 +452,10 @@ impl<'a> Gen<'a> {
 
     fn start_break(&mut self, idx: usize, start: Option<&str>) {
         if idx == 0 {
+            // The first page is a recto; to open on a verso, leave it blank.
+            if start == Some("verso") {
+                self.raw("#pagebreak(to: \"even\")\n");
+            }
             return;
         }
         match start {
@@ -411,13 +486,23 @@ impl<'a> Gen<'a> {
         parts.push(format!("bleed: {}", self.bleed(m)));
         let mg = m.margins.clone().unwrap_or_default();
         let z = Length::Pt(36.0);
-        parts.push(format!(
-            "margin: (top: {}, bottom: {}, inside: {}, outside: {})",
-            mg.top.unwrap_or(z).typst(),
-            mg.bottom.unwrap_or(z).typst(),
-            mg.inside.unwrap_or(z).typst(),
-            mg.outside.unwrap_or(z).typst()
-        ));
+        if mg.left.is_some() || mg.right.is_some() {
+            parts.push(format!(
+                "margin: (top: {}, bottom: {}, left: {}, right: {})",
+                mg.top.unwrap_or(z).typst(),
+                mg.bottom.unwrap_or(z).typst(),
+                mg.left.unwrap_or(z).typst(),
+                mg.right.unwrap_or(z).typst()
+            ));
+        } else {
+            parts.push(format!(
+                "margin: (top: {}, bottom: {}, inside: {}, outside: {})",
+                mg.top.unwrap_or(z).typst(),
+                mg.bottom.unwrap_or(z).typst(),
+                mg.inside.unwrap_or(z).typst(),
+                mg.outside.unwrap_or(z).typst()
+            ));
+        }
         parts.push("binding: left".into());
         parts.push(format!("columns: {}", m.columns.unwrap_or(1)));
         if let Some(f) = &m.fill {
@@ -464,7 +549,12 @@ impl<'a> Gen<'a> {
 
     /// The Typst variable holding the named style (the base for an unknown name).
     pub fn style_var(&mut self, name: &str) -> String {
-        self.styles.get(name).cloned().unwrap_or_else(|| "mt-base".to_string())
+        let var = self.styles.get(name).cloned().unwrap_or_else(|| "mt-base".to_string());
+        if !self.resolved.contains_key(&var) {
+            let style = self.doc.design.style(if var == "mt-base" { "" } else { name });
+            self.resolved.insert(var.clone(), style);
+        }
+        var
     }
 
     /// A style with local overrides, as a dictionary literal.
@@ -473,9 +563,16 @@ impl<'a> Gen<'a> {
             None => self.style_var(name),
             Some(over) => {
                 let resolved = self.doc.design.style(name).with(over);
-                self.style_dict(&resolved, false)
+                let dict = self.style_dict(&resolved, false);
+                self.resolved.insert(dict.clone(), resolved);
+                dict
             }
         }
+    }
+
+    /// The style a style expression stands for (the base style if unknown).
+    pub fn style_of(&self, expr: &str) -> Style {
+        self.resolved.get(expr).cloned().unwrap_or_else(|| self.doc.design.style(""))
     }
 
     pub fn span_var(&mut self, name: &str) -> String {
@@ -527,7 +624,7 @@ impl<'a> Gen<'a> {
             tx.push(format!("font: ({},)", fams.iter().map(|f| str_lit(f)).collect::<Vec<_>>().join(", ")));
         }
         if let Some(s) = &t.size {
-            tx.push(format!("size: {}", s.typst()));
+            tx.push(format!("size: {}", font_size(*s).typst()));
         }
         if let Some(w) = &t.weight {
             match w {
@@ -578,8 +675,14 @@ impl<'a> Gen<'a> {
         if let Some(h) = t.hyphenate {
             tx.push(format!("hyphenate: {h}"));
         }
-        if let Some(l) = t.ligatures {
-            tx.push(format!("ligatures: {l}"));
+        match t.ligatures {
+            Some(l) => tx.push(format!("ligatures: {l}")),
+            // Letter-spaced text drops its ligatures, as CSS and InDesign do.
+            None if t.tracking.is_some_and(|tr| tr != Length::ZERO) => tx.push("ligatures: false".into()),
+            None => {}
+        }
+        if let Some(o) = t.overhang {
+            tx.push(format!("overhang: {o}"));
         }
         if let Some(s) = &t.outline {
             tx.push(format!("stroke: {}", self.pal.stroke(s, false)));
@@ -590,18 +693,49 @@ impl<'a> Gen<'a> {
             let axes: Vec<String> = v.iter().map(|(k, val)| format!("{}: {}", str_lit(k), num(*val))).collect();
             tx.push(format!("variations: ({})", axes.join(", ")));
         }
-        if let Some(lh) = line_height_em {
+        // A paragraph's line height comes in as `line_height_em`; a run's
+        // own `line_height` sets the edges of that run alone.
+        let run_lh = if line_height_em.is_none() { t.line_height } else { None };
+        if let Some(LineHeight::Length(l)) = run_lh
+            && l.resolve(0.0, 0.0) == 0.0
+        {
+            // A run that never opens its line.
+            tx.push("top-edge: 0pt".into());
+            tx.push("bottom-edge: 0pt".into());
+        } else if let Some(LineHeight::Factor(f)) = run_lh
+            && f == 0.0
+        {
+            tx.push("top-edge: 0pt".into());
+            tx.push("bottom-edge: 0pt".into());
+        } else if let Some(lh) = line_height_em.or_else(|| {
+            let size = t.size.map(font_size).and_then(|s| s.pt()).unwrap_or(0.0);
+            match run_lh {
+                Some(LineHeight::Factor(f)) => Some(f),
+                Some(LineHeight::Length(l)) if size > 0.0 => Some(l.resolve(size, size * 100.0) / size),
+                _ => None,
+            }
+        }) {
             let mut m = self.metrics(t);
+            let size = t.size.map(font_size).and_then(|s| s.pt()).filter(|s| *s > 0.0);
             // Browsers round a font's ascent and descent to whole CSS pixels
             // before sharing out the leading; do the same where the size is known.
-            if let Some(size) = t.size.and_then(|s| s.pt()).filter(|s| *s > 0.0) {
+            if let Some(size) = size {
                 let px = size / 0.75;
                 m.ascender = (m.ascender * px).round() / px;
                 m.descender = (m.descender * px).round() / px;
             }
             let half = (lh - (m.ascender + m.descender)) / 2.0;
-            tx.push(format!("top-edge: {}em", num(m.ascender + half)));
-            tx.push(format!("bottom-edge: -{}em", num(m.descender + half)));
+            match (t.line_height, size) {
+                // Fixed leading: edges in points, so runs of other sizes keep to it.
+                (Some(LineHeight::Length(_)), Some(size)) => {
+                    tx.push(format!("top-edge: {}pt", num((m.ascender + half) * size)));
+                    tx.push(format!("bottom-edge: -{}pt", num((m.descender + half) * size)));
+                }
+                _ => {
+                    tx.push(format!("top-edge: {}em", num(m.ascender + half)));
+                    tx.push(format!("bottom-edge: -{}em", num(m.descender + half)));
+                }
+            }
         }
         let mut wrap = Vec::new();
         match t.case {
@@ -636,12 +770,12 @@ impl<'a> Gen<'a> {
     /// How far below a paragraph's top its first baseline sits, in points
     /// (the top edge of the CSS line box `text_dict` sets up).
     pub fn first_baseline(&mut self, s: &Style) -> f64 {
-        let size = s.text.size.map_or(11.0, |l| l.resolve(11.0, 0.0));
+        let size = s.text.size.map_or(11.0, |l| font_size(l).resolve(11.0, 0.0));
         let mut m = self.metrics(&s.text);
         let px = size / 0.75;
         m.ascender = (m.ascender * px).round() / px;
         m.descender = (m.descender * px).round() / px;
-        let lh = match s.line_height {
+        let lh = match s.text.line_height {
             Some(LineHeight::Factor(f)) => f,
             Some(LineHeight::Length(l)) => l.resolve(size, size * 100.0) / size,
             None => m.ascender + m.descender,
@@ -658,8 +792,8 @@ impl<'a> Gen<'a> {
         {
             t.lang = Some(lang.clone());
         }
-        let size = t.size.map_or(11.0, |l| l.resolve(11.0, 0.0));
-        let lh_em = match s.line_height {
+        let size = t.size.map_or(11.0, |l| font_size(l).resolve(11.0, 0.0));
+        let lh_em = match s.text.line_height {
             Some(LineHeight::Factor(f)) => Some(f),
             Some(LineHeight::Length(l)) => Some(l.resolve(size, size * 100.0) / size),
             None => {
@@ -730,6 +864,28 @@ impl<'a> Gen<'a> {
         }
         if s.balance == Some(true) {
             parts.push("balance: true".into());
+        }
+        if matches!(s.text.line_height, Some(LineHeight::Length(_))) {
+            parts.push("fixed-leading: true".into());
+        }
+        match s.linebreaks.as_deref() {
+            Some("optimized") | Some("simple") => parts.push(format!("linebreaks: {}", str_lit(s.linebreaks.as_deref().unwrap()))),
+            _ => {}
+        }
+        if let Some(j) = &s.justification {
+            let lim = |l: &Option<matenadar_model::style::Limits>, min: &str, max: &str| {
+                let l = l.unwrap_or_default();
+                format!(
+                    "(min: {}, max: {})",
+                    l.min.map(|v| v.typst()).unwrap_or_else(|| min.into()),
+                    l.max.map(|v| v.typst()).unwrap_or_else(|| max.into())
+                )
+            };
+            parts.push(format!(
+                "limits: (spacing: {}, tracking: {})",
+                lim(&j.spacing, "66.67%", "150%"),
+                lim(&j.tracking, "0em", "0em")
+            ));
         }
         if let Some(dc) = &s.drop_cap {
             let mut d = vec![format!("lines: {}", dc.lines)];

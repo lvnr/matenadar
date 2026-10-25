@@ -279,8 +279,8 @@ fn run() -> Result<ExitCode> {
             Ok(ExitCode::SUCCESS)
         }
         "debug-typst" => {
-            let s = session(&args)?;
-            print!("{}", s.source());
+            let (doc, paths) = load(&args)?;
+            print!("{}", matenadar_typst::source_of(&doc, &paths));
             Ok(ExitCode::SUCCESS)
         }
         "help" | "--help" | "-h" => {

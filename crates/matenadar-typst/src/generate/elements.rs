@@ -2,13 +2,14 @@
 
 use matenadar_model::Length;
 use matenadar_model::block::{Block, Para};
-use matenadar_model::element::{Element, GridCell, GridRow, LetterGrid, Lettering, Place, TextFrame};
+use matenadar_model::element::{Element, GridCell, GridRow, LetterGrid, Lettering, Origin, Place, TextFrame};
 use matenadar_model::style::{Stroke, TextStyle};
 use matenadar_model::units::num;
 
 use super::Gen;
-use super::typ::{anchor, insets, insets_pt, radius, str_lit, when};
-use crate::glyphs::{LetterSpec, letter, pick, qr_svg, weight_number};
+use super::typ::{anchor, insets, insets_pt, radius, str_lit, stroke_outset, when};
+use crate::effects::Effect;
+use crate::glyphs::{LetterSpec, letter, pick, qr_runs, svg_group, tint_svg, weight_number};
 
 impl Gen<'_> {
     pub fn element(&mut self, e: &Element, scaled: bool) {
@@ -36,11 +37,17 @@ impl Gen<'_> {
         // The element's body as a Typst expression (code mode).
         let body = match e {
             Element::Text(t) => {
+                if let Some(id) = place.id.as_deref().filter(|id| self.labels && super::label_safe(id)) {
+                    self.raw(&format!("#place(top + left, dx: {x}, dy: {y}, [#metadata({}) <{id}>])\n", str_lit(id)));
+                }
                 self.text_frame(t, &place, &x, &y, fx, fy, rot, scaled);
                 self.placed_node(place.id.as_deref(), if place.decorative == Some(true) { "decorative" } else { "text" }, start);
                 return;
             }
             Element::Image(i) => {
+                if place.opacity.is_some_and(|o| o < 1.0) {
+                    self.problem(format!("{}: opacity is not supported on photographs (raster images) yet", place.id.as_deref().unwrap_or("an image")));
+                }
                 let mut args = Vec::new();
                 if let Some(w) = &place.w {
                     args.push(format!("width: {}", w.typst()));
@@ -100,6 +107,9 @@ impl Gen<'_> {
                 ];
                 args.push(format!("fill: {}", s.fill.as_ref().map(|f| self.pal.fill(f)).unwrap_or_else(|| "none".into())));
                 args.push(format!("stroke: {}", s.stroke.as_ref().map(|b| self.pal.border(b, scaled)).unwrap_or_else(|| "none".into())));
+                if let Some(o) = s.stroke.as_ref().and_then(|b| stroke_outset(b, place.stroke_align.as_deref(), scaled)) {
+                    args.push(format!("outset: {o}"));
+                }
                 if let (Some(r), "rect") = (&s.radius, shape) {
                     args.push(format!("radius: {}", radius(r, scaled)));
                 }
@@ -110,8 +120,10 @@ impl Gen<'_> {
                 let vb = p.viewbox.map(|v| format!("{} {} {} {}", v[0], v[1], v[2], v[3])).unwrap_or_else(|| format!("0 0 {} {}", num(w), num(h)));
                 let fill = p.fill.as_ref().map(|c| self.pal.svg(c)).unwrap_or_else(|| "none".into());
                 let stroke = svg_stroke(self, p.stroke.as_ref());
+                let op = place.opacity.unwrap_or(1.0) * self.opacity;
+                let opacity = if op < 1.0 { format!(r#" opacity="{}""#, num(op)) } else { String::new() };
                 let svg = format!(
-                    r#"<svg xmlns="http://www.w3.org/2000/svg" width="{w}pt" height="{h}pt" viewBox="{vb}" preserveAspectRatio="none"><path d="{d}" fill="{fill}"{stroke}/></svg>"#,
+                    r#"<svg xmlns="http://www.w3.org/2000/svg" width="{w}pt" height="{h}pt" viewBox="{vb}" preserveAspectRatio="none"><path d="{d}" fill="{fill}"{stroke}{opacity}/></svg>"#,
                     w = num(w),
                     h = num(h),
                     d = xml_escape(&p.d)
@@ -120,15 +132,32 @@ impl Gen<'_> {
                 format!("image({}, width: {}pt, height: {}pt)", str_lit(&path), num(w), num(h))
             }
             Element::Svg(s) => {
-                let path = match (&s.src, &s.markup, &s.viewbox) {
-                    (Some(src), _, Some(vb)) => match self.asset(src).and_then(|p| std::fs::read_to_string(self.root.join(p.trim_start_matches('/'))).ok()) {
-                        Some(text) => Some(self.file("svg", with_viewbox(&text, vb).into_bytes())),
-                        None => None,
-                    },
-                    (Some(src), _, None) => self.asset(src),
-                    (None, Some(m), Some(vb)) => Some(self.file("svg", with_viewbox(m, vb).into_bytes())),
-                    (None, Some(m), None) => Some(self.file("svg", m.clone().into_bytes())),
-                    _ => None,
+                let op = place.opacity.unwrap_or(1.0) * self.opacity;
+                let changed = s.viewbox.is_some() || s.tint.is_some() || op < 1.0;
+                let path = if changed {
+                    let text = match (&s.src, &s.markup) {
+                        (Some(src), _) => self.asset(src).and_then(|p| std::fs::read_to_string(self.root.join(p.trim_start_matches('/'))).ok()),
+                        (None, Some(m)) => Some(m.clone()),
+                        _ => None,
+                    };
+                    text.map(|mut t| {
+                        if let Some(vb) = &s.viewbox {
+                            t = with_viewbox(&t, vb);
+                        }
+                        if let Some(tint) = &s.tint {
+                            t = tint_svg(&t, &self.pal.svg(&tint.color), tint.amount);
+                        }
+                        if op < 1.0 {
+                            t = svg_group(&t, &format!(r#"opacity="{}""#, num(op)));
+                        }
+                        self.file("svg", t.into_bytes())
+                    })
+                } else {
+                    match (&s.src, &s.markup) {
+                        (Some(src), _) => self.asset(src),
+                        (None, Some(m)) => Some(self.file("svg", m.clone().into_bytes())),
+                        _ => None,
+                    }
                 };
                 let mut args = Vec::new();
                 if let Some(w) = &place.w {
@@ -159,15 +188,22 @@ impl Gen<'_> {
                 }
                 if let Some(s) = &g.stroke {
                     args.push(format!("stroke: {}", self.pal.border(s, scaled)));
+                    if let Some(o) = stroke_outset(s, place.stroke_align.as_deref(), scaled) {
+                        args.push(format!("outset: {o}"));
+                    }
                 }
                 if let Some(r) = &g.radius {
                     args.push(format!("radius: {}", radius(r, scaled)));
                 }
+                // Drawings inside fade themselves; text and shapes fade after layout.
+                let outer = self.opacity;
+                self.opacity *= place.opacity.unwrap_or(1.0);
                 let inner = self.capture(|g2| {
                     for c in &g.children {
                         g2.element(c, scaled);
                     }
                 });
+                self.opacity = outer;
                 let mut body = format!("box({})[{inner}]", args.join(", "));
                 if let Some(s) = g.scale.filter(|s| *s != 1.0) {
                     body = format!("scale({}%, origin: top + left, reflow: false, {body})", num(s * 100.0));
@@ -181,6 +217,8 @@ impl Gen<'_> {
                         self.depth += 1;
                         let w = place.w.or(x.w).map(|w| format!("width: {}", w.typst())).unwrap_or_default();
                         let h = place.h.or(x.h).map(|h| format!(", height: {}", h.typst())).unwrap_or_default();
+                        let outer = self.opacity;
+                        self.opacity *= place.opacity.unwrap_or(1.0);
                         let inner = self.capture(|g2| {
                             if x.blocks.is_empty() {
                                 for c in &x.elements {
@@ -191,6 +229,7 @@ impl Gen<'_> {
                             }
                         });
                         self.depth -= 1;
+                        self.opacity = outer;
                         format!("box({w}{h})[{inner}]")
                     }
                     Some(Err(err)) => {
@@ -204,13 +243,14 @@ impl Gen<'_> {
                 }
             }
             Element::Qr(q) => {
-                let dark = q.color.as_ref().map(|c| self.pal.svg(c)).unwrap_or_else(|| "#000000".into());
-                let light = q.background.as_ref().map(|c| self.pal.svg(c));
-                match qr_svg(&q.data, q.ecc.as_deref().unwrap_or("M"), q.quiet.unwrap_or(0), &dark, light.as_deref()) {
-                    Ok((svg, _)) => {
-                        let path = self.file("svg", svg.into_bytes());
+                let dark = q.color.as_ref().map(|c| self.pal.color(c)).unwrap_or_else(|| "black".into());
+                let light = q.background.as_ref().map(|c| self.pal.color(c)).unwrap_or_else(|| "none".into());
+                match qr_runs(&q.data, q.ecc.as_deref().unwrap_or("M"), q.quiet.unwrap_or(0)) {
+                    Ok((runs, n)) => {
+                        // Drawn as one vector shape, so every renderer keeps the modules square.
                         let w = place.w.map(|w| w.typst()).unwrap_or_else(|| "1in".into());
-                        format!("image({}, width: {w}, height: {w})", str_lit(&path))
+                        let runs: Vec<String> = runs.iter().map(|(x, y, l)| format!("({x},{y},{l})")).collect();
+                        format!("mt-qr({w}, {n}, ({},), {dark}, {light})", runs.join(","))
                     }
                     Err(err) => {
                         self.problem(err);
@@ -223,9 +263,15 @@ impl Gen<'_> {
             Element::Line(_) => unreachable!(),
         };
         let mut body = body;
-        if rot != 0.0 {
-            body = format!("mt-rot({}deg, {body})", num(rot));
+        // Text and shapes fade, and decorative text becomes outlines, after
+        // layout; drawings have faded themselves above.
+        let op = place.opacity.unwrap_or(1.0) as f32;
+        let decorative = place.decorative == Some(true);
+        let drawing = matches!(e, Element::Svg(_) | Element::Path(_) | Element::Lettering(_) | Element::Image(_));
+        if !drawing && (op < 1.0 || decorative) {
+            body = self.with_effect(&body, Effect { opacity: op, outline: decorative });
         }
+        body = self.rotated(&place, rot, body);
         if let Some(skew) = self.skew_of(&place) {
             body = format!("skew(ax: {}deg, reflow: false, {body})", num(skew));
         }
@@ -246,9 +292,7 @@ impl Gen<'_> {
                 self.pal.color(&sh.color),
                 r.map(|r| format!(", radius: {r}")).filter(|_| shape == "rect").unwrap_or_default()
             );
-            if rot != 0.0 {
-                shadow = format!("mt-rot({}deg, {shadow})", num(rot));
-            }
+            shadow = self.rotated(&place, rot, shadow);
             let code = format!("mt-at({x} + {}, {y} + {}, {}, {}, {shadow})", sh.dx.typst(), sh.dy.typst(), num(fx), num(fy));
             self.wrap_when(place.when.as_deref(), &code);
         }
@@ -259,6 +303,25 @@ impl Gen<'_> {
         }
         self.wrap_when(place.when.as_deref(), &placed);
         self.placed_node(place.id.as_deref(), if place.decorative == Some(true) { "decorative" } else { e.kind() }, start);
+    }
+
+    /// `body` turned by `rot` degrees about the element's `origin` (its centre
+    /// by default), keeping its place in the layout.
+    fn rotated(&self, place: &Place, rot: f64, body: String) -> String {
+        if rot == 0.0 {
+            return body;
+        }
+        match &place.origin {
+            Some(Origin::Point([px, py])) if px.pt().is_some() && py.pt().is_some() => {
+                // Turn about the top-left corner, then move the pivot back.
+                let (px, py) = (px.pt().unwrap_or(0.0), py.pt().unwrap_or(0.0));
+                let (sin, cos) = rot.to_radians().sin_cos();
+                let (dx, dy) = (px - (px * cos - py * sin), py - (px * sin + py * cos));
+                format!("move(dx: {}pt, dy: {}pt, rotate({}deg, origin: top + left, reflow: false, {body}))", num(dx), num(dy), num(rot))
+            }
+            Some(Origin::Word(w)) => format!("rotate({}deg, origin: {}, reflow: false, {body})", num(rot), origin_align(w)),
+            _ => format!("mt-rot({}deg, {body})", num(rot)),
+        }
     }
 
     fn skew_of(&self, p: &Place) -> Option<f64> {
@@ -360,6 +423,9 @@ impl Gen<'_> {
         }
         if let Some(s) = &t.stroke {
             args.push(format!("stroke: {}", self.pal.border(s, false)));
+            if let Some(o) = stroke_outset(s, place.stroke_align.as_deref(), false) {
+                args.push(format!("outset: {o}"));
+            }
         }
         if let Some(r) = &t.radius {
             args.push(format!("radius: {}", radius(r, false)));
@@ -368,9 +434,11 @@ impl Gen<'_> {
             args.push("clip: true".into());
         }
         let mut frame = format!("block({}, c)", args.join(", "));
-        if rot != 0.0 {
-            frame = format!("mt-rot({}deg, {frame})", num(rot));
+        let op = place.opacity.unwrap_or(1.0) as f32;
+        if op < 1.0 || place.decorative == Some(true) {
+            frame = self.with_effect(&frame, Effect { opacity: op, outline: place.decorative == Some(true) });
         }
+        frame = self.rotated(place, rot, frame);
         let check = match (&hi, shrink, &place.id) {
             (Some(h), false, Some(id)) if self.labels => format!("; mt-overflow({}, {wi}, {}pt, c)", str_lit(id), num(*h)),
             _ => String::new(),
@@ -378,10 +446,8 @@ impl Gen<'_> {
         let shadow = match &place.shadow {
             Some(sh) => {
                 let r = t.radius.as_ref().map(|r| format!(", radius: {}", radius(r, false))).unwrap_or_default();
-                let mut box_ = format!("rect(width: s.width, height: s.height, fill: {}{r})", self.pal.color(&sh.color));
-                if rot != 0.0 {
-                    box_ = format!("mt-rot({}deg, {box_})", num(rot));
-                }
+                let box_ = format!("rect(width: s.width, height: s.height, fill: {}{r})", self.pal.color(&sh.color));
+                let box_ = self.rotated(place, rot, box_);
                 format!(
                     "let s = measure(block({}, c)); mt-at({x} + {}, {y} + {}, {}, {}, {box_}); ",
                     args.iter().filter(|a| a.starts_with("width") || a.starts_with("height") || a.starts_with("inset")).cloned().collect::<Vec<_>>().join(", "),
@@ -452,6 +518,17 @@ impl Gen<'_> {
             Some("right") => 1.0,
             _ => 0.0,
         };
+        // Variable fonts: the same axes Typst sets for text.
+        let mut variations: Vec<([u8; 4], f32)> = vec![(*b"wght", weight as f32), (*b"opsz", size as f32)];
+        if let Some(st) = t.stretch {
+            variations.push((*b"wdth", st as f32));
+        }
+        for (tag, v) in t.variations.iter().flatten() {
+            if let Ok(tag) = <[u8; 4]>::try_from(tag.as_bytes()) {
+                variations.retain(|(t, _)| *t != tag);
+                variations.push((tag, *v as f32));
+            }
+        }
         let spec = LetterSpec {
             text: &text,
             font: &font,
@@ -460,14 +537,40 @@ impl Gen<'_> {
             features: &features,
             fill: &fill,
             stroke: stroke.as_ref().map(|(c, w)| (c.as_str(), *w)),
-            line_height: l.line_height.unwrap_or(1.2),
+            line_height: match t.line_height {
+                Some(matenadar_model::style::LineHeight::Factor(f)) => f,
+                Some(matenadar_model::style::LineHeight::Length(len)) if size > 0.0 => len.resolve(size, size * 100.0) / size,
+                _ => 1.2,
+            },
             align,
             width_pt: place.w.and_then(|w| w.pt()),
+            variations,
+            path: l.path.as_deref(),
+            start_pt: None,
+        };
+        // A share of the path needs its length: measure it first.
+        let spec = match (&l.path, l.start) {
+            (Some(_), Some(start)) => {
+                let length = crate::glyphs::path_length(l.path.as_deref().unwrap_or("")).unwrap_or(0.0);
+                LetterSpec { start_pt: Some(start.resolve(size, length)), ..spec }
+            }
+            _ => spec,
         };
         match letter(&spec) {
             Ok(out) => {
-                let path = self.file("svg", out.svg.into_bytes());
-                format!("image({}, width: {}pt, height: {}pt)", str_lit(&path), num(out.width_pt), num(out.height_pt))
+                let op = place.opacity.unwrap_or(1.0) * self.opacity;
+                let svg = if op < 1.0 { svg_group(&out.svg, &format!(r#"opacity="{}""#, num(op))) } else { out.svg };
+                let path = self.file("svg", svg.into_bytes());
+                let image = format!("image({}, width: {}pt, height: {}pt)", str_lit(&path), num(out.width_pt), num(out.height_pt));
+                if l.path.is_some() {
+                    // Placed by the path's own coordinates, in a box that ends where the drawing does.
+                    let (ox, oy) = out.offset;
+                    let w = place.w.map(|w| w.typst()).unwrap_or_else(|| format!("{}pt", num((ox + out.width_pt).max(0.0))));
+                    let h = place.h.map(|h| h.typst()).unwrap_or_else(|| format!("{}pt", num((oy + out.height_pt).max(0.0))));
+                    format!("box(width: {w}, height: {h}, place(top + left, dx: {}pt, dy: {}pt, {image}))", num(ox), num(oy))
+                } else {
+                    image
+                }
             }
             Err(err) => {
                 self.problem(format!("lettering: {err}"));
@@ -654,5 +757,20 @@ fn svg_stroke(g: &Gen, s: Option<&Stroke>) -> String {
             }
             out
         }
+    }
+}
+
+/// A rotation origin word as a Typst alignment.
+fn origin_align(word: &str) -> &'static str {
+    match word {
+        "top-left" => "top + left",
+        "top" => "top + center",
+        "top-right" => "top + right",
+        "left" => "horizon + left",
+        "right" => "horizon + right",
+        "bottom-left" => "bottom + left",
+        "bottom" => "bottom + center",
+        "bottom-right" => "bottom + right",
+        _ => "center + horizon",
     }
 }

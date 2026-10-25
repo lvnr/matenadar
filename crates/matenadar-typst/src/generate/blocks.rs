@@ -35,16 +35,26 @@ impl Gen<'_> {
         let cx = FlowCx { style: style.to_string(), scaled, hug };
         let mut prev_para = false;
         for (i, b) in blocks.iter().enumerate() {
-            // A margin note that sits level with this block needs a marker in it.
-            let anchor = match blocks.get(i + 1) {
-                Some(Block::Margin(m)) if m.at.as_deref() != Some("here") => {
-                    self.anchors += 1;
-                    Some(format!("mt-a-{}", self.anchors))
-                }
-                _ => None,
+            // Margin notes after a block sit level with it (and stack under
+            // each other), so the block gets a marker at its top edge.
+            let is_margin = matches!(b, Block::Margin(_));
+            let anchor = if !is_margin
+                && blocks[i + 1..]
+                    .iter()
+                    .map_while(|n| if let Block::Margin(m) = n { Some(m) } else { None })
+                    .any(|m| m.at.as_deref() != Some("here"))
+            {
+                self.anchors += 1;
+                Some(format!("mt-a-{}", self.anchors))
+            } else {
+                None
             };
             let first = !prev_para;
             self.block(b, &cx, first, anchor.as_deref());
+            // After the block: flows inside it (a box's) set their own.
+            if !is_margin {
+                self.margin_anchor = anchor;
+            }
             prev_para = match b {
                 Block::P(_) => true,
                 Block::Margin(_) | Block::Space(_) => prev_para,
@@ -76,11 +86,13 @@ impl Gen<'_> {
     pub fn block(&mut self, b: &Block, cx: &FlowCx, first: bool, anchor: Option<&str>) {
         let start = self.out.len();
         let k = self.k(cx);
-        let marker = |g: &mut Self| {
-            if let Some(a) = anchor {
-                g.raw(&format!("#metadata(none) <{a}>"));
-            }
-        };
+        if let Some(a) = anchor
+            && !matches!(b, Block::P(_) | Block::Box(_))
+        {
+            // At the block's top edge, outside any inset.
+            self.raw(&format!("#metadata(none) <{a}>\n"));
+        }
+        let marker = |_: &mut Self| {};
         match b {
             Block::P(p) => {
                 self.paragraph(p, cx, first, anchor);
@@ -175,6 +187,9 @@ impl Gen<'_> {
                 }
                 if let Some(s) = &x.stroke {
                     args.push(format!("stroke: {}", self.pal.border(s, cx.scaled)));
+                    if let Some(o) = super::typ::stroke_outset(s, x.stroke_align.as_deref(), cx.scaled) {
+                        args.push(format!("outset: {o}"));
+                    }
                 }
                 if let Some(r) = &x.radius {
                     args.push(format!("radius: {}", radius(r, cx.scaled)));
@@ -182,39 +197,100 @@ impl Gen<'_> {
                 if let Some(i) = &x.inset {
                     args.push(format!("inset: {}", insets(i, cx.scaled)));
                 }
-                args.push(format!("breakable: {}", x.breakable.unwrap_or(false)));
-                args.push(format!("above: {}", x.space_before.map(|l| l.typst()).unwrap_or_else(|| "0.8em".into())));
-                args.push(format!("below: {}", x.space_after.map(|l| l.typst()).unwrap_or_else(|| "0.8em".into())));
+                let breakable = x.breakable.unwrap_or(false);
+                args.push(format!("breakable: {breakable}"));
+                let above = x.space_before.map(|l| l.typst()).unwrap_or_else(|| "0.8em".into());
+                let below = x.space_after.map(|l| l.typst()).unwrap_or_else(|| "0.8em".into());
                 let al = align_word(x.align);
                 let rot = x.rotate.filter(|r| *r != 0.0);
-                if let Some(r) = rot {
-                    self.raw(&format!("#block(width: 100%, align({al}, rotate({}deg, reflow: false, block({})[", num(r), args.join(", ")));
-                } else {
-                    self.raw(&format!("#align({al}, block({})[", args.join(", ")));
+                let pad = x.margin_left.is_some() || x.margin_right.is_some();
+                // Turned or padded, the box sits in a block that keeps its spacing.
+                let wrapped = rot.is_some() || pad;
+                if !wrapped {
+                    args.push(format!("above: {above}"));
+                    args.push(format!("below: {below}"));
                 }
+                let mut open = format!("block({})[#set align(left + top);", args.join(", "));
+                let mut close = "]".to_string();
+                if let Some(r) = rot {
+                    open = format!("rotate({}deg, reflow: false, {open}", num(r));
+                    close.push(')');
+                }
+                open = format!("align({al}, {open}");
+                close.push(')');
+                if pad {
+                    let side = |l: &Option<matenadar_model::Length>| l.map(|l| l.typst()).unwrap_or_else(|| "0pt".into());
+                    open = format!("pad(left: {}, right: {}, {open}", side(&x.margin_left), side(&x.margin_right));
+                    close.push(')');
+                }
+                if wrapped {
+                    open = format!("block(width: 100%, above: {above}, below: {below}, breakable: {breakable}, {open}");
+                    close.push(')');
+                }
+                self.raw(&format!("#{open}"));
                 self.label(x.id.as_deref());
-                marker(self);
+                if let Some(a) = anchor {
+                    // At the box's top edge: a marker would otherwise stick to its first line.
+                    let top = match &x.inset {
+                        Some(matenadar_model::style::Insets::All(l)) => l.typst(),
+                        Some(matenadar_model::style::Insets::Sides(sd)) => sd.top.or(sd.y).map(|l| l.typst()).unwrap_or_else(|| "0pt".into()),
+                        None => "0pt".into(),
+                    };
+                    self.raw(&format!("#place(top + left, dy: -{top}, [#metadata(none) <{a}>])"));
+                }
                 let inner = FlowCx { style: x.style.as_deref().map(|n| self.style_var(n)).unwrap_or_else(|| cx.style.clone()), scaled: cx.scaled, hug: cx.hug };
                 self.flow(&x.blocks, &inner.style.clone(), inner.scaled);
-                self.raw(if rot.is_some() { "])))\n" } else { "])\n" });
+                self.raw(&format!("{close}\n"));
             }
             Block::Table(t) => self.table(t, cx, anchor),
             Block::List(l) => {
                 let st = l.style.as_deref().map(|n| self.style_var(n)).unwrap_or_else(|| cx.style.clone());
                 let ordered = l.ordered.unwrap_or(false);
+                let marker_span = l.marker_style.as_deref().map(|n| self.span_var(n));
+                let shape = l.marker_shape.as_ref().map(|m| {
+                    let w = m.w.typst();
+                    let h = m.h.map(|h| h.typst()).unwrap_or_else(|| w.clone());
+                    let fill = m.fill.as_ref().map(|f| self.pal.fill(f)).unwrap_or_else(|| "none".into());
+                    let stroke = m.stroke.as_ref().map(|s| self.pal.border(s, false)).unwrap_or_else(|| "none".into());
+                    match m.shape.as_deref() {
+                        Some("rect") => format!(
+                            "rect(width: {w}, height: {h}, fill: {fill}, stroke: {stroke}{})",
+                            m.radius.as_ref().map(|r| format!(", radius: {}", radius(r, false))).unwrap_or_default()
+                        ),
+                        _ => format!("ellipse(width: {w}, height: {h}, fill: {fill}, stroke: {stroke})"),
+                    }
+                });
+                let dress = |m: String| {
+                    let m = match &marker_span {
+                        Some(sp) => format!("mt-span({sp}, {m})"),
+                        None => m,
+                    };
+                    match &shape {
+                        Some(sh) => format!("mt-marker({sh}, {m})"),
+                        None => m,
+                    }
+                };
                 let mut args = Vec::new();
                 if ordered {
-                    args.push(format!("numbering: {}", str_lit(l.marker.as_deref().unwrap_or("1."))));
+                    let pattern = str_lit(l.marker.as_deref().unwrap_or("1."));
+                    if marker_span.is_some() || shape.is_some() {
+                        args.push(format!("numbering: n => {}", dress(format!("numbering({pattern}, n)"))));
+                    } else {
+                        args.push(format!("numbering: {pattern}"));
+                    }
                     if let Some(s) = l.start {
                         args.push(format!("start: {s}"));
                     }
+                    if l.marker_align.as_deref() == Some("left") {
+                        args.push("number-align: start + top".into());
+                    }
                 } else {
-                    args.push(format!("marker: [{}]", super::escape::escape(l.marker.as_deref().unwrap_or("•")).0));
+                    args.push(format!("marker: {}", dress(format!("[{}]", super::escape::escape(l.marker.as_deref().unwrap_or("•")).0))));
                 }
                 args.push(format!("indent: {}", l.indent.map(|i| i.typst()).unwrap_or_else(|| "0pt".into())));
                 args.push(format!("body-indent: {}", l.gap.map(|i| i.typst()).unwrap_or_else(|| "0.5em".into())));
                 args.push(format!("spacing: {}", l.spacing.map(|i| i.typst()).unwrap_or_else(|| "0pt".into())));
-                self.raw(&format!("#block(width: 100%, above: 0.6em, below: 0.6em)[#set text(..{st}.text)"));
+                self.raw(&format!("#block(width: 100%, above: 0.6em, below: 0.6em)[#set text(..{st}.text);"));
                 self.label(l.id.as_deref());
                 marker(self);
                 self.raw(&format!("#{}({}", if ordered { "enum" } else { "list" }, args.join(", ")));
@@ -256,7 +332,7 @@ impl Gen<'_> {
                 self.label(c.id.as_deref());
                 marker(self);
                 self.raw(&format!(
-                    "#show raw: set text(..{st}.text)#set par(leading: 0pt, spacing: 0pt, justify: false)#raw({}, block: true)]\n",
+                    "#show raw: set text(..{st}.text);#set par(leading: 0pt, spacing: 0pt, justify: false);#raw({}, block: true)]\n",
                     str_lit(&c.text)
                 ));
             }
@@ -276,7 +352,7 @@ impl Gen<'_> {
                 args.push("breakable: false".into());
                 args.push(format!("above: {}", c.space_before.map(|l| l.typst()).unwrap_or_else(|| "0.8em".into())));
                 args.push(format!("below: {}", c.space_after.map(|l| l.typst()).unwrap_or_else(|| "0.8em".into())));
-                self.raw(&format!("#align({}, block({})[", align_word(c.align), args.join(", ")));
+                self.raw(&format!("#align({}, block({})[#set align(left + top);", align_word(c.align), args.join(", ")));
                 self.label(c.id.as_deref());
                 marker(self);
                 for e in &c.elements {
@@ -334,7 +410,7 @@ impl Gen<'_> {
                     }
                     self.raw("))]\n");
                 } else {
-                    self.raw(&format!("#block(width: 100%)[#set columns(gutter: {gutter})#columns({})[", c.count.max(1)));
+                    self.raw(&format!("#block(width: 100%)[#set columns(gutter: {gutter});#columns({})[", c.count.max(1)));
                     self.label(c.id.as_deref());
                     marker(self);
                     self.flow(&c.blocks, &cx.style.clone(), cx.scaled);
@@ -363,7 +439,7 @@ impl Gen<'_> {
                     .or_else(|| self.doc.design.styles.contains_key("note").then(|| "note".to_string()))
                     .map(|n| self.style_var(&n))
                     .unwrap_or_else(|| cx.style.clone());
-                let anchor_label = self.margin_anchor.take();
+                let anchor_label = self.margin_anchor.clone();
                 let anchor = match (&m.at, anchor_label) {
                     (Some(at), _) if at == "here" => "none".to_string(),
                     (_, Some(l)) => format!("<{l}>"),
@@ -410,9 +486,6 @@ impl Gen<'_> {
                 self.raw("]\n");
             }
         }
-        if anchor.is_some() {
-            self.margin_anchor = anchor.map(str::to_string);
-        }
         self.node(b.id(), b.kind(), start);
     }
 
@@ -455,13 +528,21 @@ impl Gen<'_> {
         if let Some(a) = anchor {
             // At the paragraph's top edge, where CSS would put a note beside it.
             self.raw(&format!("#metadata(none) <{a}>\n"));
-            self.margin_anchor = Some(a.to_string());
         }
         let w = if cx.hug { ", w: auto" } else { "" };
         self.raw(&format!("#mt-par({st}, first: {first}{k}{w})["));
         self.label(p.id.as_deref());
         let content = content_of(&p.text, &p.content);
+        let mut resolved = match &p.style {
+            Some(n) => self.doc.design.style(n),
+            None => self.style_of(&cx.style),
+        };
+        if let Some(over) = &p.set {
+            resolved = resolved.with(over);
+        }
+        self.nbsp_at = if resolved.wrap.as_deref() == Some("pretty") { last_space(&content) } else { None };
         self.inlines(p.id.as_deref(), &content);
+        self.nbsp_at = None;
         self.raw("]\n");
         self.node(p.id.as_deref(), "p", start);
     }
@@ -477,14 +558,26 @@ impl Gen<'_> {
                 matenadar_model::block::Track::Word(w) => w.clone(),
             })
             .collect();
-        let stroke = match &t.stroke {
-            None => "0.5pt + luma(60%)".to_string(),
-            Some(v) => match serde_json::from_value::<matenadar_model::style::Border>(v.clone()) {
+        let hn = t.header.len();
+        let stroke = match (&t.rules, &t.stroke) {
+            (Some(r), _) => {
+                let st = |s: &Option<matenadar_model::style::Stroke>| s.as_ref().map(|s| self.pal.stroke(s, false)).unwrap_or_else(|| "none".into());
+                let last = hn + t.rows.len();
+                format!(
+                    "(x, y) => (top: if y == 0 {{ {} }} else if y == {hn} {{ {} }} else if y > {hn} {{ {} }} else {{ none }}, bottom: if y + 1 == {last} {{ {} }} else {{ none }}, left: if x > 0 {{ {} }} else {{ none }})",
+                    st(&r.top),
+                    st(&r.header),
+                    st(&r.rows),
+                    st(&r.bottom),
+                    st(&r.columns)
+                )
+            }
+            (None, None) => "0.5pt + luma(60%)".to_string(),
+            (None, Some(v)) => match serde_json::from_value::<matenadar_model::style::Border>(v.clone()) {
                 Ok(b) => self.pal.border(&b, false),
                 Err(_) => "none".into(),
             },
         };
-        let hn = t.header.len();
         let hf = t.header_fill.as_ref().map(|f| self.pal.fill(f)).unwrap_or_else(|| "none".into());
         let zf = t.zebra.as_ref().map(|f| self.pal.fill(f)).unwrap_or_else(|| "none".into());
         let aligns: Vec<&str> = t.align.iter().map(|a| match a {
@@ -508,9 +601,7 @@ impl Gen<'_> {
             t.space_after.map(|l| l.typst()).unwrap_or_else(|| "0.8em".into())
         ));
         self.label(t.id.as_deref());
-        if let Some(a) = anchor {
-            self.raw(&format!("#metadata(none) <{a}>"));
-        }
+        let _ = anchor;
         self.raw(&format!(
             "#table(columns: ({},), stroke: {stroke}, inset: {inset}, align: {align}{row_gap}, fill: (x, y) => if y < {hn} {{ {hf} }} else if calc.odd(y - {hn}) {{ {zf} }} else {{ none }}",
             cols.join(", ")
@@ -555,10 +646,19 @@ impl Gen<'_> {
                 if let Some(a) = c.align {
                     args.push(format!("align: {}", align_word(Some(a))));
                 }
-                let cst = c.style.as_deref().map(|n| self.style_var(n)).unwrap_or_else(|| st.to_string());
+                let cst = match (&c.style, &c.set) {
+                    (None, None) => st.to_string(),
+                    (name, set) => {
+                        let base = name.clone().or_else(|| self.styles_by_var(st));
+                        self.style_with(base.as_deref().unwrap_or(""), set.as_ref())
+                    }
+                };
                 self.raw(&format!("table.cell({})[", args.join(", ")));
                 if !c.blocks.is_empty() {
+                    // Paragraphs as wide as their text, so `auto` columns fit them.
+                    let hug = std::mem::replace(&mut self.hug, true);
                     self.flow(&c.blocks, &cst, cx.scaled);
+                    self.hug = hug;
                 } else {
                     let content = content_of(&c.text, &c.content);
                     self.raw(&format!("#mt-par({cst}, first: true, w: auto)["));
@@ -569,6 +669,27 @@ impl Gen<'_> {
             }
         }
     }
+}
+
+/// The plain-text offset of the space before a paragraph's last word, so the
+/// last two words stay on one line.
+fn last_space(content: &[Inline]) -> Option<usize> {
+    let mut text = String::new();
+    for x in content {
+        match x {
+            Inline::Plain(s) => text.push_str(s),
+            Inline::Run(r) => text.push_str(&r.text),
+            _ => {}
+        }
+    }
+    let end = text.trim_end().len();
+    let word_start = text[..end].rfind(|c: char| c.is_whitespace())?;
+    let before = text[..word_start].trim_end();
+    // Only when there is a word before it on the same line of text.
+    if before.is_empty() || before.ends_with('\n') || text.as_bytes()[word_start] != b' ' {
+        return None;
+    }
+    Some(word_start)
 }
 
 pub fn align_word(a: Option<Align>) -> &'static str {

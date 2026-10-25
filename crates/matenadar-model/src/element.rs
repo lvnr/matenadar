@@ -46,6 +46,34 @@ pub struct Place {
     /// A hard shadow: a copy of the element's box in a colour, offset.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shadow: Option<Shadow>,
+    /// The point `rotate` turns about: an anchor word (`"top-left"`,
+    /// `"center"`…) or `[x, y]` from the element's top-left corner. That
+    /// point stays where it is. Default `"center"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<Origin>,
+    /// 0 (invisible) to 1 (default). Applies to everything in the element:
+    /// text, fills, strokes and drawings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub opacity: Option<f64>,
+    /// Where the element's stroke lies on its edge: `"center"` (default),
+    /// `"inside"` (within the box, as CSS borders and most design tools
+    /// draw it) or `"outside"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stroke_align: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum Origin {
+    Word(String),
+    Point([Length; 2]),
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Tint {
+    pub color: Color,
+    /// 0 keeps the drawing's colours, 1 turns them all into `color`.
+    pub amount: f64,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -234,6 +262,10 @@ pub struct PathEl {
 pub struct SvgEl {
     #[serde(flatten)]
     pub place: Place,
+    /// Mix every colour in the drawing towards one colour: a print-safe
+    /// fade (no transparency) or a duotone.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tint: Option<Tint>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub src: Option<String>,
     /// Show this part of the drawing: `[x, y, w, h]` in its own units.
@@ -308,12 +340,20 @@ pub struct Lettering {
     /// A named character style to start from.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub span: Option<String>,
-    /// Line height for multi-line lettering (multiple of the size).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line_height: Option<f64>,
-    /// `"left"` (default), `"center"`, `"right"` within `w`.
+    /// `"left"` (default), `"center"`, `"right"` within `w`; along a path,
+    /// where the text sits relative to `start`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub align: Option<String>,
+    /// Set the text along this SVG path (`"M 18 62 A 43 43 0 0 1 105 62"`),
+    /// in points from the element's top-left corner. Letters stand on the
+    /// path, upright to it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Where along the path the text starts (or, aligned to the centre or
+    /// right, where its middle or end falls): a length or a share of the
+    /// path (`"50%"`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start: Option<Length>,
 }
 
 /// A grid of letters: word searches, crosswords, letter puzzles.

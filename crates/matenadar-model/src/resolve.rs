@@ -14,7 +14,7 @@ impl TextStyle {
     pub fn with(&self, over: &TextStyle) -> TextStyle {
         let mut out = self.clone();
         overlay!(out, over; font, size, weight, italic, stretch, tracking, word_spacing, color, case, features,
-            baseline, underline, strike, lang, outline, hyphenate, ligatures, halo, variations);
+            baseline, underline, strike, lang, outline, hyphenate, ligatures, halo, variations, line_height, overhang);
         out
     }
 }
@@ -24,9 +24,10 @@ impl Style {
     pub fn with(&self, over: &Style) -> Style {
         let mut out = self.clone();
         out.text = self.text.with(&over.text);
-        overlay!(out, over; line_height, align, indent, indent_first, hanging, margin_left, margin_right,
+        overlay!(out, over; align, indent, indent_first, hanging, margin_left, margin_right,
             space_before, space_after, keep_with_next, keep_together, allow_widows, allow_orphans,
-            page_break_before, drop_cap, rule_above, rule_below, balance, fill, inset);
+            page_break_before, drop_cap, rule_above, rule_below, balance, fill, inset, linebreaks, wrap,
+            justification);
         out.inherits = None;
         out
     }

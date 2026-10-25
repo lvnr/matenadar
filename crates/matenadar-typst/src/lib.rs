@@ -4,6 +4,7 @@
 //! the way a printer would.
 
 pub mod check;
+pub mod effects;
 pub mod generate;
 pub mod glyphs;
 pub mod inspect;
@@ -11,5 +12,5 @@ pub mod session;
 pub mod world;
 
 pub use check::{CheckOptions, Issue, Severity, check};
-pub use session::{Change, EngineError, Paths, Session};
+pub use session::{Change, EngineError, Paths, Session, source_of};
 pub use world::Fonts;

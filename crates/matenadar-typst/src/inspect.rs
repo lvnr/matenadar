@@ -53,6 +53,8 @@ pub struct Item {
     pub node: Option<(String, &'static str)>,
     /// The innermost placed element it belongs to, and that element's kind.
     pub element: Option<(String, &'static str)>,
+    /// Every node it belongs to, innermost first.
+    pub ancestors: Vec<(String, &'static str)>,
 }
 
 /// Every item on every page.
@@ -74,6 +76,14 @@ fn element_of(s: &Session, span: Span) -> Option<(String, &'static str)> {
     let source = s.world().main_source();
     let node = source.find(span)?;
     s.generated().map.element_at(node.offset()).map(|n| (n.id.clone(), n.kind))
+}
+
+fn ancestors_of(s: &Session, span: Span) -> Vec<(String, &'static str)> {
+    let source = s.world().main_source();
+    match source.find(span) {
+        Some(node) => s.generated().map.nodes_at(node.offset()).map(|n| (n.id.clone(), n.kind)).collect(),
+        None => Vec::new(),
+    }
 }
 
 fn corners(at: Point, size: Size, ts: Transform) -> Rect {
@@ -114,6 +124,7 @@ fn walk(s: &Session, frame: &Frame, ts: Transform, page: usize, out: &mut Vec<It
                     span,
                     node: node_of(s, span),
                     element: element_of(s, span),
+                    ancestors: ancestors_of(s, span),
                 });
             }
             FrameItem::Image(image, size, span) => {
@@ -125,12 +136,12 @@ fn walk(s: &Session, frame: &Frame, ts: Transform, page: usize, out: &mut Vec<It
                 // The placed size, after any scaling of the groups above it.
                 let (w, h) = (rect.x1 - rect.x0, rect.y1 - rect.y0);
                 let (w, h) = if is_rotated(ts) { (size.x.to_pt() * scale_of(ts), size.y.to_pt() * scale_of(ts)) } else { (w, h) };
-                out.push(Item { page, rect, kind: Kind::Image { px, w, h }, span: *span, node: node_of(s, *span), element: element_of(s, *span) });
+                out.push(Item { page, rect, kind: Kind::Image { px, w, h }, span: *span, node: node_of(s, *span), element: element_of(s, *span), ancestors: ancestors_of(s, *span) });
             }
             FrameItem::Shape(shape, span) => {
                 let b = shape.bbox(true);
                 let rect = corners(*pos + b.min, Size::new(b.max.x - b.min.x, b.max.y - b.min.y), ts);
-                out.push(Item { page, rect, kind: Kind::Shape, span: *span, node: node_of(s, *span), element: element_of(s, *span) });
+                out.push(Item { page, rect, kind: Kind::Shape, span: *span, node: node_of(s, *span), element: element_of(s, *span), ancestors: ancestors_of(s, *span) });
             }
             _ => {}
         }
@@ -181,11 +192,13 @@ pub fn report(s: &Session) -> Vec<PageReport> {
         })
         .collect();
     for item in all {
-        let Some((id, kind)) = item.node.clone() else { continue };
         let page = &mut pages[item.page - 1];
-        match page.nodes.iter_mut().find(|n| n.id == id) {
-            Some(n) => n.rect = n.rect.union(item.rect),
-            None => page.nodes.push(Placed { id, kind, rect: item.rect }),
+        // Outermost first, so frames come before what is in them.
+        for (id, kind) in item.ancestors.iter().rev() {
+            match page.nodes.iter_mut().find(|n| &n.id == id) {
+                Some(n) => n.rect = n.rect.union(item.rect),
+                None => page.nodes.push(Placed { id: id.clone(), kind, rect: item.rect }),
+            }
         }
     }
     for p in &mut pages {

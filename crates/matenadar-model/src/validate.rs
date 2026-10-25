@@ -20,6 +20,8 @@ pub struct Problem {
 
 const STARTS: [&str; 4] = ["next", "recto", "verso", "continue"];
 const NUMBERINGS: [&str; 5] = ["1", "i", "I", "a", "A"];
+const STROKE_ALIGNS: [&str; 3] = ["center", "inside", "outside"];
+const ORIGINS: [&str; 9] = ["top-left", "top", "top-right", "left", "center", "right", "bottom-left", "bottom", "bottom-right"];
 
 pub fn validate(doc: &Document) -> Vec<Problem> {
     let mut out = Vec::new();
@@ -45,6 +47,8 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
             report(&format!("design.styles.{name}.inherits"), "styles inherit from each other in a circle".into());
         }
         check_text(&format!("design.styles.{name}"), &s.text, &color_name, &mut report);
+        check_word(&format!("design.styles.{name}.linebreaks"), &s.linebreaks, &["simple", "optimized"], &mut report);
+        check_word(&format!("design.styles.{name}.wrap"), &s.wrap, &["normal", "pretty"], &mut report);
         if let Some(f) = &s.fill {
             check_fill(&format!("design.styles.{name}.fill"), f, &color_name, &mut report);
         }
@@ -142,6 +146,20 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
                     report(&format!("{path}.{field}"), format!("no style \"{st}\""));
                 }
             }
+            if let Block::Box(x) = b {
+                check_word(&format!("{path}.stroke_align"), &x.stroke_align, &STROKE_ALIGNS, &mut report);
+            }
+            if let Block::List(l) = b {
+                if let Some(sp) = &l.marker_style
+                    && !d.spans.contains_key(sp)
+                {
+                    report(&format!("{path}.marker_style"), format!("no span \"{sp}\""));
+                }
+                check_word(&format!("{path}.marker_align"), &l.marker_align, &["left", "right"], &mut report);
+                if let Some(m) = &l.marker_shape {
+                    check_word(&format!("{path}.marker_shape.shape"), &m.shape, &["ellipse", "rect"], &mut report);
+                }
+            }
             if let Block::Use(u) = b {
                 match d.components.get(&u.component) {
                     None => report(&format!("{path}.component"), format!("no component \"{}\"", u.component)),
@@ -234,6 +252,19 @@ fn check_element(
             report(path, format!("a {} element needs a height (h)", e.kind()));
         }
     };
+    if let Some(p) = e.place() {
+        check_word(&format!("{path}.stroke_align"), &p.stroke_align, &STROKE_ALIGNS, report);
+        if let Some(crate::element::Origin::Word(w)) = &p.origin
+            && !ORIGINS.contains(&w.as_str())
+        {
+            report(&format!("{path}.origin"), format!("\"{w}\" is not a point of the box (use {} or [x, y])", ORIGINS.join(", ")));
+        }
+        if let Some(o) = p.opacity
+            && !(0.0..=1.0).contains(&o)
+        {
+            report(&format!("{path}.opacity"), "opacity runs from 0 to 1".into());
+        }
+    }
     match e {
         Element::Text(t) => {
             if let Some(st) = &t.style
@@ -283,6 +314,12 @@ fn check_element(
             }
             if s.place.w.is_none() && s.place.h.is_none() {
                 report(path, "an svg element needs a width (w), a height (h) or both".into());
+            }
+            if let Some(t) = &s.tint {
+                check_color(&format!("{path}.tint.color"), &t.color, color_name, report);
+                if !(0.0..=1.0).contains(&t.amount) {
+                    report(&format!("{path}.tint.amount"), "a tint's amount runs from 0 to 1".into());
+                }
             }
         }
         Element::Use(u) => match d.components.get(&u.component) {

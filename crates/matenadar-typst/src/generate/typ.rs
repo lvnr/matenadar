@@ -179,6 +179,38 @@ impl Palette<'_> {
     }
 }
 
+/// The `outset` that moves a box's stroke inside (or outside) its edge, as
+/// a Typst value, for `stroke_align`. None when the stroke stays centred.
+pub fn stroke_outset(b: &Border, align: Option<&str>, scaled: bool) -> Option<String> {
+    let sign = match align {
+        Some("inside") => "-",
+        Some("outside") => "",
+        _ => return None,
+    };
+    let half = |s: &Stroke| -> String {
+        let w = match s {
+            Stroke::Color(_) => Length::Pt(1.0),
+            Stroke::Full(spec) => spec.width.unwrap_or(Length::Pt(1.0)),
+        };
+        format!("{sign}({} / 2)", len(&w, scaled))
+    };
+    Some(match b {
+        Border::All(s) => half(s),
+        Border::Sides(sides) => {
+            let mut parts = Vec::new();
+            for (name, s) in [("top", &sides.top), ("right", &sides.right), ("bottom", &sides.bottom), ("left", &sides.left)] {
+                if let Some(s) = s {
+                    parts.push(format!("{name}: {}", half(s)));
+                }
+            }
+            if parts.is_empty() {
+                return None;
+            }
+            format!("({})", parts.join(", "))
+        }
+    })
+}
+
 pub fn insets(i: &Insets, scaled: bool) -> String {
     match i {
         Insets::All(l) => len(l, scaled),

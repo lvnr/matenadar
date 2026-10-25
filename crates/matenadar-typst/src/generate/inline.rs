@@ -12,20 +12,29 @@ impl Gen<'_> {
     /// for the source map; offsets count the plain text.
     pub fn inlines(&mut self, node: Option<&str>, content: &[Inline]) {
         let mut at = 0;
-        for x in content {
+        for (i, x) in content.iter().enumerate() {
+            // Typst tracks every letter of a run but its last, so a word split
+            // into runs would lose letter spacing at each split: `mt-tr` adds
+            // the run's own spacing after it, without a place to break.
+            let glue = self.tracked && matches!(content.get(i + 1), Some(Inline::Plain(_) | Inline::Run(_) | Inline::Field(_) | Inline::Ref(_)));
             match x {
                 Inline::Plain(s) => {
                     self.plain(node, at, s);
+                    if glue {
+                        self.raw("#mt-tr");
+                    }
                     at += s.len();
                 }
                 Inline::Run(r) => {
-                    self.run(node, at, r);
+                    self.run(node, at, r, glue);
                     at += r.text.len();
                 }
                 Inline::Note(n) => {
+                    let nbsp = self.nbsp_at.take();
                     self.raw("#footnote[");
                     self.inlines(None, &n.note);
                     self.raw("]");
+                    self.nbsp_at = nbsp;
                 }
                 Inline::Field(f) => {
                     let wrap = self.run_wrap(f.span.as_deref(), &f.set, false, false);
@@ -54,6 +63,11 @@ impl Gen<'_> {
                 Inline::Leader(l) => {
                     if l.leader.trim().is_empty() {
                         self.raw("#h(1fr)");
+                    } else if l.leader == "rule" {
+                        let stroke = l.stroke.as_ref().map(|s| self.pal.stroke(s, false)).unwrap_or_else(|| "0.5pt".into());
+                        let gap = l.gap.map(|g| g.typst()).unwrap_or_else(|| "0.3em".into());
+                        let lift = l.lift.map(|g| g.typst()).unwrap_or_else(|| "0.3em".into());
+                        self.raw(&format!("#box(width: 1fr, inset: (x: {gap}), move(dy: -{lift}, line(length: 100%, stroke: {stroke})))"));
                     } else {
                         let mark = format!("[{}]", super::escape::escape(&l.leader).0);
                         let mark = match &l.span {
@@ -98,12 +112,28 @@ impl Gen<'_> {
             if part.is_empty() {
                 continue;
             }
-            let (escaped, escapes) = escape(part);
-            match node {
-                Some(n) => self.text_segment(n, offset, &escaped, escapes),
-                None => self.raw(&escaped),
+            // A space that must not break: written as Typst's `~` between the halves.
+            match self.nbsp_at.filter(|&n| n >= offset && n < offset + part.len() && part.as_bytes()[n - offset] == b' ') {
+                Some(n) => {
+                    let cut = n - offset;
+                    self.text_piece(node, offset, &part[..cut]);
+                    self.raw("~");
+                    self.text_piece(node, n + 1, &part[cut + 1..]);
+                }
+                None => self.text_piece(node, offset, part),
             }
             offset += part.len();
+        }
+    }
+
+    fn text_piece(&mut self, node: Option<&str>, offset: usize, part: &str) {
+        if part.is_empty() {
+            return;
+        }
+        let (escaped, escapes) = escape(part);
+        match node {
+            Some(n) => self.text_segment(n, offset, &escaped, escapes),
+            None => self.raw(&escaped),
         }
     }
 
@@ -127,7 +157,7 @@ impl Gen<'_> {
         }
     }
 
-    fn run(&mut self, node: Option<&str>, at: usize, r: &Run) {
+    fn run(&mut self, node: Option<&str>, at: usize, r: &Run, glue: bool) {
         let mut closers = Vec::new();
         if let Some(w) = self.run_wrap(r.span.as_deref(), &r.set, r.em, r.strong) {
             self.raw(&format!("#mt-span({w})["));
@@ -207,6 +237,9 @@ impl Gen<'_> {
             closers.push("]");
         }
         self.plain(node, at, &r.text);
+        if glue {
+            self.raw("#mt-tr");
+        }
         for c in closers.iter().rev() {
             self.raw(c);
         }

@@ -210,6 +210,15 @@ pub struct BoxBlock {
     /// Turn the box (it keeps its place in the flow).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rotate: Option<f64>,
+    /// Push the box's edges out of (negative) or into the column: a box
+    /// that hangs into the margins, or one inset from the measure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub margin_left: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub margin_right: Option<Length>,
+    /// `"center"` (default), `"inside"` or `"outside"`: see elements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stroke_align: Option<String>,
 }
 
 /// A column width: a length, `"auto"`, or a share of what is left (`"1fr"`).
@@ -238,6 +247,8 @@ pub struct CellSpec {
     pub fill: Option<Fill>,
     pub align: Option<Align>,
     pub style: Option<String>,
+    /// Overrides of the cell's paragraph style.
+    pub set: Option<Style>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -276,12 +287,27 @@ pub struct Table {
     /// Vertical alignment in cells: `"top"` (default), `"middle"`, `"bottom"`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub valign: Option<String>,
+    /// Horizontal rules in place of `stroke`'s grid, as book tables have
+    /// them: above the table, under the header, between rows, below the table.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rules: Option<TableRules>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub breakable: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub space_before: Option<Length>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub space_after: Option<Length>,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct TableRules {
+    pub top: Option<crate::style::Stroke>,
+    pub header: Option<crate::style::Stroke>,
+    pub rows: Option<crate::style::Stroke>,
+    pub bottom: Option<crate::style::Stroke>,
+    /// Between columns.
+    pub columns: Option<crate::style::Stroke>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -313,6 +339,33 @@ pub struct List {
     pub spacing: Option<Length>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<u32>,
+    /// A character style for the markers (a different face, size or colour).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub marker_style: Option<String>,
+    /// A shape drawn behind each marker, centred on it: discs or rounded
+    /// squares with the number inside.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub marker_shape: Option<MarkerShape>,
+    /// `"left"` (default) or `"right"`: markers of different widths line up
+    /// on their right edges, as numbers do.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub marker_align: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct MarkerShape {
+    /// `"ellipse"` (default) or `"rect"`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shape: Option<String>,
+    pub w: Length,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub h: Option<Length>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fill: Option<Fill>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stroke: Option<Border>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub radius: Option<Radius>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -574,6 +627,12 @@ pub struct Leader {
     /// them to fill the space evenly.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fixed: Option<bool>,
+    /// With `"leader": "rule"`: the line drawn across the space.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stroke: Option<crate::style::Stroke>,
+    /// With `"leader": "rule"`: how far above the baseline the line runs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lift: Option<Length>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

@@ -519,6 +519,12 @@ impl<'a> Gen<'a> {
         if let Some(s) = &t.outline {
             tx.push(format!("stroke: {}", self.pal.stroke(s, false)));
         }
+        if let Some(v) = &t.variations
+            && !v.is_empty()
+        {
+            let axes: Vec<String> = v.iter().map(|(k, val)| format!("{}: {}", str_lit(k), num(*val))).collect();
+            tx.push(format!("variations: ({})", axes.join(", ")));
+        }
         if let Some(lh) = line_height_em {
             let m = self.metrics(t);
             let half = (lh - (m.ascender + m.descender)) / 2.0;

@@ -94,6 +94,10 @@ pub struct TextStyle {
     pub hyphenate: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ligatures: Option<bool>,
+    /// Variable-font axes: `{"opsz": 12, "SOFT": 50}`. Weight, stretch and
+    /// size already set `wght`, `wdth` and `opsz`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub variations: Option<indexmap::IndexMap<String, f64>>,
 }
 
 /// A paragraph style: text formatting plus how lines and paragraphs sit.

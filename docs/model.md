@@ -74,6 +74,7 @@ Character settings (also usable inline on runs, and as `set` overrides):
 | `lang` | BCP 47, for hyphenation and shaping |
 | `outline` | a stroke around each glyph (also fakes a bold) |
 | `hyphenate`, `ligatures` | bool |
+| `variations` | variable-font axes, such as `{"opsz": 12, "SOFT": 50}`. `weight`, `stretch` and `size` already drive `wght`, `wdth` and `opsz`, so a variable font needs no static instances. |
 
 Paragraph settings:
 

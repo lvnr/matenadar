@@ -1,0 +1,38 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "UNLICENSED"
+authors = ["Levon Arakelyan"]
+publish = false
+
+[workspace.dependencies]
+matenadar-model = { path = "crates/matenadar-model" }
+matenadar-typst = { path = "crates/matenadar-typst" }
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+indexmap = { version = "2", features = ["serde"] }
+typst = "=0.15.1"
+typst-layout = "=0.15.1"
+typst-pdf = "=0.15.1"
+typst-svg = "=0.15.1"
+typst-render = "=0.15.1"
+typst-ide = "=0.15.1"
+typst-kit = { version = "=0.15.1", default-features = false, features = ["scan-fonts", "embedded-fonts"] }
+comemo = "=0.5.1"
+rustybuzz = "0.20.1"
+ttf-parser = "0.25.1"
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+
+[profile.dev]
+debug = 0
+
+[profile.dev.package."*"]
+opt-level = 2
+
+[profile.release]
+debug = 0

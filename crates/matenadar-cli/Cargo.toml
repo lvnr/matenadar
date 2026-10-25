@@ -1,0 +1,19 @@
+[package]
+name = "matenadar-cli"
+description = "The matenadar command: build, check, locate and change documents"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "matenadar"
+path = "src/main.rs"
+
+[dependencies]
+matenadar-model.workspace = true
+matenadar-typst.workspace = true
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true

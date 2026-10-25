@@ -1,0 +1,25 @@
+[package]
+name = "matenadar-typst"
+description = "Lays a Matenadar document out with Typst: compile, render, locate and check"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish.workspace = true
+
+[dependencies]
+matenadar-model.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+indexmap.workspace = true
+typst.workspace = true
+typst-layout.workspace = true
+typst-pdf.workspace = true
+typst-svg.workspace = true
+typst-render.workspace = true
+typst-ide.workspace = true
+typst-kit.workspace = true
+comemo.workspace = true
+rustybuzz.workspace = true
+ttf-parser.workspace = true
+qrcode.workspace = true

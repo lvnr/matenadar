@@ -1,0 +1,42 @@
+{
+  "matenadar": "1",
+  "meta": {"title": "Smoke", "author": "Matenadar", "lang": "en-US"},
+  "design": {
+    "colors": {"ink": "#1d1b19", "accent": "#c2410c", "paper": "#f6f1e7"},
+    "base": {"font": "Libertinus Serif", "size": 10.5, "line_height": 1.4, "color": "ink"},
+    "styles": {
+      "body": {"align": "justify", "indent": "1.2em", "hyphenate": true},
+      "h1": {"size": 22, "space_before": "2.4em", "space_after": "1em", "case": "upper", "tracking": "0.08em", "align": "center", "keep_with_next": true},
+      "note": {"size": 8, "line_height": 1.3, "italic": true, "color": "accent"},
+      "label": {"font": "DejaVu Sans Mono", "size": 7, "tracking": "0.12em", "case": "upper"}
+    },
+    "masters": {
+      "body": {
+        "width": "6in", "height": "9in", "bleed": "0.125in",
+        "margins": {"top": "0.8in", "bottom": "0.9in", "inside": "0.8in", "outside": "1.6in"},
+        "notes": {"width": "1.1in", "gap": "0.15in", "style": "note"},
+        "foreground": [
+          {"type": "text", "x": "0.8in", "y": "8.45in", "w": "4.4in", "style": "label", "content": [{"field": "page"}], "when": "not-first not-blank", "set": {"align": "center"}},
+          {"type": "text", "x": "0.8in", "y": "0.45in", "w": "4.4in", "style": "label", "content": [{"field": "section.title"}], "when": "not-first", "set": {"align": "center"}}
+        ]
+      }
+    }
+  },
+  "content": [
+    {"type": "page", "id": "title", "master": "body", "fill": "paper", "elements": [
+      {"type": "rect", "x": "-0.125in", "y": "-0.125in", "w": "6.25in", "h": "3in", "fill": "accent"},
+      {"type": "lettering", "id": "big7", "text": "7", "x": "3.6in", "y": "-0.4in", "size": 300, "color": "#ffffff", "decorative": true},
+      {"type": "text", "id": "t1", "x": "0.8in", "y": "3.6in", "w": "4.4in", "style": "h1", "text": "The Smoke Test", "set": {"space_before": 0}},
+      {"type": "qr", "id": "qr1", "x": "2.5in", "y": "6.5in", "w": "1in", "data": "https://askaldus.com"},
+      {"type": "letter-grid", "id": "g1", "x": "0.8in", "y": "5in", "cell": 14, "rows": ["CATS", "OXEN", "WREN"], "highlights": [{"from": [0,0], "to": [0,3], "fill": "#e6d5b8"}, {"from": [0,0], "to": [2,2], "stroke": {"width": 0.8, "color": "accent"}}]}
+    ]},
+    {"type": "section", "id": "ch1", "master": "body", "start": "recto", "title": "Chapter One", "flow": [
+      {"type": "h", "id": "h1", "level": 1, "text": "Chapter One"},
+      {"type": "p", "id": "p1", "content": ["It was a ", {"text": "dark", "em": true}, " and stormy night; the rain fell in torrents — except at occasional intervals, when it was checked by a violent gust of wind which swept up the streets."]},
+      {"type": "margin", "text": "A famous opening line."},
+      {"type": "p", "id": "p2", "text": "For it is in London that our scene lies, rattling along the housetops, and fiercely agitating the scanty flame of the lamps that struggled against the darkness."},
+      {"type": "box", "id": "b1", "fill": "paper", "inset": "8pt", "radius": "4pt", "blocks": [{"type": "p", "text": "A boxed aside."}]},
+      {"type": "table", "id": "t2", "columns": ["1fr", "auto"], "header": [["Item", "Cost"]], "rows": [["Paper", "$12"], ["Ink", "$3"]]}
+    ]}
+  ]
+}

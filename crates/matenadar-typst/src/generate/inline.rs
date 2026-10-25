@@ -1,0 +1,161 @@
+//! Inline content: runs of text with their marks, notes, fields, page
+//! references, line breaks and inline images.
+
+use matenadar_model::block::{Inline, Run};
+
+use super::escape::escape;
+use super::typ::str_lit;
+use super::{Gen, label_safe};
+
+impl Gen<'_> {
+    /// Writes inline content as Typst markup. `node` is the paragraph's id,
+    /// for the source map; offsets count the plain text.
+    pub fn inlines(&mut self, node: Option<&str>, content: &[Inline]) {
+        let mut at = 0;
+        for x in content {
+            match x {
+                Inline::Plain(s) => {
+                    self.plain(node, at, s);
+                    at += s.len();
+                }
+                Inline::Run(r) => {
+                    self.run(node, at, r);
+                    at += r.text.len();
+                }
+                Inline::Note(n) => {
+                    self.raw("#footnote[");
+                    self.inlines(None, &n.note);
+                    self.raw("]");
+                }
+                Inline::Field(f) => {
+                    let wrap = self.run_wrap(f.span.as_deref(), &f.set, false, false);
+                    let expr = format!("context mt-field({})", str_lit(&f.field));
+                    match wrap {
+                        Some(w) => self.raw(&format!("#mt-span({w}, {expr})")),
+                        None => self.raw(&format!("#{expr}")),
+                    }
+                }
+                Inline::Ref(r) => {
+                    if label_safe(&r.target) {
+                        if r.show.as_deref() == Some("title") {
+                            self.raw(&format!(
+                                "#context {{ let f = query(<{}>); if f.len() > 0 {{ f.first().value }} else {{ \"??\" }} }}",
+                                r.target
+                            ));
+                        } else {
+                            self.raw(&format!("#mt-page-of(<{}>)", r.target));
+                        }
+                    } else {
+                        self.raw("??");
+                    }
+                }
+                Inline::Break(_) => self.raw("#linebreak()"),
+                Inline::Image(img) => {
+                    let path = self.asset(&img.image);
+                    let mut args = Vec::new();
+                    if let Some(h) = &img.h {
+                        args.push(format!("height: {}", h.typst()));
+                    }
+                    if let Some(w) = &img.w {
+                        args.push(format!("width: {}", w.typst()));
+                    }
+                    let baseline = img.baseline.map(|b| b.typst()).unwrap_or_else(|| "0pt".into());
+                    match path {
+                        Some(p) => self.raw(&format!("#box(baseline: {baseline}, image({}, {}))", str_lit(&p), args.join(", "))),
+                        None => self.raw("#box(width: 1em, height: 1em, fill: red)"),
+                    }
+                }
+            }
+        }
+    }
+
+    fn plain(&mut self, node: Option<&str>, at: usize, text: &str) {
+        let mut offset = at;
+        for (i, part) in text.split('\n').enumerate() {
+            if i > 0 {
+                self.raw("#linebreak()");
+                offset += 1;
+            }
+            if part.is_empty() {
+                continue;
+            }
+            let (escaped, escapes) = escape(part);
+            match node {
+                Some(n) => self.text_segment(n, offset, &escaped, escapes),
+                None => self.raw(&escaped),
+            }
+            offset += part.len();
+        }
+    }
+
+    /// The span dictionary for a run's character style and overrides, if any.
+    fn run_wrap(
+        &mut self,
+        span: Option<&str>,
+        set: &matenadar_model::TextStyle,
+        _em: bool,
+        _strong: bool,
+    ) -> Option<String> {
+        let has_set = *set != matenadar_model::TextStyle::default();
+        match (span, has_set) {
+            (None, false) => None,
+            (Some(name), false) => Some(self.span_var(name)),
+            (name, true) => {
+                let base = name.and_then(|n| self.doc.design.spans.get(n).cloned()).unwrap_or_default();
+                let merged = base.with(set);
+                Some(self.text_dict(&merged, None))
+            }
+        }
+    }
+
+    fn run(&mut self, node: Option<&str>, at: usize, r: &Run) {
+        let mut closers = Vec::new();
+        if let Some(w) = self.run_wrap(r.span.as_deref(), &r.set, r.em, r.strong) {
+            self.raw(&format!("#mt-span({w})["));
+            closers.push("]");
+        }
+        if r.em {
+            self.raw("#emph[");
+            closers.push("]");
+        }
+        if r.strong {
+            self.raw("#text(weight: \"bold\")[");
+            closers.push("]");
+        }
+        if r.sup {
+            self.raw("#super[");
+            closers.push("]");
+        }
+        if r.sub {
+            self.raw("#sub[");
+            closers.push("]");
+        }
+        if let Some(url) = &r.link {
+            self.raw(&format!("#link({})[", str_lit(url)));
+            closers.push("]");
+        }
+        if r.nobreak {
+            self.raw("#box[");
+            closers.push("]");
+        }
+        self.plain(node, at, &r.text);
+        for c in closers.iter().rev() {
+            self.raw(c);
+        }
+    }
+
+    /// An asset's path for Typst, if the file exists under the root.
+    pub fn asset(&mut self, src: &str) -> Option<String> {
+        let rel = src.trim_start_matches('/');
+        if rel.contains("..") {
+            self.problem(format!("asset paths may not leave the asset root: {src}"));
+            return None;
+        }
+        if self.root.join(rel).is_file() {
+            Some(format!("/{rel}"))
+        } else {
+            self.problem(format!("missing file: {src}"));
+            None
+        }
+    }
+}

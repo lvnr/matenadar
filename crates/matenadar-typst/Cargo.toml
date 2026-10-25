@@ -7,6 +7,12 @@ license.workspace = true
 authors.workspace = true
 publish.workspace = true
 
+[features]
+default = ["embedded-fonts"]
+# Typst's own faces (Libertinus Serif, New Computer Modern, DejaVu Sans Mono)
+# as a fallback; about 5 MB in a WebAssembly build.
+embedded-fonts = ["typst-kit/embedded-fonts"]
+
 [dependencies]
 matenadar-model.workspace = true
 serde.workspace = true
@@ -26,3 +32,6 @@ qrcode.workspace = true
 tiny-skia = "0.12.0"
 kurbo = "0.13.1"
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif", "webp"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+typst-kit = { workspace = true, features = ["scan-fonts"] }

@@ -8,7 +8,7 @@ layout program from it on every build and never stores that program.
   "matenadar": "1",
   "meta": {"title": "…", "author": "…", "lang": "en-US"},
   "fonts": ["design/fonts"],
-  "design": {"colors": {}, "fonts": {}, "base": {}, "styles": {}, "spans": {}, "masters": {}, "components": {}},
+  "design": {"colors": {}, "fonts": {}, "base": {}, "styles": {}, "spans": {}, "masters": {}, "components": {}, "hyphenation": {}},
   "content": [ {"type": "section", …}, {"type": "page", …} ]
 }
 ```
@@ -101,6 +101,19 @@ Paragraph settings:
 | `wrap` | `pretty`: the paragraph never ends on a lone word (its last two words stay together) |
 | `justification` | how far justified lines may stretch and shrink: `{"spacing": {"min": "100%", "max": "150%"}, "tracking": {"min": "-0.01em", "max": "0.02em"}}`. `min: "100%"` never tightens word spaces. |
 | `drop_cap` | `{"lines": 3, "font", "color", "weight", "gap"}`. The cap's top lines up with the first line's capitals and its foot with the baseline of line `lines`. It applies to paragraphs of plain text, and an opening quote goes with the cap. |
+
+### Hyphenation
+
+Typst hyphenates by the language's patterns. `hyphenation.exceptions` lists
+words whose breaks you choose instead: hyphens mark the only places a word
+may break, and a word written without hyphens never breaks.
+
+```json
+"hyphenation": {"exceptions": ["Mate-na-dar", "pro-gram", "Levon"]}
+```
+
+Matching ignores case. The exceptions apply in paragraphs that hyphenate:
+justified ones, unless `hyphenate` is false, and any with `hyphenate: true`.
 
 ### Masters
 
@@ -198,7 +211,7 @@ Every element takes:
 | `anchor` | which point of the element `x`/`y` place: `top-left` (default), `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom`, `bottom-right`. Text frames also take `baseline-left`, `baseline` and `baseline-right`, which place the first line's baseline (as TikZ does). |
 | `rotate` | degrees clockwise, about the centre or `origin` |
 | `origin` | the point `rotate` turns about, which stays put: an anchor word (`top-left`…) or `[x, y]` from the element's corner |
-| `opacity` | 0–1, for everything in the element (text, fills, strokes, drawings; not yet photographs). Printers prefer `tint` on drawings. |
+| `opacity` | 0–1, for everything in the element: text, fills, strokes, drawings and photographs. Printers prefer `tint` on drawings. |
 | `stroke_align` | where a stroke lies on the edge: `center` (default), `inside` (as CSS borders and most design tools draw it), `outside` |
 | `skew` | degrees of horizontal slant |
 | `when` | conditions, all of which must hold: `recto`, `verso`, `first`, `blank`, and their `not-` forms (`not-first`, `not-blank`) |
@@ -213,7 +226,7 @@ The types:
     line), `content` (runs), or `blocks`.
   - Options: `style`, `set` (overrides), `valign` (`top`, `middle`,
     `bottom`; needs `h`), `inset`, `fill`, `stroke`, `radius`, `columns`,
-    `gutter`, `clip`.
+    `gutter`, `clip` (see below).
   - `fit: "shrink"` scales the type down until the text fits `h`, no smaller
     than `min_size`.
   - `fit: "width"` scales the type up or down until the longest line fills
@@ -226,7 +239,7 @@ The types:
     in absolute units.
   - `fit` is `cover` (default; fills the box and crops), `contain` or
     `stretch`.
-  - Also: `radius`, `stroke`, `flip` (`x`, `y`, `both`).
+  - Also: `radius`, `stroke`, `flip` (`x`, `y`, `both`), `clip` (a shape).
 - **`rect`**, **`ellipse`**: `w`, `h`, `fill`, `stroke`, `radius` (rect only).
 - **`line`**: `x1`, `y1`, `x2`, `y2`, `stroke`.
 - **`path`**: `d` (SVG path data) in a `w` × `h` box, whose coordinates are
@@ -236,9 +249,14 @@ The types:
   mixes every colour in it towards one (a print-safe fade, or a duotone).
 - **`group`**:
   - `children` are placed from the group's corner.
-  - `scale` (1 = actual size), `clip` (needs `w` and `h`), `fill`, `stroke`,
+  - `scale` (1 = actual size), `clip` (see below), `fill`, `stroke`,
     `radius`.
 - **`use`**: an instance of a component: `component`, `props`.
+- **Clipping.** Text frames, images and groups take `clip`: `true` cuts
+  what they hold to their box (a group needs `w` and `h`), `"ellipse"` to
+  the ellipse in that box, and SVG path data (`"M 0 72 L 36 0 L 72 72 Z"`,
+  in points from the element's corner) to any outline. For round portraits,
+  type in a circle, torn and die-cut edges.
 - **`qr`**: `data`, `w` (the code's size), `color`, `background`, `quiet`
   (modules), `ecc` (`L`, `M`, `Q`, `H`). Drawn as one vector shape.
 - **`lettering`**: display text drawn as vector outlines, not live text. Use it
@@ -338,16 +356,59 @@ addressed by `id`, or by `at`, a JSON pointer from the root.
 - `missing-file`.
 - `compiler`: notices from the layout engine.
 
+## EPUB
+
+`matenadar epub` makes an EPUB 3 from the same model, checked with
+epubcheck in the tests.
+
+- **Reflowable** (the default): one XHTML file per section, the design's
+  styles as CSS in `rem` and `em` (so readers can still change the size),
+  headings as the contents, footnotes as EPUB notes. Placed pages and
+  canvases become pictures, drawn by the engine at `--dpi`.
+- **Fixed** (`--layout fixed`): every page a picture, for page-led books
+  (comics, puzzles, picture books), with the page's text kept for search and
+  read-aloud (each page's text is its picture's alt text).
+- `--embed-fonts` adds the fonts the book uses (only the faces it needs);
+  `--cover` sets the cover image, and `--identifier` the book's ID (an ISBN
+  URN). Without one, the ID is derived from the title and author.
+
+## WebAssembly
+
+`scripts/wasm.sh` builds `dist/matenadar.wasm` and `dist/matenadar.js`, the
+engine for a browser editor. It runs the same layout as the command line,
+without a server: the page hands it fonts and pictures as bytes, opens the
+document, applies operations as the user edits, and redraws the pages each
+change lists.
+
+```js
+import { Matenadar } from "./matenadar.js";
+const mt = await Matenadar.load(fetch("matenadar.wasm"));
+mt.addFont(await (await fetch("fonts/Body-Regular.otf")).arrayBuffer());
+mt.addFile("images/plate.jpg", await (await fetch("images/plate.jpg")).arrayBuffer());
+const { pages } = mt.open(doc);
+pageEl.innerHTML = mt.svg(1);
+const [change] = mt.apply([{ op: "insert-text", id: "p1", offset: 0, text: "Once " }]);
+```
+
+It also gives `png`, `pdf`, `check`, `layout`, `locate`, `position` and
+`document`, as `serve` does. Calls are synchronous, so a page should run it
+in a worker. The module has no imports; any WebAssembly host can drive it
+through the C functions described in `crates/matenadar-wasm/src/lib.rs`.
+`--embedded-fonts` adds Typst's own faces as a fallback (about 5 MB).
+
 ## Command line
 
 ```
 matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check] [--json]
+matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--cover image.jpg] [--identifier urn:isbn:…]
 matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--json]
 matenadar validate <doc.json>
 matenadar layout <doc.json> [--pages 1-3]        # every node on every page, with its extent
 matenadar locate <doc.json> --page N --x PT --y PT
 matenadar apply <doc.json> <ops.json> [-o new.json]
 matenadar fonts [--fonts DIR]
+matenadar bench <doc.json> [--edits 50]           # layout and edit timings
+matenadar serve                                   # one document kept open, driven by JSON lines on stdin
 ```
 
 Common options: `--root DIR`, `--fonts DIR` (repeatable), `--no-system-fonts`.

@@ -663,17 +663,16 @@ impl<'a> Writer<'a> {
         if rel.contains("..") {
             return None;
         }
-        let path = self.paths.root.join(rel);
-        let ext = path.extension()?.to_str()?.to_ascii_lowercase();
-        let data = std::fs::read(&path).ok()?;
+        let ext = rel.rsplit_once('.')?.1.to_ascii_lowercase();
+        let data = self.session.files().read(rel)?.to_vec();
         match ext.as_str() {
-            "jpg" | "jpeg" | "png" | "gif" | "svg" | "webp" => Some(assets.add(&format!("file:{}", path.display()), "images/img", &ext, data)),
+            "jpg" | "jpeg" | "png" | "gif" | "svg" | "webp" => Some(assets.add(&format!("file:{rel}"), "images/img", &ext, data)),
             // Other formats as PNG.
             _ => {
                 let img = image::load_from_memory(&data).ok()?;
                 let mut out = Vec::new();
                 img.write_to(&mut std::io::Cursor::new(&mut out), image::ImageFormat::Png).ok()?;
-                Some(assets.add(&format!("file:{}", path.display()), "images/img", "png", out))
+                Some(assets.add(&format!("file:{rel}"), "images/img", "png", out))
             }
         }
     }
@@ -707,7 +706,7 @@ impl<'a> Writer<'a> {
             "content": [{"type": "page", "id": "mt-drawing", "master": "mt-drawing", "elements": elements}]
         });
         let Ok(doc) = Document::from_json(&mini.to_string()) else { return };
-        let Ok(s) = Session::with_fonts(doc, self.paths.clone(), self.fonts.clone()) else { return };
+        let Ok(s) = Session::with_files(doc, self.paths.clone(), self.fonts.clone(), self.session.files().clone()) else { return };
         let Some(png) = s.png(1, self.dpi, false) else { return };
         // Line art stays PNG; anything large becomes JPEG.
         let (data, ext) = if png.len() > 400_000 { (jpeg(&png).map(|j| j.0).unwrap_or(png), "jpg") } else { (png, "png") };
@@ -719,6 +718,5 @@ impl<'a> Writer<'a> {
             Self::id_attr(id),
             esc(&alt.join(" "))
         ));
-        let _ = self.session;
     }
 }

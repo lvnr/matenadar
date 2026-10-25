@@ -5,3 +5,4 @@ out/
 samples/*/book
 samples/*/build/
 bin/
+dist/

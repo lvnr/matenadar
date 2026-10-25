@@ -1,6 +1,8 @@
 [workspace]
 resolver = "3"
 members = ["crates/*"]
+# The WebAssembly crate is built on its own: scripts/wasm.sh.
+default-members = ["crates/matenadar-model", "crates/matenadar-typst", "crates/matenadar-epub", "crates/matenadar-cli"]
 
 [workspace.package]
 version = "0.1.0"
@@ -13,6 +15,7 @@ publish = false
 matenadar-model = { path = "crates/matenadar-model" }
 matenadar-typst = { path = "crates/matenadar-typst" }
 matenadar-epub = { path = "crates/matenadar-epub" }
+matenadar-wasm = { path = "crates/matenadar-wasm" }
 anyhow = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
@@ -23,7 +26,7 @@ typst-pdf = "=0.15.1"
 typst-svg = "=0.15.1"
 typst-render = "=0.15.1"
 typst-ide = "=0.15.1"
-typst-kit = { version = "=0.15.1", default-features = false, features = ["scan-fonts", "embedded-fonts"] }
+typst-kit = { version = "=0.15.1", default-features = false }
 comemo = "=0.5.1"
 rustybuzz = "0.20.1"
 ttf-parser = "0.25.1"
@@ -37,3 +40,11 @@ opt-level = 2
 
 [profile.release]
 debug = 0
+
+# The WebAssembly build: small rather than fast to build.
+[profile.wasm]
+inherits = "release"
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"

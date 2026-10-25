@@ -266,7 +266,7 @@ impl Gen<'_> {
             self.problem(format!("asset paths may not leave the asset root: {src}"));
             return None;
         }
-        if self.root.join(rel).is_file() {
+        if self.assets.exists(rel) {
             Some(format!("/{rel}"))
         } else {
             self.problem(format!("missing file: {src}"));

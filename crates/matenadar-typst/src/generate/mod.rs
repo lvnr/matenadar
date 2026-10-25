@@ -16,7 +16,7 @@ use matenadar_model::units::num;
 use matenadar_model::{Document, Item, Length};
 
 use crate::glyphs::{VMetrics, pick, weight_number};
-use crate::world::{Fonts, Virtual};
+use crate::world::{Files, Fonts, Virtual};
 use typ::{Palette, str_lit};
 
 pub const PRELUDE: &str = include_str!("../prelude.typ");
@@ -162,10 +162,10 @@ pub fn font_size(l: Length) -> Length {
     }
 }
 
-/// Generates the Typst program for `doc`, whose files are under `root`.
-pub fn generate(doc: &Document, fonts: &Fonts, virt: &Virtual, root: &std::path::Path) -> Generated {
+/// Generates the Typst program for `doc`, whose pictures and drawings are in `files`.
+pub fn generate(doc: &Document, fonts: &Fonts, virt: &Virtual, files: &Files) -> Generated {
     virt.clear();
-    let mut g = Gen::new(doc, fonts, virt, root.to_path_buf());
+    let mut g = Gen::new(doc, fonts, virt, files);
     g.document();
     g.segments_sorted();
     Generated { source: g.out, map: g.map, problems: g.problems, effects: g.effects }
@@ -175,7 +175,7 @@ pub(crate) struct Gen<'a> {
     pub doc: &'a Document,
     pub fonts: &'a Fonts,
     pub virt: &'a Virtual,
-    pub root: std::path::PathBuf,
+    pub assets: &'a Files,
     pub pal: Palette<'a>,
     pub out: String,
     pub map: SourceMap,
@@ -226,12 +226,12 @@ pub struct MapMark {
 }
 
 impl<'a> Gen<'a> {
-    fn new(doc: &'a Document, fonts: &'a Fonts, virt: &'a Virtual, root: std::path::PathBuf) -> Self {
+    fn new(doc: &'a Document, fonts: &'a Fonts, virt: &'a Virtual, assets: &'a Files) -> Self {
         Self {
             doc,
             fonts,
             virt,
-            root,
+            assets,
             pal: Palette { names: &doc.design.colors },
             out: String::with_capacity(64 * 1024),
             map: SourceMap::default(),

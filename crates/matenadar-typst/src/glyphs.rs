@@ -388,8 +388,7 @@ fn round(v: f64) -> String {
 }
 
 /// The pixel size of a PNG, JPEG, GIF or WebP file, from its header.
-pub fn image_size(path: &std::path::Path) -> Option<(u32, u32)> {
-    let data = std::fs::read(path).ok()?;
+pub fn image_size(data: &[u8]) -> Option<(u32, u32)> {
     let be16 = |b: &[u8]| u16::from_be_bytes([b[0], b[1]]) as u32;
     let be32 = |b: &[u8]| u32::from_be_bytes([b[0], b[1], b[2], b[3]]);
     if data.starts_with(b"\x89PNG") && data.len() > 24 {

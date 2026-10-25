@@ -1,7 +1,7 @@
 use std::num::NonZeroUsize;
 use std::path::PathBuf;
 use std::sync::Arc;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 use matenadar_model::{Document, Op};
 use serde::Serialize;
@@ -13,7 +13,7 @@ use typst_ide::Jump;
 use typst_layout::{PagedDocument, PagedIntrospector};
 
 use crate::generate::{Generated, generate};
-use crate::world::{Fonts, MtWorld, Virtual};
+use crate::world::{Files, Fonts, MtWorld, Virtual};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct EngineError(pub String);
@@ -64,6 +64,7 @@ impl Paths {
 pub struct Session {
     doc: Document,
     paths: Paths,
+    files: Files,
     fonts: Arc<Fonts>,
     virt: Virtual,
     generated: Generated,
@@ -78,7 +79,27 @@ pub struct Session {
 /// debugging the generator when layout fails).
 pub fn source_of(doc: &Document, paths: &Paths) -> String {
     let fonts = paths.fonts_for(doc);
-    generate(doc, &fonts, &Virtual::default(), &paths.root).source
+    generate(doc, &fonts, &Virtual::default(), &Files::at(&paths.root)).source
+}
+
+/// Times layout. WebAssembly in the browser has no clock to read, so there
+/// it measures nothing.
+struct Stopwatch(#[cfg(not(target_arch = "wasm32"))] std::time::Instant);
+
+impl Stopwatch {
+    fn start() -> Self {
+        Self(
+            #[cfg(not(target_arch = "wasm32"))]
+            std::time::Instant::now(),
+        )
+    }
+
+    fn elapsed(&self) -> Duration {
+        #[cfg(not(target_arch = "wasm32"))]
+        return self.0.elapsed();
+        #[cfg(target_arch = "wasm32")]
+        Duration::ZERO
+    }
 }
 
 impl Session {
@@ -89,15 +110,21 @@ impl Session {
 
     /// With a font set already scanned (scanning is the slow part of starting).
     pub fn with_fonts(doc: Document, paths: Paths, fonts: Arc<Fonts>) -> Result<Self, EngineError> {
+        let files = Files::at(&paths.root);
+        Self::with_files(doc, paths, fonts, files)
+    }
+
+    /// With the document's files given (in memory, or under a root).
+    pub fn with_files(doc: Document, paths: Paths, fonts: Arc<Fonts>, files: Files) -> Result<Self, EngineError> {
         let virt = Virtual::default();
-        let generated = generate(&doc, &fonts, &virt, &paths.root);
-        let world = MtWorld::new(generated.source.clone(), paths.root.clone(), fonts.clone(), virt.clone());
-        let start = Instant::now();
+        let generated = generate(&doc, &fonts, &virt, &files);
+        let world = MtWorld::new(generated.source.clone(), files.clone(), fonts.clone(), virt.clone());
+        let start = Stopwatch::start();
         let (layout, warnings) = compile(&world)?;
         let layout = crate::effects::apply(layout, &generated.effects);
         let compile_time = start.elapsed();
         let hashes = page_hashes(&layout);
-        Ok(Self { doc, paths, fonts, virt, generated, world, layout, hashes, warnings, compile_time })
+        Ok(Self { doc, paths, files, fonts, virt, generated, world, layout, hashes, warnings, compile_time })
     }
 
     pub fn document(&self) -> &Document {
@@ -145,14 +172,18 @@ impl Session {
         &self.paths
     }
 
+    pub fn files(&self) -> &Files {
+        &self.files
+    }
+
     /// Applies `op`, regenerates the program and lays it out again
     /// incrementally. On failure the session is unchanged.
     pub fn apply(&mut self, op: &Op) -> Result<Change, EngineError> {
         let mut doc = self.doc.clone();
         let inverse = doc.apply(op).map_err(|e| EngineError(e.to_string()))?;
-        let generated = generate(&doc, &self.fonts, &self.virt, &self.paths.root);
+        let generated = generate(&doc, &self.fonts, &self.virt, &self.files);
         self.world.set_source(&generated.source);
-        let start = Instant::now();
+        let start = Stopwatch::start();
         match compile(&self.world) {
             Ok((layout, warnings)) => {
                 let layout = crate::effects::apply(layout, &generated.effects);
@@ -168,7 +199,7 @@ impl Session {
                 Ok(Change { inverse, changed_pages, page_count: self.layout.pages().len(), compile })
             }
             Err(e) => {
-                let old = generate(&self.doc, &self.fonts, &self.virt, &self.paths.root);
+                let old = generate(&self.doc, &self.fonts, &self.virt, &self.files);
                 self.world.set_source(&old.source);
                 Err(e)
             }

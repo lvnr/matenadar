@@ -62,7 +62,7 @@ impl Gen<'_> {
                 };
                 let focused = match (&asset, &shown, i.focus, place.w.and_then(|w| w.pt()), place.h.and_then(|h| h.pt())) {
                     (Some(orig), Some(p), Some((fx, fy)), Some(bw), Some(bh)) if i.fit.as_deref().unwrap_or("cover") == "cover" => {
-                        crate::glyphs::image_size(&self.root.join(orig.trim_start_matches('/'))).map(|(iw, ih)| {
+                        self.assets.read(orig).and_then(|d| crate::glyphs::image_size(&d)).map(|(iw, ih)| {
                             let scale = (bw / iw as f64).max(bh / ih as f64);
                             let (sw, sh) = (iw as f64 * scale, ih as f64 * scale);
                             format!(
@@ -139,7 +139,7 @@ impl Gen<'_> {
                 let changed = s.viewbox.is_some() || s.tint.is_some() || op < 1.0;
                 let path = if changed {
                     let text = match (&s.src, &s.markup) {
-                        (Some(src), _) => self.asset(src).and_then(|p| std::fs::read_to_string(self.root.join(p.trim_start_matches('/'))).ok()),
+                        (Some(src), _) => self.asset(src).and_then(|p| String::from_utf8(self.assets.read(&p)?.to_vec()).ok()),
                         (None, Some(m)) => Some(m.clone()),
                         _ => None,
                     };
@@ -364,23 +364,21 @@ impl Gen<'_> {
         }
     }
 
-    /// A copy of the picture at `path` (under the root) with its opacity
-    /// scaled: an SVG wrapped in a translucent group, a raster image with
-    /// its alpha multiplied. Kept between builds, so edits stay fast.
+    /// A copy of the picture at `path` with its opacity scaled: an SVG
+    /// wrapped in a translucent group, a raster image with its alpha
+    /// multiplied. Kept between builds, so edits stay fast.
     fn faded(&mut self, path: &str, opacity: f64) -> Option<String> {
-        static CACHE: std::sync::OnceLock<std::sync::Mutex<Vec<((std::path::PathBuf, u64, std::time::SystemTime), Vec<u8>, &'static str)>>> =
-            std::sync::OnceLock::new();
-        let file = self.root.join(path.trim_start_matches('/'));
-        let modified = std::fs::metadata(&file).and_then(|m| m.modified()).ok()?;
-        let key = (file.clone(), (opacity * 1000.0).round() as u64, modified);
+        type Entry = ((String, u64, u128), Vec<u8>, &'static str);
+        static CACHE: std::sync::OnceLock<std::sync::Mutex<Vec<Entry>>> = std::sync::OnceLock::new();
+        let key = (path.to_string(), (opacity * 1000.0).round() as u64, self.assets.version(path)?);
         let cache = CACHE.get_or_init(Default::default);
         if let Some((_, data, ext)) = cache.lock().ok()?.iter().find(|(k, _, _)| *k == key).cloned() {
             return Some(self.file(ext, data));
         }
-        let bytes = std::fs::read(&file).ok()?;
-        let (data, ext) = if file.extension().is_some_and(|e| e.eq_ignore_ascii_case("svg")) {
-            let svg = String::from_utf8(bytes).ok()?;
-            (svg_group(&svg, &format!(r#"opacity="{}""#, num(opacity))).into_bytes(), "svg")
+        let bytes = self.assets.read(path)?;
+        let (data, ext) = if path.to_lowercase().ends_with(".svg") {
+            let svg = std::str::from_utf8(&bytes).ok()?;
+            (svg_group(svg, &format!(r#"opacity="{}""#, num(opacity))).into_bytes(), "svg")
         } else {
             let mut img = image::load_from_memory(&bytes).ok()?.to_rgba8();
             for px in img.pixels_mut() {

@@ -6,25 +6,22 @@ use std::time::{Duration, Instant};
 use anyhow::{Result, anyhow};
 use matenadar_model::block::Block;
 use matenadar_model::ops::Target;
-use matenadar_model::{Item, Op};
+use matenadar_model::Op;
 use matenadar_typst::Session;
 use serde_json::json;
 
 pub fn bench(mut s: Session, edits: usize) -> Result<serde_json::Value> {
     let first = s.compile_time();
-    // Paragraphs with ids and plain text, spread through the document.
+    // Paragraphs with ids and plain text, spread through the document (in
+    // flows, boxes and frames alike).
     let mut targets = Vec::new();
-    for item in &s.document().content {
-        if let Item::Section(sec) = item {
-            for b in &sec.flow {
-                if let Block::P(p) = b
-                    && let (Some(id), Some(_)) = (&p.id, &p.text)
-                {
-                    targets.push(id.clone());
-                }
-            }
+    matenadar_model::walk::walk(s.document(), &mut |_, node| {
+        if let matenadar_model::walk::Node::Block(Block::P(p)) = node
+            && let (Some(id), Some(_)) = (&p.id, &p.text)
+        {
+            targets.push(id.clone());
         }
-    }
+    });
     let mut times: Vec<Duration> = Vec::new();
     let mut pages_changed = Vec::new();
     if !targets.is_empty() {

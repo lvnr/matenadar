@@ -5,6 +5,9 @@ use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use std::time::Instant;
 
+mod bench;
+mod serve;
+
 use anyhow::{Context, Result, anyhow, bail};
 use matenadar_model::{Document, Op, validate};
 use matenadar_typst::{CheckOptions, Paths, Session, Severity, check, inspect};
@@ -19,7 +22,8 @@ Usage:
   matenadar locate <doc.json> --page N --x PT --y PT
   matenadar apply <doc.json> <ops.json> [-o new.json]
   matenadar fonts
-  matenadar schema
+  matenadar bench <doc.json> [--edits 50]
+  matenadar serve                       (JSON lines on stdin; see serve.rs)
 
 Common options:
   --root DIR          asset root (default: the document's folder)
@@ -262,6 +266,16 @@ fn run() -> Result<ExitCode> {
             for f in fonts.families() {
                 println!("{f}");
             }
+            Ok(ExitCode::SUCCESS)
+        }
+        "bench" => {
+            let s = session(&args)?;
+            let edits: usize = args.get("--edits").map(str::parse).transpose()?.unwrap_or(50);
+            println!("{}", serde_json::to_string_pretty(&bench::bench(s, edits)?)?);
+            Ok(ExitCode::SUCCESS)
+        }
+        "serve" => {
+            serve::serve()?;
             Ok(ExitCode::SUCCESS)
         }
         "debug-typst" => {

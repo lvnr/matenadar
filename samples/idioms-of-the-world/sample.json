@@ -1,0 +1,12 @@
+{
+  "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/idioms-of-the-world",
+  "pdf": "release/idioms-of-the-world-drawn-literally-interior.pdf",
+  "bleed": true,
+  "pages": [
+    {"original": 47, "rebuilt": 1, "what": "plate page (care-ar): plate, Arabic word-for-word strip, bottom-anchored note"},
+    {"original": 76, "rebuilt": 2, "what": "interlude chart: headings sized by count, superscript counts"},
+    {"original": 111, "rebuilt": 3, "what": "chapter opener (devil): full-bleed ground, outline numeral off the page, faux-bold title"},
+    {"original": 42, "rebuilt": 4, "what": "also-said list (rain): ruled two-column rows, CJK and Thai, bottom-anchored tail"},
+    {"original": 148, "rebuilt": 6, "what": "index of animals: two sections in four columns, page numbers from the pagination"}
+  ]
+}

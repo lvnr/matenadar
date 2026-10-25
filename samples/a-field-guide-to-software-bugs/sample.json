@@ -1,12 +1,33 @@
 {
- "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/a-field-guide-to-software-bugs",
- "pdf": "release/a-field-guide-to-software-bugs-interior.pdf",
- "bleed": true,
- "pages": [
-  {"original": 11, "rebuilt": 1, "what": "Order 0 opener: centred display type, measure-limited paragraph, species table with page numbers"},
-  {"original": 13, "rebuilt": 3, "what": "species page: framed plate with figure labels, name, Latin, status pill, small-caps entry, rotated handwriting, mono folio"},
-  {"original": 25, "rebuilt": 5, "what": "The Buffer Overflow: whole-page ground, plate frame over it, narrowed measure, ink blot"},
-  {"original": 26, "rebuilt": 6, "what": "The Stack Overflow: the page inside its own plate four levels deep, bigger blot"},
-  {"original": 37, "rebuilt": 7, "what": "The Infinite Loop: round plate, caption set on a circle"}
- ]
+  "title": "A Field Guide to Software Bugs",
+  "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/a-field-guide-to-software-bugs",
+  "pdf": "release/a-field-guide-to-software-bugs-interior.pdf",
+  "bleed": true,
+  "pages": [
+    {
+      "original": 11,
+      "rebuilt": 1,
+      "what": "Order 0 opener: centred display type, measure-limited paragraph, species table with page numbers"
+    },
+    {
+      "original": 13,
+      "rebuilt": 3,
+      "what": "species page: framed plate with figure labels, name, Latin, status pill, small-caps entry, rotated handwriting, mono folio"
+    },
+    {
+      "original": 25,
+      "rebuilt": 5,
+      "what": "The Buffer Overflow: whole-page ground, plate frame over it, narrowed measure, ink blot"
+    },
+    {
+      "original": 26,
+      "rebuilt": 6,
+      "what": "The Stack Overflow: the page inside its own plate four levels deep, bigger blot"
+    },
+    {
+      "original": 37,
+      "rebuilt": 7,
+      "what": "The Infinite Loop: round plate, caption set on a circle"
+    }
+  ]
 }

@@ -1,11 +1,28 @@
 {
+  "title": "I Just Had It",
   "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/i-just-had-it",
   "pdf": "release/i-just-had-it-interior.pdf",
   "bleed": true,
   "pages": [
-    {"original": 5, "rebuilt": 1, "what": "how this works: display head, numbered steps with hanging numerals, legend with sprites"},
-    {"original": 6, "rebuilt": 2, "what": "notice No. 1: pinned card, poster type, framed sprite, ruled Courier rows, tick boxes, tear-off tabs"},
-    {"original": 7, "rebuilt": 3, "what": "scene No. 1: full-bleed vector scene, pill tag and pill foot"},
-    {"original": 66, "rebuilt": 4, "what": "answers 1: key slot, three scenes at 40 %, faded, with rings"}
+    {
+      "original": 5,
+      "rebuilt": 1,
+      "what": "how this works: display head, numbered steps with hanging numerals, legend with sprites"
+    },
+    {
+      "original": 6,
+      "rebuilt": 2,
+      "what": "notice No. 1: pinned card, poster type, framed sprite, ruled Courier rows, tick boxes, tear-off tabs"
+    },
+    {
+      "original": 7,
+      "rebuilt": 3,
+      "what": "scene No. 1: full-bleed vector scene, pill tag and pill foot"
+    },
+    {
+      "original": 66,
+      "rebuilt": 4,
+      "what": "answers 1: key slot, three scenes at 40 %, faded, with rings"
+    }
   ]
 }

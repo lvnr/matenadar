@@ -30,7 +30,7 @@ samples/<slug>/
 | `idioms-of-the-world` | 5 | 8–9.5 | `BALANCE=1 python3 samples/idioms-of-the-world/make.py` |
 | `i-just-had-it` | 4 | 9–9.5 | `python3 samples/i-just-had-it/make.py` |
 | `reverse-coloring` | 5 | 9.5–10 | `python3 samples/reverse-coloring/make.py` |
-| `christmas-word-search` | 6 | 9–9.5 | `python3 samples/christmas-word-search/make.py` |
+| `christmas-word-search` | 5 | 9–9.5 | `python3 samples/christmas-word-search/make.py` |
 | `the-machine-in-the-back-of-the-book` | 5 | 8–9.5 | `python3 samples/the-machine-in-the-back-of-the-book/make.py` |
 | `a-field-guide-to-software-bugs` | 5 | 9–9.5 | `python3 samples/a-field-guide-to-software-bugs/make.py` |
 | `the-twenty-fourth-clue` | 5 | 9–9.5 | `python3 samples/the-twenty-fourth-clue/make.py` |

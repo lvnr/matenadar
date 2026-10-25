@@ -408,6 +408,30 @@ impl Gen<'_> {
             self.raw("#pagebreak(weak: true)\n");
         }
         let k = self.k(cx);
+        // A drop cap needs plain text it can split into words.
+        let drop = p.style.as_deref().map(|n| self.doc.design.style(n).drop_cap.is_some()).unwrap_or(false)
+            || p.set.as_ref().is_some_and(|s| s.drop_cap.is_some());
+        let plain = match (&p.text, p.content.as_slice()) {
+            (Some(t), _) => Some(t.clone()),
+            (None, [matenadar_model::block::Inline::Plain(t)]) => Some(t.clone()),
+            _ => None,
+        };
+        if drop && let Some(text) = plain.filter(|t| !t.trim().is_empty()) {
+            let mut chars = text.trim_start().chars();
+            let mut cap: String = chars.next().map(String::from).unwrap_or_default();
+            // An opening quote goes with the cap.
+            if matches!(cap.as_str(), "“" | "\"" | "‘" | "'" | "«") {
+                cap.extend(chars.next());
+            }
+            let rest: String = chars.collect();
+            self.raw(&format!("#mt-drop({st}, first: {first}{k}, {}, {})", str_lit(&cap), str_lit(&rest)));
+            if let Some(id) = p.id.as_deref().filter(|id| self.labels && label_safe(id)) {
+                self.raw(&format!("#metadata({}) <{id}>", str_lit(id)));
+            }
+            self.raw("\n");
+            self.node(p.id.as_deref(), "p", start);
+            return;
+        }
         if let Some(a) = anchor {
             // At the paragraph's top edge, where CSS would put a note beside it.
             self.raw(&format!("#metadata(none) <{a}>\n"));

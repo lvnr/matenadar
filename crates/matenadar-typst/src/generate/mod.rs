@@ -661,7 +661,7 @@ impl<'a> Gen<'a> {
                 d.push(format!("weight: {}", weight_number(w)));
             }
             d.push(format!("gap: {}", dc.gap.map(|g| g.typst()).unwrap_or_else(|| "0.15em".into())));
-            d.push(format!("lh: {}em", num(lh_em.unwrap_or(1.2))));
+            d.push(format!("lh: {}", num(lh_em.unwrap_or(1.2))));
             parts.push(format!("drop: ({})", d.join(", ")));
         }
         format!("({})", parts.join(", "))

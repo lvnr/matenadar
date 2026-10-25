@@ -92,6 +92,46 @@
   )
 }
 
+// A paragraph opening with a drop cap `lines` lines deep. The cap's top
+// lines up with the first line's capitals and its foot sits on the
+// baseline of line `lines`; the words beside it are found by measuring.
+#let mt-drop(st, k: 1, first: false, cap, rest) = layout(size => {
+  let d = st.drop
+  let tx = st.at("text", default: (:))
+  let n = d.lines
+  let base = tx.at("size", default: 11pt) * k
+  let lh = d.lh * base
+  let probe(f) = text(..tx, ..f, top-edge: "cap-height", bottom-edge: "baseline", "H")
+  let body-cap = measure(probe((size: base))).height
+  let cap-tx = (size: 100pt)
+  if "font" in d { cap-tx.insert("font", d.font) }
+  if "weight" in d { cap-tx.insert("weight", d.weight) }
+  let ratio = measure(probe(cap-tx)).height / 100pt
+  cap-tx.insert("size", ((n - 1) * lh + body-cap) / ratio)
+  if "fill" in d { cap-tx.insert("fill", d.fill) }
+  let cap-box = text(..tx, ..cap-tx, top-edge: "cap-height", bottom-edge: "baseline", cap)
+  let capw = measure(cap-box).width + d.gap
+  let top = tx.at("top-edge", default: 0.8em)
+  let lead = top.em * base + top.abs - body-cap
+  let narrow = size.width - capw
+  let words = rest.split(" ")
+  let head = st + (below: 0pt)
+  let tail = st + (above: 0pt, indent-first: false)
+  let part(ws) = mt-par(head, k: k, first: true, w: narrow, ws.join(" "))
+  let lo = 0
+  let hi = words.len()
+  while lo < hi {
+    let mid = calc.ceil((lo + hi) / 2)
+    if measure(part(words.slice(0, mid))).height <= n * lh + 0.5pt { lo = mid } else { hi = mid - 1 }
+  }
+  block(above: st.at("above", default: 0pt) * k, below: 0pt, grid(
+    columns: (capw, narrow),
+    move(dy: lead, cap-box),
+    mt-par(head + (above: 0pt), k: k, first: true, w: narrow, [#words.slice(0, lo).join(" ")#if lo < words.len() { linebreak(justify: true) }]),
+  ))
+  if lo < words.len() { mt-par(tail, k: k, first: true, words.slice(lo).join(" ")) }
+})
+
 // A heading: a paragraph in its style that is also a Typst heading (for the
 // PDF's bookmarks) and leaves a <mt-h> marker for contents and running heads.
 #let mt-head(level, outlined, title, st, k: 1, body) = {

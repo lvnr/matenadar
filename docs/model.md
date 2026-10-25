@@ -94,6 +94,7 @@ Paragraph settings:
 | `balance` | lines of equal length (CSS `text-wrap: balance`) |
 | `rule_above`, `rule_below` | `{"stroke", "width", "gap"}` |
 | `fill`, `inset` | a background box behind the paragraph |
+| `drop_cap` | `{"lines": 3, "font", "color", "weight", "gap"}`. The cap's top lines up with the first line's capitals and its foot with the baseline of line `lines`. It applies to paragraphs of plain text, and an opening quote goes with the cap. |
 
 ### Masters
 

@@ -393,12 +393,13 @@ impl Gen<'_> {
             self.raw("#pagebreak(weak: true)\n");
         }
         let k = self.k(cx);
-        self.raw(&format!("#mt-par({st}, first: {first}{k})["));
-        self.label(p.id.as_deref());
         if let Some(a) = anchor {
-            self.raw(&format!("#metadata(none) <{a}>"));
+            // At the paragraph's top edge, where CSS would put a note beside it.
+            self.raw(&format!("#metadata(none) <{a}>\n"));
             self.margin_anchor = Some(a.to_string());
         }
+        self.raw(&format!("#mt-par({st}, first: {first}{k})["));
+        self.label(p.id.as_deref());
         let content = content_of(&p.text, &p.content);
         self.inlines(p.id.as_deref(), &content);
         self.raw("]\n");

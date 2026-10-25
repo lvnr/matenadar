@@ -58,6 +58,5 @@ target/debug/matenadar bench tests/fixtures/smoke.json
 - Not done yet:
   - a WebAssembly build for the browser editor;
   - EPUB from the model;
-  - columns that balance themselves;
   - text on a path without SVG;
   - opacity of whole groups.

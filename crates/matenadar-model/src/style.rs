@@ -94,6 +94,10 @@ pub struct TextStyle {
     pub hyphenate: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ligatures: Option<bool>,
+    /// A halo behind each glyph (for type over pictures): a stroke whose
+    /// colour and width give the halo.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub halo: Option<Stroke>,
     /// Variable-font axes: `{"opsz": 12, "SOFT": 50}`. Weight, stretch and
     /// size already set `wght`, `wdth` and `opsz`.
     #[serde(skip_serializing_if = "Option::is_none")]

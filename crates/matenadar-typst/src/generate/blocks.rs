@@ -298,6 +298,7 @@ impl Gen<'_> {
                 _ => self.raw("#pagebreak()\n"),
             },
             Block::Space(s) => self.raw(&format!("#v({}, weak: {})\n", s.h.typst(), s.weak.unwrap_or(true))),
+            Block::ColumnBreak(_) => self.raw("#colbreak()\n"),
             Block::Columns(c) => {
                 self.raw(&format!("#columns({}, gutter: {})[", c.count.max(1), c.gutter.map(|g| g.typst()).unwrap_or_else(|| "12pt".into())));
                 self.label(c.id.as_deref());

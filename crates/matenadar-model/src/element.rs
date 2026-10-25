@@ -43,6 +43,16 @@ pub struct Place {
     /// Marks the element as art that may cross the trim (no margin checks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub decorative: Option<bool>,
+    /// A hard shadow: a copy of the element's box in a colour, offset.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shadow: Option<Shadow>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Shadow {
+    pub dx: Length,
+    pub dy: Length,
+    pub color: Color,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

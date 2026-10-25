@@ -49,9 +49,30 @@ impl Gen<'_> {
                     args.push(format!("height: {}", h.typst()));
                 }
                 args.push(format!("fit: {}", str_lit(i.fit.as_deref().unwrap_or("cover"))));
-                let mut body = match self.asset(&i.src) {
-                    Some(p) => format!("image({}, {})", str_lit(&p), args.join(", ")),
-                    None => format!(
+                let asset = self.asset(&i.src);
+                let focused = match (&asset, i.focus, place.w.and_then(|w| w.pt()), place.h.and_then(|h| h.pt())) {
+                    (Some(p), Some((fx, fy)), Some(bw), Some(bh)) if i.fit.as_deref().unwrap_or("cover") == "cover" => {
+                        crate::glyphs::image_size(&self.root.join(p.trim_start_matches('/'))).map(|(iw, ih)| {
+                            let scale = (bw / iw as f64).max(bh / ih as f64);
+                            let (sw, sh) = (iw as f64 * scale, ih as f64 * scale);
+                            format!(
+                                "box(width: {}pt, height: {}pt, clip: true, place(top + left, dx: {}pt, dy: {}pt, image({}, width: {}pt, height: {}pt)))",
+                                num(bw),
+                                num(bh),
+                                num(-(sw - bw) * fx.clamp(0.0, 1.0)),
+                                num(-(sh - bh) * fy.clamp(0.0, 1.0)),
+                                str_lit(p),
+                                num(sw),
+                                num(sh)
+                            )
+                        })
+                    }
+                    _ => None,
+                };
+                let mut body = match (focused, asset) {
+                    (Some(f), _) => f,
+                    (None, Some(p)) => format!("image({}, {})", str_lit(&p), args.join(", ")),
+                    (None, None) => format!(
                         "rect({}, fill: luma(88%), stroke: 0.5pt + red)",
                         args.iter().filter(|a| !a.starts_with("fit")).cloned().collect::<Vec<_>>().join(", ")
                     ),
@@ -203,6 +224,29 @@ impl Gen<'_> {
         if let Some(skew) = self.skew_of(&place) {
             body = format!("skew(ax: {}deg, reflow: false, {body})", num(skew));
         }
+        if let Some(sh) = &place.shadow
+            && let (Some(w), Some(h)) = (place.w, place.h)
+        {
+            let r = match e {
+                Element::Rect(s) => s.radius.as_ref().map(|r| radius(r, scaled)),
+                Element::Image(i) => i.radius.as_ref().map(|r| radius(r, scaled)),
+                Element::Group(g) => g.radius.as_ref().map(|r| radius(r, scaled)),
+                _ => None,
+            };
+            let shape = if matches!(e, Element::Ellipse(_)) { "ellipse" } else { "rect" };
+            let mut shadow = format!(
+                "{shape}(width: {}, height: {}, fill: {}{})",
+                w.typst(),
+                h.typst(),
+                self.pal.color(&sh.color),
+                r.map(|r| format!(", radius: {r}")).filter(|_| shape == "rect").unwrap_or_default()
+            );
+            if rot != 0.0 {
+                shadow = format!("mt-rot({}deg, {shadow})", num(rot));
+            }
+            let code = format!("mt-at({x} + {}, {y} + {}, {}, {}, {shadow})", sh.dx.typst(), sh.dy.typst(), num(fx), num(fy));
+            self.wrap_when(place.when.as_deref(), &code);
+        }
         let placed = format!("mt-at({x}, {y}, {}, {}, {body})", num(fx), num(fy));
         if let Some(id) = place.id.as_deref().filter(|id| self.labels && super::label_safe(id)) {
             // A marker at the element's position, for locating it.
@@ -318,7 +362,29 @@ impl Gen<'_> {
             (Some(h), false, Some(id)) if self.labels => format!("; mt-overflow({}, {wi}, {}pt, c)", str_lit(id), num(*h)),
             _ => String::new(),
         };
-        let code = format!("{{ let c = {inner}; mt-at({x}, {y}, {}, {}, {frame}){check} }}", num(fx), num(fy));
+        let shadow = match &place.shadow {
+            Some(sh) => {
+                let r = t.radius.as_ref().map(|r| format!(", radius: {}", radius(r, false))).unwrap_or_default();
+                let mut box_ = format!("rect(width: s.width, height: s.height, fill: {}{r})", self.pal.color(&sh.color));
+                if rot != 0.0 {
+                    box_ = format!("mt-rot({}deg, {box_})", num(rot));
+                }
+                format!(
+                    "let s = measure(block({}, c)); mt-at({x} + {}, {y} + {}, {}, {}, {box_}); ",
+                    args.iter().filter(|a| a.starts_with("width") || a.starts_with("height") || a.starts_with("inset")).cloned().collect::<Vec<_>>().join(", "),
+                    sh.dx.typst(),
+                    sh.dy.typst(),
+                    num(fx),
+                    num(fy)
+                )
+            }
+            None => String::new(),
+        };
+        let code = if shadow.is_empty() {
+            format!("{{ let c = {inner}; mt-at({x}, {y}, {}, {}, {frame}){check} }}", num(fx), num(fy))
+        } else {
+            format!("context {{ let c = {inner}; {shadow}mt-at({x}, {y}, {}, {}, {frame}){check} }}", num(fx), num(fy))
+        };
         self.wrap_when(place.when.as_deref(), &code);
     }
 

@@ -14,7 +14,7 @@ impl TextStyle {
     pub fn with(&self, over: &TextStyle) -> TextStyle {
         let mut out = self.clone();
         overlay!(out, over; font, size, weight, italic, stretch, tracking, word_spacing, color, case, features,
-            baseline, underline, strike, lang, outline, hyphenate, ligatures, variations);
+            baseline, underline, strike, lang, outline, hyphenate, ligatures, halo, variations);
         out
     }
 }

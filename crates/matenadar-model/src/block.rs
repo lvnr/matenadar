@@ -32,6 +32,8 @@ pub enum Block {
     /// Vertical space.
     Space(Space),
     Columns(Columns),
+    /// Continue in the next column.
+    ColumnBreak(ColumnBreak),
     /// A margin note, in the master's note column, level with the block
     /// before it (or with where it stands, with `at: "here"`).
     Margin(MarginNote),
@@ -58,7 +60,7 @@ impl Block {
             Block::Toc(b) => b.id.as_deref(),
             Block::Keep(b) => b.id.as_deref(),
             Block::Columns(b) => b.id.as_deref(),
-            Block::PageBreak(_) | Block::Space(_) => None,
+            Block::PageBreak(_) | Block::Space(_) | Block::ColumnBreak(_) => None,
         }
     }
 
@@ -77,6 +79,7 @@ impl Block {
             Block::PageBreak(_) => "page-break",
             Block::Space(_) => "space",
             Block::Columns(_) => "columns",
+            Block::ColumnBreak(_) => "column-break",
             Block::Margin(_) => "margin",
             Block::Toc(_) => "toc",
             Block::Keep(_) => "keep",
@@ -389,6 +392,9 @@ pub struct Columns {
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct ColumnBreak {}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct MarginNote {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -466,8 +472,33 @@ pub struct Run {
     /// Never break this run across lines.
     #[serde(default, skip_serializing_if = "is_false")]
     pub nobreak: bool,
+    /// A pen mark on the run: an underline, a strike, a highlight, a box or a ring.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mark: Option<Mark>,
     #[serde(flatten)]
     pub set: TextStyle,
+}
+
+/// A mark drawn on a run of text, following where it actually lands.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Mark {
+    /// `"underline"`, `"strike"`, `"highlight"`, `"box"` or `"ring"`.
+    pub kind: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stroke: Option<crate::style::Stroke>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fill: Option<crate::style::Fill>,
+    /// Underline and strike: distance from the baseline.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub offset: Option<Length>,
+    /// How far the mark reaches beyond the text on each side.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub extent: Option<Length>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub radius: Option<crate::style::Radius>,
+    /// Box and ring: space between the text and the mark.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub inset: Option<Length>,
 }
 
 fn is_false(b: &bool) -> bool {

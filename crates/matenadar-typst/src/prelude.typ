@@ -32,6 +32,12 @@
   if w == none { body } else { w(body) }
 }
 
+// Text over a halo: the same text stroked in the halo's colour, behind it.
+#let mt-halo(s, body) = box({
+  place(top + left, text(stroke: (paint: s.paint, thickness: s.thickness * 2, join: "round"), fill: s.paint, body))
+  body
+})
+
 // A character style or inline overrides.
 #let mt-span(st, body) = mt-wrap(st, text(..st.text, body))
 

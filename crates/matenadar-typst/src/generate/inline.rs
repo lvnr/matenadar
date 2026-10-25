@@ -138,6 +138,55 @@ impl Gen<'_> {
             self.raw("#box[");
             closers.push("]");
         }
+        if let Some(m) = &r.mark {
+            let stroke = m.stroke.as_ref().map(|s| self.pal.stroke(s, false));
+            let mut args = Vec::new();
+            let call = match m.kind.as_str() {
+                "underline" | "strike" => {
+                    if let Some(s) = &stroke {
+                        args.push(format!("stroke: {s}"));
+                    }
+                    if let Some(o) = &m.offset {
+                        args.push(format!("offset: {}", o.typst()));
+                    }
+                    if let Some(e) = &m.extent {
+                        args.push(format!("extent: {}", e.typst()));
+                    }
+                    if m.kind == "underline" {
+                        args.push("evade: false".into());
+                    }
+                    m.kind.clone()
+                }
+                "highlight" => {
+                    args.push(format!("fill: {}", m.fill.as_ref().map(|f| self.pal.fill(f)).unwrap_or_else(|| "rgb(\"#fff3a8\")".into())));
+                    if let Some(e) = &m.extent {
+                        args.push(format!("extent: {}", e.typst()));
+                    }
+                    if let Some(r) = &m.radius {
+                        args.push(format!("radius: {}", super::typ::radius(r, false)));
+                    }
+                    "highlight".into()
+                }
+                kind => {
+                    // A box or a ring around the run.
+                    args.push(format!("stroke: {}", stroke.clone().unwrap_or_else(|| "0.8pt".into())));
+                    if let Some(f) = &m.fill {
+                        args.push(format!("fill: {}", self.pal.fill(f)));
+                    }
+                    let inset = m.inset.map(|i| i.typst()).unwrap_or_else(|| "0.15em".into());
+                    args.push(format!("outset: (x: {inset}, y: {inset})"));
+                    let radius = match (&m.radius, kind) {
+                        (Some(r), _) => super::typ::radius(r, false),
+                        (None, "ring") => "50%".into(),
+                        _ => "0pt".into(),
+                    };
+                    args.push(format!("radius: {radius}"));
+                    "box".into()
+                }
+            };
+            self.raw(&format!("#{call}({})[", args.join(", ")));
+            closers.push("]");
+        }
         self.plain(node, at, &r.text);
         for c in closers.iter().rev() {
             self.raw(c);

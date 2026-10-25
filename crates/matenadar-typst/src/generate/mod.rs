@@ -545,12 +545,16 @@ impl<'a> Gen<'a> {
         if t.strike == Some(true) {
             wrap.push("strike(b)");
         }
-        let wrap = if wrap.is_empty() {
+        let halo = t.halo.as_ref().map(|h| self.pal.stroke(h, false)).filter(|h| h != "none");
+        let wrap = if wrap.is_empty() && halo.is_none() {
             "none".to_string()
         } else {
             let mut expr = "b".to_string();
             for w in wrap {
                 expr = w.replace("(b)", &format!("({expr})")).replace(", b)", &format!(", {expr})"));
+            }
+            if let Some(h) = halo {
+                expr = format!("mt-halo({h}, {expr})");
             }
             format!("b => {expr}")
         };

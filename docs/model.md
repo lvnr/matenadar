@@ -74,6 +74,7 @@ Character settings (also usable inline on runs, and as `set` overrides):
 | `lang` | BCP 47, for hyphenation and shaping |
 | `outline` | a stroke around each glyph (also fakes a bold) |
 | `hyphenate`, `ligatures` | bool |
+| `halo` | a halo behind each glyph for type over pictures: a stroke, `{"width": 2, "color": "#fff"}` |
 | `variations` | variable-font axes, such as `{"opsz": 12, "SOFT": 50}`. `weight`, `stretch` and `size` already drive `wght`, `wdth` and `opsz`, so a variable font needs no static instances. |
 
 Paragraph settings:
@@ -186,6 +187,7 @@ Every element takes:
 | `skew` | degrees of horizontal slant |
 | `when` | conditions, all of which must hold: `recto`, `verso`, `first`, `blank`, and their `not-` forms (`not-first`, `not-blank`) |
 | `decorative` | art that may cross the trim; margin checks skip it |
+| `shadow` | a hard shadow: `{"dx": 3, "dy": 3, "color": "#0004"}` (needs `w` and `h`, except on text frames) |
 
 The types:
 
@@ -200,6 +202,9 @@ The types:
   - A frame with an `h` and an `id` reports overflow when its text doesn't fit.
 - **`image`.**
   - `src` is a raster image or an SVG.
+  - `focus: [fx, fy]` chooses which part of a cropped (`cover`) image stays in
+    view, as fractions: `[0.85, 0.5]` keeps the right side. Needs `w` and `h`
+    in absolute units.
   - `fit` is `cover` (default; fills the box and crops), `contain` or
     `stretch`.
   - Also: `radius`, `stroke`, `flip` (`x`, `y`, `both`).
@@ -249,6 +254,7 @@ The types:
 | `page-break` | `to`: `recto` or `verso` |
 | `space` | `h`, `weak` |
 | `columns` | `count`, `gutter`, `blocks` |
+| `column-break` | continue in the next column |
 | `margin` | a note in the master's note column, level with the block before it (`at: "here"` for where it stands); `dy`; `text`/`content`/`blocks`. Notes stack and don't overlap. |
 | `toc` | the contents: `depth`, `style` (default `toc-1`, `toc-2`…), `leader` (such as `"."`) |
 | `keep` | `blocks` that stay on one page |
@@ -258,7 +264,10 @@ The types:
 `content` is a list:
 
 - **Text.** A plain string, or a run: `{"text": "…", "em", "strong", "span",
-  "link", "sup", "sub", "nobreak", …any character setting}`.
+  "link", "sup", "sub", "nobreak", "mark", …any character setting}`.
+- **Marks.** `mark` is a pen mark that follows where the run lands:
+  `{"kind": "underline" | "strike" | "highlight" | "box" | "ring", "stroke",
+  "fill", "offset", "extent", "radius", "inset"}`.
 - **Footnote.** `{"note": [ … ]}`.
 - **Field.** `{"field": "page" | "pages" | "heading" | "section.title" |
   "section.<var>" | "doc.title" | "doc.author"}`, filled in at layout.

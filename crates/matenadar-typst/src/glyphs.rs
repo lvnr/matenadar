@@ -181,6 +181,43 @@ fn round(v: f64) -> String {
     if r == 0.0 { "0".into() } else { format!("{r}") }
 }
 
+/// The pixel size of a PNG, JPEG, GIF or WebP file, from its header.
+pub fn image_size(path: &std::path::Path) -> Option<(u32, u32)> {
+    let data = std::fs::read(path).ok()?;
+    let be16 = |b: &[u8]| u16::from_be_bytes([b[0], b[1]]) as u32;
+    let be32 = |b: &[u8]| u32::from_be_bytes([b[0], b[1], b[2], b[3]]);
+    if data.starts_with(b"\x89PNG") && data.len() > 24 {
+        return Some((be32(&data[16..20]), be32(&data[20..24])));
+    }
+    if data.starts_with(b"GIF") && data.len() > 10 {
+        return Some((u16::from_le_bytes([data[6], data[7]]) as u32, u16::from_le_bytes([data[8], data[9]]) as u32));
+    }
+    if data.starts_with(b"RIFF") && data.get(8..12) == Some(b"WEBP") && data.len() > 30 {
+        if &data[12..16] == b"VP8X" {
+            let w = 1 + (data[24] as u32 | (data[25] as u32) << 8 | (data[26] as u32) << 16);
+            let h = 1 + (data[27] as u32 | (data[28] as u32) << 8 | (data[29] as u32) << 16);
+            return Some((w, h));
+        }
+        return None;
+    }
+    if data.starts_with(&[0xFF, 0xD8]) {
+        let mut i = 2;
+        while i + 9 < data.len() {
+            if data[i] != 0xFF {
+                i += 1;
+                continue;
+            }
+            let marker = data[i + 1];
+            let len = be16(&data[i + 2..i + 4]) as usize;
+            if matches!(marker, 0xC0..=0xC3 | 0xC5..=0xC7 | 0xC9..=0xCB | 0xCD..=0xCF) {
+                return Some((be16(&data[i + 7..i + 9]), be16(&data[i + 5..i + 7])));
+            }
+            i += 2 + len;
+        }
+    }
+    None
+}
+
 /// A QR code as SVG, one unit per module, dark modules merged per row.
 pub fn qr_svg(data: &str, ecc: &str, quiet: u32, dark: &str, light: Option<&str>) -> Result<(String, u32), String> {
     use qrcode::{Color, EcLevel, QrCode};

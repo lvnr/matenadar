@@ -389,6 +389,13 @@ pub struct Columns {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gutter: Option<Length>,
     pub blocks: Vec<Block>,
+    /// Columns of equal height: the blocks are shared out so the columns end
+    /// level (blocks stay whole; for indexes and lists of short entries).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance: Option<bool>,
+    /// A rule between columns.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rule: Option<crate::style::Stroke>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -445,6 +452,7 @@ pub struct Keep {
 pub enum Inline {
     Plain(String),
     Run(Run),
+    Leader(Leader),
     Note(Footnote),
     Field(Field),
     Ref(PageRef),
@@ -530,6 +538,18 @@ pub struct PageRef {
     /// `"page"` (default) or `"title"`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show: Option<String>,
+}
+
+/// Fills the rest of the line: with a repeated mark (`"."` for dot
+/// leaders), or with space (`""`), pushing what follows to the right edge.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Leader {
+    pub leader: String,
+    /// Space between repeated marks.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gap: Option<Length>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub span: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

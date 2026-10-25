@@ -300,11 +300,26 @@ impl Gen<'_> {
             Block::Space(s) => self.raw(&format!("#v({}, weak: {})\n", s.h.typst(), s.weak.unwrap_or(true))),
             Block::ColumnBreak(_) => self.raw("#colbreak()\n"),
             Block::Columns(c) => {
-                self.raw(&format!("#columns({}, gutter: {})[", c.count.max(1), c.gutter.map(|g| g.typst()).unwrap_or_else(|| "12pt".into())));
-                self.label(c.id.as_deref());
-                marker(self);
-                self.flow(&c.blocks, &cx.style.clone(), cx.scaled);
-                self.raw("]\n");
+                let gutter = c.gutter.map(|g| g.typst()).unwrap_or_else(|| "12pt".into());
+                let rule = c.rule.as_ref().map(|r| self.pal.stroke(r, false)).unwrap_or_else(|| "none".into());
+                if c.balance == Some(true) {
+                    self.raw("#block(width: 100%)[");
+                    self.label(c.id.as_deref());
+                    marker(self);
+                    self.raw(&format!("#mt-balance({}, {gutter}, {rule}, (", c.count.max(1)));
+                    for b in &c.blocks {
+                        self.raw("[");
+                        self.flow(std::slice::from_ref(b), &cx.style.clone(), cx.scaled);
+                        self.raw("], ");
+                    }
+                    self.raw("))]\n");
+                } else {
+                    self.raw(&format!("#block(width: 100%)[#set columns(gutter: {gutter})#columns({})[", c.count.max(1)));
+                    self.label(c.id.as_deref());
+                    marker(self);
+                    self.flow(&c.blocks, &cx.style.clone(), cx.scaled);
+                    self.raw("]]\n");
+                }
             }
             Block::Margin(m) => {
                 let notes = self.notes.clone();

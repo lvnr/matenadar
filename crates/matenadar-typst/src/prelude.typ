@@ -153,6 +153,43 @@
   align(al, block(width: hi, body))
 })
 
+// Blocks shared out over `n` columns that end level. Blocks stay whole.
+#let mt-balance(n, gutter, rule, items) = layout(size => {
+  let colw = (size.width - gutter * (n - 1)) / n
+  let hs = items.map(it => measure(block(width: colw, it)).height)
+  let total = hs.sum(default: 0pt)
+  // The smallest column height that fits everything in n columns, in order.
+  let fits(cap) = {
+    let cols = 1
+    let used = 0pt
+    for h in hs {
+      if used + h > cap and used > 0pt { cols += 1; used = h } else { used += h }
+    }
+    cols <= n
+  }
+  let lo = calc.max(..hs, total / n)
+  let hi = total
+  for _ in range(20) {
+    let mid = (lo + hi) / 2
+    if fits(mid) { hi = mid } else { lo = mid }
+  }
+  let cols = ((),)
+  let used = 0pt
+  for (i, h) in hs.enumerate() {
+    if used + h > hi + 0.01pt and used > 0pt { cols.push(()); used = 0pt }
+    cols.last().push(items.at(i))
+    used += h
+  }
+  while cols.len() < n { cols.push(()) }
+  grid(
+    columns: (colw,) * n,
+    column-gutter: gutter,
+    stroke: (x, y) => if x > 0 and rule != none { (left: rule) } else { none },
+    inset: (x, y) => if x > 0 and rule != none { (left: gutter / 2) } else { 0pt },
+    ..cols.map(c => stack(..c)),
+  )
+})
+
 // Overflow of a frame of fixed height, recorded for checks.
 #let mt-overflow(id, w, h, body) = context {
   let m = measure(block(width: w, body))

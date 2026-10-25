@@ -50,6 +50,19 @@ impl Gen<'_> {
                     }
                 }
                 Inline::Break(_) => self.raw("#linebreak()"),
+                Inline::Leader(l) => {
+                    if l.leader.trim().is_empty() {
+                        self.raw("#h(1fr)");
+                    } else {
+                        let mark = format!("[{}]", super::escape::escape(&l.leader).0);
+                        let mark = match &l.span {
+                            Some(sp) => format!("mt-span({}, {mark})", self.span_var(sp)),
+                            None => mark,
+                        };
+                        let gap = l.gap.map(|g| g.typst()).unwrap_or_else(|| "0.2em".into());
+                        self.raw(&format!("#box(width: 1fr, repeat(gap: {gap}, justify: true, {mark}))"));
+                    }
+                }
                 Inline::Image(img) => {
                     let path = self.asset(&img.image);
                     let mut args = Vec::new();

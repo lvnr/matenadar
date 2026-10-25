@@ -253,7 +253,7 @@ The types:
 | `use` | a component instance (made of blocks, or of elements as a canvas) |
 | `page-break` | `to`: `recto` or `verso` |
 | `space` | `h`, `weak` |
-| `columns` | `count`, `gutter`, `blocks` |
+| `columns` | `count`, `gutter`, `blocks`, `rule` (a stroke between columns), `balance: true` (blocks shared out so the columns end level; blocks stay whole — for indexes) |
 | `column-break` | continue in the next column |
 | `margin` | a note in the master's note column, level with the block before it (`at: "here"` for where it stands); `dy`; `text`/`content`/`blocks`. Notes stack and don't overlap. |
 | `toc` | the contents: `depth`, `style` (default `toc-1`, `toc-2`…), `leader` (such as `"."`) |
@@ -269,6 +269,9 @@ The types:
   `{"kind": "underline" | "strike" | "highlight" | "box" | "ring", "stroke",
   "fill", "offset", "extent", "radius", "inset"}`.
 - **Footnote.** `{"note": [ … ]}`.
+- **Leader.** `{"leader": "."}` fills the rest of the line with dots, for
+  contents and index lines; `{"leader": ""}` fills it with space, pushing what
+  follows to the right edge. Also `gap` and `span`.
 - **Field.** `{"field": "page" | "pages" | "heading" | "section.title" |
   "section.<var>" | "doc.title" | "doc.author"}`, filled in at layout.
 - **Page reference.** `{"ref": "node-id"}` gives the page number;

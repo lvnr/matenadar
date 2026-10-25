@@ -114,10 +114,6 @@
   if k != 1 {
     if "size" in tx { tx.insert("size", tx.size * k) }
     if "tracking" in tx { tx.insert("tracking", tx.tracking * k) }
-    if st.at("fixed-leading", default: false) {
-      if "top-edge" in tx { tx.insert("top-edge", tx.top-edge * k) }
-      if "bottom-edge" in tx { tx.insert("bottom-edge", tx.bottom-edge * k) }
-    }
   }
   if "costs" in st { tx.insert("costs", st.costs) }
   let indent = if first and not st.at("indent-first", default: false) { 0pt } else { st.at("indent", default: 0pt) }

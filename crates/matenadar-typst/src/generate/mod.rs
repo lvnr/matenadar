@@ -725,17 +725,9 @@ impl<'a> Gen<'a> {
                 m.descender = (m.descender * px).round() / px;
             }
             let half = (lh - (m.ascender + m.descender)) / 2.0;
-            match (t.line_height, size) {
-                // Fixed leading: edges in points, so runs of other sizes keep to it.
-                (Some(LineHeight::Length(_)), Some(size)) => {
-                    tx.push(format!("top-edge: {}pt", num((m.ascender + half) * size)));
-                    tx.push(format!("bottom-edge: -{}pt", num((m.descender + half) * size)));
-                }
-                _ => {
-                    tx.push(format!("top-edge: {}em", num(m.ascender + half)));
-                    tx.push(format!("bottom-edge: -{}em", num(m.descender + half)));
-                }
-            }
+            // In em, so a larger run opens its line in proportion, as CSS does.
+            tx.push(format!("top-edge: {}em", num(m.ascender + half)));
+            tx.push(format!("bottom-edge: -{}em", num(m.descender + half)));
         }
         let mut wrap = Vec::new();
         match t.case {
@@ -864,9 +856,6 @@ impl<'a> Gen<'a> {
         }
         if s.balance == Some(true) {
             parts.push("balance: true".into());
-        }
-        if matches!(s.text.line_height, Some(LineHeight::Length(_))) {
-            parts.push("fixed-leading: true".into());
         }
         match s.linebreaks.as_deref() {
             Some("optimized") | Some("simple") => parts.push(format!("linebreaks: {}", str_lit(s.linebreaks.as_deref().unwrap()))),

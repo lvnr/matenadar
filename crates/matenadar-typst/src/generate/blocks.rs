@@ -606,26 +606,46 @@ impl Gen<'_> {
             "#table(columns: ({},), stroke: {stroke}, inset: {inset}, align: {align}{row_gap}, fill: (x, y) => if y < {hn} {{ {hf} }} else if calc.odd(y - {hn}) {{ {zf} }} else {{ none }}",
             cols.join(", ")
         ));
+        // Paragraphs in `auto` columns hug their text, so the column fits it.
+        let auto: Vec<bool> = t
+            .columns
+            .iter()
+            .map(|c| matches!(c, matenadar_model::block::Track::Word(w) if w.trim() == "auto"))
+            .collect();
+        let row_hugs = |row: &[Cell]| {
+            let mut col = 0;
+            row.iter()
+                .map(|c| {
+                    let span = match c {
+                        Cell::Full(f) => f.colspan.unwrap_or(1).max(1) as usize,
+                        Cell::Text(_) => 1,
+                    };
+                    let hug = (col..col + span).all(|i| auto.get(i).copied().unwrap_or(false));
+                    col += span;
+                    hug
+                })
+                .collect::<Vec<_>>()
+        };
         if hn > 0 {
             self.raw(&format!(", table.header(repeat: {}", t.repeat_header.unwrap_or(true)));
             for row in &t.header {
-                for cell in row {
+                for (cell, hug) in row.iter().zip(row_hugs(row)) {
                     self.raw(", ");
-                    self.cell(cell, &hst, cx);
+                    self.cell(cell, &hst, cx, hug);
                 }
             }
             self.raw(")");
         }
         for row in &t.rows {
-            for cell in row {
+            for (cell, hug) in row.iter().zip(row_hugs(row)) {
                 self.raw(", ");
-                self.cell(cell, &st, cx);
+                self.cell(cell, &st, cx, hug);
             }
         }
         self.raw(")]\n");
     }
 
-    fn cell(&mut self, cell: &Cell, st: &str, cx: &FlowCx) {
+    fn cell(&mut self, cell: &Cell, st: &str, cx: &FlowCx, hug: bool) {
         match cell {
             Cell::Text(t) => {
                 self.raw(&format!("mt-par({st}, first: true, w: auto)["));
@@ -655,10 +675,9 @@ impl Gen<'_> {
                 };
                 self.raw(&format!("table.cell({})[", args.join(", ")));
                 if !c.blocks.is_empty() {
-                    // Paragraphs as wide as their text, so `auto` columns fit them.
-                    let hug = std::mem::replace(&mut self.hug, true);
+                    let outer = std::mem::replace(&mut self.hug, hug);
                     self.flow(&c.blocks, &cst, cx.scaled);
-                    self.hug = hug;
+                    self.hug = outer;
                 } else {
                     let content = content_of(&c.text, &c.content);
                     self.raw(&format!("#mt-par({cst}, first: true, w: auto)["));

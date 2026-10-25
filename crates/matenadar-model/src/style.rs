@@ -102,10 +102,10 @@ pub struct TextStyle {
     /// size already set `wght`, `wdth` and `opsz`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub variations: Option<indexmap::IndexMap<String, f64>>,
-    /// Baseline to baseline. A number without a unit is a multiple of the
-    /// size (`1.4`): a larger run in the line opens it. A length (`"14pt"`)
-    /// is fixed leading: runs of any size keep to it. On a run, `0` keeps
-    /// the run from opening its line at all.
+    /// Baseline to baseline: a multiple of the size (`1.4`) or a length
+    /// (`"14pt"`). A run in a larger size opens its line in proportion. On a
+    /// run, `0` keeps it from opening its line at all (a large initial or
+    /// mark that should not push lines apart).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line_height: Option<LineHeight>,
     /// Let punctuation and hyphens at line ends hang slightly into the

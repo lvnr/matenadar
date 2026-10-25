@@ -21,7 +21,7 @@ impl Gen<'_> {
                 Inline::Plain(s) => {
                     self.plain(node, at, s);
                     if glue {
-                        self.raw("#mt-tr");
+                        self.raw("#mt-tr;");
                     }
                     at += s.len();
                 }
@@ -238,7 +238,7 @@ impl Gen<'_> {
         }
         self.plain(node, at, &r.text);
         if glue {
-            self.raw("#mt-tr");
+            self.raw("#mt-tr;");
         }
         for c in closers.iter().rev() {
             self.raw(c);

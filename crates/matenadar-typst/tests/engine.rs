@@ -309,3 +309,72 @@ fn table_cells_given_as_blocks_leave_room_for_fr_columns() {
     assert!(mid.x0 > a.x1, "{a:?} {mid:?}");
     assert!(mid.x1 - mid.x0 > 30.0, "{mid:?}");
 }
+
+#[test]
+fn hyphenation_exceptions_choose_the_breaks() {
+    let text = "Matenadar keeps Matenadar documents in Matenadar form for Matenadar books and Matenadar readers.";
+    let build = |w: i32, exception: &str| {
+        let mut d = page(json!([{"type": "text", "id": "t", "x": 72, "y": 72, "w": w,
+            "set": {"hyphenate": true, "align": "justify", "lang": "en"}, "text": text}]));
+        d["design"]["hyphenation"] = json!({"exceptions": [exception]});
+        session(d)
+    };
+    // Where soft hyphens sit in each "Matenadar": as letters before them.
+    let marks = |joined: &str| -> Vec<Vec<usize>> {
+        joined
+            .split_whitespace()
+            .filter(|w| w.chars().filter(|c| c.is_alphabetic()).collect::<String>().eq_ignore_ascii_case("matenadar"))
+            .map(|w| {
+                let mut letters = 0;
+                let mut at = Vec::new();
+                for c in w.chars() {
+                    if c == '\u{ad}' {
+                        at.push(letters);
+                    } else if c.is_alphabetic() {
+                        letters += 1;
+                    }
+                }
+                at
+            })
+            .collect()
+    };
+    let mut broke = false;
+    for w in (40..120).step_by(4) {
+        let joined: String = texts(&build(w, "Matena-dar")).into_iter().map(|r| r.0).collect();
+        for at in marks(&joined) {
+            assert!(at.iter().all(|&n| n == 6), "width {w}: {joined:?}");
+            // The break adds a second soft hyphen beside the one written in.
+            broke |= at.len() > 1;
+        }
+        let whole: String = texts(&build(w, "Matenadar")).into_iter().map(|r| r.0).collect();
+        assert!(marks(&whole).iter().all(|at| at.is_empty()), "width {w}: {whole:?}");
+    }
+    assert!(broke, "some width breaks Matena-dar");
+}
+
+#[test]
+fn photographs_fade_with_opacity() {
+    let s = session(page(json!([
+        {"type": "image", "id": "ph", "src": "tests/black.png", "x": 72, "y": 72, "w": 72, "h": 72, "fit": "stretch", "opacity": 0.5}
+    ])));
+    let png = s.png(1, 72.0, false).expect("a page");
+    let img = image::load_from_memory(&png).expect("png").to_rgb8();
+    let px = img.get_pixel(108, 108).0;
+    assert!((px[0] as i32 - 128).abs() <= 3, "half-faded black on white is mid grey: {px:?}");
+}
+
+#[test]
+fn content_clips_to_an_ellipse_or_a_path() {
+    let s = session(page(json!([
+        {"type": "image", "id": "ph", "src": "tests/black.png", "x": 72, "y": 72, "w": 72, "h": 72, "fit": "stretch", "clip": "ellipse"},
+        {"type": "group", "id": "tri", "x": 216, "y": 72, "w": 72, "h": 72, "clip": "M 0 72 L 36 0 L 72 72 Z", "children": [
+            {"type": "rect", "x": 0, "y": 0, "w": 72, "h": 72, "fill": "#000000"}]}
+    ])));
+    let png = s.png(1, 72.0, false).expect("a page");
+    let img = image::load_from_memory(&png).expect("png").to_rgb8();
+    let at = |x: u32, y: u32| img.get_pixel(x, y).0[0];
+    assert!(at(108, 108) < 20, "the ellipse's middle shows the picture");
+    assert!(at(74, 74) > 235, "its corner does not");
+    assert!(at(252, 130) < 20, "the triangle's base shows the rect");
+    assert!(at(220, 76) > 235, "beside its apex is clipped away");
+}

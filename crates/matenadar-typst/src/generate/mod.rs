@@ -125,6 +125,26 @@ impl SourceMap {
     }
 }
 
+/// The design's hyphenation exceptions, by lowercase word.
+fn exceptions(doc: &Document) -> HashMap<String, Vec<usize>> {
+    let mut out = HashMap::new();
+    for w in doc.design.hyphenation.iter().flat_map(|h| &h.exceptions) {
+        let mut breaks = Vec::new();
+        let mut word = String::new();
+        for c in w.trim().chars() {
+            if c == '-' {
+                breaks.push(word.chars().count());
+            } else {
+                word.push(c);
+            }
+        }
+        if !word.is_empty() {
+            out.insert(word.to_lowercase(), breaks);
+        }
+    }
+    out
+}
+
 /// Whether any style, span or run of the document sets letter spacing.
 fn uses_tracking(doc: &Document) -> bool {
     let d = &doc.design;
@@ -185,6 +205,11 @@ pub(crate) struct Gen<'a> {
     /// must not break (the last two words of a `wrap: pretty` paragraph).
     pub nbsp_at: Option<usize>,
     pub effects: Vec<crate::effects::Effect>,
+    /// Hyphenation exceptions: a lowercase word and the character counts
+    /// before its allowed breaks.
+    pub hyphenation: HashMap<String, Vec<usize>>,
+    /// The paragraph being written hyphenates (so exceptions apply).
+    pub hyphenating: bool,
     /// The resolved style behind each style expression written, for settings
     /// the generator acts on itself (`wrap`).
     pub resolved: HashMap<String, Style>,
@@ -225,6 +250,8 @@ impl<'a> Gen<'a> {
             tracked: uses_tracking(doc),
             nbsp_at: None,
             effects: Vec::new(),
+            hyphenation: exceptions(doc),
+            hyphenating: false,
             resolved: HashMap::new(),
             opacity: 1.0,
         }

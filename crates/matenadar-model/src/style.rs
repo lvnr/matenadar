@@ -441,4 +441,16 @@ pub struct Design {
     pub masters: IndexMap<String, Master>,
     #[serde(skip_serializing_if = "IndexMap::is_empty")]
     pub components: IndexMap<String, crate::component::Component>,
+    /// Words the hyphenation patterns get wrong.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hyphenation: Option<Hyphenation>,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Hyphenation {
+    /// Words with their only allowed breaks marked: `"de-scribes"`,
+    /// `"Mate-na-dar"`. A word written without hyphens never breaks. Matching
+    /// ignores case, and applies in paragraphs that hyphenate.
+    pub exceptions: Vec<String>,
 }

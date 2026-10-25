@@ -94,6 +94,11 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
     if d.masters.is_empty() {
         report("design.masters", "the design needs at least one master (a page size)".into());
     }
+    for (i, w) in d.hyphenation.iter().flat_map(|h| h.exceptions.iter()).enumerate() {
+        if w.is_empty() || !w.chars().all(|c| c.is_alphabetic() || c == '-') || w.starts_with('-') || w.ends_with('-') {
+            report(&format!("design.hyphenation.exceptions[{i}]"), format!("\"{w}\" should be one word, with hyphens only where it may break"));
+        }
+    }
 
     // The content.
     let mut ids: HashMap<String, String> = HashMap::new();

@@ -1227,6 +1227,7 @@ name = "matenadar-typst"
 version = "0.1.0"
 dependencies = [
  "comemo",
+ "image",
  "indexmap",
  "kurbo",
  "matenadar-model",

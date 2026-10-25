@@ -541,7 +541,10 @@ impl Gen<'_> {
             resolved = resolved.with(over);
         }
         self.nbsp_at = if resolved.wrap.as_deref() == Some("pretty") { last_space(&content) } else { None };
+        // Typst hyphenates justified text unless told otherwise.
+        self.hyphenating = resolved.text.hyphenate.unwrap_or(resolved.align == Some(Align::Justify));
         self.inlines(p.id.as_deref(), &content);
+        self.hyphenating = false;
         self.nbsp_at = None;
         self.raw("]\n");
         self.node(p.id.as_deref(), "p", start);

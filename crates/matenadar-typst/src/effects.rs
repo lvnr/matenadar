@@ -14,12 +14,57 @@ use typst::visualize::{Curve, FillRule, FixedStroke, Geometry, Paint, Shape};
 use typst_layout::PagedDocument;
 
 /// One labelled element's effects.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Effect {
     /// Multiplies the alpha of every paint inside.
     pub opacity: f32,
     /// Text inside becomes outlines.
     pub outline: bool,
+    /// Content is clipped to this shape, in the element's coordinates.
+    pub clip: Option<Curve>,
+}
+
+impl Effect {
+    pub fn new(opacity: f32, outline: bool) -> Self {
+        Effect { opacity, outline, clip: None }
+    }
+}
+
+/// A shape for clipping: `"ellipse"` in a `w` × `h` box, or SVG path data in points.
+pub fn clip_curve(shape: &str, w: f64, h: f64) -> Result<Curve, String> {
+    use kurbo::Shape as _;
+    let path = if shape.trim() == "ellipse" {
+        kurbo::Ellipse::new((w / 2.0, h / 2.0), (w / 2.0, h / 2.0), 0.0).to_path(0.01)
+    } else {
+        kurbo::BezPath::from_svg(shape).map_err(|e| format!("the clip path can't be read: {e}"))?
+    };
+    let pt = |p: kurbo::Point| Point::new(Abs::pt(p.x), Abs::pt(p.y));
+    let mut curve = Curve::new();
+    let mut last = kurbo::Point::ZERO;
+    for el in path.elements() {
+        match *el {
+            kurbo::PathEl::MoveTo(p) => {
+                curve.move_(pt(p));
+                last = p;
+            }
+            kurbo::PathEl::LineTo(p) => {
+                curve.line(pt(p));
+                last = p;
+            }
+            kurbo::PathEl::QuadTo(c, p) => {
+                let c1 = last + (c - last) * (2.0 / 3.0);
+                let c2 = p + (c - p) * (2.0 / 3.0);
+                curve.cubic(pt(c1), pt(c2), pt(p));
+                last = p;
+            }
+            kurbo::PathEl::CurveTo(c1, c2, p) => {
+                curve.cubic(pt(c1), pt(c2), pt(p));
+                last = p;
+            }
+            kurbo::PathEl::ClosePath => curve.close(),
+        }
+    }
+    Ok(curve)
 }
 
 /// The document with `effects` applied (unchanged when there are none).
@@ -30,7 +75,7 @@ pub fn apply(doc: PagedDocument, effects: &[Effect]) -> PagedDocument {
     let mut pages = doc.pages().to_vec();
     let mut changed = false;
     for page in &mut pages {
-        changed |= visit(&mut page.frame, effects, Effect { opacity: 1.0, outline: false });
+        changed |= visit(&mut page.frame, effects, Effect::new(1.0, false));
     }
     if !changed {
         return doc;
@@ -49,10 +94,15 @@ fn visit(frame: &mut Frame, effects: &[Effect], active: Effect) -> bool {
     frame.retain(|item| {
         match item {
             FrameItem::Group(g) => {
-                let mut a = active;
+                let mut a = active.clone();
+                a.clip = None;
                 if let Some(e) = index_of(g.label).and_then(|i| effects.get(i)) {
                     a.opacity *= e.opacity;
                     a.outline |= e.outline;
+                    if let Some(c) = &e.clip {
+                        g.clip = Some(c.clone());
+                        changed = true;
+                    }
                 }
                 changed |= visit(&mut g.frame, effects, a);
             }

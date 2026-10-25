@@ -130,7 +130,21 @@ impl Gen<'_> {
         if part.is_empty() {
             return;
         }
-        let (escaped, escapes) = escape(part);
+        let (part, inserted) = if self.hyphenating && !self.hyphenation.is_empty() {
+            super::escape::with_breaks(part, &self.hyphenation)
+        } else {
+            (part.to_string(), Vec::new())
+        };
+        let (escaped, mut escapes) = escape(&part);
+        if !inserted.is_empty() {
+            // Where the added characters landed after escaping: each byte
+            // moves right by the backslashes added before it.
+            let sources: Vec<usize> = escapes.iter().enumerate().map(|(i, e)| e - i).collect();
+            for q in inserted {
+                escapes.push(q + sources.partition_point(|&p| p < q));
+            }
+            escapes.sort_unstable();
+        }
         match node {
             Some(n) => self.text_segment(n, offset, &escaped, escapes),
             None => self.raw(&escaped),

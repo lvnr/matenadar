@@ -62,6 +62,31 @@ pub struct Place {
     pub stroke_align: Option<String>,
 }
 
+/// What content is clipped to: `true` for the element's box, `"ellipse"`
+/// for the ellipse in it, or SVG path data in points from its top-left
+/// corner (`"M 0 40 L 40 0 L 80 40 Z"`). Holes in a path need the opposite
+/// winding direction to its outline, as drawing tools write them.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum Clip {
+    Box(bool),
+    Shape(String),
+}
+
+impl Clip {
+    pub fn is_box(&self) -> bool {
+        matches!(self, Clip::Box(true))
+    }
+
+    /// The shape, when it is not the box.
+    pub fn shape(&self) -> Option<&str> {
+        match self {
+            Clip::Shape(s) => Some(s.as_str()),
+            Clip::Box(_) => None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Origin {
@@ -188,7 +213,7 @@ pub struct TextFrame {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gutter: Option<Length>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub clip: Option<bool>,
+    pub clip: Option<Clip>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -210,6 +235,9 @@ pub struct ImageEl {
     pub stroke: Option<Border>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flip: Option<String>,
+    /// Show the picture through a shape (see `Clip`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub clip: Option<Clip>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -283,9 +311,9 @@ pub struct GroupEl {
     #[serde(flatten)]
     pub place: Place,
     pub children: Vec<Element>,
-    /// Clip the children to the group's `w` × `h`.
+    /// Clip the children: `true` to the group's `w` × `h`, or to a shape.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub clip: Option<bool>,
+    pub clip: Option<Clip>,
     /// Scale the group about its top-left corner (1 = actual size).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub scale: Option<f64>,

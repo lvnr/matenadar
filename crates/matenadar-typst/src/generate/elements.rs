@@ -2,7 +2,7 @@
 
 use matenadar_model::Length;
 use matenadar_model::block::{Block, Para};
-use matenadar_model::element::{Element, GridCell, GridRow, LetterGrid, Lettering, Origin, Place, TextFrame};
+use matenadar_model::element::{Clip, Element, GridCell, GridRow, LetterGrid, Lettering, Origin, Place, TextFrame};
 use matenadar_model::style::{Stroke, TextStyle};
 use matenadar_model::units::num;
 
@@ -45,9 +45,6 @@ impl Gen<'_> {
                 return;
             }
             Element::Image(i) => {
-                if place.opacity.is_some_and(|o| o < 1.0) {
-                    self.problem(format!("{}: opacity is not supported on photographs (raster images) yet", place.id.as_deref().unwrap_or("an image")));
-                }
                 let mut args = Vec::new();
                 if let Some(w) = &place.w {
                     args.push(format!("width: {}", w.typst()));
@@ -57,9 +54,15 @@ impl Gen<'_> {
                 }
                 args.push(format!("fit: {}", str_lit(i.fit.as_deref().unwrap_or("cover"))));
                 let asset = self.asset(&i.src);
-                let focused = match (&asset, i.focus, place.w.and_then(|w| w.pt()), place.h.and_then(|h| h.pt())) {
-                    (Some(p), Some((fx, fy)), Some(bw), Some(bh)) if i.fit.as_deref().unwrap_or("cover") == "cover" => {
-                        crate::glyphs::image_size(&self.root.join(p.trim_start_matches('/'))).map(|(iw, ih)| {
+                let op = place.opacity.unwrap_or(1.0) * self.opacity;
+                // Faded, the picture is drawn from a copy with its alpha scaled.
+                let shown = match &asset {
+                    Some(p) if op < 1.0 => self.faded(p, op).or_else(|| Some(p.clone())),
+                    other => other.clone(),
+                };
+                let focused = match (&asset, &shown, i.focus, place.w.and_then(|w| w.pt()), place.h.and_then(|h| h.pt())) {
+                    (Some(orig), Some(p), Some((fx, fy)), Some(bw), Some(bh)) if i.fit.as_deref().unwrap_or("cover") == "cover" => {
+                        crate::glyphs::image_size(&self.root.join(orig.trim_start_matches('/'))).map(|(iw, ih)| {
                             let scale = (bw / iw as f64).max(bh / ih as f64);
                             let (sw, sh) = (iw as f64 * scale, ih as f64 * scale);
                             format!(
@@ -76,7 +79,7 @@ impl Gen<'_> {
                     }
                     _ => None,
                 };
-                let mut body = match (focused, asset) {
+                let mut body = match (focused, shown) {
                     (Some(f), _) => f,
                     (None, Some(p)) => format!("image({}, {})", str_lit(&p), args.join(", ")),
                     (None, None) => format!(
@@ -180,7 +183,7 @@ impl Gen<'_> {
                 if let Some(h) = &place.h {
                     args.push(format!("height: {}", h.typst()));
                 }
-                if g.clip == Some(true) {
+                if g.clip.as_ref().is_some_and(Clip::is_box) {
                     args.push("clip: true".into());
                 }
                 if let Some(f) = &g.fill {
@@ -268,8 +271,17 @@ impl Gen<'_> {
         let op = place.opacity.unwrap_or(1.0) as f32;
         let decorative = place.decorative == Some(true);
         let drawing = matches!(e, Element::Svg(_) | Element::Path(_) | Element::Lettering(_) | Element::Image(_));
-        if !drawing && (op < 1.0 || decorative) {
-            body = self.with_effect(&body, Effect { opacity: op, outline: decorative });
+        let clip = match e {
+            Element::Group(g) => g.clip.as_ref().and_then(Clip::shape),
+            Element::Image(i) => i.clip.as_ref().and_then(Clip::shape),
+            _ => None,
+        };
+        let clip = clip.and_then(|c| self.clip_curve(c, &place));
+        if (!drawing && (op < 1.0 || decorative)) || clip.is_some() {
+            // Drawings have faded themselves; the box only clips them.
+            let mut effect = if drawing { Effect::new(1.0, false) } else { Effect::new(op, decorative) };
+            effect.clip = clip;
+            body = self.with_effect(&body, effect);
         }
         body = self.rotated(&place, rot, body);
         if let Some(skew) = self.skew_of(&place) {
@@ -336,6 +348,57 @@ impl Gen<'_> {
     }
 
     /// A file made by the compiler, served under `/@mt/`.
+    /// The curve for a clip shape, in the element's coordinates.
+    fn clip_curve(&mut self, shape: &str, place: &Place) -> Option<typst::visualize::Curve> {
+        let (w, h) = (place.w.and_then(|w| w.pt()), place.h.and_then(|h| h.pt()));
+        if shape.trim() == "ellipse" && (w.is_none() || h.is_none()) {
+            self.problem(format!("{}: an ellipse clip needs w and h in points", place.id.as_deref().unwrap_or("an element")));
+            return None;
+        }
+        match crate::effects::clip_curve(shape, w.unwrap_or(0.0), h.unwrap_or(0.0)) {
+            Ok(c) => Some(c),
+            Err(e) => {
+                self.problem(format!("{}: {e}", place.id.as_deref().unwrap_or("an element")));
+                None
+            }
+        }
+    }
+
+    /// A copy of the picture at `path` (under the root) with its opacity
+    /// scaled: an SVG wrapped in a translucent group, a raster image with
+    /// its alpha multiplied. Kept between builds, so edits stay fast.
+    fn faded(&mut self, path: &str, opacity: f64) -> Option<String> {
+        static CACHE: std::sync::OnceLock<std::sync::Mutex<Vec<((std::path::PathBuf, u64, std::time::SystemTime), Vec<u8>, &'static str)>>> =
+            std::sync::OnceLock::new();
+        let file = self.root.join(path.trim_start_matches('/'));
+        let modified = std::fs::metadata(&file).and_then(|m| m.modified()).ok()?;
+        let key = (file.clone(), (opacity * 1000.0).round() as u64, modified);
+        let cache = CACHE.get_or_init(Default::default);
+        if let Some((_, data, ext)) = cache.lock().ok()?.iter().find(|(k, _, _)| *k == key).cloned() {
+            return Some(self.file(ext, data));
+        }
+        let bytes = std::fs::read(&file).ok()?;
+        let (data, ext) = if file.extension().is_some_and(|e| e.eq_ignore_ascii_case("svg")) {
+            let svg = String::from_utf8(bytes).ok()?;
+            (svg_group(&svg, &format!(r#"opacity="{}""#, num(opacity))).into_bytes(), "svg")
+        } else {
+            let mut img = image::load_from_memory(&bytes).ok()?.to_rgba8();
+            for px in img.pixels_mut() {
+                px.0[3] = (px.0[3] as f64 * opacity).round() as u8;
+            }
+            let mut out = Vec::new();
+            image::DynamicImage::ImageRgba8(img).write_to(&mut std::io::Cursor::new(&mut out), image::ImageFormat::Png).ok()?;
+            (out, "png")
+        };
+        if let Ok(mut c) = cache.lock() {
+            if c.len() >= 32 {
+                c.remove(0);
+            }
+            c.push((key, data.clone(), ext));
+        }
+        Some(self.file(ext, data))
+    }
+
     pub fn file(&mut self, ext: &str, data: Vec<u8>) -> String {
         self.files += 1;
         self.virt.insert(&format!("f{}.{ext}", self.files), data)
@@ -430,13 +493,16 @@ impl Gen<'_> {
         if let Some(r) = &t.radius {
             args.push(format!("radius: {}", radius(r, false)));
         }
-        if t.clip == Some(true) {
+        if t.clip.as_ref().is_some_and(Clip::is_box) {
             args.push("clip: true".into());
         }
         let mut frame = format!("block({}, c)", args.join(", "));
         let op = place.opacity.unwrap_or(1.0) as f32;
-        if op < 1.0 || place.decorative == Some(true) {
-            frame = self.with_effect(&frame, Effect { opacity: op, outline: place.decorative == Some(true) });
+        let clip = t.clip.as_ref().and_then(Clip::shape).and_then(|c| self.clip_curve(c, place));
+        if op < 1.0 || place.decorative == Some(true) || clip.is_some() {
+            let mut effect = Effect::new(op, place.decorative == Some(true));
+            effect.clip = clip;
+            frame = self.with_effect(&frame, effect);
         }
         frame = self.rotated(place, rot, frame);
         let check = match (&hi, shrink, &place.id) {

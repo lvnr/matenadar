@@ -1,0 +1,674 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "Reverse Coloring for People Who Can’t Draw",
+  "author": "Nell Bramley",
+  "lang": "en-US"
+ },
+ "fonts": [
+  "book/design/fonts"
+ ],
+ "design": {
+  "colors": {
+   "heading": "#26221f",
+   "text": "#3a3531"
+  },
+  "base": {
+   "font": "RCSans",
+   "size": 11,
+   "line_height": 1.2,
+   "hyphenate": false,
+   "ligatures": true
+  },
+  "styles": {
+   "title": {
+    "font": "RCSerif",
+    "size": 68,
+    "line_height": 0.94,
+    "tracking": "-0.018em",
+    "color": "heading",
+    "balance": false
+   },
+   "subtitle": {
+    "font": "RCSans",
+    "size": 13.2,
+    "line_height": "19pt",
+    "color": "text",
+    "balance": false
+   },
+   "author": {
+    "font": "RCSansBold",
+    "size": 8.6,
+    "line_height": 1,
+    "tracking": "0.24em",
+    "case": "upper",
+    "color": "text"
+   },
+   "marks-h1": {
+    "font": "RCSerif",
+    "size": 56,
+    "line_height": 0.96,
+    "tracking": "-0.018em"
+   },
+   "marks-intro": {
+    "font": "RCSans",
+    "size": 12,
+    "line_height": "17.6pt"
+   },
+   "mark-n": {
+    "font": "RCSerif",
+    "size": 19,
+    "line_height": 1
+   },
+   "mark-name": {
+    "font": "RCSerif",
+    "size": 27,
+    "line_height": 1,
+    "tracking": "-0.01em",
+    "space_before": "0.04in",
+    "space_after": "0.08in"
+   },
+   "mark-short": {
+    "font": "RCSans",
+    "size": 10.4,
+    "line_height": "14.8pt"
+   },
+   "over": {
+    "font": "RCSansBold",
+    "size": 7.7,
+    "line_height": 1,
+    "tracking": "0.2em",
+    "case": "upper"
+   },
+   "lesson-h1": {
+    "font": "RCSerif",
+    "size": 74,
+    "line_height": 0.92,
+    "tracking": "-0.02em"
+   },
+   "teach": {
+    "font": "RCSans",
+    "size": 11.4,
+    "line_height": "16.6pt"
+   },
+   "caption": {
+    "font": "RCSansBold",
+    "size": 7.2,
+    "line_height": 1,
+    "tracking": "0.18em",
+    "case": "upper"
+   },
+   "no": {
+    "font": "RCSerif",
+    "size": 50,
+    "line_height": 0.8,
+    "tracking": "-0.01em"
+   },
+   "part": {
+    "font": "RCSansBold",
+    "size": 7.7,
+    "line_height": 1,
+    "tracking": "0.2em",
+    "case": "upper"
+   },
+   "say": {
+    "font": "RCSerif",
+    "size": 33,
+    "line_height": 1.12,
+    "tracking": "-0.008em",
+    "balance": false
+   },
+   "stuck": {
+    "font": "RCSans",
+    "size": 9.2,
+    "line_height": 1.45
+   },
+   "cutnote": {
+    "font": "RCSans",
+    "size": 6.2,
+    "line_height": 1,
+    "tracking": "0.14em",
+    "case": "upper"
+   }
+  },
+  "spans": {
+   "stuck-head": {
+    "font": "RCSansBold",
+    "size": 7.2,
+    "tracking": "0.14em",
+    "case": "upper"
+   }
+  },
+  "masters": {
+   "sheet": {
+    "width": "8in",
+    "height": "10in",
+    "bleed": "0.125in",
+    "margins": {
+     "top": "0.7200in",
+     "bottom": "0.6200in",
+     "inside": "0.9500in",
+     "outside": "0.6600in"
+    }
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "p1",
+   "master": "sheet",
+   "page_from": 1,
+   "elements": [
+    {
+     "type": "image",
+     "src": "book/visuals/accepted/title-wash-r1.jpg",
+     "x": 0,
+     "y": "-0.125in",
+     "w": "8.125in",
+     "h": "10.25in",
+     "fit": "stretch",
+     "decorative": true
+    },
+    {
+     "type": "text",
+     "x": "0.8200in",
+     "y": "1.0500in",
+     "w": "5.1145in",
+     "style": "title",
+     "text": "Reverse Coloring for People Who Can’t Draw",
+     "id": "title"
+    },
+    {
+     "type": "text",
+     "x": "0.8400in",
+     "y": "4.2500in",
+     "w": "4.1202in",
+     "style": "subtitle",
+     "text": "50 Watercolor Pages to Finish with One Pen, and Seven Small Marks That Turn Color into Pictures",
+     "id": "subtitle"
+    },
+    {
+     "type": "text",
+     "x": "0.8400in",
+     "y": "5.5000in",
+     "w": "4.0000in",
+     "style": "author",
+     "text": "Nell Bramley",
+     "id": "author"
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "p4",
+   "master": "sheet",
+   "start": "verso",
+   "page_from": 4,
+   "fill": "#ffeae9",
+   "elements": [
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "0.7800in",
+     "w": "6.3900in",
+     "style": "marks-h1",
+     "text": "Seven small marks",
+     "set": {
+      "color": "#672f2f"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "1.9800in",
+     "w": "5.4900in",
+     "style": "marks-intro",
+     "text": "You do not need to be able to draw. You need one of these. Each of them turns a patch of color into something, and each has six paintings in this book made for it.",
+     "set": {
+      "color": "#672f2f"
+     }
+    },
+    {
+     "type": "image",
+     "src": "book/visuals/examples/edge-before.jpg",
+     "x": "0.6600in",
+     "y": "3.3000in",
+     "w": "1.7200in",
+     "h": "1.7200in",
+     "fit": "stretch"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"0.3in\" height=\"0.16in\" viewBox=\"0 0 0.3 0.16\"><g stroke=\"#a05958\" fill=\"none\" stroke-width=\".012\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\".01\" y1=\".08\" x2=\".28\" y2=\".08\"/><polyline points=\".21,.02 .28,.08 .21,.14\"/></g></svg>",
+     "x": "2.5500in",
+     "y": "4.0800in",
+     "w": "0.26in",
+     "h": "0.16in",
+     "fit": "contain"
+    },
+    {
+     "type": "image",
+     "src": "book/visuals/examples/edge-after.jpg",
+     "x": "2.9800in",
+     "y": "3.3000in",
+     "w": "1.7200in",
+     "h": "1.7200in",
+     "fit": "stretch"
+    },
+    {
+     "type": "text",
+     "x": "4.9500in",
+     "y": "3.3000in",
+     "w": "2.1000in",
+     "h": "1.7200in",
+     "valign": "middle",
+     "set": {
+      "color": "#672f2f"
+     },
+     "blocks": [
+      {
+       "type": "p",
+       "style": "mark-n",
+       "text": "1",
+       "set": {
+        "color": "#df8987"
+       }
+      },
+      {
+       "type": "p",
+       "style": "mark-name",
+       "text": "An edge"
+      },
+      {
+       "type": "p",
+       "style": "mark-short",
+       "text": "Draw a line where two colors meet."
+      }
+     ]
+    },
+    {
+     "type": "image",
+     "src": "book/visuals/examples/pattern-before.jpg",
+     "x": "0.6600in",
+     "y": "5.3200in",
+     "w": "1.7200in",
+     "h": "1.7200in",
+     "fit": "stretch"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"0.3in\" height=\"0.16in\" viewBox=\"0 0 0.3 0.16\"><g stroke=\"#a05958\" fill=\"none\" stroke-width=\".012\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\".01\" y1=\".08\" x2=\".28\" y2=\".08\"/><polyline points=\".21,.02 .28,.08 .21,.14\"/></g></svg>",
+     "x": "2.5500in",
+     "y": "6.1000in",
+     "w": "0.26in",
+     "h": "0.16in",
+     "fit": "contain"
+    },
+    {
+     "type": "image",
+     "src": "book/visuals/examples/pattern-after.jpg",
+     "x": "2.9800in",
+     "y": "5.3200in",
+     "w": "1.7200in",
+     "h": "1.7200in",
+     "fit": "stretch"
+    },
+    {
+     "type": "text",
+     "x": "4.9500in",
+     "y": "5.3200in",
+     "w": "2.1000in",
+     "h": "1.7200in",
+     "valign": "middle",
+     "set": {
+      "color": "#672f2f"
+     },
+     "blocks": [
+      {
+       "type": "p",
+       "style": "mark-n",
+       "text": "2",
+       "set": {
+        "color": "#df8987"
+       }
+      },
+      {
+       "type": "p",
+       "style": "mark-name",
+       "text": "A pattern"
+      },
+      {
+       "type": "p",
+       "style": "mark-short",
+       "text": "Fill one color with dots, stripes or scales."
+      }
+     ]
+    },
+    {
+     "type": "image",
+     "src": "book/visuals/examples/eye-before.jpg",
+     "x": "0.6600in",
+     "y": "7.3400in",
+     "w": "1.7200in",
+     "h": "1.7200in",
+     "fit": "stretch"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"0.3in\" height=\"0.16in\" viewBox=\"0 0 0.3 0.16\"><g stroke=\"#a05958\" fill=\"none\" stroke-width=\".012\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\".01\" y1=\".08\" x2=\".28\" y2=\".08\"/><polyline points=\".21,.02 .28,.08 .21,.14\"/></g></svg>",
+     "x": "2.5500in",
+     "y": "8.1200in",
+     "w": "0.26in",
+     "h": "0.16in",
+     "fit": "contain"
+    },
+    {
+     "type": "image",
+     "src": "book/visuals/examples/eye-after.jpg",
+     "x": "2.9800in",
+     "y": "7.3400in",
+     "w": "1.7200in",
+     "h": "1.7200in",
+     "fit": "stretch"
+    },
+    {
+     "type": "text",
+     "x": "4.9500in",
+     "y": "7.3400in",
+     "w": "2.1000in",
+     "h": "1.7200in",
+     "valign": "middle",
+     "set": {
+      "color": "#672f2f"
+     },
+     "blocks": [
+      {
+       "type": "p",
+       "style": "mark-n",
+       "text": "3",
+       "set": {
+        "color": "#df8987"
+       }
+      },
+      {
+       "type": "p",
+       "style": "mark-name",
+       "text": "An eye"
+      },
+      {
+       "type": "p",
+       "style": "mark-short",
+       "text": "One dot, and the shape looks back at you."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "p8",
+   "master": "sheet",
+   "start": "verso",
+   "page_from": 8,
+   "fill": "#ffeae9",
+   "elements": [
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "0.7200in",
+     "w": "4.0000in",
+     "style": "over",
+     "text": "The first mark",
+     "set": {
+      "color": "#a05958"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.6300in",
+     "y": "0.9800in",
+     "w": "6.3900in",
+     "style": "lesson-h1",
+     "text": "An edge",
+     "set": {
+      "color": "#672f2f"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "2.4200in",
+     "w": "3.0200in",
+     "style": "teach",
+     "text": "The easiest mark there is. Wherever two colors meet, or a color stops at the white paper, draw a line along the join. You are not inventing anything yet, only finding what is already there. Three or four outlines in, the page starts to look like something, and you will know what to add.",
+     "set": {
+      "color": "#672f2f"
+     },
+     "id": "teach"
+    },
+    {
+     "type": "image",
+     "src": "book/visuals/examples/edge-after-full.jpg",
+     "x": "4.1700in",
+     "y": "2.47in",
+     "w": "2.88in",
+     "h": "3.6in",
+     "fit": "stretch"
+    },
+    {
+     "type": "text",
+     "x": "4.1700in",
+     "y": "6.1700in",
+     "w": "2.8800in",
+     "style": "caption",
+     "text": "One way to use it",
+     "set": {
+      "color": "#a05958"
+     }
+    },
+    {
+     "type": "line",
+     "x1": "0.6600in",
+     "y1": "484.24pt",
+     "x2": "7.0500in",
+     "y2": "484.24pt",
+     "stroke": {
+      "width": 0.8,
+      "color": "#df8987"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "7.0200in",
+     "w": "1.5000in",
+     "style": "no",
+     "text": "1",
+     "set": {
+      "size": 34,
+      "color": "#672f2f"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.9329in",
+     "y": "523.978pt",
+     "w": "3in",
+     "style": "part",
+     "text": "An edge",
+     "set": {
+      "color": "#a05958"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "7.6600in",
+     "w": "6.3070in",
+     "style": "say",
+     "text": "Start where two colors overlap. Draw around the new color first.",
+     "set": {
+      "size": 21.5,
+      "line_height": 1.16,
+      "color": "#672f2f"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "9.3800in",
+     "anchor": "bottom-left",
+     "w": "6.3900in",
+     "rotate": 180,
+     "style": "stuck",
+     "set": {
+      "color": "#a05958"
+     },
+     "content": [
+      {
+       "text": "Stuck?",
+       "span": "stuck-head",
+       "color": "#672f2f"
+      },
+      {
+       "text": " ",
+       "word_spacing": "4.937pt"
+      },
+      "Planets, with a ring around one",
+      {
+       "text": " · ",
+       "color": "#df8987",
+       "word_spacing": "0.07in"
+      },
+      "River stones, each with a crack or a stripe",
+      {
+       "text": " · ",
+       "color": "#df8987",
+       "word_spacing": "0.07in"
+      },
+      "Balloons seen from below, strings and all"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "p9",
+   "master": "sheet",
+   "elements": [
+    {
+     "type": "image",
+     "src": "book/visuals/accepted/edge-1-r1.jpg",
+     "x": 0,
+     "y": "-0.125in",
+     "w": "8.125in",
+     "h": "10.25in",
+     "fit": "stretch",
+     "decorative": true
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "p10",
+   "master": "sheet",
+   "fill": "#edeffc",
+   "elements": [
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "0.7200in",
+     "w": "1.5000in",
+     "style": "no",
+     "text": "2",
+     "set": {
+      "size": 50,
+      "color": "#2e3e69"
+     }
+    },
+    {
+     "type": "text",
+     "x": "1.0936in",
+     "y": "82.218pt",
+     "w": "3in",
+     "style": "part",
+     "text": "An edge",
+     "set": {
+      "color": "#5a6ba1"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "3.0500in",
+     "w": "4.1874in",
+     "style": "say",
+     "text": "Outline every piece. Then decide what they add up to.",
+     "set": {
+      "color": "#2e3e69"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.6600in",
+     "y": "9.3800in",
+     "anchor": "bottom-left",
+     "w": "6.3900in",
+     "rotate": 180,
+     "style": "stuck",
+     "set": {
+      "color": "#5a6ba1"
+     },
+     "content": [
+      {
+       "text": "Stuck?",
+       "span": "stuck-head",
+       "color": "#2e3e69"
+      },
+      {
+       "text": " ",
+       "word_spacing": "4.937pt"
+      },
+      "A stained-glass window: thicken the white lines",
+      {
+       "text": " · ",
+       "color": "#8c9edf",
+       "word_spacing": "0.07in"
+      },
+      "Sails and flags in a harbor",
+      {
+       "text": " · ",
+       "color": "#8c9edf",
+       "word_spacing": "0.07in"
+      },
+      "Fields seen from a plane: add a road and a tractor"
+     ]
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"0.2in\" height=\"9in\" viewBox=\"0 0 0.2 9\"><line x1=\".1\" y1=\".42\" x2=\".1\" y2=\"9\" stroke=\"#8c9edf\" stroke-width=\".011\" stroke-dasharray=\".028 .062\" stroke-linecap=\"round\"/><g stroke=\"#5a6ba1\" fill=\"none\" stroke-width=\".012\" stroke-linecap=\"round\"><circle cx=\".06\" cy=\".06\" r=\".032\"/><circle cx=\".14\" cy=\".06\" r=\".032\"/><line x1=\".075\" y1=\".088\" x2=\".128\" y2=\".33\"/><line x1=\".125\" y1=\".088\" x2=\".072\" y2=\".33\"/></g></svg>",
+     "x": "7.4300in",
+     "y": "0.5in",
+     "w": "0.2in",
+     "h": "9in",
+     "decorative": true
+    },
+    {
+     "type": "text",
+     "x": "282.02pt",
+     "y": "320.9pt",
+     "w": "504.0pt",
+     "h": "6.2pt",
+     "rotate": 90,
+     "style": "cutnote",
+     "set": {
+      "color": "#8c9edf"
+     },
+     "text": "Cut here to take out the painting on the other side",
+     "decorative": true
+    }
+   ]
+  }
+ ]
+}

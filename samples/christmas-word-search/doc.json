@@ -1,0 +1,3771 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "Christmas Word Search: Hidden Messages & Festive Facts",
+  "author": "Nell Bramley",
+  "lang": "en-US"
+ },
+ "design": {
+  "colors": {
+   "ink": "#000000",
+   "soft": "#6b6b6b",
+   "loop": "#cccccc"
+  },
+  "base": {
+   "font": "Chaparral Pro",
+   "size": 12,
+   "color": "ink",
+   "hyphenate": false
+  },
+  "styles": {
+   "head": {
+    "font": "Chaparral Pro",
+    "weight": 700,
+    "size": 30.8842,
+    "line_height": "32.877pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "step-head": {
+    "font": "Chaparral Pro",
+    "weight": 700,
+    "size": 15.9402,
+    "line_height": "18.929pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "step-body": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 13.1507,
+    "line_height": "17.534pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "row-label": {
+    "font": "Source Sans Pro",
+    "weight": 600,
+    "size": 11.5567,
+    "line_height": "13.948pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ]
+   },
+   "row-note": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 12.3537,
+    "line_height": "13.948pt",
+    "features": [
+     "lnum"
+    ],
+    "italic": true
+   },
+   "label": {
+    "font": "Source Sans Pro",
+    "weight": 600,
+    "size": 9.3649,
+    "line_height": "9.963pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ],
+    "case": "upper",
+    "tracking": "0.09em",
+    "word_spacing": "-0.09em"
+   },
+   "label-ex": {
+    "font": "Source Sans Pro",
+    "weight": 600,
+    "size": 8.5679,
+    "line_height": "8.966pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ],
+    "case": "upper",
+    "tracking": "0.09em",
+    "word_spacing": "-0.09em"
+   },
+   "example": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 12.5529,
+    "line_height": "16.936pt",
+    "features": [
+     "lnum"
+    ],
+    "italic": true
+   },
+   "folio": {
+    "font": "Chaparral Pro",
+    "weight": 700,
+    "size": 11.457,
+    "line_height": "11.955pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "foot": {
+    "font": "Source Sans Pro",
+    "weight": 400,
+    "size": 7.5716,
+    "line_height": "7.970pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ],
+    "case": "upper",
+    "tracking": "0.09em",
+    "word_spacing": "-0.09em"
+   },
+   "foot-ref": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 11.9552,
+    "line_height": "12.951pt",
+    "features": [
+     "lnum"
+    ],
+    "italic": true
+   },
+   "chapter-label": {
+    "font": "Source Sans Pro",
+    "weight": 600,
+    "size": 10.9589,
+    "line_height": "10.959pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ],
+    "case": "upper",
+    "tracking": "0.09em",
+    "word_spacing": "-0.09em",
+    "align": "center"
+   },
+   "chapter-title": {
+    "font": "Chaparral Pro",
+    "weight": 700,
+    "size": 34.8692,
+    "line_height": "39.851pt",
+    "features": [
+     "lnum"
+    ],
+    "align": "center"
+   },
+   "intro": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 14.1469,
+    "line_height": "19.527pt",
+    "features": [
+     "lnum"
+    ],
+    "italic": true,
+    "align": "center"
+   },
+   "toc-num": {
+    "font": "Source Sans Pro",
+    "weight": 600,
+    "size": 11.457,
+    "line_height": "11.955pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ],
+    "align": "right"
+   },
+   "toc-title": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 12.1544,
+    "line_height": "12.951pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "key": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 12.3537,
+    "line_height": "12.951pt",
+    "features": [
+     "lnum"
+    ],
+    "italic": true,
+    "align": "right"
+   },
+   "puzzle-title": {
+    "font": "Chaparral Pro",
+    "weight": 700,
+    "size": 21.4197,
+    "line_height": "21.420pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "badge": {
+    "font": "Source Sans Pro",
+    "weight": 700,
+    "size": 12.4533,
+    "line_height": "12.453pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ],
+    "color": "#ffffff",
+    "align": "center"
+   },
+   "bank": {
+    "font": "Source Sans Pro",
+    "weight": 400,
+    "size": 13.9477,
+    "line_height": "13.948pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ]
+   },
+   "message-note": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 11.3574,
+    "line_height": "11.955pt",
+    "features": [
+     "lnum"
+    ],
+    "italic": true,
+    "align": "right"
+   },
+   "fact": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 13.1507,
+    "line_height": "15.940pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "sol-title": {
+    "font": "Chaparral Pro",
+    "weight": 700,
+    "size": 13.3499,
+    "line_height": "15.542pt",
+    "features": [
+     "lnum"
+    ],
+    "word_spacing": "0.317pt"
+   },
+   "sol-ref": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 11.5567,
+    "line_height": "13.948pt",
+    "features": [
+     "lnum"
+    ],
+    "italic": true,
+    "word_spacing": "1.010pt"
+   },
+   "sol-label": {
+    "font": "Source Sans Pro",
+    "weight": 600,
+    "size": 8.3686,
+    "line_height": "9.963pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ],
+    "case": "upper",
+    "tracking": "0.09em",
+    "word_spacing": "0.852pt"
+   },
+   "sol-message": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 12.5529,
+    "line_height": "15.940pt",
+    "features": [
+     "lnum"
+    ],
+    "italic": true,
+    "word_spacing": "0.810pt"
+   },
+   "sol-badge": {
+    "font": "Source Sans Pro",
+    "weight": 700,
+    "size": 10.9589,
+    "line_height": "10.959pt",
+    "features": [
+     "lnum",
+     "pnum"
+    ],
+    "color": "#ffffff",
+    "align": "center"
+   }
+  },
+  "spans": {
+   "run-in": {
+    "font": "Source Sans Pro",
+    "weight": 600,
+    "size": 9.4,
+    "case": "upper",
+    "tracking": "0.09em",
+    "word_spacing": "-0.09em"
+   },
+   "dot": {
+    "font": "Chaparral Pro",
+    "weight": 400,
+    "size": 10.322,
+    "baseline": "-0.480pt"
+   }
+  },
+  "masters": {
+   "page": {
+    "width": "8in",
+    "height": "10in",
+    "margins": {
+     "top": "0.41in",
+     "bottom": "0.5in",
+     "inside": "1.04in",
+     "outside": "0.9250in"
+    },
+    "foreground": [
+     {
+      "type": "text",
+      "x": "0.9250in",
+      "y": "681.033pt",
+      "w": "1.0000in",
+      "style": "folio",
+      "content": [
+       {
+        "field": "page"
+       }
+      ],
+      "when": "verso"
+     },
+     {
+      "type": "text",
+      "x": "6.0750in",
+      "y": "681.033pt",
+      "w": "1.0000in",
+      "style": "folio",
+      "set": {
+       "align": "right"
+      },
+      "content": [
+       {
+        "field": "page"
+       }
+      ],
+      "when": "recto"
+     },
+     {
+      "type": "text",
+      "x": "1.9425in",
+      "y": "683.083pt",
+      "w": "4.0000in",
+      "style": "foot",
+      "set": {
+       "align": "center"
+      },
+      "content": [
+       {
+        "field": "section.title"
+       }
+      ],
+      "when": "verso"
+     },
+     {
+      "type": "text",
+      "x": "2.0575in",
+      "y": "683.083pt",
+      "w": "4.0000in",
+      "style": "foot",
+      "set": {
+       "align": "center"
+      },
+      "content": [
+       {
+        "field": "section.title"
+       }
+      ],
+      "when": "recto"
+     }
+    ]
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "filler1",
+   "master": "page",
+   "elements": []
+  },
+  {
+   "type": "page",
+   "id": "howto",
+   "master": "page",
+   "page_from": 4,
+   "layers": true,
+   "elements": [
+    {
+     "type": "svg",
+     "src": "book/design/art/knit/band-00.svg",
+     "x": "0.9250in",
+     "y": "0.4100in",
+     "w": "6.0350in",
+     "h": "0.1900in",
+     "fit": "stretch",
+     "decorative": true
+    },
+    {
+     "type": "text",
+     "x": "0.9250in",
+     "y": "69.749pt",
+     "w": "6.0000in",
+     "style": "head",
+     "text": "How to Solve"
+    },
+    {
+     "type": "ellipse",
+     "x": "0.9250in",
+     "y": "1.7400in",
+     "w": "0.4in",
+     "h": "0.4in",
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "x": "0.6250in",
+     "y": "131.171pt",
+     "w": "1.0000in",
+     "style": "badge",
+     "set": {
+      "align": "center"
+     },
+     "text": "1"
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "128.910pt",
+     "w": "5.3800in",
+     "style": "step-head",
+     "text": "Start anywhere."
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "150.302pt",
+     "w": "5.4633in",
+     "style": "step-body",
+     "content": [
+      "Every puzzle stands on its own, so open the book wherever you like."
+     ]
+    },
+    {
+     "type": "ellipse",
+     "x": "0.9250in",
+     "y": "2.4295in",
+     "w": "0.4in",
+     "h": "0.4in",
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "x": "0.6250in",
+     "y": "180.815pt",
+     "w": "1.0000in",
+     "style": "badge",
+     "set": {
+      "align": "center"
+     },
+     "text": "2"
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "178.554pt",
+     "w": "5.3800in",
+     "style": "step-head",
+     "text": "Find the listed words."
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "199.946pt",
+     "w": "5.4633in",
+     "style": "step-body",
+     "content": [
+      "Spaces are left out of the grid, so RED RIBBON hides as REDRIBBON.",
+      {
+       "br": true
+      },
+      "Each word is there exactly once, and words may cross and share a letter.",
+      {
+       "br": true
+      },
+      "Loop each word in the grid, then cross it off the list."
+     ]
+    },
+    {
+     "type": "ellipse",
+     "x": "0.9250in",
+     "y": "3.6061in",
+     "w": "0.4in",
+     "h": "0.4in",
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "x": "0.6250in",
+     "y": "265.528pt",
+     "w": "1.0000in",
+     "style": "badge",
+     "set": {
+      "align": "center"
+     },
+     "text": "3"
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "263.267pt",
+     "w": "5.3800in",
+     "style": "step-head",
+     "text": "Follow the arrows."
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "284.659pt",
+     "w": "5.4633in",
+     "style": "step-body",
+     "content": [
+      "A small key above each word list shows which ways the words run. The",
+      {
+       "br": true
+      },
+      "book starts gently and adds directions as it goes:"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "328.539pt",
+     "w": "1.4200in",
+     "style": "row-label",
+     "text": "Chapters 1 and 2"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16.240pt\" height=\"6.454pt\" viewBox=\"0 0 16.240 6.454\"><path d=\"M 2.000 3.227 L 11.660 3.227\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 13.451 3.227 L 11.024 4.454 L 11.837 3.227 L 11.024 2.000 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "212.560pt",
+     "y": "333.874pt",
+     "w": "16.240pt",
+     "h": "6.454pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"6.454pt\" height=\"16.240pt\" viewBox=\"0 0 6.454 16.240\"><path d=\"M 3.227 2.000 L 3.227 11.660\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 3.227 13.451 L 2.000 11.024 L 3.227 11.837 L 4.454 11.024 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "234.013pt",
+     "y": "328.981pt",
+     "w": "6.454pt",
+     "h": "16.240pt"
+    },
+    {
+     "type": "text",
+     "x": "4.8850in",
+     "y": "329.682pt",
+     "w": "2.0000in",
+     "style": "row-note",
+     "text": "across and down"
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "350.058pt",
+     "w": "1.4200in",
+     "style": "row-label",
+     "text": "Chapters 3 to 5"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16.240pt\" height=\"6.454pt\" viewBox=\"0 0 16.240 6.454\"><path d=\"M 2.000 3.227 L 11.660 3.227\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 13.451 3.227 L 11.024 4.454 L 11.837 3.227 L 11.024 2.000 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "212.560pt",
+     "y": "355.393pt",
+     "w": "16.240pt",
+     "h": "6.454pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"6.454pt\" height=\"16.240pt\" viewBox=\"0 0 6.454 16.240\"><path d=\"M 3.227 2.000 L 3.227 11.660\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 3.227 13.451 L 2.000 11.024 L 3.227 11.837 L 4.454 11.024 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "234.013pt",
+     "y": "350.500pt",
+     "w": "6.454pt",
+     "h": "16.240pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.655pt\" height=\"12.655pt\" viewBox=\"0 0 12.655 12.655\"><path d=\"M 2.000 2.000 L 8.831 8.831\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 10.097 10.097 L 7.514 9.249 L 8.956 8.956 L 9.249 7.514 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "247.473pt",
+     "y": "352.293pt",
+     "w": "12.655pt",
+     "h": "12.655pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.655pt\" height=\"12.655pt\" viewBox=\"0 0 12.655 12.655\"><path d=\"M 2.000 10.655 L 8.831 3.824\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 10.097 2.558 L 9.249 5.141 L 8.956 3.699 L 7.514 3.406 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "264.033pt",
+     "y": "352.293pt",
+     "w": "12.655pt",
+     "h": "12.655pt"
+    },
+    {
+     "type": "text",
+     "x": "4.8850in",
+     "y": "351.202pt",
+     "w": "2.0000in",
+     "style": "row-note",
+     "text": "two diagonals join in"
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "371.577pt",
+     "w": "1.4200in",
+     "style": "row-label",
+     "text": "Chapters 6 to 8"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16.240pt\" height=\"6.454pt\" viewBox=\"0 0 16.240 6.454\"><path d=\"M 2.000 3.227 L 11.660 3.227\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 13.451 3.227 L 11.024 4.454 L 11.837 3.227 L 11.024 2.000 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "212.560pt",
+     "y": "376.913pt",
+     "w": "16.240pt",
+     "h": "6.454pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"6.454pt\" height=\"16.240pt\" viewBox=\"0 0 6.454 16.240\"><path d=\"M 3.227 2.000 L 3.227 11.660\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 3.227 13.451 L 2.000 11.024 L 3.227 11.837 L 4.454 11.024 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "234.013pt",
+     "y": "372.020pt",
+     "w": "6.454pt",
+     "h": "16.240pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.655pt\" height=\"12.655pt\" viewBox=\"0 0 12.655 12.655\"><path d=\"M 2.000 2.000 L 8.831 8.831\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 10.097 10.097 L 7.514 9.249 L 8.956 8.956 L 9.249 7.514 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "247.473pt",
+     "y": "373.812pt",
+     "w": "12.655pt",
+     "h": "12.655pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.655pt\" height=\"12.655pt\" viewBox=\"0 0 12.655 12.655\"><path d=\"M 2.000 10.655 L 8.831 3.824\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 10.097 2.558 L 9.249 5.141 L 8.956 3.699 L 7.514 3.406 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "264.033pt",
+     "y": "373.812pt",
+     "w": "12.655pt",
+     "h": "12.655pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16.240pt\" height=\"6.454pt\" viewBox=\"0 0 16.240 6.454\"><path d=\"M 14.240 3.227 L 4.580 3.227\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 2.789 3.227 L 5.216 2.000 L 4.403 3.227 L 5.216 4.454 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "278.800pt",
+     "y": "376.913pt",
+     "w": "16.240pt",
+     "h": "6.454pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"6.454pt\" height=\"16.240pt\" viewBox=\"0 0 6.454 16.240\"><path d=\"M 3.227 14.240 L 3.227 4.580\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 3.227 2.789 L 4.454 5.216 L 3.227 4.403 L 2.000 5.216 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "300.253pt",
+     "y": "372.020pt",
+     "w": "6.454pt",
+     "h": "16.240pt"
+    },
+    {
+     "type": "text",
+     "x": "4.8850in",
+     "y": "372.721pt",
+     "w": "2.0000in",
+     "style": "row-note",
+     "text": "backward and upward too"
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "393.097pt",
+     "w": "1.4200in",
+     "style": "row-label",
+     "text": "Chapters 9 and 10"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16.240pt\" height=\"6.454pt\" viewBox=\"0 0 16.240 6.454\"><path d=\"M 2.000 3.227 L 11.660 3.227\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 13.451 3.227 L 11.024 4.454 L 11.837 3.227 L 11.024 2.000 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "212.560pt",
+     "y": "398.432pt",
+     "w": "16.240pt",
+     "h": "6.454pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"6.454pt\" height=\"16.240pt\" viewBox=\"0 0 6.454 16.240\"><path d=\"M 3.227 2.000 L 3.227 11.660\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 3.227 13.451 L 2.000 11.024 L 3.227 11.837 L 4.454 11.024 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "234.013pt",
+     "y": "393.539pt",
+     "w": "6.454pt",
+     "h": "16.240pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.655pt\" height=\"12.655pt\" viewBox=\"0 0 12.655 12.655\"><path d=\"M 2.000 2.000 L 8.831 8.831\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 10.097 10.097 L 7.514 9.249 L 8.956 8.956 L 9.249 7.514 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "247.473pt",
+     "y": "395.331pt",
+     "w": "12.655pt",
+     "h": "12.655pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.655pt\" height=\"12.655pt\" viewBox=\"0 0 12.655 12.655\"><path d=\"M 2.000 10.655 L 8.831 3.824\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 10.097 2.558 L 9.249 5.141 L 8.956 3.699 L 7.514 3.406 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "264.033pt",
+     "y": "395.331pt",
+     "w": "12.655pt",
+     "h": "12.655pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16.240pt\" height=\"6.454pt\" viewBox=\"0 0 16.240 6.454\"><path d=\"M 14.240 3.227 L 4.580 3.227\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 2.789 3.227 L 5.216 2.000 L 4.403 3.227 L 5.216 4.454 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "278.800pt",
+     "y": "398.432pt",
+     "w": "16.240pt",
+     "h": "6.454pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"6.454pt\" height=\"16.240pt\" viewBox=\"0 0 6.454 16.240\"><path d=\"M 3.227 14.240 L 3.227 4.580\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 3.227 2.789 L 4.454 5.216 L 3.227 4.403 L 2.000 5.216 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "300.253pt",
+     "y": "393.539pt",
+     "w": "6.454pt",
+     "h": "16.240pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.655pt\" height=\"12.655pt\" viewBox=\"0 0 12.655 12.655\"><path d=\"M 10.655 2.000 L 3.824 8.831\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 2.558 10.097 L 3.406 7.514 L 3.699 8.956 L 5.141 9.249 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "313.713pt",
+     "y": "395.331pt",
+     "w": "12.655pt",
+     "h": "12.655pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12.655pt\" height=\"12.655pt\" viewBox=\"0 0 12.655 12.655\"><path d=\"M 10.655 10.655 L 3.824 3.824\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 2.558 2.558 L 5.141 3.406 L 3.699 3.699 L 3.406 5.141 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "330.273pt",
+     "y": "395.331pt",
+     "w": "12.655pt",
+     "h": "12.655pt"
+    },
+    {
+     "type": "text",
+     "x": "4.8850in",
+     "y": "394.240pt",
+     "w": "2.0000in",
+     "style": "row-note",
+     "text": "all eight directions"
+    },
+    {
+     "type": "ellipse",
+     "x": "0.9250in",
+     "y": "5.8100in",
+     "w": "0.4in",
+     "h": "0.4in",
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "x": "0.6250in",
+     "y": "424.214pt",
+     "w": "1.0000in",
+     "style": "badge",
+     "set": {
+      "align": "center"
+     },
+     "text": "4"
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "421.953pt",
+     "w": "5.3800in",
+     "style": "step-head",
+     "text": "Enjoy the extra."
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "443.345pt",
+     "w": "5.4633in",
+     "style": "step-body",
+     "content": [
+      "Half the puzzles end with a festive fact. The other half hide a message:",
+      {
+       "br": true
+      },
+      "once every word is found, the letters left over spell it out. Read the rows",
+      {
+       "br": true
+      },
+      "from the top, each from left to right, and write the letters on the blanks.",
+      {
+       "br": true
+      },
+      "The blanks are spaced into words; punctuation is left out."
+     ]
+    },
+    {
+     "type": "ellipse",
+     "x": "0.9250in",
+     "y": "7.2267in",
+     "w": "0.4in",
+     "h": "0.4in",
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "x": "0.6250in",
+     "y": "526.212pt",
+     "w": "1.0000in",
+     "style": "badge",
+     "set": {
+      "align": "center"
+     },
+     "text": "5"
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "523.951pt",
+     "w": "5.3800in",
+     "style": "step-head",
+     "text": "Check your work."
+    },
+    {
+     "type": "text",
+     "x": "1.5450in",
+     "y": "545.342pt",
+     "w": "5.4633in",
+     "style": "step-body",
+     "content": [
+      "Solutions begin on page ",
+      {
+       "ref": "sol1"
+      },
+      ", and every puzzle page tells you where to",
+      {
+       "br": true
+      },
+      "find its own."
+     ]
+    },
+    {
+     "type": "line",
+     "x1": "0.9250in",
+     "y1": "8.2800in",
+     "x2": "6.9600in",
+     "y2": "8.2800in",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.9250in",
+     "y": "607.351pt",
+     "w": "6.0000in",
+     "style": "label-ex",
+     "text": "For example"
+    },
+    {
+     "type": "letter-grid",
+     "x": "1.5450in",
+     "y": "8.7000in",
+     "cell": "0.33in",
+     "rows": [
+      "HOLLYJ",
+      "OSTARY"
+     ],
+     "set": {
+      "font": "Source Sans Pro",
+      "weight": 600,
+      "size": 15.9402
+     },
+     "highlights": [
+      {
+       "from": [
+        0,
+        0
+       ],
+       "to": [
+        0,
+        4
+       ],
+       "stroke": {
+        "width": 0.797,
+        "color": "ink"
+       },
+       "thickness": 0.84
+      },
+      {
+       "from": [
+        1,
+        1
+       ],
+       "to": [
+        1,
+        4
+       ],
+       "stroke": {
+        "width": 0.797,
+        "color": "ink"
+       },
+       "thickness": 0.84
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "x": "3.8750in",
+     "y": "625.146pt",
+     "w": "3.1683in",
+     "style": "example",
+     "content": [
+      {
+       "text": "HOLLY and STAR are found. The letters",
+       "word_spacing": "0.548pt"
+      },
+      {
+       "br": true
+      },
+      {
+       "text": "left over, read row by row, spell the hidden",
+       "word_spacing": "0.363pt"
+      },
+      {
+       "br": true
+      },
+      "message: J, O, Y."
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "filler2",
+   "master": "page",
+   "elements": []
+  },
+  {
+   "type": "page",
+   "id": "plate1",
+   "master": "page",
+   "page_from": 6,
+   "elements": [
+    {
+     "type": "svg",
+     "src": "book/design/art/knit/band-01.svg",
+     "x": "0.9250in",
+     "y": "0.4100in",
+     "w": "6.0350in",
+     "h": "0.1900in",
+     "fit": "stretch",
+     "decorative": true
+    },
+    {
+     "type": "svg",
+     "src": "book/design/art/knit/band-01.svg",
+     "x": "0.9250in",
+     "y": "9.4000in",
+     "w": "6.0350in",
+     "h": "0.1900in",
+     "fit": "stretch",
+     "decorative": true
+    },
+    {
+     "type": "rect",
+     "x": "0.9250in",
+     "y": "0.7600in",
+     "w": "6.0350in",
+     "h": "8.4800in",
+     "stroke": {
+      "width": 1.196,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "rect",
+     "x": "0.9850in",
+     "y": "0.8200in",
+     "w": "5.9150in",
+     "h": "8.3600in",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "svg",
+     "src": "book/design/art/plates/chapter-01.svg",
+     "x": "1.0750in",
+     "y": "0.9100in",
+     "w": "5.7350in",
+     "h": "8.1800in",
+     "fit": "contain",
+     "decorative": true
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "chap1",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "svg",
+     "src": "book/design/art/knit/band-01.svg",
+     "x": "1.0400in",
+     "y": "0.4100in",
+     "w": "6.0350in",
+     "h": "0.1900in",
+     "fit": "stretch",
+     "decorative": true
+    },
+    {
+     "type": "text",
+     "x": "1.5575in",
+     "y": "104.385pt",
+     "w": "5.0000in",
+     "style": "chapter-label",
+     "set": {
+      "align": "center"
+     },
+     "text": "Chapter One"
+    },
+    {
+     "type": "text",
+     "x": "1.3158in",
+     "y": "131.475pt",
+     "w": "5.4833in",
+     "style": "chapter-title",
+     "content": [
+      {
+       "text": "Home for the Holidays",
+       "word_spacing": "0.368pt"
+      }
+     ]
+    },
+    {
+     "type": "line",
+     "x1": "2.9575in",
+     "y1": "2.5800in",
+     "x2": "3.8575in",
+     "y2": "2.5800in",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "line",
+     "x1": "4.2575in",
+     "y1": "2.5800in",
+     "x2": "5.1575in",
+     "y2": "2.5800in",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "svg",
+     "src": "book/design/art/knit/motif-heart.svg",
+     "x": "3.9725in",
+     "y": "2.4950in",
+     "w": "0.1700in",
+     "h": "0.1700in",
+     "fit": "stretch",
+     "decorative": true
+    },
+    {
+     "type": "text",
+     "x": "1.7158in",
+     "y": "204.104pt",
+     "w": "4.6833in",
+     "style": "intro",
+     "content": [
+      {
+       "text": "The season starts at the front door and works",
+       "word_spacing": "0.805pt"
+      },
+      {
+       "br": true
+      },
+      {
+       "text": "its way in: a wreath, a stocking on the mantel,",
+       "word_spacing": "0.786pt"
+      },
+      {
+       "br": true
+      },
+      {
+       "text": "a bed made up for someone still on the road.",
+       "word_spacing": "0.895pt"
+      }
+     ]
+    },
+    {
+     "type": "line",
+     "x1": "1.7400in",
+     "y1": "4.8100in",
+     "x2": "6.3750in",
+     "y2": "4.8100in",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "360.029pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "1"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "360.687pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "The Door Gets Dressed",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "ref": "puz1"
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "380.549pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "2"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "381.207pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "The Mailing Table",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      "9"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "401.069pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "3"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "401.727pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "Making Up the Spare Room",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      "10"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "421.589pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "4"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "422.247pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "Counting the Days of Advent",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      "11"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "442.109pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "5"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "442.767pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "Waiting Up for Santa",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      "12"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "462.629pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "6"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "463.287pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "Nobody Sets an Alarm",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      "13"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "483.149pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "7"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "483.807pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "The Fire Is Laid",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      "14"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "503.669pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "8"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "504.327pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "The Tree Comes Indoors",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      "15"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "524.189pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "9"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "524.847pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "When the Guests Arrive",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      "16"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "1.6000in",
+     "y": "544.709pt",
+     "w": "0.5000in",
+     "style": "toc-num",
+     "set": {
+      "align": "right"
+     },
+     "text": "10"
+    },
+    {
+     "type": "text",
+     "x": "2.2600in",
+     "y": "545.367pt",
+     "w": "4.1150in",
+     "style": "toc-title",
+     "content": [
+      "Stockings on the Mantel",
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      {
+       "leader": ".",
+       "span": "dot",
+       "gap": "1.466pt"
+      },
+      {
+       "text": " ",
+       "word_spacing": "3.086pt"
+      },
+      "17"
+     ]
+    },
+    {
+     "type": "line",
+     "x1": "1.7400in",
+     "y1": "7.9250in",
+     "x2": "6.3750in",
+     "y2": "7.9250in",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18.400pt\" height=\"6.454pt\" viewBox=\"0 0 18.400 6.454\"><path d=\"M 2.000 3.227 L 13.820 3.227\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 15.611 3.227 L 13.184 4.454 L 13.997 3.227 L 13.184 2.000 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "340.900pt",
+     "y": "599.773pt",
+     "w": "18.400pt",
+     "h": "6.454pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"6.454pt\" height=\"18.400pt\" viewBox=\"0 0 6.454 18.400\"><path d=\"M 3.227 2.000 L 3.227 13.820\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 3.227 15.611 L 2.000 13.184 L 3.227 13.997 L 4.454 13.184 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "367.753pt",
+     "y": "593.800pt",
+     "w": "6.454pt",
+     "h": "18.400pt"
+    },
+    {
+     "type": "text",
+     "x": "1.6225in",
+     "y": "597.159pt",
+     "w": "3.0000in",
+     "style": "key",
+     "set": {
+      "align": "right"
+     },
+     "text": "Words in this chapter run"
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "puz1",
+   "master": "page",
+   "layers": true,
+   "title": "Home for the Holidays",
+   "elements": [
+    {
+     "type": "svg",
+     "src": "book/design/art/knit/band-01.svg",
+     "x": "0.9250in",
+     "y": "0.4100in",
+     "w": "6.0350in",
+     "h": "0.1900in",
+     "fit": "stretch",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": "0.9250in",
+     "y": "0.6650in",
+     "w": "0.4in",
+     "h": "0.4in",
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "x": "0.6250in",
+     "y": "53.771pt",
+     "w": "1.0000in",
+     "style": "badge",
+     "set": {
+      "align": "center"
+     },
+     "text": "1"
+    },
+    {
+     "type": "text",
+     "x": "1.4650in",
+     "y": "52.549pt",
+     "w": "5.5000in",
+     "style": "puzzle-title",
+     "text": "The Door Gets Dressed"
+    },
+    {
+     "type": "letter-grid",
+     "id": "grid1",
+     "x": "0.9250in",
+     "y": "1.1600in",
+     "cell": "0.355in",
+     "rows": [
+      "THEDPINECONEMOORG",
+      "ETSHDRESGARLANDSS",
+      "EDBOEFPORCHLIGHTT",
+      "WORUHESTOOPTLHERR",
+      "RHOSOUSTEDOEBDSEI",
+      "EANELDEWVERYOOSDN",
+      "AINNLGLIEVISXOIRG",
+      "TTOUYLANTERNRRNIL",
+      "HOTMPINESWAGIBCBI",
+      "HESBRASSKNOCKERBG",
+      "OTWELCOMEMATHLEOH",
+      "ORIRBBBOXWOODLONT",
+      "KNFIREVERGREENSTS"
+     ],
+     "set": {
+      "font": "Source Sans Pro",
+      "weight": 600,
+      "size": 17.4346
+     }
+    },
+    {
+     "type": "rect",
+     "x": "0.8800in",
+     "y": "1.1150in",
+     "w": "6.1250in",
+     "h": "4.7050in",
+     "stroke": {
+      "width": 0.897,
+      "color": "ink"
+     },
+     "radius": "4.483pt"
+    },
+    {
+     "type": "text",
+     "x": "0.9450in",
+     "y": "426.209pt",
+     "w": "6.0000in",
+     "style": "label",
+     "text": "Find these 18 words"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16.240pt\" height=\"6.454pt\" viewBox=\"0 0 16.240 6.454\"><path d=\"M 2.000 3.227 L 11.660 3.227\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 13.451 3.227 L 11.024 4.454 L 11.837 3.227 L 11.024 2.000 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "468.160pt",
+     "y": "428.413pt",
+     "w": "16.240pt",
+     "h": "6.454pt"
+    },
+    {
+     "type": "svg",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"6.454pt\" height=\"16.240pt\" viewBox=\"0 0 6.454 16.240\"><path d=\"M 3.227 2.000 L 3.227 11.660\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.046\" stroke-linecap=\"round\"/><path d=\"M 3.227 13.451 L 2.000 11.024 L 3.227 11.837 L 4.454 11.024 Z\" fill=\"#000\" stroke=\"#000\" stroke-width=\"0.7061021170610212\" stroke-linejoin=\"miter\"/></svg>",
+     "x": "490.333pt",
+     "y": "423.520pt",
+     "w": "6.454pt",
+     "h": "16.240pt"
+    },
+    {
+     "type": "text",
+     "x": "4.4300in",
+     "y": "426.209pt",
+     "w": "2.0000in",
+     "style": "label",
+     "set": {
+      "align": "right"
+     },
+     "text": "Words run"
+    },
+    {
+     "type": "text",
+     "x": "0.9450in",
+     "y": "443.468pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "BOXWOOD"
+    },
+    {
+     "type": "text",
+     "x": "0.9450in",
+     "y": "459.308pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "BRASS KNOCKER"
+    },
+    {
+     "type": "text",
+     "x": "0.9450in",
+     "y": "475.148pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "DOORBELL"
+    },
+    {
+     "type": "text",
+     "x": "0.9450in",
+     "y": "490.988pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "EVERGREEN"
+    },
+    {
+     "type": "text",
+     "x": "0.9450in",
+     "y": "506.828pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "GARLAND"
+    },
+    {
+     "type": "text",
+     "x": "0.9450in",
+     "y": "522.668pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "HOLLY"
+    },
+    {
+     "type": "text",
+     "x": "2.9867in",
+     "y": "443.468pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "HOUSE NUMBER"
+    },
+    {
+     "type": "text",
+     "x": "2.9867in",
+     "y": "459.308pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "LANTERN"
+    },
+    {
+     "type": "text",
+     "x": "2.9867in",
+     "y": "475.148pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "MAILBOX"
+    },
+    {
+     "type": "text",
+     "x": "2.9867in",
+     "y": "490.988pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "PINE SWAG"
+    },
+    {
+     "type": "text",
+     "x": "2.9867in",
+     "y": "506.828pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "PINECONE"
+    },
+    {
+     "type": "text",
+     "x": "2.9867in",
+     "y": "522.668pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "PORCH LIGHT"
+    },
+    {
+     "type": "text",
+     "x": "5.0283in",
+     "y": "443.468pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "RED RIBBON"
+    },
+    {
+     "type": "text",
+     "x": "5.0283in",
+     "y": "459.308pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "STOOP"
+    },
+    {
+     "type": "text",
+     "x": "5.0283in",
+     "y": "475.148pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "STRING LIGHTS"
+    },
+    {
+     "type": "text",
+     "x": "5.0283in",
+     "y": "490.988pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "TWINE"
+    },
+    {
+     "type": "text",
+     "x": "5.0283in",
+     "y": "506.828pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "WELCOME MAT"
+    },
+    {
+     "type": "text",
+     "x": "5.0283in",
+     "y": "522.668pt",
+     "w": "2.2000in",
+     "style": "bank",
+     "text": "WREATH HOOK"
+    },
+    {
+     "type": "line",
+     "x1": "0.9250in",
+     "y1": "7.6150in",
+     "x2": "6.9600in",
+     "y2": "7.6150in",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "text",
+     "x": "0.9450in",
+     "y": "554.369pt",
+     "w": "6.0000in",
+     "style": "label",
+     "text": "Hidden message"
+    },
+    {
+     "type": "text",
+     "x": "2.4092in",
+     "y": "553.977pt",
+     "w": "4.5000in",
+     "style": "message-note",
+     "set": {
+      "align": "right"
+     },
+     "text": "Write the leftover letters here, row by row, left to right."
+    },
+    {
+     "type": "path",
+     "x": 0,
+     "y": 0,
+     "w": "8in",
+     "h": "10in",
+     "d": "M140.87 591.75H151.81M155.27 591.75H166.21M169.67 591.75H180.61M194.15 591.75H205.09M208.55 591.75H219.49M222.95 591.75H233.89M237.35 591.75H248.29M261.83 591.75H272.77M276.23 591.75H287.17M290.63 591.75H301.57M305.03 591.75H315.97M329.51 591.75H340.45M343.91 591.75H354.85M358.31 591.75H369.25M372.71 591.75H383.65M387.11 591.75H398.05M401.51 591.75H412.45M415.91 591.75H426.85M140.87 616.50H151.81M155.27 616.50H166.21M169.67 616.50H180.61M184.07 616.50H195.01M198.47 616.50H209.41M212.87 616.50H223.81M237.35 616.50H248.29M251.75 616.50H262.69M266.15 616.50H277.09M290.63 616.50H301.57M305.03 616.50H315.97M319.43 616.50H330.37M333.83 616.50H344.77M348.23 616.50H359.17M372.71 616.50H383.65M387.11 616.50H398.05M401.51 616.50H412.45M415.91 616.50H426.85M119.27 641.25H130.21M133.67 641.25H144.61M148.07 641.25H159.01M172.55 641.25H183.49M186.95 641.25H197.89M201.35 641.25H212.29M215.75 641.25H226.69M230.15 641.25H241.09M254.63 641.25H265.57M269.03 641.25H279.97M283.43 641.25H294.37M297.83 641.25H308.77M312.23 641.25H323.17M326.63 641.25H337.57M351.11 641.25H362.05M365.51 641.25H376.45M379.91 641.25H390.85M394.31 641.25H405.25M408.71 641.25H419.65M423.11 641.25H434.05M437.51 641.25H448.45M119.27 666.00H130.21M133.67 666.00H144.61M148.07 666.00H159.01M162.47 666.00H173.41M176.87 666.00H187.81M191.27 666.00H202.21M205.67 666.00H216.61M230.15 666.00H241.09M244.55 666.00H255.49M258.95 666.00H269.89M283.43 666.00H294.37M297.83 666.00H308.77M312.23 666.00H323.17M326.63 666.00H337.57M341.03 666.00H351.97M355.43 666.00H366.37M379.91 666.00H390.85M394.31 666.00H405.25M408.71 666.00H419.65M423.11 666.00H434.05M437.51 666.00H448.45",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "text",
+     "x": "3.9600in",
+     "y": "680.415pt",
+     "w": "3.0000in",
+     "style": "foot-ref",
+     "set": {
+      "align": "right"
+     },
+     "content": [
+      "Solution on page ",
+      {
+       "ref": "sol1"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "solutions1",
+   "master": "page",
+   "page_from": 127,
+   "layers": true,
+   "title": "Solutions",
+   "elements": [
+    {
+     "type": "svg",
+     "src": "book/design/art/knit/band-00.svg",
+     "x": "1.0400in",
+     "y": "0.4100in",
+     "w": "6.0350in",
+     "h": "0.1900in",
+     "fit": "stretch",
+     "decorative": true
+    },
+    {
+     "type": "letter-grid",
+     "id": "sol1",
+     "x": "1.0400in",
+     "y": "0.8800in",
+     "cell": "0.25in",
+     "rows": [
+      [
+       {
+        "text": "T",
+        "weight": 700
+       },
+       {
+        "text": "H",
+        "weight": 700
+       },
+       {
+        "text": "E",
+        "weight": 700
+       },
+       {
+        "text": "D",
+        "weight": 700
+       },
+       "P",
+       "I",
+       "N",
+       "E",
+       "C",
+       "O",
+       "N",
+       "E",
+       "M",
+       {
+        "text": "O",
+        "weight": 700
+       },
+       {
+        "text": "O",
+        "weight": 700
+       },
+       {
+        "text": "R",
+        "weight": 700
+       },
+       {
+        "text": "G",
+        "weight": 700
+       }
+      ],
+      [
+       {
+        "text": "E",
+        "weight": 700
+       },
+       {
+        "text": "T",
+        "weight": 700
+       },
+       {
+        "text": "S",
+        "weight": 700
+       },
+       "H",
+       {
+        "text": "D",
+        "weight": 700
+       },
+       {
+        "text": "R",
+        "weight": 700
+       },
+       {
+        "text": "E",
+        "weight": 700
+       },
+       {
+        "text": "S",
+        "weight": 700
+       },
+       "G",
+       "A",
+       "R",
+       "L",
+       "A",
+       "N",
+       "D",
+       {
+        "text": "S",
+        "weight": 700
+       },
+       "S"
+      ],
+      [
+       {
+        "text": "E",
+        "weight": 700
+       },
+       {
+        "text": "D",
+        "weight": 700
+       },
+       {
+        "text": "B",
+        "weight": 700
+       },
+       "O",
+       {
+        "text": "E",
+        "weight": 700
+       },
+       {
+        "text": "F",
+        "weight": 700
+       },
+       "P",
+       "O",
+       "R",
+       "C",
+       "H",
+       "L",
+       "I",
+       "G",
+       "H",
+       "T",
+       "T"
+      ],
+      [
+       "W",
+       {
+        "text": "O",
+        "weight": 700
+       },
+       {
+        "text": "R",
+        "weight": 700
+       },
+       "U",
+       "H",
+       {
+        "text": "E",
+        "weight": 700
+       },
+       "S",
+       "T",
+       "O",
+       "O",
+       "P",
+       {
+        "text": "T",
+        "weight": 700
+       },
+       "L",
+       {
+        "text": "H",
+        "weight": 700
+       },
+       {
+        "text": "E",
+        "weight": 700
+       },
+       "R",
+       "R"
+      ],
+      [
+       "R",
+       {
+        "text": "H",
+        "weight": 700
+       },
+       {
+        "text": "O",
+        "weight": 700
+       },
+       "S",
+       "O",
+       {
+        "text": "U",
+        "weight": 700
+       },
+       {
+        "text": "S",
+        "weight": 700
+       },
+       "T",
+       {
+        "text": "E",
+        "weight": 700
+       },
+       {
+        "text": "D",
+        "weight": 700
+       },
+       {
+        "text": "O",
+        "weight": 700
+       },
+       {
+        "text": "E",
+        "weight": 700
+       },
+       "B",
+       "D",
+       {
+        "text": "S",
+        "weight": 700
+       },
+       "E",
+       "I"
+      ],
+      [
+       "E",
+       {
+        "text": "A",
+        "weight": 700
+       },
+       {
+        "text": "N",
+        "weight": 700
+       },
+       "E",
+       "L",
+       {
+        "text": "D",
+        "weight": 700
+       },
+       {
+        "text": "E",
+        "weight": 700
+       },
+       "W",
+       {
+        "text": "V",
+        "weight": 700
+       },
+       {
+        "text": "E",
+        "weight": 700
+       },
+       {
+        "text": "R",
+        "weight": 700
+       },
+       {
+        "text": "Y",
+        "weight": 700
+       },
+       "O",
+       "O",
+       {
+        "text": "S",
+        "weight": 700
+       },
+       "D",
+       "N"
+      ],
+      [
+       "A",
+       {
+        "text": "I",
+        "weight": 700
+       },
+       {
+        "text": "N",
+        "weight": 700
+       },
+       "N",
+       "L",
+       {
+        "text": "G",
+        "weight": 700
+       },
+       {
+        "text": "L",
+        "weight": 700
+       },
+       "I",
+       {
+        "text": "E",
+        "weight": 700
+       },
+       {
+        "text": "V",
+        "weight": 700
+       },
+       {
+        "text": "I",
+        "weight": 700
+       },
+       {
+        "text": "S",
+        "weight": 700
+       },
+       "X",
+       "O",
+       {
+        "text": "I",
+        "weight": 700
+       },
+       "R",
+       "G"
+      ],
+      [
+       "T",
+       {
+        "text": "T",
+        "weight": 700
+       },
+       {
+        "text": "O",
+        "weight": 700
+       },
+       "U",
+       "Y",
+       "L",
+       "A",
+       "N",
+       "T",
+       "E",
+       "R",
+       "N",
+       {
+        "text": "R",
+        "weight": 700
+       },
+       "R",
+       {
+        "text": "N",
+        "weight": 700
+       },
+       "I",
+       "L"
+      ],
+      [
+       "H",
+       {
+        "text": "O",
+        "weight": 700
+       },
+       {
+        "text": "T",
+        "weight": 700
+       },
+       "M",
+       "P",
+       "I",
+       "N",
+       "E",
+       "S",
+       "W",
+       "A",
+       "G",
+       {
+        "text": "I",
+        "weight": 700
+       },
+       "B",
+       {
+        "text": "C",
+        "weight": 700
+       },
+       "B",
+       "I"
+      ],
+      [
+       "H",
+       {
+        "text": "E",
+        "weight": 700
+       },
+       {
+        "text": "S",
+        "weight": 700
+       },
+       "B",
+       "R",
+       "A",
+       "S",
+       "S",
+       "K",
+       "N",
+       "O",
+       "C",
+       "K",
+       "E",
+       "R",
+       "B",
+       "G"
+      ],
+      [
+       "O",
+       {
+        "text": "T",
+        "weight": 700
+       },
+       "W",
+       "E",
+       "L",
+       "C",
+       "O",
+       "M",
+       "E",
+       "M",
+       "A",
+       "T",
+       {
+        "text": "H",
+        "weight": 700
+       },
+       "L",
+       {
+        "text": "E",
+        "weight": 700
+       },
+       "O",
+       "H"
+      ],
+      [
+       "O",
+       {
+        "text": "R",
+        "weight": 700
+       },
+       {
+        "text": "I",
+        "weight": 700
+       },
+       "R",
+       {
+        "text": "B",
+        "weight": 700
+       },
+       {
+        "text": "B",
+        "weight": 700
+       },
+       "B",
+       "O",
+       "X",
+       "W",
+       "O",
+       "O",
+       "D",
+       "L",
+       {
+        "text": "O",
+        "weight": 700
+       },
+       "N",
+       "T"
+      ],
+      [
+       "K",
+       {
+        "text": "N",
+        "weight": 700
+       },
+       {
+        "text": "F",
+        "weight": 700
+       },
+       {
+        "text": "I",
+        "weight": 700
+       },
+       {
+        "text": "R",
+        "weight": 700
+       },
+       "E",
+       "V",
+       "E",
+       "R",
+       "G",
+       "R",
+       "E",
+       "E",
+       "N",
+       {
+        "text": "S",
+        "weight": 700
+       },
+       {
+        "text": "T",
+        "weight": 700
+       },
+       "S"
+      ]
+     ],
+     "set": {
+      "font": "Source Sans Pro",
+      "weight": 400,
+      "size": 12.3537
+     },
+     "highlights": [
+      {
+       "from": [
+        0,
+        12
+       ],
+       "to": [
+        6,
+        12
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        1,
+        8
+       ],
+       "to": [
+        1,
+        14
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        2,
+        6
+       ],
+       "to": [
+        2,
+        15
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        1,
+        16
+       ],
+       "to": [
+        12,
+        16
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        9,
+        3
+       ],
+       "to": [
+        9,
+        14
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        3,
+        0
+       ],
+       "to": [
+        12,
+        0
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        3,
+        6
+       ],
+       "to": [
+        3,
+        10
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        4,
+        7
+       ],
+       "to": [
+        8,
+        7
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        8,
+        4
+       ],
+       "to": [
+        8,
+        11
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        4,
+        13
+       ],
+       "to": [
+        11,
+        13
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        11,
+        6
+       ],
+       "to": [
+        11,
+        12
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        3,
+        15
+       ],
+       "to": [
+        11,
+        15
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        0,
+        4
+       ],
+       "to": [
+        0,
+        11
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        7,
+        5
+       ],
+       "to": [
+        7,
+        11
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        12,
+        5
+       ],
+       "to": [
+        12,
+        13
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        1,
+        3
+       ],
+       "to": [
+        11,
+        3
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        10,
+        2
+       ],
+       "to": [
+        10,
+        11
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        3,
+        4
+       ],
+       "to": [
+        7,
+        4
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      }
+     ]
+    },
+    {
+     "type": "rect",
+     "x": "1.0050in",
+     "y": "0.8450in",
+     "w": "4.3200in",
+     "h": "3.3200in",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     },
+     "radius": "3.487pt"
+    },
+    {
+     "type": "ellipse",
+     "x": "5.5900in",
+     "y": "0.8800in",
+     "w": "0.34in",
+     "h": "0.34in",
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "x": "5.2600in",
+     "y": "68.369pt",
+     "w": "1.0000in",
+     "style": "sol-badge",
+     "set": {
+      "align": "center"
+     },
+     "text": "1"
+    },
+    {
+     "type": "text",
+     "x": "5.5900in",
+     "y": "92.876pt",
+     "w": "1.5683in",
+     "style": "sol-title",
+     "content": [
+      "The Door Gets",
+      {
+       "br": true
+      },
+      "Dressed"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "5.5900in",
+     "y": "126.582pt",
+     "w": "1.5683in",
+     "style": "sol-ref",
+     "content": [
+      "Puzzle on page ",
+      {
+       "ref": "puz1"
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "x": "5.5900in",
+     "y": "149.294pt",
+     "w": "1.5683in",
+     "style": "sol-label",
+     "text": "Hidden message"
+    },
+    {
+     "type": "text",
+     "x": "5.5900in",
+     "y": "164.201pt",
+     "w": "1.5683in",
+     "style": "sol-message",
+     "content": [
+      "The door gets dressed",
+      {
+       "br": true
+      },
+      "before the house does,",
+      {
+       "br": true
+      },
+      "and every single",
+      {
+       "br": true
+      },
+      "visitor notices the",
+      {
+       "br": true
+      },
+      "ribbon first."
+     ]
+    },
+    {
+     "type": "letter-grid",
+     "id": "sol2",
+     "x": "1.0400in",
+     "y": "5.2000in",
+     "cell": "0.25in",
+     "rows": [
+      [
+       {
+        "text": "T",
+        "color": "soft"
+       },
+       {
+        "text": "N",
+        "color": "soft"
+       },
+       "S",
+       "T",
+       "R",
+       "I",
+       "N",
+       "G",
+       {
+        "text": "I",
+        "color": "soft"
+       },
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       {
+        "text": "T",
+        "color": "soft"
+       },
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "S",
+        "color": "soft"
+       },
+       {
+        "text": "H",
+        "color": "soft"
+       },
+       "C",
+       {
+        "text": "E",
+        "color": "soft"
+       }
+      ],
+      [
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       "K",
+       "I",
+       "T",
+       "C",
+       "H",
+       "E",
+       "N",
+       "S",
+       "C",
+       "A",
+       "L",
+       "E",
+       "A",
+       {
+        "text": "O",
+        "color": "soft"
+       }
+      ],
+      [
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       {
+        "text": "R",
+        "color": "soft"
+       },
+       "S",
+       "H",
+       "O",
+       "E",
+       "B",
+       "O",
+       "X",
+       "Z",
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       {
+        "text": "I",
+        "color": "soft"
+       },
+       {
+        "text": "R",
+        "color": "soft"
+       },
+       {
+        "text": "B",
+        "color": "soft"
+       },
+       {
+        "text": "T",
+        "color": "soft"
+       },
+       "R",
+       {
+        "text": "I",
+        "color": "soft"
+       }
+      ],
+      [
+       {
+        "text": "X",
+        "color": "soft"
+       },
+       "T",
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "B",
+        "color": "soft"
+       },
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "B",
+        "color": "soft"
+       },
+       {
+        "text": "H",
+        "color": "soft"
+       },
+       {
+        "text": "L",
+        "color": "soft"
+       },
+       {
+        "text": "F",
+        "color": "soft"
+       },
+       "I",
+       {
+        "text": "W",
+        "color": "soft"
+       },
+       {
+        "text": "H",
+        "color": "soft"
+       },
+       "P",
+       "A",
+       "B",
+       "D",
+       {
+        "text": "A",
+        "color": "soft"
+       }
+      ],
+      [
+       {
+        "text": "D",
+        "color": "soft"
+       },
+       "A",
+       {
+        "text": "N",
+        "color": "soft"
+       },
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       {
+        "text": "Y",
+        "color": "soft"
+       },
+       {
+        "text": "P",
+        "color": "soft"
+       },
+       {
+        "text": "I",
+        "color": "soft"
+       },
+       {
+        "text": "G",
+        "color": "soft"
+       },
+       {
+        "text": "S",
+        "color": "soft"
+       },
+       "P",
+       "F",
+       {
+        "text": "R",
+        "color": "soft"
+       },
+       "O",
+       "I",
+       "U",
+       "B",
+       {
+        "text": "U",
+        "color": "soft"
+       }
+      ],
+      [
+       {
+        "text": "N",
+        "color": "soft"
+       },
+       "P",
+       "O",
+       "S",
+       "T",
+       "O",
+       "F",
+       "F",
+       "I",
+       "C",
+       "E",
+       {
+        "text": "S",
+        "color": "soft"
+       },
+       "S",
+       "R",
+       "B",
+       "O",
+       {
+        "text": "W",
+        "color": "soft"
+       }
+      ],
+      [
+       "B",
+       "E",
+       {
+        "text": "N",
+        "color": "soft"
+       },
+       {
+        "text": "R",
+        "color": "soft"
+       },
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       {
+        "text": "F",
+        "color": "soft"
+       },
+       {
+        "text": "H",
+        "color": "soft"
+       },
+       {
+        "text": "C",
+        "color": "soft"
+       },
+       "O",
+       "L",
+       {
+        "text": "I",
+        "color": "soft"
+       },
+       "T",
+       "P",
+       "B",
+       "A",
+       "F"
+      ],
+      [
+       "R",
+       "G",
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "P",
+        "color": "soft"
+       },
+       {
+        "text": "B",
+        "color": "soft"
+       },
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       {
+        "text": "B",
+        "color": "soft"
+       },
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       {
+        "text": "L",
+        "color": "soft"
+       },
+       "D",
+       "T",
+       "P",
+       "A",
+       "I",
+       "L",
+       "R",
+       "R"
+      ],
+      [
+       "O",
+       "U",
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       {
+        "text": "M",
+        "color": "soft"
+       },
+       {
+        "text": "S",
+        "color": "soft"
+       },
+       {
+        "text": "F",
+        "color": "soft"
+       },
+       {
+        "text": "S",
+        "color": "soft"
+       },
+       {
+        "text": "S",
+        "color": "soft"
+       },
+       {
+        "text": "F",
+        "color": "soft"
+       },
+       "E",
+       "T",
+       "A",
+       "G",
+       "L",
+       "E",
+       "D",
+       "A"
+      ],
+      [
+       "W",
+       "N",
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "F",
+        "color": "soft"
+       },
+       {
+        "text": "I",
+        "color": "soft"
+       },
+       {
+        "text": "P",
+        "color": "soft"
+       },
+       {
+        "text": "I",
+        "color": "soft"
+       },
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       {
+        "text": "B",
+        "color": "soft"
+       },
+       "I",
+       "R",
+       "E",
+       "L",
+       "W",
+       "B",
+       "G"
+      ],
+      [
+       "N",
+       {
+        "text": "G",
+        "color": "soft"
+       },
+       {
+        "text": "D",
+        "color": "soft"
+       },
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "T",
+        "color": "soft"
+       },
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       {
+        "text": "N",
+        "color": "soft"
+       },
+       {
+        "text": "L",
+        "color": "soft"
+       },
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       "P",
+       "C",
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       "O",
+       "R",
+       "O",
+       "I"
+      ],
+      [
+       "P",
+       {
+        "text": "D",
+        "color": "soft"
+       },
+       {
+        "text": "R",
+        "color": "soft"
+       },
+       {
+        "text": "N",
+        "color": "soft"
+       },
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "P",
+        "color": "soft"
+       },
+       {
+        "text": "W",
+        "color": "soft"
+       },
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       {
+        "text": "P",
+        "color": "soft"
+       },
+       {
+        "text": "B",
+        "color": "soft"
+       },
+       "P",
+       "E",
+       {
+        "text": "R",
+        "color": "soft"
+       },
+       "W",
+       "A",
+       "X",
+       "L"
+      ],
+      [
+       "A",
+       "D",
+       "D",
+       "R",
+       "E",
+       "S",
+       "S",
+       "L",
+       "A",
+       "B",
+       "E",
+       "L",
+       {
+        "text": "E",
+        "color": "soft"
+       },
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       "P",
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       "E"
+      ],
+      [
+       "P",
+       "R",
+       "E",
+       "C",
+       "E",
+       "I",
+       "P",
+       "T",
+       {
+        "text": "L",
+        "color": "soft"
+       },
+       {
+        "text": "T",
+        "color": "soft"
+       },
+       "N",
+       {
+        "text": "I",
+        "color": "soft"
+       },
+       {
+        "text": "B",
+        "color": "soft"
+       },
+       {
+        "text": "A",
+        "color": "soft"
+       },
+       {
+        "text": "T",
+        "color": "soft"
+       },
+       {
+        "text": "H",
+        "color": "soft"
+       },
+       {
+        "text": "N",
+        "color": "soft"
+       }
+      ],
+      [
+       "E",
+       "P",
+       "A",
+       "C",
+       "K",
+       "I",
+       "N",
+       "G",
+       "T",
+       "A",
+       "P",
+       "E",
+       {
+        "text": "T",
+        "color": "soft"
+       },
+       {
+        "text": "S",
+        "color": "soft"
+       },
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "R",
+        "color": "soft"
+       }
+      ],
+      [
+       "R",
+       {
+        "text": "S",
+        "color": "soft"
+       },
+       "C",
+       "U",
+       "S",
+       "T",
+       "O",
+       "M",
+       "S",
+       "F",
+       "O",
+       "R",
+       "M",
+       {
+        "text": "O",
+        "color": "soft"
+       },
+       {
+        "text": "P",
+        "color": "soft"
+       },
+       {
+        "text": "M",
+        "color": "soft"
+       },
+       {
+        "text": "O",
+        "color": "soft"
+       }
+      ]
+     ],
+     "set": {
+      "font": "Source Sans Pro",
+      "weight": 400,
+      "size": 12.3537
+     },
+     "highlights": [
+      {
+       "from": [
+        3,
+        13
+       ],
+       "to": [
+        11,
+        13
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        13,
+        1
+       ],
+       "to": [
+        13,
+        7
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        0,
+        2
+       ],
+       "to": [
+        0,
+        7
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        3,
+        14
+       ],
+       "to": [
+        12,
+        14
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        7,
+        11
+       ],
+       "to": [
+        12,
+        11
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        2,
+        9
+       ],
+       "to": [
+        8,
+        9
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        6,
+        0
+       ],
+       "to": [
+        15,
+        0
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        3,
+        12
+       ],
+       "to": [
+        9,
+        12
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        14,
+        1
+       ],
+       "to": [
+        14,
+        11
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        1,
+        3
+       ],
+       "to": [
+        1,
+        14
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        4,
+        10
+       ],
+       "to": [
+        13,
+        10
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        6,
+        16
+       ],
+       "to": [
+        12,
+        16
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        5,
+        1
+       ],
+       "to": [
+        5,
+        10
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        12,
+        0
+       ],
+       "to": [
+        12,
+        11
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        3,
+        1
+       ],
+       "to": [
+        9,
+        1
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        0,
+        15
+       ],
+       "to": [
+        11,
+        15
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        2,
+        2
+       ],
+       "to": [
+        2,
+        8
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      },
+      {
+       "from": [
+        15,
+        2
+       ],
+       "to": [
+        15,
+        12
+       ],
+       "fill": "loop",
+       "stroke": {
+        "width": 0.897,
+        "color": "#ffffff"
+       },
+       "thickness": 0.8
+      }
+     ]
+    },
+    {
+     "type": "rect",
+     "x": "1.0050in",
+     "y": "5.1650in",
+     "w": "4.3200in",
+     "h": "4.0700in",
+     "stroke": {
+      "width": 0.797,
+      "color": "ink"
+     },
+     "radius": "3.487pt"
+    },
+    {
+     "type": "ellipse",
+     "x": "5.5900in",
+     "y": "5.2000in",
+     "w": "0.34in",
+     "h": "0.34in",
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "x": "5.2600in",
+     "y": "379.409pt",
+     "w": "1.0000in",
+     "style": "sol-badge",
+     "set": {
+      "align": "center"
+     },
+     "text": "2"
+    },
+    {
+     "type": "text",
+     "x": "5.5900in",
+     "y": "404.450pt",
+     "w": "1.5683in",
+     "style": "sol-title",
+     "content": [
+      "The Mailing",
+      {
+       "br": true
+      },
+      "Table"
+     ]
+    },
+    {
+     "type": "text",
+     "x": "5.5900in",
+     "y": "438.156pt",
+     "w": "1.5683in",
+     "style": "sol-ref",
+     "content": [
+      "Puzzle on page ",
+      "9"
+     ]
+    }
+   ]
+  }
+ ]
+}

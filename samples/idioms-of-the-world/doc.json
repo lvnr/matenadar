@@ -1,0 +1,2744 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "Idioms of the World, Drawn Literally",
+  "author": "Ned Arkell",
+  "lang": "en-US"
+ },
+ "fonts": [
+  "book/design/fonts"
+ ],
+ "design": {
+  "colors": {
+   "ink": "#231f1c",
+   "cream": "#f7eed8",
+   "grey": "#6a635c",
+   "hair": "#cfc8bd",
+   "foot": "#8b847c",
+   "orig": "#3d3833",
+   "paper": "#ffffff"
+  },
+  "fonts": {
+   "serif": [
+    "Noto Serif",
+    "Noto Naskh Arabic",
+    "Noto Serif Hebrew",
+    "Noto Serif Armenian",
+    "Noto Serif Georgian",
+    "Noto Serif Devanagari",
+    "Noto Serif Bengali",
+    "Noto Serif Tamil",
+    "Noto Serif Thai",
+    "Noto Serif Ethiopic",
+    "Noto Serif SC"
+   ],
+   "display": "Young Serif",
+   "label": "Archivo Narrow"
+  },
+  "base": {
+   "font": "serif",
+   "size": 10,
+   "line_height": 1.42,
+   "color": "ink",
+   "hyphenate": false,
+   "lang": "en"
+  },
+  "styles": {
+   "head": {
+    "font": "label",
+    "weight": 600,
+    "size": 7.3,
+    "tracking": "0.17em",
+    "case": "upper",
+    "color": "grey",
+    "line_height": 1
+   },
+   "folio": {
+    "font": "label",
+    "weight": 700,
+    "size": 8.6,
+    "tracking": "0.04em",
+    "color": "ink",
+    "line_height": 1
+   },
+   "runfoot": {
+    "font": "label",
+    "weight": 600,
+    "size": 6.6,
+    "tracking": "0.2em",
+    "case": "upper",
+    "color": "foot",
+    "line_height": 1
+   },
+   "lang": {
+    "font": "label",
+    "weight": 700,
+    "size": 9.2,
+    "tracking": "0.2em",
+    "case": "upper",
+    "line_height": 1
+   },
+   "literal-s1": {
+    "font": "display",
+    "size": 37,
+    "line_height": 1.02,
+    "tracking": "-0.005em",
+    "balance": true
+   },
+   "literal-s2": {
+    "inherits": "literal-s1",
+    "size": 30,
+    "line_height": 1.05
+   },
+   "literal-s3": {
+    "inherits": "literal-s1",
+    "size": 25,
+    "line_height": 1.08
+   },
+   "literal-s4": {
+    "inherits": "literal-s1",
+    "size": 20,
+    "line_height": 1.12
+   },
+   "literal-s5": {
+    "inherits": "literal-s1",
+    "size": 16.5,
+    "line_height": 1.17
+   },
+   "orig": {
+    "weight": 600,
+    "size": 12.4,
+    "line_height": 1.4,
+    "balance": true,
+    "space_before": "0.17in"
+   },
+   "word": {
+    "weight": 600,
+    "size": 13,
+    "line_height": 1.32
+   },
+   "word-long": {
+    "weight": 600,
+    "size": 11,
+    "line_height": 1.32
+   },
+   "gloss": {
+    "italic": true,
+    "size": 7.7,
+    "line_height": "11.353pt",
+    "color": "grey"
+   },
+   "gloss-long": {
+    "italic": true,
+    "size": 7,
+    "line_height": "10.478pt",
+    "color": "grey"
+   },
+   "roman": {
+    "italic": true,
+    "size": 9.3,
+    "line_height": 1.35,
+    "color": "grey",
+    "balance": true,
+    "space_before": "0.02in"
+   },
+   "note": {
+    "size": 9.9,
+    "line_height": 1.47,
+    "rule_above": {
+     "stroke": {
+      "width": 0.75,
+      "color": "ink"
+     },
+     "gap": 15.13
+    }
+   },
+   "opener-num": {
+    "font": "label",
+    "weight": 700,
+    "size": 10.5,
+    "tracking": "0.26em",
+    "case": "upper",
+    "line_height": 1
+   },
+   "opener-title": {
+    "font": "display",
+    "size": 60,
+    "line_height": 0.98,
+    "tracking": "-0.012em",
+    "balance": true
+   },
+   "lede": {
+    "size": 11.6,
+    "line_height": 1.5,
+    "space_after": "0.1in"
+   },
+   "cast-label": {
+    "font": "label",
+    "weight": 700,
+    "size": 7.6,
+    "line_height": 1.75,
+    "tracking": "0.24em",
+    "case": "upper",
+    "space_after": "0.03in"
+   },
+   "cast": {
+    "font": "label",
+    "weight": 600,
+    "size": 7.6,
+    "line_height": 1.75,
+    "tracking": "0.17em",
+    "case": "upper"
+   },
+   "kicker": {
+    "font": "label",
+    "weight": 700,
+    "size": 9.2,
+    "tracking": "0.24em",
+    "case": "upper",
+    "line_height": 1
+   },
+   "also-h2": {
+    "font": "display",
+    "size": 23,
+    "line_height": 1.08,
+    "balance": true
+   },
+   "row-label": {
+    "font": "label",
+    "weight": 700,
+    "size": 7.4,
+    "line_height": 1.3,
+    "tracking": "0.17em",
+    "case": "upper"
+   },
+   "row-where": {
+    "font": "label",
+    "weight": 500,
+    "size": 6.6,
+    "line_height": 1.3,
+    "tracking": "0.14em",
+    "case": "upper",
+    "color": "grey"
+   },
+   "saying": {
+    "font": "display",
+    "size": 12.6,
+    "line_height": 1.2,
+    "balance": true
+   },
+   "row-orig": {
+    "size": 8.9,
+    "line_height": 1.4,
+    "color": "orig",
+    "space_before": "0.025in"
+   },
+   "row-note": {
+    "size": 8.5,
+    "line_height": 1.4,
+    "italic": true,
+    "color": "grey",
+    "space_before": "0.02in"
+   },
+   "tail": {
+    "size": 9.6,
+    "line_height": 1.45,
+    "italic": true
+   },
+   "what": {
+    "font": "display",
+    "line_height": 1,
+    "tracking": "-0.01em"
+   },
+   "says": {
+    "font": "label",
+    "weight": 600,
+    "size": 7.7,
+    "line_height": 1.7,
+    "tracking": "0.16em",
+    "case": "upper",
+    "space_before": "0.07in"
+   },
+   "chart-note": {
+    "size": 8.5,
+    "line_height": 1.4,
+    "italic": true,
+    "color": "grey",
+    "space_before": "0.03in",
+    "margin_right": 50.4
+   },
+   "index-kicker": {
+    "font": "label",
+    "weight": 700,
+    "size": 8.6,
+    "tracking": "0.24em",
+    "case": "upper",
+    "color": "grey",
+    "line_height": 1,
+    "space_after": "0.16in"
+   },
+   "index-h2": {
+    "font": "display",
+    "size": 25,
+    "line_height": 1.08,
+    "space_after": "0.18in"
+   },
+   "index-sec": {
+    "font": "label",
+    "weight": 700,
+    "size": 8.6,
+    "tracking": "0.24em",
+    "case": "upper",
+    "line_height": 1,
+    "rule_above": {
+     "stroke": {
+      "width": 0.75,
+      "color": "ink"
+     },
+     "gap": 9.02
+    },
+    "space_before": 13.33,
+    "space_after": "0.1in"
+   },
+   "index-entry": {
+    "size": 10.6,
+    "line_height": 1.52,
+    "hanging": "0.12in",
+    "inset": {
+     "bottom": "0.12in"
+    },
+    "keep_together": true
+   },
+   "what-n10": {
+    "inherits": "what",
+    "size": 62
+   },
+   "what-n4": {
+    "inherits": "what",
+    "size": 40
+   },
+   "what-n3": {
+    "inherits": "what",
+    "size": 33
+   },
+   "what-n2": {
+    "inherits": "what",
+    "size": 27
+   },
+   "what-n1": {
+    "inherits": "what",
+    "size": 21
+   },
+   "word-zh": {
+    "inherits": "word",
+    "size": 15.5,
+    "line_height": 1.25,
+    "lang": "zh",
+    "font": [
+     "Noto Serif SC",
+     "serif"
+    ]
+   },
+   "word-ja": {
+    "inherits": "word",
+    "size": 15.5,
+    "line_height": 1.25,
+    "lang": "ja",
+    "font": [
+     "Noto Serif JP",
+     "serif"
+    ]
+   },
+   "word-ko": {
+    "inherits": "word",
+    "size": 15.5,
+    "line_height": 1.25,
+    "lang": "ko",
+    "font": [
+     "Noto Serif KR",
+     "serif"
+    ]
+   },
+   "word-yue": {
+    "inherits": "word",
+    "size": 15.5,
+    "line_height": 1.25,
+    "lang": "yue",
+    "font": [
+     "Noto Serif SC",
+     "serif"
+    ]
+   },
+   "word-ar": {
+    "inherits": "word",
+    "size": 16.5,
+    "line_height": 1.5,
+    "lang": "ar"
+   },
+   "word-fa": {
+    "inherits": "word",
+    "size": 16.5,
+    "line_height": 1.5,
+    "lang": "fa"
+   },
+   "word-ur": {
+    "inherits": "word",
+    "size": 16.5,
+    "line_height": 1.5,
+    "lang": "ur"
+   },
+   "word-he": {
+    "inherits": "word",
+    "size": 14.4,
+    "line_height": 1.32,
+    "lang": "he"
+   },
+   "word-yi": {
+    "inherits": "word",
+    "size": 14.4,
+    "line_height": 1.32,
+    "lang": "yi"
+   },
+   "word-th": {
+    "inherits": "word",
+    "size": 14,
+    "line_height": 1.55,
+    "lang": "th"
+   },
+   "word-hi": {
+    "inherits": "word",
+    "size": 13.6,
+    "line_height": 1.5,
+    "lang": "hi"
+   },
+   "word-bn": {
+    "inherits": "word",
+    "size": 13.6,
+    "line_height": 1.5,
+    "lang": "bn"
+   },
+   "word-ne": {
+    "inherits": "word",
+    "size": 13.6,
+    "line_height": 1.5,
+    "lang": "ne"
+   },
+   "word-ta": {
+    "inherits": "word",
+    "size": 12.8,
+    "line_height": 1.5,
+    "lang": "ta"
+   },
+   "word-am": {
+    "inherits": "word",
+    "size": 12.8,
+    "line_height": 1.5,
+    "lang": "am"
+   }
+  },
+  "spans": {
+   "head-b": {
+    "weight": 700,
+    "color": "ink"
+   },
+   "says-word": {
+    "weight": 500,
+    "color": "grey"
+   },
+   "index-key": {
+    "font": "label",
+    "weight": 700,
+    "size": 7.6,
+    "tracking": "0.12em",
+    "case": "upper",
+    "color": "ink"
+   },
+   "pp": {
+    "color": "grey"
+   },
+   "flip": {
+    "italic": false,
+    "color": "orig"
+   },
+   "roman": {
+    "italic": true,
+    "color": "grey"
+   }
+  },
+  "masters": {
+   "page": {
+    "width": "6in",
+    "height": "9in",
+    "bleed": "0.125in",
+    "fill": "paper",
+    "margins": {
+     "top": "0.4in",
+     "bottom": "0.4in",
+     "inside": "0.56in",
+     "outside": "0.44in"
+    },
+    "foreground": [
+     {
+      "type": "text",
+      "x": 40.32000000000001,
+      "y": 610.6,
+      "w": 360.0,
+      "style": "folio",
+      "when": "recto",
+      "set": {
+       "align": "right",
+       "margin_right": "0.04em"
+      },
+      "content": [
+       {
+        "field": "page"
+       }
+      ]
+     },
+     {
+      "type": "text",
+      "x": 31.68,
+      "y": 610.6,
+      "w": 360.0,
+      "style": "folio",
+      "when": "verso",
+      "set": {
+       "align": "left"
+      },
+      "content": [
+       {
+        "field": "page"
+       }
+      ]
+     },
+     {
+      "type": "text",
+      "x": 40.32000000000001,
+      "y": 612.6,
+      "w": 360.0,
+      "style": "runfoot",
+      "when": "recto",
+      "set": {
+       "align": "left"
+      },
+      "text": "Idioms of the World, Drawn Literally"
+     },
+     {
+      "type": "text",
+      "x": 31.68,
+      "y": 612.6,
+      "w": 360.0,
+      "style": "runfoot",
+      "when": "verso",
+      "set": {
+       "align": "right",
+       "margin_right": "0.2em"
+      },
+      "text": "Idioms of the World, Drawn Literally"
+     }
+    ]
+   },
+   "opener": {
+    "inherits": "page",
+    "foreground": [
+     {
+      "type": "text",
+      "x": 40.32000000000001,
+      "y": 610.6,
+      "w": 360.0,
+      "style": "folio",
+      "when": "recto",
+      "set": {
+       "align": "right",
+       "margin_right": "0.04em",
+       "color": "#231f1cdb"
+      },
+      "content": [
+       {
+        "field": "page"
+       }
+      ]
+     },
+     {
+      "type": "text",
+      "x": 31.68,
+      "y": 610.6,
+      "w": 360.0,
+      "style": "folio",
+      "when": "verso",
+      "set": {
+       "align": "left",
+       "color": "#231f1cdb"
+      },
+      "content": [
+       {
+        "field": "page"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "p47",
+   "master": "page",
+   "layers": true,
+   "page_from": 47,
+   "elements": [
+    {
+     "type": "text",
+     "id": "p47-head-recto-No5",
+     "x": 40.32000000000001,
+     "y": 28.8,
+     "w": 360.0,
+     "style": "head",
+     "set": {
+      "align": "right",
+      "margin_right": "0.17em"
+     },
+     "content": [
+      {
+       "text": "No. 5",
+       "span": "head-b"
+      },
+      {
+       "text": " ",
+       "word_spacing": "0.38em"
+      },
+      "How the world says ",
+      {
+       "text": "not my problem",
+       "span": "head-b"
+      }
+     ]
+    },
+    {
+     "type": "rect",
+     "x": 40.32000000000001,
+     "y": 47.52,
+     "w": 360.0,
+     "h": 240,
+     "fill": "#4f8c37"
+    },
+    {
+     "type": "image",
+     "id": "p47-plate",
+     "src": "book/visuals/art/print/care-ar.jpg",
+     "x": 40.32000000000001,
+     "y": 47.52,
+     "w": 360.0,
+     "h": 240,
+     "fit": "stretch"
+    },
+    {
+     "type": "ellipse",
+     "x": 40.32,
+     "y": 310.06,
+     "w": 8.28,
+     "h": 8.28,
+     "fill": "#4f8c37"
+    },
+    {
+     "type": "text",
+     "id": "p47-lang",
+     "x": 55.08,
+     "y": 309.6,
+     "w": 345.24,
+     "style": "lang",
+     "content": [
+      "Arabic"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "p47-entry",
+     "x": 40.32000000000001,
+     "y": 328.16,
+     "w": 360.0,
+     "h": 206.56,
+     "blocks": [
+      {
+       "type": "p",
+       "id": "p47-literal",
+       "style": "literal-s3",
+       "content": [
+        "I have neither a she-camel in it nor a he-camel."
+       ]
+      },
+      {
+       "type": "table",
+       "columns": [
+        "auto",
+        "auto",
+        "auto",
+        "auto",
+        "auto",
+        "auto"
+       ],
+       "stroke": "none",
+       "rows": [
+        [
+         {
+          "text": "جمل",
+          "style": "word-ar",
+          "align": "center"
+         },
+         {
+          "text": "ولا",
+          "style": "word-ar",
+          "align": "center"
+         },
+         {
+          "text": "فيها",
+          "style": "word-ar",
+          "align": "center"
+         },
+         {
+          "text": "لي",
+          "style": "word-ar",
+          "align": "center"
+         },
+         {
+          "text": "ناقة",
+          "style": "word-ar",
+          "align": "center"
+         },
+         {
+          "text": "لا",
+          "style": "word-ar",
+          "align": "center"
+         }
+        ],
+        [
+         {
+          "text": "he-camel",
+          "style": "gloss",
+          "align": "center"
+         },
+         {
+          "text": "nor",
+          "style": "gloss",
+          "align": "center"
+         },
+         {
+          "text": "in it",
+          "style": "gloss",
+          "align": "center"
+         },
+         {
+          "text": "for me",
+          "style": "gloss",
+          "align": "center"
+         },
+         {
+          "text": "she-camel",
+          "style": "gloss",
+          "align": "center"
+         },
+         {
+          "text": "no",
+          "style": "gloss",
+          "align": "center"
+         }
+        ]
+       ],
+       "inset": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 9.36
+       },
+       "space_before": "0.2in",
+       "space_after": 0
+      },
+      {
+       "type": "p",
+       "style": "roman",
+       "text": "lā nāqata lī fīhā wa-lā jamal",
+       "set": {
+        "space_before": 5.62
+       }
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "id": "p47-note",
+     "x": 40.32000000000001,
+     "y": 448.16,
+     "w": 360.0,
+     "h": 146.56,
+     "valign": "bottom",
+     "style": "note",
+     "content": [
+      "A proverb old enough to be classical and still in daily use. English reaches for a horse it has not got. Arabic is more thorough, and rules out the herd one sex at a time."
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "p76",
+   "master": "page",
+   "layers": true,
+   "page_from": 76,
+   "elements": [
+    {
+     "type": "text",
+     "id": "p76-head-verso-Interlude",
+     "x": 31.68,
+     "y": 28.8,
+     "w": 360.0,
+     "style": "head",
+     "set": {
+      "align": "left"
+     },
+     "content": [
+      {
+       "text": "Interlude",
+       "span": "head-b"
+      },
+      {
+       "text": " ",
+       "word_spacing": "0.38em"
+      },
+      "What the world calls ",
+      {
+       "text": "gibberish",
+       "span": "head-b"
+      }
+     ]
+    },
+    {
+     "type": "ellipse",
+     "x": 31.68,
+     "y": 52.3,
+     "w": 8.28,
+     "h": 8.28,
+     "fill": "#231f1c"
+    },
+    {
+     "type": "text",
+     "id": "p76-kicker",
+     "x": 46.44,
+     "y": 51.84,
+     "w": 300,
+     "style": "kicker",
+     "content": [
+      "It’s all…"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "p76-title",
+     "x": 31.68,
+     "y": 69.68,
+     "w": 360.0,
+     "style": "also-h2",
+     "content": [
+      "Who blames whom"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "p76-chart",
+     "x": 31.68,
+     "y": 128.53,
+     "w": 360.0,
+     "blocks": [
+      {
+       "type": "p",
+       "style": "what-n10",
+       "content": [
+        "Chinese",
+        {
+         "text": " ",
+         "font": "label",
+         "size": 8,
+         "word_spacing": "2pt"
+        },
+        {
+         "text": "10",
+         "font": "label",
+         "weight": 700,
+         "size": 8,
+         "tracking": "0.06em",
+         "color": "grey",
+         "baseline": 42.31
+        }
+       ],
+       "set": {
+        "rule_above": {
+         "stroke": {
+          "width": 0.75,
+          "color": "hair"
+         },
+         "gap": 9.02
+        }
+       }
+      },
+      {
+       "type": "p",
+       "style": "says",
+       "content": [
+        {
+         "text": "says ",
+         "span": "says-word",
+         "word_spacing": 2.88
+        },
+        "Greek  ·  Spanish  ·  French  ·  Hungarian  ·  Dutch  ·  Estonian  ·  Latvian  ·  Hebrew  ·  Russian  ·  Ukrainian"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "chart-note",
+       "content": [
+        "Russians and Ukrainians say ",
+        {
+         "span": "flip",
+         "text": "Chinese writing"
+        },
+        ". Latvians say ",
+        {
+         "span": "flip",
+         "text": "a Chinese ABC"
+        },
+        "."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "what-n4",
+       "content": [
+        "Greek",
+        {
+         "text": " ",
+         "font": "label",
+         "size": 8,
+         "word_spacing": "2pt"
+        },
+        {
+         "text": "4",
+         "font": "label",
+         "weight": 700,
+         "size": 8,
+         "tracking": "0.06em",
+         "color": "grey",
+         "baseline": 23.83
+        }
+       ],
+       "set": {
+        "rule_above": {
+         "stroke": {
+          "width": 0.75,
+          "color": "hair"
+         },
+         "gap": 9.02
+        },
+        "space_before": 9.73
+       }
+      },
+      {
+       "type": "p",
+       "style": "says",
+       "content": [
+        {
+         "text": "says ",
+         "span": "says-word",
+         "word_spacing": 2.88
+        },
+        "English  ·  Portuguese  ·  Swedish  ·  Norwegian"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "what-n3",
+       "content": [
+        "Spanish",
+        {
+         "text": " ",
+         "font": "label",
+         "size": 8,
+         "word_spacing": "2pt"
+        },
+        {
+         "text": "3",
+         "font": "label",
+         "weight": 700,
+         "size": 8,
+         "tracking": "0.06em",
+         "color": "grey",
+         "baseline": 17.95
+        }
+       ],
+       "set": {
+        "rule_above": {
+         "stroke": {
+          "width": 0.75,
+          "color": "hair"
+         },
+         "gap": 9.02
+        },
+        "space_before": 9.73
+       }
+      },
+      {
+       "type": "p",
+       "style": "says",
+       "content": [
+        {
+         "text": "says ",
+         "span": "says-word",
+         "word_spacing": 2.88
+        },
+        "Czech  ·  Slovak  ·  Serbian"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "chart-note",
+       "content": [
+        "Always as ",
+        {
+         "span": "flip",
+         "text": "a Spanish village"
+        },
+        "."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "what-n2",
+       "content": [
+        "Hebrew",
+        {
+         "text": " ",
+         "font": "label",
+         "size": 8,
+         "word_spacing": "2pt"
+        },
+        {
+         "text": "2",
+         "font": "label",
+         "weight": 700,
+         "size": 8,
+         "tracking": "0.06em",
+         "color": "grey",
+         "baseline": 12.91
+        }
+       ],
+       "set": {
+        "rule_above": {
+         "stroke": {
+          "width": 0.75,
+          "color": "hair"
+         },
+         "gap": 9.02
+        },
+        "space_before": 9.73
+       }
+      },
+      {
+       "type": "p",
+       "style": "says",
+       "content": [
+        {
+         "text": "says ",
+         "span": "says-word",
+         "word_spacing": 2.88
+        },
+        "French  ·  Finnish"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "what-n2",
+       "content": [
+        "Turkish",
+        {
+         "text": " ",
+         "font": "label",
+         "size": 8,
+         "word_spacing": "2pt"
+        },
+        {
+         "text": "2",
+         "font": "label",
+         "weight": 700,
+         "size": 8,
+         "tracking": "0.06em",
+         "color": "grey",
+         "baseline": 12.91
+        }
+       ],
+       "set": {
+        "rule_above": {
+         "stroke": {
+          "width": 0.75,
+          "color": "hair"
+         },
+         "gap": 9.02
+        },
+        "space_before": 9.73
+       }
+      },
+      {
+       "type": "p",
+       "style": "says",
+       "content": [
+        {
+         "text": "says ",
+         "span": "says-word",
+         "word_spacing": 2.88
+        },
+        "Romanian  ·  Polish"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "chart-note",
+       "content": [
+        "For Poles it is ",
+        {
+         "span": "flip",
+         "text": "a Turkish sermon"
+        },
+        "."
+       ]
+      },
+      {
+       "type": "canvas",
+       "h": 0,
+       "space_before": 9.36,
+       "space_after": 0,
+       "elements": [
+        {
+         "type": "line",
+         "x1": 0,
+         "y1": 0.375,
+         "x2": 360.0,
+         "y2": 0.375,
+         "stroke": {
+          "width": 0.75,
+          "color": "hair"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "p111",
+   "master": "opener",
+   "layers": true,
+   "page_from": 111,
+   "fill": "#f0600e",
+   "elements": [
+    {
+     "type": "lettering",
+     "id": "p111-numeral",
+     "text": "13",
+     "font": "display",
+     "size": 400,
+     "tracking": "-0.04em",
+     "features": [
+      "lnum"
+     ],
+     "color": "#da570d",
+     "x": 22.24,
+     "y": 243.36,
+     "decorative": true
+    },
+    {
+     "type": "text",
+     "id": "p111-opener-num",
+     "x": 40.32000000000001,
+     "y": 111.6,
+     "w": 360.0,
+     "style": "opener-num",
+     "set": {
+      "color": "ink"
+     },
+     "text": "No. 13"
+    },
+    {
+     "type": "text",
+     "id": "p111-opener-title",
+     "x": 40.32000000000001,
+     "y": 136.8,
+     "w": 360.0,
+     "style": "opener-title",
+     "set": {
+      "size": 50,
+      "color": "ink",
+      "outline": {
+       "width": 1.56,
+       "color": "ink",
+       "join": "round"
+      }
+     },
+     "content": [
+      "Speak of the devil."
+     ]
+    },
+    {
+     "type": "rect",
+     "x": 40.32000000000001,
+     "y": 312.48,
+     "w": 36.0,
+     "h": 1.5,
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "id": "p111-lede",
+     "x": 40.32000000000001,
+     "y": 332.64,
+     "w": 306.0,
+     "set": {
+      "color": "ink"
+     },
+     "blocks": [
+      {
+       "type": "p",
+       "style": "lede",
+       "content": [
+        "You mention someone, and in they walk. It happens in every country."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "lede",
+       "content": [
+        "Every country has also decided who it is that comes when called, and it is a fair guide to what that country thinks of visitors."
+       ]
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "id": "p111-cast",
+     "x": 40.32000000000001,
+     "y": 511.84,
+     "w": 331.2,
+     "h": 80,
+     "valign": "bottom",
+     "set": {
+      "color": "#231f1ce6"
+     },
+     "blocks": [
+      {
+       "type": "p",
+       "style": "cast-label",
+       "text": "In this chapter"
+      },
+      {
+       "type": "p",
+       "style": "cast",
+       "text": "English · Serbian and Croatian · Chinese · Swedish · Arabic · Danish · and 8 more"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "p42",
+   "master": "page",
+   "layers": true,
+   "page_from": 42,
+   "elements": [
+    {
+     "type": "text",
+     "id": "p42-head-verso-No4",
+     "x": 31.68,
+     "y": 28.8,
+     "w": 360.0,
+     "style": "head",
+     "set": {
+      "align": "left"
+     },
+     "content": [
+      {
+       "text": "No. 4",
+       "span": "head-b"
+      },
+      {
+       "text": " ",
+       "word_spacing": "0.38em"
+      },
+      "How the world says ",
+      {
+       "text": "it’s pouring",
+       "span": "head-b"
+      }
+     ]
+    },
+    {
+     "type": "ellipse",
+     "x": 31.68,
+     "y": 52.3,
+     "w": 8.28,
+     "h": 8.28,
+     "fill": "#55a9d7"
+    },
+    {
+     "type": "text",
+     "id": "p42-kicker",
+     "x": 46.44,
+     "y": 51.84,
+     "w": 300,
+     "style": "kicker",
+     "content": [
+      "Also said"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "p42-title",
+     "x": 31.68,
+     "y": 69.68,
+     "w": 360.0,
+     "style": "also-h2",
+     "content": [
+      "Also falling"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "p42-list",
+     "x": 31.68,
+     "y": 128.53,
+     "w": 360.0,
+     "blocks": [
+      {
+       "type": "table",
+       "columns": [
+        83.52,
+        "1fr"
+       ],
+       "rows": [
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "row-label",
+            "text": "French",
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 10.46
+             }
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "saying",
+            "content": [
+             "It’s raining ropes."
+            ],
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 7.21
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-orig",
+            "content": [
+             {
+              "text": "il pleut des cordes",
+              "lang": "fr"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "row-label",
+            "text": "German",
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 10.46
+             }
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "saying",
+            "content": [
+             "It’s raining strings."
+            ],
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 7.21
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-orig",
+            "content": [
+             {
+              "text": "es regnet Bindfäden",
+              "lang": "de"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "row-label",
+            "text": "Dutch",
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 10.46
+             }
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "saying",
+            "content": [
+             "It’s raining pipe stems."
+            ],
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 7.21
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-orig",
+            "content": [
+             {
+              "text": "het regent pijpenstelen",
+              "lang": "nl"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "row-label",
+            "text": "Swedish",
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 10.46
+             }
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "saying",
+            "content": [
+             "It’s raining small nails."
+            ],
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 7.21
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-orig",
+            "content": [
+             {
+              "text": "det regnar småspik",
+              "lang": "sv"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "row-label",
+            "text": "Irish",
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 10.46
+             }
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "saying",
+            "content": [
+             "It’s throwing cobblers’ knives."
+            ],
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 7.21
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-orig",
+            "content": [
+             {
+              "text": "Tá sé ag caitheamh sceana gréasaí",
+              "lang": "ga"
+             }
+            ]
+           },
+           {
+            "type": "p",
+            "style": "row-note",
+            "content": [
+             "The third shoemaker in this chapter."
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "row-label",
+            "text": "Spanish",
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 10.46
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-where",
+            "text": "Spain"
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "saying",
+            "content": [
+             "Pikes are falling, point first."
+            ],
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 7.21
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-orig",
+            "content": [
+             {
+              "text": "caen chuzos de punta",
+              "lang": "es"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "row-label",
+            "text": "Catalan",
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 10.46
+             }
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "saying",
+            "content": [
+             "It’s raining wineskins and kegs."
+            ],
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 7.21
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-orig",
+            "content": [
+             {
+              "text": "plou a bots i barrals",
+              "lang": "ca"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "row-label",
+            "text": "Chinese",
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 10.46
+             }
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "saying",
+            "content": [
+             "A big rain like a basin tipped over."
+            ],
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 7.21
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-orig",
+            "content": [
+             {
+              "text": "倾盆大雨",
+              "lang": "zh",
+              "font": [
+               "Noto Serif SC",
+               "serif"
+              ],
+              "size": 10
+             },
+             " ",
+             {
+              "text": "qīng pén dà yǔ",
+              "span": "roman"
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "row-label",
+            "text": "Thai",
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 10.46
+             }
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "saying",
+            "content": [
+             "Rain falling with its ears and eyes shut."
+            ],
+            "set": {
+             "rule_above": {
+              "stroke": {
+               "width": 0.75,
+               "color": "hair"
+              },
+              "gap": 7.21
+             }
+            }
+           },
+           {
+            "type": "p",
+            "style": "row-orig",
+            "content": [
+             {
+              "text": "ฝนตกไม่ลืมหูลืมตา",
+              "lang": "th",
+              "size": 10
+             },
+             " ",
+             {
+              "text": "fon tok mai luem hu luem ta",
+              "span": "roman"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       ],
+       "stroke": "none",
+       "inset": {
+        "top": 0,
+        "bottom": 7.58,
+        "left": 0,
+        "right": 0
+       },
+       "space_before": 0,
+       "space_after": 0
+      },
+      {
+       "type": "canvas",
+       "h": 0,
+       "space_before": 0,
+       "space_after": 0,
+       "elements": [
+        {
+         "type": "line",
+         "x1": 0,
+         "y1": 0,
+         "x2": 360.0,
+         "y2": 0,
+         "stroke": {
+          "width": 0.75,
+          "color": "hair"
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "id": "p42-tail",
+     "x": 31.68,
+     "y": 534.72,
+     "w": 316.8,
+     "h": 60,
+     "valign": "bottom",
+     "style": "tail",
+     "content": [
+      "Most of the rest of the world says it is coming down by the bucket, the tub or the jug, and leaves it at that."
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "p148",
+   "master": "page",
+   "layers": true,
+   "start": "verso",
+   "page_from": 148,
+   "elements": [
+    {
+     "type": "text",
+     "id": "p148-index",
+     "x": 31.68,
+     "y": 64.8,
+     "w": 360.0,
+     "blocks": [
+      {
+       "type": "p",
+       "style": "index-kicker",
+       "content": [
+        "For looking up a particular pig"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "index-h2",
+       "content": [
+        "An index of animals"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "index-sec",
+       "content": [
+        "Animals, and others"
+       ]
+      },
+      {
+       "type": "columns",
+       "count": 4,
+       "gutter": "0.16in",
+       "balance": true,
+       "blocks": [
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "bat",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "80",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "bear",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "90, 124",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "calf",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "22",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "camel",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "10, 47",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "cat",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "23, 34, 70, 101, 116, 142",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "cow",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "69",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "crayfish",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "18",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "crow",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "108, 143",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "devil",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "106, 112, 127",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "dog",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "12, 34",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "donkey",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "71",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "duck",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "49",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "elephant",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "61, 141",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "firefly",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "93",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "flea",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "10, 11, 131",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "fox",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "105, 121",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "genie",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "107",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "gnome",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "82",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "hare",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "105",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "hen",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "17, 62",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "horse",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "27, 44, 126",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "hyena",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "122",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "jackal",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "122",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "mole",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "60",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "monkey",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "45, 85, 109",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "mosquito",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "61",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "owl",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "20",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "pig",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "16, 68, 99",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "shrimp",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "97",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "spider",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "84",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "stork",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "109",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "tiger",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "9",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "tikbalang",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "126",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "troll",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "115",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "witch",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "125",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "wolf",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "113",
+           "span": "pp"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "index-sec",
+       "content": [
+        "Things to eat"
+       ],
+       "set": {
+        "space_before": 7.57
+       }
+      },
+      {
+       "type": "columns",
+       "count": 4,
+       "gutter": "0.16in",
+       "balance": true,
+       "blocks": [
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "apple",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "130, 139",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "cake",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "26",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "cookie",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "54",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "crumb",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "135",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "doughnut",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "91",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "ghee",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "98",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "grain",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "63",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "melon",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "57",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "mustard seed",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "64",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "noodles",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "89",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "orange",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "133",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "pear",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "13",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "peas",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "72",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "rice cake",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "28",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "sandwich",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "97",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "sausage",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "12, 46",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "soy sauce",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "48",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "sponge cake",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "71",
+           "span": "pp"
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "index-entry",
+         "content": [
+          {
+           "text": "yogurt",
+           "span": "index-key"
+          },
+          " ",
+          {
+           "text": "19",
+           "span": "pp"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

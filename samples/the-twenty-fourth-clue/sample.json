@@ -1,0 +1,12 @@
+{
+  "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/the-twenty-fourth-clue",
+  "pdf": "release/the-twenty-fourth-clue-interior.pdf",
+  "bleed": false,
+  "pages": [
+    {"original": 2, "rebuilt": 2, "what": "parcel label: rotated card, outline-only offset shadow, postmark off the corner"},
+    {"original": 6, "rebuilt": 4, "what": "route map of the town (placed drawing) with a -90 degree margin note"},
+    {"original": 10, "rebuilt": 6, "what": "day 1 story opener: stamp, postmark, title, sleeve line, small-caps lead-in"},
+    {"original": 13, "rebuilt": 7, "what": "day 1 full-page plate in a double-rule frame, handwritten caption"},
+    {"original": 63, "rebuilt": 9, "what": "sleeve 14: head, soap and wax-paper note, locksmith's board, what to do, answer boxes"}
+  ]
+}

@@ -22,3 +22,28 @@ samples/<slug>/
 - `make.py` must be deterministic and must only read the book. It may prepare
   derived files under `build/`, such as static instances of variable fonts
   made with `uv run --with fonttools`.
+
+## The eight books
+
+| Sample | Pages | Scores (agents' own) | Built with |
+|---|---|---|---|
+| `idioms-of-the-world` | 5 | 8–9.5 | `BALANCE=1 python3 samples/idioms-of-the-world/make.py` |
+| `i-just-had-it` | 4 | 9–9.5 | `python3 samples/i-just-had-it/make.py` |
+| `reverse-coloring` | 5 | 9.5–10 | `python3 samples/reverse-coloring/make.py` |
+| `christmas-word-search` | 6 | 9–9.5 | `python3 samples/christmas-word-search/make.py` |
+| `the-machine-in-the-back-of-the-book` | 5 | 8–9.5 | `python3 samples/the-machine-in-the-back-of-the-book/make.py` |
+| `a-field-guide-to-software-bugs` | 5 | 9–9.5 | `python3 samples/a-field-guide-to-software-bugs/make.py` |
+| `the-twenty-fourth-clue` | 5 | 9–9.5 | `python3 samples/the-twenty-fourth-clue/make.py` |
+| `third-shift-handbook` | 5 | 8–9 | `uv run --with fonttools python3 samples/third-shift-handbook/make.py` |
+
+The scores in each README are the rebuilding agent's, made before the
+engine round that followed (2026-10-26). That round fixed what several
+samples had worked around: frames aligned to the bottom or middle now
+place their text as the book did (I Just Had It p. 5, Reverse Coloring
+p. 4 moved 20–24 pt into place), margin notes meet a box at its edge, and
+words split into runs keep their letter spacing. The Idioms and Third Shift
+generators were updated to drop the workarounds; others still carry a few
+that are now unnecessary but harmless.
+
+`python3 scripts/sheet.py` writes `samples/index.html` with every compare
+sheet; `--embed out.html` makes one self-contained file.

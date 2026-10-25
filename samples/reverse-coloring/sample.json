@@ -1,0 +1,12 @@
+{
+ "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/reverse-coloring",
+ "pdf": "release/reverse-coloring-for-people-who-cant-draw-interior.pdf",
+ "bleed": true,
+ "pages": [
+  {"original": 1, "rebuilt": 1, "what": "title page: full-bleed wash with a balanced 68 pt title over it"},
+  {"original": 4, "rebuilt": 2, "what": "Seven small marks: image, arrow, image, text rows on a tinted page"},
+  {"original": 8, "rebuilt": 4, "what": "lesson opener \"An edge\": display heading, lesson, example, rule, label row, prompt, upside-down hints"},
+  {"original": 9, "rebuilt": 5, "what": "painting edge-1: one full-bleed JPEG"},
+  {"original": 10, "rebuilt": 6, "what": "nudge page: number and label, balanced prompt, upside-down hints, dashed cut line, scissors, vertical note"}
+ ]
+}

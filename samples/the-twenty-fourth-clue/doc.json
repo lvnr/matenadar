@@ -1,0 +1,1604 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "The Twenty-Fourth Clue",
+  "author": "Levon Arakelyan",
+  "lang": "en-US"
+ },
+ "fonts": [
+  "book/assets/fonts"
+ ],
+ "design": {
+  "colors": {
+   "ink": "#000",
+   "paper": "#fff",
+   "mid": "#8a8a8a"
+  },
+  "fonts": {
+   "serif": [
+    "Literata"
+   ],
+   "display": [
+    "Besley"
+   ],
+   "label": [
+    "League Gothic"
+   ],
+   "iona": [
+    "Kalam"
+   ]
+  },
+  "base": {
+   "font": "serif",
+   "size": 12,
+   "line_height": "17.5pt",
+   "color": "ink",
+   "lang": "en-US",
+   "variations": {
+    "opsz": 16.0
+   }
+  },
+  "styles": {
+   "story": {
+    "size": 12.4,
+    "line_height": "17.8pt",
+    "indent": "1.35em",
+    "hyphenate": true,
+    "align": "left",
+    "features": [
+     "onum",
+     "pnum"
+    ],
+    "variations": {
+     "opsz": 16.53
+    }
+   },
+   "kicker": {
+    "font": "label",
+    "size": 13,
+    "tracking": "0.2em",
+    "line_height": 1,
+    "features": []
+   },
+   "daytitle": {
+    "font": "display",
+    "weight": 800,
+    "size": 28,
+    "line_height": "29.5pt",
+    "tracking": "-0.012em",
+    "balance": true,
+    "hyphenate": false,
+    "features": [
+     "lnum"
+    ]
+   },
+   "tab": {
+    "font": "label",
+    "size": 13,
+    "tracking": "0.14em",
+    "line_height": 1,
+    "color": "paper",
+    "features": []
+   },
+   "addr": {
+    "font": "iona",
+    "size": 13.5,
+    "line_height": "16.5pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "handoff": {
+    "font": "label",
+    "size": 13,
+    "tracking": "0.2em",
+    "line_height": 1,
+    "features": []
+   },
+   "run": {
+    "font": "label",
+    "size": 10.5,
+    "tracking": "0.14em",
+    "case": "upper",
+    "line_height": 1,
+    "baseline": -0.47,
+    "features": []
+   },
+   "folio": {
+    "font": "display",
+    "weight": 700,
+    "size": 10.5,
+    "line_height": 1,
+    "features": [
+     "lnum"
+    ]
+   },
+   "caption": {
+    "font": "iona",
+    "size": 12.5,
+    "line_height": "16pt",
+    "align": "center",
+    "features": [
+     "lnum"
+    ]
+   },
+   "stamp-legend": {
+    "font": "label",
+    "size": 11.5,
+    "tracking": "2.4pt",
+    "line_height": 1,
+    "features": []
+   },
+   "stamp-value": {
+    "font": "display",
+    "weight": 900,
+    "size": 15,
+    "line_height": 1,
+    "align": "right",
+    "features": [
+     "onum"
+    ]
+   },
+   "pm-num": {
+    "font": "display",
+    "weight": 900,
+    "size": 46,
+    "line_height": 1,
+    "align": "center",
+    "features": [
+     "onum"
+    ]
+   },
+   "strip": {
+    "font": "label",
+    "size": 17,
+    "tracking": "0.2em",
+    "line_height": 1,
+    "color": "paper",
+    "features": []
+   },
+   "form-key": {
+    "font": "label",
+    "size": 12,
+    "tracking": "0.16em",
+    "line_height": 1,
+    "features": []
+   },
+   "parcel-hand": {
+    "font": "iona",
+    "size": 14,
+    "line_height": "20pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "sleeve-tab": {
+    "font": "label",
+    "size": 19,
+    "tracking": "0.12em",
+    "line_height": 1,
+    "color": "paper",
+    "features": []
+   },
+   "what": {
+    "italic": true,
+    "size": 10.5,
+    "line_height": "13pt",
+    "features": [
+     "onum",
+     "pnum"
+    ],
+    "variations": {
+     "opsz": 14.0
+    }
+   },
+   "diff-word": {
+    "font": "label",
+    "size": 9.6,
+    "tracking": "0.14em",
+    "case": "upper",
+    "line_height": 1,
+    "features": []
+   },
+   "todo-label": {
+    "font": "label",
+    "size": 12.5,
+    "tracking": "0.16em",
+    "line_height": "17.5pt",
+    "features": []
+   },
+   "steps": {
+    "size": 10.6,
+    "line_height": "14.2pt",
+    "space_after": 2.5,
+    "features": [
+     "lnum",
+     "pnum"
+    ],
+    "variations": {
+     "opsz": 14.13
+    }
+   },
+   "answer": {
+    "font": "iona",
+    "size": 14,
+    "line_height": 1,
+    "features": [
+     "lnum"
+    ]
+   },
+   "board-title": {
+    "font": "label",
+    "size": 12.5,
+    "tracking": "1.5pt",
+    "line_height": 1,
+    "color": "paper",
+    "features": []
+   },
+   "board-right": {
+    "font": "label",
+    "size": 10.25,
+    "tracking": "1.23pt",
+    "line_height": 1,
+    "color": "paper",
+    "align": "right",
+    "features": []
+   },
+   "note-hand": {
+    "font": "iona",
+    "size": 13.4,
+    "line_height": "17.4pt",
+    "features": [
+     "lnum"
+    ]
+   },
+   "map-note": {
+    "font": "iona",
+    "size": 12,
+    "line_height": 1,
+    "features": [
+     "lnum"
+    ]
+   }
+  },
+  "spans": {
+   "lead": {
+    "case": "small-caps",
+    "size": "1.04em",
+    "tracking": "0.04em",
+    "variations": {
+     "opsz": 17.19
+    }
+   }
+  },
+  "masters": {
+   "matter": {
+    "width": "8.5in",
+    "height": "11in",
+    "margins": {
+     "top": 44.64,
+     "bottom": 51.83,
+     "inside": "0.95in",
+     "outside": "0.7in"
+    },
+    "fill": "paper"
+   },
+   "page": {
+    "inherits": "matter",
+    "foreground": [
+     {
+      "type": "text",
+      "x": 45.35,
+      "y": 751.68,
+      "w": 501.83,
+      "when": "verso",
+      "blocks": [
+       {
+        "type": "table",
+        "columns": [
+         "auto",
+         "1fr",
+         "auto"
+        ],
+        "stroke": "none",
+        "inset": {
+         "x": 5.04,
+         "y": 0
+        },
+        "rows": [
+         [
+          {
+           "content": [
+            {
+             "field": "page"
+            }
+           ],
+           "style": "folio"
+          },
+          {
+           "blocks": [
+            {
+             "type": "canvas",
+             "h": 10.5,
+             "elements": [
+              {
+               "type": "line",
+               "x1": 0,
+               "y1": 6.21,
+               "x2": "100%",
+               "y2": 6.21,
+               "stroke": {
+                "width": 0.75,
+                "color": "#000"
+               }
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "content": [
+            {
+             "field": "section.run"
+            }
+           ],
+           "style": "run"
+          }
+         ]
+        ]
+       }
+      ]
+     },
+     {
+      "type": "text",
+      "x": 63.35,
+      "y": 751.68,
+      "w": 503.3,
+      "when": "recto",
+      "blocks": [
+       {
+        "type": "table",
+        "columns": [
+         "auto",
+         "1fr",
+         "auto"
+        ],
+        "stroke": "none",
+        "inset": {
+         "x": 5.04,
+         "y": 0
+        },
+        "rows": [
+         [
+          {
+           "content": [
+            {
+             "field": "section.run"
+            }
+           ],
+           "style": "run"
+          },
+          {
+           "blocks": [
+            {
+             "type": "canvas",
+             "h": 10.5,
+             "elements": [
+              {
+               "type": "line",
+               "x1": 1.47,
+               "y1": 6.21,
+               "x2": "100%",
+               "y2": 6.21,
+               "stroke": {
+                "width": 0.75,
+                "color": "#000"
+               }
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "content": [
+            {
+             "field": "page"
+            }
+           ],
+           "style": "folio"
+          }
+         ]
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "story": {
+    "inherits": "page",
+    "margins": {
+     "top": 44.64,
+     "bottom": 51.83,
+     "inside": "1.2in",
+     "outside": "0.8in"
+    },
+    "style": "story"
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "blank-1",
+   "master": "matter",
+   "elements": []
+  },
+  {
+   "type": "page",
+   "id": "p2-label",
+   "master": "matter",
+   "page_from": 2,
+   "elements": [
+    {
+     "type": "group",
+     "id": "parcel",
+     "x": 117.0,
+     "y": 256.24,
+     "w": 360.0,
+     "h": 272.31,
+     "rotate": -1.4,
+     "children": [
+      {
+       "type": "rect",
+       "x": 4,
+       "y": 4,
+       "w": 360.0,
+       "h": 272.31,
+       "fill": "paper",
+       "stroke": {
+        "width": 1.4,
+        "color": "#000"
+       }
+      },
+      {
+       "type": "rect",
+       "x": 0.38,
+       "y": 0.38,
+       "w": 359.25,
+       "h": 271.56,
+       "fill": "paper",
+       "stroke": {
+        "width": 0.75,
+        "color": "#000"
+       }
+      },
+      {
+       "type": "rect",
+       "x": 0.75,
+       "y": 0.75,
+       "w": 358.5,
+       "h": 31,
+       "fill": "ink"
+      },
+      {
+       "type": "text",
+       "x": 16.75,
+       "y": 9.75,
+       "w": 330,
+       "text": "ALDERWICK BLIND ROUTE",
+       "style": "strip"
+      },
+      {
+       "type": "text",
+       "x": 17.35,
+       "y": 57.67,
+       "w": 325.3,
+       "blocks": [
+        {
+         "type": "table",
+         "columns": [
+          "auto",
+          "1fr"
+         ],
+         "stroke": "none",
+         "inset": {
+          "x": 5,
+          "y": 0
+         },
+         "rows": [
+          [
+           {
+            "content": [
+             {
+              "text": "DELIVER TO"
+             }
+            ],
+            "style": "form-key"
+           },
+           {
+            "blocks": [
+             {
+              "type": "canvas",
+              "h": 12,
+              "elements": [
+               {
+                "type": "line",
+                "x1": 1.92,
+                "y1": 11.62,
+                "x2": "100%",
+                "y2": 11.62,
+                "stroke": {
+                 "width": 0.75,
+                 "color": "#000"
+                }
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "x": 17.35,
+       "y": 95.59,
+       "w": 325.3,
+       "blocks": [
+        {
+         "type": "table",
+         "columns": [
+          "auto",
+          "1fr"
+         ],
+         "stroke": "none",
+         "inset": {
+          "x": 5,
+          "y": 0
+         },
+         "rows": [
+          [
+           {
+            "content": [
+             {
+              "text": "DELIVER TO",
+              "color": "paper"
+             }
+            ],
+            "style": "form-key"
+           },
+           {
+            "blocks": [
+             {
+              "type": "canvas",
+              "h": 12,
+              "elements": [
+               {
+                "type": "line",
+                "x1": 1.92,
+                "y1": 11.62,
+                "x2": "100%",
+                "y2": 11.62,
+                "stroke": {
+                 "width": 0.75,
+                 "color": "#000"
+                }
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "x": 17.35,
+       "y": 133.51,
+       "w": 325.3,
+       "blocks": [
+        {
+         "type": "table",
+         "columns": [
+          "auto",
+          "1fr",
+          "auto",
+          "1fr"
+         ],
+         "stroke": "none",
+         "inset": {
+          "x": 5,
+          "y": 0
+         },
+         "rows": [
+          [
+           {
+            "content": [
+             {
+              "text": "BEGUN ON"
+             }
+            ],
+            "style": "form-key"
+           },
+           {
+            "blocks": [
+             {
+              "type": "canvas",
+              "h": 12,
+              "elements": [
+               {
+                "type": "line",
+                "x1": 1.92,
+                "y1": 11.62,
+                "x2": "100%",
+                "y2": 11.62,
+                "stroke": {
+                 "width": 0.75,
+                 "color": "#000"
+                }
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "content": [
+             {
+              "text": "FINISHED ON"
+             }
+            ],
+            "style": "form-key"
+           },
+           {
+            "blocks": [
+             {
+              "type": "canvas",
+              "h": 12,
+              "elements": [
+               {
+                "type": "line",
+                "x1": 1.92,
+                "y1": 11.62,
+                "x2": "100%",
+                "y2": 11.62,
+                "stroke": {
+                 "width": 0.75,
+                 "color": "#000"
+                }
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "x": 22.35,
+       "y": 167.11,
+       "w": 210.9,
+       "text": "One sleeve a day.\nNo looking at tomorrow.\nCuriosity does not count\nas postage.",
+       "style": "parcel-hand"
+      },
+      {
+       "type": "group",
+       "x": 215.25,
+       "y": 207.08,
+       "w": 180,
+       "h": 90.72,
+       "rotate": 9,
+       "children": [
+        {
+         "type": "svg",
+         "x": 0,
+         "y": 0,
+         "w": 180,
+         "h": 90.72,
+         "fit": "contain",
+         "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 250 126\"><g transform=\"rotate(-6 62 62)\"><path d=\"M 122 32.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M 122 47.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M 122 62.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M 122 77.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M 122 92.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><circle cx=\"62\" cy=\"62\" r=\"58\" fill=\"#fff\" stroke=\"#000\" stroke-width=\"2.8\"/><circle cx=\"62\" cy=\"62\" r=\"40\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.1\"/><path id=\"pmlabelt\" d=\"M 18.799999999999997 62 A 43.2 43.2 0 0 1 105.2 62\" fill=\"none\"/><path id=\"pmlabelb\" d=\"M 9.0 62 A 53.0 53.0 0 0 0 115.0 62\" fill=\"none\"/><text font-family=\"League Gothic\" font-size=\"12.6\" letter-spacing=\"1.9\" fill=\"#000\"><textPath href=\"#pmlabelt\" startOffset=\"50%\" text-anchor=\"middle\">ALDERWICK POST OFFICE</textPath></text><text font-family=\"League Gothic\" font-size=\"12.6\" letter-spacing=\"2.4\" fill=\"#000\"><textPath href=\"#pmlabelb\" startOffset=\"50%\" text-anchor=\"middle\">ROUTE 24</textPath></text><circle cx=\"13\" cy=\"65\" r=\"1.9\" fill=\"#000\"/><circle cx=\"111\" cy=\"65\" r=\"1.9\" fill=\"#000\"/><text x=\"62\" y=\"46\" text-anchor=\"middle\" font-family=\"League Gothic\" font-size=\"18\" letter-spacing=\"3.6\" fill=\"#000\">DEC</text></g></svg>"
+        },
+        {
+         "type": "group",
+         "x": 0,
+         "y": 0,
+         "scale": 0.72,
+         "children": [
+          {
+           "type": "group",
+           "x": 0,
+           "y": 0,
+           "w": 124,
+           "h": 124,
+           "rotate": -6,
+           "children": [
+            {
+             "type": "text",
+             "x": 22,
+             "y": 45.02,
+             "w": 80,
+             "text": "1",
+             "style": "pm-num",
+             "set": {
+              "size": 46
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "blank-3",
+   "master": "matter",
+   "elements": []
+  },
+  {
+   "type": "page",
+   "id": "p6-map",
+   "master": "page",
+   "page_from": 6,
+   "layers": true,
+   "vars": {
+    "run": "The Twenty-Fourth Clue"
+   },
+   "elements": [
+    {
+     "type": "svg",
+     "x": 50.39,
+     "y": 44.64,
+     "w": 493.22,
+     "h": 660.29,
+     "fit": "contain",
+     "src": "build/art/town.svg",
+     "id": "town-map"
+    },
+    {
+     "type": "text",
+     "x": -91.4,
+     "y": 336.84,
+     "w": 300.0,
+     "text": "One letter a day. You will want them all at the end.",
+     "style": "map-note",
+     "rotate": -90,
+     "id": "map-note"
+    }
+   ]
+  },
+  {
+   "type": "section",
+   "id": "day-1",
+   "master": "story",
+   "start": "verso",
+   "page_from": 10,
+   "vars": {
+    "run": "The Twenty-Fourth Clue"
+   },
+   "flow": [
+    {
+     "type": "canvas",
+     "id": "d1-envelope",
+     "h": 138.24,
+     "elements": [
+      {
+       "type": "group",
+       "x": 360.01,
+       "y": 0,
+       "w": 108,
+       "h": 132.47,
+       "rotate": 1.6,
+       "children": [
+        {
+         "type": "group",
+         "x": 0,
+         "y": 0,
+         "scale": 0.82443,
+         "children": [
+          {
+           "type": "path",
+           "x": 0,
+           "y": 0,
+           "w": 131,
+           "h": 159,
+           "d": "M 6.0 6.0 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 Z",
+           "fill": "ink"
+          },
+          {
+           "type": "path",
+           "x": 0,
+           "y": 0,
+           "w": 131,
+           "h": 159,
+           "d": "M 3.0 3.0 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 h 1.757 a 2.6 2.6 0 0 0 5.2 0 h 1.757 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 v 1.812 a 2.6 2.6 0 0 0 0 5.2 v 1.812 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 h -1.757 a 2.6 2.6 0 0 0 -5.2 0 h -1.757 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 v -1.812 a 2.6 2.6 0 0 0 0 -5.2 v -1.812 Z",
+           "fill": "paper",
+           "stroke": {
+            "width": 0.9,
+            "color": "#000"
+           }
+          },
+          {
+           "type": "rect",
+           "x": 12.0,
+           "y": 12.0,
+           "w": 104,
+           "h": 118,
+           "stroke": {
+            "width": 1.1,
+            "color": "#000"
+           }
+          },
+          {
+           "type": "image",
+           "src": "book/visuals/e2/stamps/day-01.jpg",
+           "x": 19.0,
+           "y": 19.0,
+           "w": 90,
+           "h": 104,
+           "fit": "contain"
+          },
+          {
+           "type": "text",
+           "x": 14.0,
+           "y": 133.52,
+           "w": 80,
+           "text": "ALDERWICK",
+           "style": "stamp-legend"
+          },
+          {
+           "type": "text",
+           "x": 74.0,
+           "y": 130.91,
+           "w": 40,
+           "text": "1",
+           "style": "stamp-value"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "group",
+       "x": 232.57,
+       "y": 21.6,
+       "w": 198,
+       "h": 99.79,
+       "rotate": 0,
+       "children": [
+        {
+         "type": "svg",
+         "x": 0,
+         "y": 0,
+         "w": 198,
+         "h": 99.79,
+         "fit": "contain",
+         "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 250 126\"><g transform=\"rotate(-6 62 62)\"><path d=\"M 122 32.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M 122 47.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M 122 62.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M 122 77.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><path d=\"M 122 92.0 q13 -8 26 0 t26 0 t26 0 t26 0 t26 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><circle cx=\"62\" cy=\"62\" r=\"58\" fill=\"#fff\" stroke=\"#000\" stroke-width=\"2.8\"/><circle cx=\"62\" cy=\"62\" r=\"40\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.1\"/><path id=\"pm1t\" d=\"M 18.799999999999997 62 A 43.2 43.2 0 0 1 105.2 62\" fill=\"none\"/><path id=\"pm1b\" d=\"M 9.0 62 A 53.0 53.0 0 0 0 115.0 62\" fill=\"none\"/><text font-family=\"League Gothic\" font-size=\"12.6\" letter-spacing=\"1.9\" fill=\"#000\"><textPath href=\"#pm1t\" startOffset=\"50%\" text-anchor=\"middle\">ALDERWICK POST OFFICE</textPath></text><text font-family=\"League Gothic\" font-size=\"12.6\" letter-spacing=\"2.4\" fill=\"#000\"><textPath href=\"#pm1b\" startOffset=\"50%\" text-anchor=\"middle\">ROUTE 24</textPath></text><circle cx=\"13\" cy=\"65\" r=\"1.9\" fill=\"#000\"/><circle cx=\"111\" cy=\"65\" r=\"1.9\" fill=\"#000\"/><text x=\"62\" y=\"46\" text-anchor=\"middle\" font-family=\"League Gothic\" font-size=\"18\" letter-spacing=\"3.6\" fill=\"#000\">DEC</text></g></svg>"
+        },
+        {
+         "type": "group",
+         "x": 0,
+         "y": 0,
+         "scale": 0.792,
+         "children": [
+          {
+           "type": "group",
+           "x": 0,
+           "y": 0,
+           "w": 124,
+           "h": 124,
+           "rotate": -6,
+           "children": [
+            {
+             "type": "text",
+             "x": 22,
+             "y": 45.02,
+             "w": 80,
+             "text": "1",
+             "style": "pm-num",
+             "set": {
+              "size": 46
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 58.25,
+       "w": 234.01,
+       "text": "THE FIRST OF DECEMBER",
+       "style": "kicker"
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 79.25,
+       "w": 234.01,
+       "text": "The Chute Coughed Twice",
+       "style": "daytitle",
+       "id": "d1-title"
+      }
+     ]
+    },
+    {
+     "type": "space",
+     "h": 10
+    },
+    {
+     "type": "canvas",
+     "id": "d1-sleeveline",
+     "h": 28,
+     "elements": [
+      {
+       "type": "rect",
+       "x": 0.38,
+       "y": 0.38,
+       "w": 467.26,
+       "h": 27.25,
+       "stroke": {
+        "width": 0.75,
+        "color": "#000"
+       }
+      },
+      {
+       "type": "rect",
+       "x": 0.75,
+       "y": 0.75,
+       "w": 63.38,
+       "h": 26.5,
+       "fill": "ink"
+      },
+      {
+       "type": "text",
+       "x": 9.75,
+       "y": 8.5,
+       "w": 54.38,
+       "text": "SLEEVE 1",
+       "style": "tab"
+      },
+      {
+       "type": "text",
+       "x": 74.13,
+       "y": 6.75,
+       "w": 383.13,
+       "text": "To whoever is under this roof on the first of December.",
+       "style": "addr"
+      }
+     ]
+    },
+    {
+     "type": "space",
+     "h": 14
+    },
+    {
+     "type": "p",
+     "id": "d1-p1",
+     "style": "story",
+     "content": [
+      {
+       "text": "The chute coughed once.",
+       "span": "lead"
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p2",
+     "style": "story",
+     "content": [
+      "Iris looked up from a crate of brass number plates. Her cousin Pip had pinned the number eight to his sweater, although he had been told the pin was sharp."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p3",
+     "style": "story",
+     "content": [
+      "The chute coughed again, and a canvas bag hit the tiles hard enough to rattle every plate in the crate."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p4",
+     "style": "story",
+     "content": [
+      "Pip got there first. “",
+      {
+       "text": "Now",
+       "em": true
+      },
+      " can I investigate?”"
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p5",
+     "style": "story",
+     "content": [
+      "“Hands where I can see them,” said their grandmother, Tessa Vale."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p6",
+     "style": "story",
+     "content": [
+      "She came around the table with the letter about the roof still in her hand. All morning it had moved between piles marked KEEP, GIVE AWAY and ASK SOMEONE."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p7",
+     "style": "story",
+     "content": [
+      "Iris pointed the flashlight up the old parcel chute. The iron flap at the top was bolted. Dust furred the bolt, and a cobweb ran from it to the bricks."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p8",
+     "style": "story",
+     "content": [
+      "“Could have been a very thin postman,” said Pip."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p9",
+     "style": "story",
+     "content": [
+      "Iris was twelve and liked an explanation to stay where she put it. Pip was eight and preferred one with room to crawl inside."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p10",
+     "style": "story",
+     "content": [
+      "The bag had twenty-four numbered pockets and a red 24 sewn by the handle. Tessa carried it to the table herself and stood over it with her back to them, longer than a bag needed. Then she locked the stair door."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p11",
+     "style": "story",
+     "content": [
+      "“The loft isn’t safe,” she said."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p12",
+     "style": "story",
+     "content": [
+      "“It was safe for carrying boxes ten minutes ago,” said Iris."
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p13",
+     "style": "story",
+     "content": [
+      "Under one buckle was a card, in the handwriting that was on every jar in the pantry and was not Grandma’s. ",
+      {
+       "text": "Alderwick Blind Route,",
+       "em": true
+      },
+      " it said. ",
+      {
+       "text": "One sleeve a day, beginning on the first of December. No sleeve has a name on it. Figure out where it belongs and take it there. Curiosity does not count as postage.",
+       "em": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "id": "d1-p14",
+     "style": "story",
+     "content": [
+      "Pocket 1 held a paper sleeve. In it was a plan of the sorting rack on the far wall, and a line in the same hand: ",
+      {
+       "text": "Follow the mail.",
+       "em": true
+      }
+     ]
+    },
+    {
+     "type": "space",
+     "h": 16
+    },
+    {
+     "type": "canvas",
+     "id": "d1-handoff",
+     "h": 13,
+     "elements": [
+      {
+       "type": "svg",
+       "x": 148.08,
+       "y": 1.5,
+       "w": 44.64,
+       "h": 10,
+       "fit": "contain",
+       "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 52 10\"><path d=\"M2 5 q6 -5 12 0 t12 0 t12 0 t12 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.6\" stroke-linecap=\"round\"/></svg>"
+      },
+      {
+       "type": "text",
+       "x": 202.71,
+       "y": 0,
+       "w": 100,
+       "text": "OPEN SLEEVE 1",
+       "style": "handoff"
+      },
+      {
+       "type": "svg",
+       "x": 297.92,
+       "y": 1.5,
+       "w": 22,
+       "h": 10,
+       "fit": "contain",
+       "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 44 20\"><path d=\"M2 10 H39 M31 3.5 L40.5 10 L31 16.5\" fill=\"none\" stroke=\"#000\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "p13-plate",
+   "master": "page",
+   "page_from": 13,
+   "layers": true,
+   "vars": {
+    "run": "Dec 1 · The Chute Coughed Twice"
+   },
+   "elements": [
+    {
+     "type": "image",
+     "id": "plate-1",
+     "src": "book/visuals/e2/plates/day-01.jpg",
+     "x": 72.63,
+     "y": 48.88,
+     "w": 484.73,
+     "h": 662.05,
+     "fit": "cover"
+    },
+    {
+     "type": "rect",
+     "x": 72.25,
+     "y": 48.51,
+     "w": 485.48,
+     "h": 662.8,
+     "stroke": {
+      "width": 0.75,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "rect",
+     "x": 68.5,
+     "y": 44.76,
+     "w": 492.98,
+     "h": 670.3,
+     "stroke": {
+      "width": 0.75,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "text",
+     "x": 68.39,
+     "y": 724.18,
+     "w": 493.22,
+     "text": "“Could have been a very thin postman,” said Pip.",
+     "style": "caption",
+     "id": "plate-1-cap"
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "blank-8",
+   "master": "matter",
+   "elements": []
+  },
+  {
+   "type": "page",
+   "id": "p63-sleeve",
+   "master": "page",
+   "page_from": 63,
+   "layers": true,
+   "vars": {
+    "run": "STUCK?  NUDGE P. 114  ·  SHOVE P. 116  ·  NEARLY P. 118"
+   },
+   "elements": [
+    {
+     "type": "rect",
+     "x": 68.39,
+     "y": 44.64,
+     "w": 96.22,
+     "h": 28,
+     "fill": "ink"
+    },
+    {
+     "type": "text",
+     "x": 80.39,
+     "y": 50.64,
+     "w": 90,
+     "text": "SLEEVE 14",
+     "style": "sleeve-tab"
+    },
+    {
+     "type": "text",
+     "x": 173.25,
+     "y": 55.64,
+     "w": 256.46,
+     "text": "A key pressed into soap and the locksmith’s board",
+     "style": "what"
+    },
+    {
+     "type": "text",
+     "x": 438.35,
+     "y": 57.54,
+     "w": 60,
+     "text": "two parcels",
+     "style": "diff-word"
+    },
+    {
+     "type": "svg",
+     "x": 495.84,
+     "y": 51.64,
+     "w": 19.59,
+     "h": 16.99,
+     "fit": "contain",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 30 26\"><rect x=\"2\" y=\"5\" width=\"26\" height=\"19\" fill=\"#000\" stroke=\"#000\" stroke-width=\"1.6\"/><path d=\"M15 5 V24 M2 14.5 H28\" stroke=\"#fff\" stroke-width=\"1.7\"/><path d=\"M15 5 c-5 -6 -9 -1 0 0 c9 -1 5 -6 0 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.5\"/></svg>"
+    },
+    {
+     "type": "svg",
+     "x": 518.93,
+     "y": 51.64,
+     "w": 19.59,
+     "h": 16.99,
+     "fit": "contain",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 30 26\"><rect x=\"2\" y=\"5\" width=\"26\" height=\"19\" fill=\"#000\" stroke=\"#000\" stroke-width=\"1.6\"/><path d=\"M15 5 V24 M2 14.5 H28\" stroke=\"#fff\" stroke-width=\"1.7\"/><path d=\"M15 5 c-5 -6 -9 -1 0 0 c9 -1 5 -6 0 0\" fill=\"none\" stroke=\"#000\" stroke-width=\"1.5\"/></svg>"
+    },
+    {
+     "type": "svg",
+     "x": 542.02,
+     "y": 51.64,
+     "w": 19.59,
+     "h": 16.99,
+     "fit": "contain",
+     "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 30 26\"><rect x=\"2.6\" y=\"5.6\" width=\"24.8\" height=\"17.8\" fill=\"#fff\" stroke=\"#000\" stroke-width=\"0.9\" stroke-dasharray=\"1.6 2.2\" stroke-linecap=\"round\"/></svg>"
+    },
+    {
+     "type": "line",
+     "x1": 68.39,
+     "y1": 73.39,
+     "x2": 561.61,
+     "y2": 73.39,
+     "stroke": {
+      "width": 1.5,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "svg",
+     "x": 68.39,
+     "y": 84.22,
+     "w": 493.22,
+     "h": 510.23,
+     "fit": "contain",
+     "src": "build/art/d14-soap.svg",
+     "id": "d14-soap"
+    },
+    {
+     "type": "group",
+     "id": "d14-note",
+     "x": 312.5,
+     "y": 92.22,
+     "w": 238.11,
+     "h": 105.05,
+     "rotate": -1.3,
+     "children": [
+      {
+       "type": "group",
+       "x": 0,
+       "y": 0,
+       "scale": 1.00045,
+       "children": [
+        {
+         "type": "path",
+         "x": 2.2,
+         "y": 2.4,
+         "w": 238.0,
+         "h": 105.0,
+         "d": "M 0 0 L 238.0 0 L 235.40 9.55 L 238.00 19.09 L 235.40 28.64 L 238.00 38.18 L 235.40 47.73 L 238.00 57.27 L 235.40 66.82 L 238.00 76.36 L 235.40 85.91 L 238.00 95.45 L 235.40 105.00 L 0 105.0 L 0.00 95.45 L 2.60 85.91 L 0.00 76.36 L 2.60 66.82 L 0.00 57.27 L 2.60 47.73 L 0.00 38.18 L 2.60 28.64 L 0.00 19.09 L 2.60 9.55 L 0.00 0.00 Z",
+         "fill": "ink",
+         "stroke": {
+          "width": 0.4,
+          "color": "#000",
+          "join": "miter"
+         }
+        },
+        {
+         "type": "path",
+         "x": 0,
+         "y": 0,
+         "w": 238.0,
+         "h": 105.0,
+         "d": "M 0 0 L 238.0 0 L 235.40 9.55 L 238.00 19.09 L 235.40 28.64 L 238.00 38.18 L 235.40 47.73 L 238.00 57.27 L 235.40 66.82 L 238.00 76.36 L 235.40 85.91 L 238.00 95.45 L 235.40 105.00 L 0 105.0 L 0.00 95.45 L 2.60 85.91 L 0.00 76.36 L 2.60 66.82 L 0.00 57.27 L 2.60 47.73 L 0.00 38.18 L 2.60 28.64 L 0.00 19.09 L 2.60 9.55 L 0.00 0.00 Z",
+         "fill": "paper",
+         "stroke": {
+          "width": 1.2,
+          "color": "#000",
+          "join": "miter"
+         }
+        },
+        {
+         "type": "line",
+         "x1": 17.85,
+         "y1": 1.5,
+         "x2": 17.85,
+         "y2": 103.5,
+         "stroke": {
+          "width": 0.5,
+          "color": "#8a8a8a",
+          "dash": [
+           5,
+           3
+          ]
+         }
+        },
+        {
+         "type": "line",
+         "x1": 190.4,
+         "y1": 1.5,
+         "x2": 190.4,
+         "y2": 103.5,
+         "stroke": {
+          "width": 0.5,
+          "color": "#8a8a8a",
+          "dash": [
+           5,
+           3
+          ]
+         }
+        },
+        {
+         "type": "text",
+         "x": 30,
+         "y": 11.24,
+         "w": 200,
+         "text": "Soap keeps a key’s shape\nexactly, and exactly\nbackward.\nStart at the round end.\nSix cuts. Check all six.",
+         "style": "note-hand"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "group",
+     "id": "d14-board",
+     "x": 68.39,
+     "y": 84.22,
+     "scale": 1.00045,
+     "children": [
+      {
+       "type": "path",
+       "x": 0,
+       "y": 0,
+       "w": 493,
+       "h": 510,
+       "d": "M 6.0 509.2 H 490.2 V 132.0",
+       "stroke": {
+        "width": 2.0,
+        "color": "#000",
+        "join": "miter"
+       }
+      },
+      {
+       "type": "rect",
+       "x": 3.0,
+       "y": 129.0,
+       "w": 485.0,
+       "h": 378.0,
+       "fill": "paper",
+       "stroke": {
+        "width": 1.2,
+        "color": "#000"
+       }
+      },
+      {
+       "type": "rect",
+       "x": 3.0,
+       "y": 129.0,
+       "w": 485.0,
+       "h": 20,
+       "fill": "ink"
+      },
+      {
+       "type": "text",
+       "x": 12.0,
+       "y": 132.56,
+       "w": 300,
+       "text": "FARROW & DAUGHTER, LOCKSMITHS",
+       "style": "board-title"
+      },
+      {
+       "type": "text",
+       "x": 279.0,
+       "y": 134.51,
+       "w": 200,
+       "text": "PAID FOR  ·  NOT COLLECTED",
+       "style": "board-right"
+      }
+     ]
+    },
+    {
+     "type": "svg",
+     "x": 68.39,
+     "y": 84.22,
+     "w": 493.22,
+     "h": 510.23,
+     "fit": "contain",
+     "src": "build/art/d14-board.svg",
+     "id": "d14-keys"
+    },
+    {
+     "type": "line",
+     "x1": 68.39,
+     "y1": 617.68,
+     "x2": 561.61,
+     "y2": 617.68,
+     "stroke": {
+      "width": 0.75,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "text",
+     "x": 68.39,
+     "y": 625.05,
+     "w": 70,
+     "text": "WHAT TO DO",
+     "style": "todo-label"
+    },
+    {
+     "type": "text",
+     "x": 141.04,
+     "y": 624.05,
+     "w": 420.57,
+     "blocks": [
+      {
+       "type": "p",
+       "style": "steps",
+       "content": [
+        "Somebody pressed a key into this soap. To find which key, count the cuts. Always start at the ",
+        {
+         "text": "round end",
+         "strong": true
+        },
+        ", on the soap and on every key."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "steps",
+       "content": [
+        "Each little box in a cut is one step deep. Count the boxes in every cut."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "steps",
+       "content": [
+        "One key matches all six cuts in order. Read its tag."
+       ]
+      }
+     ],
+     "id": "d14-steps"
+    },
+    {
+     "type": "text",
+     "x": 68.39,
+     "y": 710.85,
+     "w": 210,
+     "text": "The tag on the matching key says",
+     "style": "answer"
+    },
+    {
+     "type": "rect",
+     "x": 282.12,
+     "y": 702.38,
+     "w": 28.05,
+     "h": 30.93,
+     "stroke": {
+      "width": 0.75,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "rect",
+     "x": 313.93,
+     "y": 702.38,
+     "w": 28.05,
+     "h": 30.93,
+     "stroke": {
+      "width": 0.75,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "rect",
+     "x": 345.73,
+     "y": 702.38,
+     "w": 28.05,
+     "h": 30.93,
+     "stroke": {
+      "width": 0.75,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "rect",
+     "x": 389.03,
+     "y": 702.38,
+     "w": 28.05,
+     "h": 30.93,
+     "stroke": {
+      "width": 0.75,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "ellipse",
+     "x": 380.76,
+     "y": 695.56,
+     "w": 44.58,
+     "h": 44.58,
+     "stroke": {
+      "width": 1.5,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "ellipse",
+     "x": 377.5,
+     "y": 692.31,
+     "w": 51.09,
+     "h": 51.09,
+     "stroke": {
+      "width": 0.75,
+      "color": "#000"
+     }
+    },
+    {
+     "type": "rect",
+     "x": 432.33,
+     "y": 702.38,
+     "w": 28.05,
+     "h": 30.93,
+     "stroke": {
+      "width": 0.75,
+      "color": "#000"
+     }
+    }
+   ]
+  }
+ ]
+}

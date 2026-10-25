@@ -1,0 +1,12 @@
+{
+ "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/the-machine-in-the-back-of-the-book",
+ "pdf": "release/the-machine-in-the-back-of-the-book-interior.pdf",
+ "bleed": true,
+ "pages": [
+  {"original": 9, "rebuilt": 1, "what": "chapter 1 opener: teal bleed band, line art, numeral, text and two margin notes"},
+  {"original": 14, "rebuilt": 2, "what": "flow page (verso, tight pour): list, struck paragraph, engraved plate figure, four notes"},
+  {"original": 27, "rebuilt": 3, "what": "Castellan cost review: rotated typewriter sheet, dotted-rule table, red and blue pen"},
+  {"original": 29, "rebuilt": 5, "what": "flow page (recto): code, two tables, build box, listing with margin QR"},
+  {"original": 48, "rebuilt": 6, "what": "cartridge 1 label page: tinted bleed ground, drawn cartridge, Archivo display"}
+ ]
+}

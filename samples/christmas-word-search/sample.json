@@ -1,0 +1,12 @@
+{
+ "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/q4-02-christmas-word-search",
+ "pdf": "release/christmas-word-search-hidden-messages-festive-facts-interior.pdf",
+ "bleed": false,
+ "pages": [
+  {"original": 4, "rebuilt": 2, "what": "How to Solve: badge-numbered steps, inline arrow table, worked example with loops"},
+  {"original": 6, "rebuilt": 4, "what": "chapter 1 plate: knit bands, double frame, potrace woodcut"},
+  {"original": 7, "rebuilt": 5, "what": "chapter 1 opener: centred display type, ornament rule, mini contents with dotted leaders, direction key"},
+  {"original": 8, "rebuilt": 6, "what": "puzzle 1: 17 x 13 grid, word bank, hidden-message blanks, running foot"},
+  {"original": 127, "rebuilt": 7, "what": "solutions 1 and 2: answer capsules, bold message letters, grey fillers, side column"}
+ ]
+}

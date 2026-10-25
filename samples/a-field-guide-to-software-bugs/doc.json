@@ -1,0 +1,3009 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "A Field Guide to Software Bugs (sample pages)",
+  "author": "Levon Arakelyan",
+  "lang": "en-US"
+ },
+ "fonts": [
+  "book/assets/fonts"
+ ],
+ "design": {
+  "colors": {
+   "ink": "#1d1a17",
+   "accent": "#8c2f23",
+   "second": "#5e5348",
+   "notes": "#3a322a",
+   "rule": "#6b5a48",
+   "hair": "#b9a98e",
+   "tint": "#F5EFE1"
+  },
+  "fonts": {},
+  "base": {
+   "font": "Adobe Caslon Pro",
+   "size": 12.2,
+   "line_height": "15.2pt",
+   "color": "ink",
+   "lang": "en-US",
+   "hyphenate": false
+  },
+  "styles": {
+   "rh": {
+    "font": "Adobe Caslon Pro",
+    "size": 7.6,
+    "line_height": 1.2,
+    "tracking": "0.16em",
+    "case": "upper",
+    "color": "second"
+   },
+   "rh-pl": {
+    "font": "JetBrains Mono",
+    "size": 6.6,
+    "line_height": 1.32,
+    "tracking": "0.08em",
+    "color": "accent"
+   },
+   "foot": {
+    "font": "Adobe Caslon Pro",
+    "size": 7.4,
+    "line_height": 1.2,
+    "tracking": "0.16em",
+    "case": "upper",
+    "color": "second"
+   },
+   "folio": {
+    "font": "Adobe Caslon Pro",
+    "size": 9.5,
+    "line_height": 1.2,
+    "tracking": "0.02em",
+    "features": [
+     "onum"
+    ]
+   },
+   "folio-mono": {
+    "font": "JetBrains Mono",
+    "size": 7.4,
+    "line_height": 1.32,
+    "tracking": "0.02em"
+   },
+   "cap": {
+    "font": "Adobe Caslon Pro",
+    "italic": true,
+    "size": 9,
+    "line_height": "11.2pt",
+    "color": "notes",
+    "align": "center"
+   },
+   "fig": {
+    "font": "Adobe Caslon Pro",
+    "italic": true,
+    "size": 8.4,
+    "line_height": 1.2,
+    "color": "notes",
+    "align": "center"
+   },
+   "name": {
+    "font": "Big Caslon",
+    "weight": 500,
+    "size": 21,
+    "line_height": "23pt",
+    "tracking": "0.085em",
+    "case": "upper",
+    "space_before": 0,
+    "space_after": 0,
+    "hyphenate": false
+   },
+   "name-n2": {
+    "inherits": "name",
+    "size": 18.5,
+    "tracking": "0.075em"
+   },
+   "name-n3": {
+    "inherits": "name",
+    "size": 17,
+    "tracking": "0.07em"
+   },
+   "name-n4": {
+    "inherits": "name",
+    "size": 15.5,
+    "tracking": "0.065em"
+   },
+   "latin": {
+    "font": "Adobe Caslon Pro",
+    "italic": true,
+    "size": 12.5,
+    "line_height": 1.2
+   },
+   "status": {
+    "font": "JetBrains Mono",
+    "weight": 500,
+    "size": 6.9,
+    "line_height": 1.32,
+    "tracking": "0.12em",
+    "case": "upper",
+    "color": "accent"
+   },
+   "entry": {
+    "font": "Adobe Caslon Pro",
+    "size": 12.2,
+    "line_height": "15.2pt",
+    "space_before": 0,
+    "space_after": 4.6,
+    "features": [
+     "onum"
+    ],
+    "hyphenate": false,
+    "align": "left"
+   },
+   "sight": {
+    "inherits": "entry",
+    "tracking": "-0.003em",
+    "ligatures": false,
+    "space_before": 6,
+    "rule_above": {
+     "stroke": {
+      "width": 0.75,
+      "color": "hair"
+     },
+     "gap": 5.75
+    }
+   },
+   "note": {
+    "inherits": "entry",
+    "italic": true,
+    "size": 9.6,
+    "line_height": "12.2pt",
+    "color": "notes",
+    "space_before": 7
+   },
+   "hand": {
+    "font": [
+     "Field Hand L",
+     "Caveat"
+    ],
+    "weight": 500,
+    "size": 13.4,
+    "line_height": "14pt",
+    "color": "accent",
+    "space_before": 0,
+    "space_after": 0,
+    "hyphenate": false
+   },
+   "ord": {
+    "font": "JetBrains Mono",
+    "size": 8,
+    "line_height": 1.32,
+    "tracking": "0.2em",
+    "color": "accent",
+    "align": "center",
+    "space_before": 90.0,
+    "space_after": 0,
+    "margin_right": 1.6
+   },
+   "oh2": {
+    "font": "Big Caslon",
+    "weight": 500,
+    "size": 27,
+    "line_height": 1.209,
+    "tracking": "0.13em",
+    "case": "upper",
+    "align": "center",
+    "space_before": 10,
+    "space_after": 2,
+    "margin_right": 3.5100000000000002
+   },
+   "eng": {
+    "font": "Adobe Caslon Pro",
+    "italic": true,
+    "size": 14,
+    "line_height": 1.2,
+    "align": "center",
+    "space_before": 2,
+    "space_after": 0
+   },
+   "desc": {
+    "font": "Adobe Caslon Pro",
+    "size": 12.3,
+    "line_height": "16.4pt",
+    "features": [
+     "onum"
+    ],
+    "hyphenate": false,
+    "margin_left": 32.400000000000006,
+    "margin_right": 32.400000000000006,
+    "space_before": 0,
+    "space_after": 0
+   },
+   "otd": {
+    "font": "Adobe Caslon Pro",
+    "size": 10.8,
+    "line_height": "14.6pt",
+    "features": [
+     "onum"
+    ],
+    "space_before": 0,
+    "space_after": 0,
+    "hyphenate": false
+   },
+   "otd-n": {
+    "inherits": "otd",
+    "font": "JetBrains Mono",
+    "size": 7.6,
+    "color": "accent",
+    "features": []
+   },
+   "otd-l": {
+    "inherits": "otd",
+    "italic": true,
+    "size": 9.8,
+    "color": "second",
+    "align": "right"
+   },
+   "otd-p": {
+    "inherits": "otd",
+    "align": "right"
+   }
+  },
+  "spans": {
+   "lab": {
+    "font": "Adobe Caslon Pro",
+    "weight": 600,
+    "size": 12,
+    "case": "all-small-caps",
+    "tracking": "0.11em",
+    "color": "accent"
+   },
+   "code": {
+    "font": "JetBrains Mono",
+    "size": "0.78em",
+    "tracking": "-0.01em",
+    "features": [
+     "-onum"
+    ]
+   }
+  },
+  "masters": {
+   "page": {
+    "width": "6in",
+    "height": "9in",
+    "bleed": "0.125in",
+    "fill": "tint",
+    "margins": {
+     "top": 33.120000000000005,
+     "bottom": 36.0,
+     "inside": 51.839999999999996,
+     "outside": 34.56
+    }
+   }
+  },
+  "components": {
+   "head-recto": {
+    "params": {
+     "head": null,
+     "plate": null
+    },
+    "w": 345.6,
+    "h": 17.28,
+    "elements": [
+     {
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "w": 345.6,
+      "style": "rh",
+      "text": "{{head}}",
+      "set": {
+       "align": "left"
+      }
+     },
+     {
+      "type": "text",
+      "x": 0,
+      "y": 0.6,
+      "w": 345.6,
+      "style": "rh-pl",
+      "text": "{{plate}}",
+      "set": {
+       "align": "right"
+      }
+     }
+    ]
+   },
+   "foot-recto": {
+    "params": {
+     "folio": null,
+     "folio_style": "folio",
+     "folio_y": 567.48
+    },
+    "w": 345.6,
+    "h": 11.52,
+    "elements": [
+     {
+      "type": "text",
+      "x": 0,
+      "y": 570.0,
+      "w": 345.6,
+      "style": "foot",
+      "text": "A Field Guide to Software Bugs",
+      "set": {
+       "align": "left"
+      }
+     },
+     {
+      "type": "text",
+      "x": 0,
+      "y": "{{folio_y}}",
+      "w": 345.6,
+      "style": "{{folio_style}}",
+      "text": "{{folio}}",
+      "set": {
+       "align": "right"
+      }
+     }
+    ]
+   },
+   "head-verso": {
+    "params": {
+     "head": null,
+     "plate": null
+    },
+    "w": 345.6,
+    "h": 17.28,
+    "elements": [
+     {
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "w": 345.6,
+      "style": "rh",
+      "text": "{{head}}",
+      "set": {
+       "align": "right"
+      }
+     },
+     {
+      "type": "text",
+      "x": 0,
+      "y": 0.6,
+      "w": 345.6,
+      "style": "rh-pl",
+      "text": "{{plate}}",
+      "set": {
+       "align": "left"
+      }
+     }
+    ]
+   },
+   "foot-verso": {
+    "params": {
+     "folio": null,
+     "folio_style": "folio",
+     "folio_y": 567.48
+    },
+    "w": 345.6,
+    "h": 11.52,
+    "elements": [
+     {
+      "type": "text",
+      "x": 0,
+      "y": 570.0,
+      "w": 345.6,
+      "style": "foot",
+      "text": "A Field Guide to Software Bugs",
+      "set": {
+       "align": "right"
+      }
+     },
+     {
+      "type": "text",
+      "x": 0,
+      "y": "{{folio_y}}",
+      "w": 345.6,
+      "style": "{{folio_style}}",
+      "text": "{{folio}}",
+      "set": {
+       "align": "left"
+      }
+     }
+    ]
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "order-0",
+   "master": "page",
+   "elements": [
+    {
+     "type": "group",
+     "x": 51.839999999999996,
+     "y": 33.120000000000005,
+     "w": 345.6,
+     "h": 578.88,
+     "children": [
+      {
+       "type": "use",
+       "component": "foot-recto",
+       "x": 0,
+       "y": 0,
+       "props": {
+        "folio": "11"
+       }
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 90.0,
+       "w": 345.6,
+       "blocks": [
+        {
+         "type": "p",
+         "style": "ord",
+         "text": "ORDER 0"
+        },
+        {
+         "type": "h",
+         "level": 2,
+         "style": "oh2",
+         "text": "Arithmetica"
+        },
+        {
+         "type": "p",
+         "style": "eng",
+         "text": "The counting bugs"
+        },
+        {
+         "type": "canvas",
+         "w": 64.8,
+         "h": 0.75,
+         "align": "center",
+         "space_before": 15,
+         "space_after": 15,
+         "elements": [
+          {
+           "type": "line",
+           "x1": 0,
+           "y1": 0.375,
+           "x2": 64.8,
+           "y2": 0.375,
+           "stroke": {
+            "width": 0.75,
+            "color": "rule"
+           }
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "desc",
+         "content": [
+          "Bugs of number, and of time, which is number with opinions. Members of this order are small, exact, and wrong by very little. They are the first bugs most collectors meet and the last they stop meeting."
+         ]
+        },
+        {
+         "type": "box",
+         "inset": {
+          "left": 32.400000000000006,
+          "right": 32.400000000000006,
+          "top": 0,
+          "bottom": 0
+         },
+         "space_before": 20,
+         "space_after": 0,
+         "blocks": [
+          {
+           "type": "table",
+           "columns": [
+            23.04,
+            129.6,
+            "1fr",
+            24.48
+           ],
+           "rows": [
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-n",
+                "text": "1"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd",
+                "content": [
+                 "The Off-by-One Error"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-l",
+                "text": "Erratum unius"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-p",
+                "text": "12"
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-n",
+                "text": "2"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd",
+                "content": [
+                 "The Integer Overflow"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-l",
+                "text": "Numerus revolutus"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-p",
+                "text": "13"
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-n",
+                "text": "3"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd",
+                "content": [
+                 "The Floating-Point Error"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-l",
+                "text": "Punctum fluitans"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-p",
+                "text": "14"
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-n",
+                "text": "4"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd",
+                "content": [
+                 "The Division by Zero"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-l",
+                "text": "Divisor nullus"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-p",
+                "text": "15"
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-n",
+                "text": "5"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd",
+                "content": [
+                 "The Unit Error"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-l",
+                "text": "Mensura mixta"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-p",
+                "text": "16"
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-n",
+                "text": "6"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd",
+                "content": [
+                 "The Time Zone Bug"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-l",
+                "text": "Hora incerta"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-p",
+                "text": "17"
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-n",
+                "text": "7"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd",
+                "content": [
+                 "The Leap Year Bug"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-l",
+                "text": "Bissextus rarus"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-p",
+                "text": "18"
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-n",
+                "text": "8"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd",
+                "content": [
+                 "The Millennium Bug"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-l",
+                "text": "Magicicada millennii"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-p",
+                "text": "19"
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-n",
+                "text": "9"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd",
+                "content": [
+                 "The Year 2038 Bug"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-l",
+                "text": "Magicicada epochalis"
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "otd-p",
+                "text": "20"
+               }
+              ]
+             }
+            ]
+           ],
+           "stroke": "none",
+           "inset": 0,
+           "space_before": 0,
+           "space_after": 0
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "blank-2",
+   "master": "page",
+   "elements": []
+  },
+  {
+   "type": "page",
+   "id": "integer-overflow",
+   "master": "page",
+   "elements": [
+    {
+     "type": "group",
+     "x": 51.839999999999996,
+     "y": 33.120000000000005,
+     "w": 345.6,
+     "h": 578.88,
+     "children": [
+      {
+       "type": "use",
+       "component": "head-recto",
+       "x": 0,
+       "y": 0,
+       "props": {
+        "head": "Order 0 · Arithmetica",
+        "plate": "PLATE 2"
+       }
+      },
+      {
+       "type": "use",
+       "component": "foot-recto",
+       "x": 0,
+       "y": 0,
+       "props": {
+        "folio": "-2147483648",
+        "folio_style": "folio-mono",
+        "folio_y": 569.112
+       }
+      },
+      {
+       "type": "image",
+       "src": "book/build/plates/integer-overflow.jpg",
+       "x": 0,
+       "y": 17.28,
+       "w": 345.6,
+       "h": 241.92,
+       "fit": "stretch"
+      },
+      {
+       "type": "rect",
+       "x": 0.375,
+       "y": 17.655,
+       "w": 344.85,
+       "h": 241.17,
+       "stroke": {
+        "width": 0.75,
+        "color": "hair"
+       }
+      },
+      {
+       "type": "rect",
+       "x": 5.375,
+       "y": 22.655,
+       "w": 334.85,
+       "h": 231.17,
+       "stroke": {
+        "width": 0.75,
+        "color": "rule"
+       }
+      },
+      {
+       "type": "text",
+       "x": 0.7360000000000007,
+       "y": 225.1296,
+       "w": 40,
+       "style": "fig",
+       "text": "1"
+      },
+      {
+       "type": "text",
+       "x": 228.832,
+       "y": 229.968,
+       "w": 40,
+       "style": "fig",
+       "text": "2"
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 263.52,
+       "w": 345.6,
+       "style": "cap",
+       "content": [
+        "Fig. 1. Adult, full grown. Fig. 2. The same individual, one larger."
+       ],
+       "set": {
+        "align": "center"
+       }
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 290.88,
+       "w": 345.6,
+       "blocks": [
+        {
+         "type": "h",
+         "level": 1,
+         "style": "name-n2",
+         "content": [
+          "The Integer Overflow"
+         ]
+        },
+        {
+         "type": "canvas",
+         "w": 345.6,
+         "h": 21.75,
+         "space_before": 3.5,
+         "space_after": 0,
+         "elements": [
+          {
+           "type": "text",
+           "x": 0,
+           "y": 0,
+           "w": 288.356,
+           "style": "latin",
+           "content": [
+            "Numerus revolutus"
+           ]
+          },
+          {
+           "type": "text",
+           "x": 345.6,
+           "y": 0.19599999999999973,
+           "anchor": "top-right",
+           "style": "status",
+           "text": "NEGATIVE",
+           "stroke": {
+            "width": 0.75,
+            "color": "accent"
+           },
+           "radius": 2.5,
+           "inset": {
+            "top": 2.95,
+            "right": 6.578,
+            "bottom": 2.55,
+            "left": 5.75
+           }
+          },
+          {
+           "type": "line",
+           "x1": 0,
+           "y1": 21.375,
+           "x2": 345.6,
+           "y2": 21.375,
+           "stroke": {
+            "width": 0.75,
+            "color": "rule"
+           }
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Field marks.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Grows steadily to the greatest size its container allows. At the next step it is found very small, negative, and on its back."
+         ],
+         "set": {
+          "space_before": 6.5
+         }
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Habitat.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Counters. Anything that has been counting for longer than its author expected to be employed."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Control.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Decide how large the number can become. Then ask what happens the day after."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "sight",
+         "content": [
+          {
+           "text": "Notable sighting.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Kourou, 4 June 1996. A 64-bit number was put into a 16-bit space. The rocket, the first Ariane 5, lasted under forty seconds."
+         ],
+         "set": {
+          "rule_above": {
+           "stroke": {
+            "width": 0.75,
+            "color": "hair"
+           },
+           "gap": 5.75
+          }
+         }
+        },
+        {
+         "type": "space",
+         "h": 10.618850155844083
+        },
+        {
+         "type": "box",
+         "rotate": -1.2,
+         "space_before": 0,
+         "space_after": 0,
+         "blocks": [
+          {
+           "type": "p",
+           "style": "hand",
+           "content": [
+            "Page number to be put right in the next printing. Ed."
+           ],
+           "set": {
+            "align": "right"
+           }
+          }
+         ]
+        }
+       ],
+       "style": "entry",
+       "id": "entry-13",
+       "h": 265.67999999999995
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "blank-4",
+   "master": "page",
+   "elements": []
+  },
+  {
+   "type": "page",
+   "id": "buffer-overflow",
+   "master": "page",
+   "elements": [
+    {
+     "type": "image",
+     "src": "book/build/pagebg/buffer-overflow-recto.jpg",
+     "x": 0,
+     "y": -9.0,
+     "w": 441.0,
+     "h": 666.0,
+     "fit": "stretch",
+     "decorative": true
+    },
+    {
+     "type": "group",
+     "x": 51.839999999999996,
+     "y": 33.120000000000005,
+     "w": 345.6,
+     "h": 578.88,
+     "children": [
+      {
+       "type": "use",
+       "component": "head-recto",
+       "x": 0,
+       "y": 0,
+       "props": {
+        "head": "Order 1 · Memoraria",
+        "plate": "PLATE 12"
+       }
+      },
+      {
+       "type": "use",
+       "component": "foot-recto",
+       "x": 0,
+       "y": 0,
+       "props": {
+        "folio": "25"
+       }
+      },
+      {
+       "type": "rect",
+       "x": 0.375,
+       "y": 17.655,
+       "w": 344.85,
+       "h": 241.17,
+       "stroke": {
+        "width": 0.75,
+        "color": "hair"
+       }
+      },
+      {
+       "type": "rect",
+       "x": 5.375,
+       "y": 22.655,
+       "w": 334.85,
+       "h": 231.17,
+       "stroke": {
+        "width": 0.75,
+        "color": "rule"
+       }
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 263.52,
+       "w": 345.6,
+       "style": "cap",
+       "content": [
+        "Fig. 1. Adult, natural size. The plate was large enough when it was ordered."
+       ],
+       "set": {
+        "align": "left"
+       }
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 290.88,
+       "w": 266.40000000000003,
+       "blocks": [
+        {
+         "type": "h",
+         "level": 1,
+         "style": "name-n3",
+         "content": [
+          "The Buffer Overflow"
+         ]
+        },
+        {
+         "type": "canvas",
+         "w": 266.40000000000003,
+         "h": 21.75,
+         "space_before": 3.5,
+         "space_after": 0,
+         "elements": [
+          {
+           "type": "text",
+           "x": 0,
+           "y": 0,
+           "w": 229.02800000000002,
+           "style": "latin",
+           "content": [
+            "Excessus marginis"
+           ]
+          },
+          {
+           "type": "text",
+           "x": 266.40000000000003,
+           "y": 0.19599999999999973,
+           "anchor": "top-right",
+           "style": "status",
+           "text": "OPEN",
+           "stroke": {
+            "width": 0.75,
+            "color": "accent"
+           },
+           "radius": 2.5,
+           "inset": {
+            "top": 2.95,
+            "right": 6.578,
+            "bottom": 2.55,
+            "left": 5.75
+           }
+          },
+          {
+           "type": "line",
+           "x1": 0,
+           "y1": 21.375,
+           "x2": 266.40000000000003,
+           "y2": 21.375,
+           "stroke": {
+            "width": 0.75,
+            "color": "rule"
+           }
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Field marks.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Given room for sixteen, it brings seventeen, and puts the last one next door."
+         ],
+         "set": {
+          "space_before": 6.5
+         }
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Habitat.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "C, and everything built on C, which is everything."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Diet.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Return addresses. Passwords. The caption of the neighbouring plate."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Control.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Do not ask a guest how many it is bringing. Count them at the door."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "sight",
+         "content": [
+          {
+           "text": "Notable sighting.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "2 November 1988. The Morris worm got into Unix machines through a program that read its input without counting."
+         ],
+         "set": {
+          "rule_above": {
+           "stroke": {
+            "width": 0.75,
+            "color": "hair"
+           },
+           "gap": 5.75
+          }
+         }
+        }
+       ],
+       "style": "entry",
+       "id": "entry-25",
+       "h": 265.67999999999995
+      }
+     ]
+    },
+    {
+     "type": "path",
+     "x": 0,
+     "y": -9.0,
+     "w": 441.0,
+     "h": 666.0,
+     "viewbox": [
+      0,
+      0,
+      612.5,
+      925.0
+     ],
+     "d": "M61.3,912.5 L61.0,914.0 L60.7,915.6 L60.4,917.1 L60.0,918.6 L59.6,920.1 L59.1,921.5 L58.5,923.0 L57.8,924.4 L57.1,925.7 L56.4,927.1 L55.6,928.4 L54.8,929.6 L53.9,930.9 L53.1,932.1 L52.3,933.3 L51.6,934.6 L50.9,935.8 L50.2,937.1 L49.6,938.3 L49.0,939.7 L48.6,941.0 L48.1,942.4 L47.7,943.9 L47.3,945.4 L46.9,946.9 L46.4,948.5 L45.9,950.0 L45.4,951.6 L44.8,953.1 L44.1,954.6 L43.3,956.0 L42.4,957.4 L41.5,958.7 L40.4,959.9 L39.2,961.0 L38.0,962.1 L36.7,963.0 L35.4,963.9 L34.0,964.7 L32.6,965.5 L31.2,966.2 L29.7,966.9 L28.3,967.6 L26.9,968.3 L25.4,969.1 L24.0,969.9 L22.6,970.7 L21.2,971.5 L19.7,972.4 L18.3,973.3 L16.8,974.2 L15.3,975.1 L13.8,976.0 L12.2,976.8 L10.6,977.5 L8.9,978.1 L7.2,978.7 L5.5,979.1 L3.8,979.3 L2.0,979.5 L0.2,979.4 L-1.5,979.3 L-3.2,979.0 L-4.9,978.6 L-6.6,978.0 L-8.3,977.4 L-9.9,976.7 L-11.5,976.0 L-13.1,975.2 L-14.6,974.5 L-16.1,973.7 L-17.6,972.9 L-19.1,972.2 L-20.6,971.5 L-22.1,970.8 L-23.7,970.1 L-25.2,969.5 L-26.7,968.9 L-28.3,968.2 L-29.8,967.6 L-31.3,966.9 L-32.9,966.2 L-34.4,965.4 L-35.8,964.6 L-37.3,963.7 L-38.7,962.7 L-40.0,961.7 L-41.3,960.6 L-42.6,959.5 L-43.8,958.3 L-44.9,957.0 L-46.0,955.7 L-47.0,954.3 L-48.0,953.0 L-48.9,951.6 L-49.8,950.1 L-50.6,948.7 L-51.4,947.2 L-52.2,945.7 L-52.9,944.2 L-53.6,942.7 L-54.2,941.2 L-54.8,939.6 L-55.3,938.0 L-55.7,936.4 L-56.0,934.8 L-56.2,933.1 L-56.3,931.5 L-56.4,929.8 L-56.3,928.1 L-56.1,926.5 L-55.9,924.8 L-55.6,923.2 L-55.2,921.6 L-54.9,920.0 L-54.5,918.4 L-54.2,916.9 L-53.9,915.4 L-53.7,914.0 L-53.5,912.5 L-53.5,911.0 L-53.6,909.6 L-53.8,908.1 L-54.2,906.6 L-54.6,905.1 L-55.1,903.5 L-55.7,901.8 L-56.3,900.1 L-56.9,898.3 L-57.5,896.5 L-58.1,894.7 L-58.5,892.8 L-58.8,891.0 L-58.9,889.1 L-58.8,887.3 L-58.6,885.5 L-58.1,883.8 L-57.4,882.2 L-56.5,880.8 L-55.4,879.4 L-54.1,878.1 L-52.7,877.0 L-51.1,876.0 L-49.5,875.1 L-47.8,874.3 L-46.1,873.5 L-44.5,872.8 L-42.8,872.1 L-41.3,871.4 L-39.8,870.7 L-38.4,870.0 L-37.1,869.1 L-35.9,868.2 L-34.7,867.2 L-33.6,866.0 L-32.6,864.8 L-31.6,863.6 L-30.6,862.2 L-29.6,860.9 L-28.6,859.5 L-27.5,858.2 L-26.3,856.9 L-25.1,855.7 L-23.8,854.6 L-22.4,853.7 L-20.9,852.9 L-19.4,852.2 L-17.7,851.7 L-16.1,851.4 L-14.4,851.2 L-12.7,851.2 L-11.0,851.3 L-9.3,851.5 L-7.6,851.8 L-6.0,852.1 L-4.3,852.4 L-2.7,852.7 L-1.1,853.0 L0.4,853.3 L2.0,853.5 L3.5,853.6 L5.1,853.7 L6.6,853.8 L8.2,853.8 L9.7,853.8 L11.3,853.9 L12.9,853.9 L14.4,854.0 L16.0,854.1 L17.6,854.3 L19.2,854.6 L20.7,854.9 L22.2,855.4 L23.7,855.9 L25.2,856.5 L26.6,857.2 L28.1,857.9 L29.4,858.6 L30.8,859.4 L32.2,860.2 L33.6,860.9 L35.1,861.6 L36.5,862.3 L38.1,862.9 L39.7,863.4 L41.3,863.9 L43.0,864.4 L44.9,864.9 L46.7,865.4 L48.6,865.9 L50.6,866.4 L52.5,867.0 L54.5,867.7 L56.4,868.5 L58.2,869.4 L59.9,870.5 L61.4,871.7 L62.8,873.0 L64.1,874.5 L65.1,876.1 L65.9,877.8 L66.5,879.6 L66.9,881.5 L67.1,883.5 L67.1,885.5 L67.0,887.5 L66.7,889.6 L66.4,891.6 L65.9,893.6 L65.4,895.5 L64.9,897.4 L64.3,899.3 L63.8,901.0 L63.3,902.8 L62.9,904.5 L62.5,906.1 L62.1,907.8 L61.8,909.4 L61.5,910.9 Z",
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 42.048,
+     "y": 618.48,
+     "w": 2.592,
+     "h": 2.592,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 24.48,
+     "y": 586.944,
+     "w": 4.176,
+     "h": 4.176,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 49.96799999999999,
+     "y": 633.9599999999999,
+     "w": 3.168,
+     "h": 3.168,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 7.055999999999999,
+     "y": 592.56,
+     "w": 3.456,
+     "h": 3.456,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 6.4799999999999995,
+     "y": 592.632,
+     "w": 4.032,
+     "h": 4.032,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 40.175999999999995,
+     "y": 610.1999999999999,
+     "w": 3.888,
+     "h": 3.888,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 46.08,
+     "y": 628.1279999999999,
+     "w": 4.608,
+     "h": 4.608,
+     "fill": "ink",
+     "decorative": true
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "stack-overflow",
+   "master": "page",
+   "elements": [
+    {
+     "type": "group",
+     "x": 34.56,
+     "y": 33.120000000000005,
+     "w": 345.6,
+     "h": 578.88,
+     "children": [
+      {
+       "type": "use",
+       "component": "head-verso",
+       "x": 0,
+       "y": 0,
+       "props": {
+        "head": "Order 1 · Memoraria",
+        "plate": "PLATE 13"
+       }
+      },
+      {
+       "type": "use",
+       "component": "foot-verso",
+       "x": 0,
+       "y": 0,
+       "props": {
+        "folio": "26"
+       }
+      },
+      {
+       "type": "image",
+       "src": "book/build/plates/_blank.jpg",
+       "x": 0,
+       "y": 17.28,
+       "w": 345.6,
+       "h": 241.92,
+       "fit": "stretch"
+      },
+      {
+       "type": "rect",
+       "x": 0.375,
+       "y": 17.655,
+       "w": 344.85,
+       "h": 241.17,
+       "stroke": {
+        "width": 0.75,
+        "color": "hair"
+       }
+      },
+      {
+       "type": "rect",
+       "x": 5.375,
+       "y": 22.655,
+       "w": 334.85,
+       "h": 231.17,
+       "stroke": {
+        "width": 0.75,
+        "color": "rule"
+       }
+      },
+      {
+       "type": "group",
+       "x": 96.9624,
+       "y": 24.48359999999998,
+       "w": 432.0,
+       "h": 648.0,
+       "scale": 0.3511,
+       "children": [
+        {
+         "type": "rect",
+         "x": -1.068071774423241,
+         "y": -1.068071774423241,
+         "w": 434.13614354884646,
+         "h": 650.1361435488465,
+         "fill": "tint",
+         "stroke": {
+          "width": 2.136143548846482,
+          "color": "rule"
+         }
+        },
+        {
+         "type": "group",
+         "x": 34.56,
+         "y": 33.120000000000005,
+         "w": 345.6,
+         "h": 578.88,
+         "children": [
+          {
+           "type": "use",
+           "component": "head-verso",
+           "x": 0,
+           "y": 0,
+           "props": {
+            "head": "Order 1 · Memoraria",
+            "plate": "PLATE 13"
+           }
+          },
+          {
+           "type": "use",
+           "component": "foot-verso",
+           "x": 0,
+           "y": 0,
+           "props": {
+            "folio": "26"
+           }
+          },
+          {
+           "type": "image",
+           "src": "book/build/plates/_blank.jpg",
+           "x": 0,
+           "y": 17.28,
+           "w": 345.6,
+           "h": 241.92,
+           "fit": "stretch"
+          },
+          {
+           "type": "rect",
+           "x": 1.068071774423241,
+           "y": 18.348071774423243,
+           "w": 343.46385645115356,
+           "h": 239.7838564511535,
+           "stroke": {
+            "width": 2.136143548846482,
+            "color": "hair"
+           }
+          },
+          {
+           "type": "rect",
+           "x": 6.068071774423241,
+           "y": 23.348071774423243,
+           "w": 333.46385645115356,
+           "h": 229.7838564511535,
+           "stroke": {
+            "width": 2.136143548846482,
+            "color": "rule"
+           }
+          },
+          {
+           "type": "group",
+           "x": 96.9624,
+           "y": 24.48359999999998,
+           "w": 432.0,
+           "h": 648.0,
+           "scale": 0.3511,
+           "children": [
+            {
+             "type": "rect",
+             "x": -3.042072840852296,
+             "y": -3.042072840852296,
+             "w": 438.08414568170457,
+             "h": 654.0841456817046,
+             "fill": "tint",
+             "stroke": {
+              "width": 6.084145681704592,
+              "color": "rule"
+             }
+            },
+            {
+             "type": "group",
+             "x": 34.56,
+             "y": 33.120000000000005,
+             "w": 345.6,
+             "h": 578.88,
+             "children": [
+              {
+               "type": "use",
+               "component": "head-verso",
+               "x": 0,
+               "y": 0,
+               "props": {
+                "head": "Order 1 · Memoraria",
+                "plate": "PLATE 13"
+               }
+              },
+              {
+               "type": "use",
+               "component": "foot-verso",
+               "x": 0,
+               "y": 0,
+               "props": {
+                "folio": "26"
+               }
+              },
+              {
+               "type": "image",
+               "src": "book/build/plates/_blank.jpg",
+               "x": 0,
+               "y": 17.28,
+               "w": 345.6,
+               "h": 241.92,
+               "fit": "stretch"
+              },
+              {
+               "type": "rect",
+               "x": 3.042072840852296,
+               "y": 20.322072840852297,
+               "w": 339.51585431829545,
+               "h": 235.8358543182954,
+               "stroke": {
+                "width": 6.084145681704592,
+                "color": "hair"
+               }
+              },
+              {
+               "type": "rect",
+               "x": 8.042072840852295,
+               "y": 25.322072840852297,
+               "w": 329.51585431829545,
+               "h": 225.8358543182954,
+               "stroke": {
+                "width": 6.084145681704592,
+                "color": "rule"
+               }
+              },
+              {
+               "type": "group",
+               "x": 96.9624,
+               "y": 24.48359999999998,
+               "w": 432.0,
+               "h": 648.0,
+               "scale": 0.3511,
+               "children": [
+                {
+                 "type": "rect",
+                 "x": -8.664405698810299,
+                 "y": -8.664405698810299,
+                 "w": 449.3288113976206,
+                 "h": 665.3288113976206,
+                 "fill": "tint",
+                 "stroke": {
+                  "width": 17.328811397620598,
+                  "color": "rule"
+                 }
+                },
+                {
+                 "type": "group",
+                 "x": 34.56,
+                 "y": 33.120000000000005,
+                 "w": 345.6,
+                 "h": 578.88,
+                 "children": [
+                  {
+                   "type": "use",
+                   "component": "head-verso",
+                   "x": 0,
+                   "y": 0,
+                   "props": {
+                    "head": "Order 1 · Memoraria",
+                    "plate": "PLATE 13"
+                   }
+                  },
+                  {
+                   "type": "use",
+                   "component": "foot-verso",
+                   "x": 0,
+                   "y": 0,
+                   "props": {
+                    "folio": "26"
+                   }
+                  },
+                  {
+                   "type": "image",
+                   "src": "book/build/plates/_blank.jpg",
+                   "x": 0,
+                   "y": 17.28,
+                   "w": 345.6,
+                   "h": 241.92,
+                   "fit": "stretch"
+                  },
+                  {
+                   "type": "rect",
+                   "x": 8.664405698810299,
+                   "y": 25.9444056988103,
+                   "w": 328.2711886023794,
+                   "h": 224.5911886023794,
+                   "stroke": {
+                    "width": 17.328811397620598,
+                    "color": "hair"
+                   }
+                  },
+                  {
+                   "type": "rect",
+                   "x": 13.664405698810299,
+                   "y": 30.9444056988103,
+                   "w": 318.2711886023794,
+                   "h": 214.5911886023794,
+                   "stroke": {
+                    "width": 17.328811397620598,
+                    "color": "rule"
+                   }
+                  },
+                  {
+                   "type": "group",
+                   "x": 96.9624,
+                   "y": 24.48359999999998,
+                   "w": 432.0,
+                   "h": 648.0,
+                   "scale": 0.3511,
+                   "children": [
+                    {
+                     "type": "rect",
+                     "x": -24.67788578413642,
+                     "y": -24.67788578413642,
+                     "w": 481.35577156827287,
+                     "h": 697.3557715682729,
+                     "fill": "tint",
+                     "stroke": {
+                      "width": 49.35577156827284,
+                      "color": "rule"
+                     }
+                    },
+                    {
+                     "type": "group",
+                     "x": 34.56,
+                     "y": 33.120000000000005,
+                     "w": 345.6,
+                     "h": 578.88,
+                     "children": [
+                      {
+                       "type": "use",
+                       "component": "head-verso",
+                       "x": 0,
+                       "y": 0,
+                       "props": {
+                        "head": "Order 1 · Memoraria",
+                        "plate": "PLATE 13"
+                       }
+                      },
+                      {
+                       "type": "use",
+                       "component": "foot-verso",
+                       "x": 0,
+                       "y": 0,
+                       "props": {
+                        "folio": "26"
+                       }
+                      },
+                      {
+                       "type": "image",
+                       "src": "book/build/plates/_blank.jpg",
+                       "x": 0,
+                       "y": 17.28,
+                       "w": 345.6,
+                       "h": 241.92,
+                       "fit": "stretch"
+                      },
+                      {
+                       "type": "rect",
+                       "x": 24.67788578413642,
+                       "y": 41.95788578413642,
+                       "w": 296.24422843172715,
+                       "h": 192.56422843172714,
+                       "stroke": {
+                        "width": 49.35577156827284,
+                        "color": "hair"
+                       }
+                      },
+                      {
+                       "type": "rect",
+                       "x": 29.67788578413642,
+                       "y": 46.95788578413642,
+                       "w": 286.24422843172715,
+                       "h": 182.56422843172714,
+                       "stroke": {
+                        "width": 49.35577156827284,
+                        "color": "rule"
+                       }
+                      },
+                      {
+                       "type": "text",
+                       "x": 0,
+                       "y": 263.52,
+                       "w": 345.6,
+                       "style": "cap",
+                       "content": [
+                        "Fig. 1. See Fig. 1."
+                       ],
+                       "set": {
+                        "align": "center"
+                       }
+                      },
+                      {
+                       "type": "text",
+                       "x": 0,
+                       "y": 290.88,
+                       "w": 345.6,
+                       "blocks": [
+                        {
+                         "type": "h",
+                         "level": 1,
+                         "style": "name",
+                         "content": [
+                          "The Stack Overflow"
+                         ]
+                        },
+                        {
+                         "type": "canvas",
+                         "w": 345.6,
+                         "h": 70.35577156827284,
+                         "space_before": 3.5,
+                         "space_after": 0,
+                         "elements": [
+                          {
+                           "type": "text",
+                           "x": 0,
+                           "y": 0,
+                           "w": 278.42,
+                           "style": "latin",
+                           "content": [
+                            "Strues sine fine"
+                           ]
+                          },
+                          {
+                           "type": "text",
+                           "x": 345.6,
+                           "y": 0.19599999999999973,
+                           "anchor": "top-right",
+                           "style": "status",
+                           "text": "SEE STATUS",
+                           "stroke": {
+                            "width": 49.35577156827284,
+                            "color": "accent"
+                           },
+                           "radius": 2.5,
+                           "inset": {
+                            "top": 2.95,
+                            "right": 6.578,
+                            "bottom": 2.55,
+                            "left": 5.75
+                           }
+                          },
+                          {
+                           "type": "line",
+                           "x1": 0,
+                           "y1": 45.67788578413642,
+                           "x2": 345.6,
+                           "y2": 45.67788578413642,
+                           "stroke": {
+                            "width": 49.35577156827284,
+                            "color": "rule"
+                           }
+                          }
+                         ]
+                        },
+                        {
+                         "type": "p",
+                         "style": "entry",
+                         "content": [
+                          {
+                           "text": "Field marks.",
+                           "span": "lab"
+                          },
+                          {
+                           "space": 4.680000000000001
+                          },
+                          " ",
+                          "A function that, to do its work, first asks itself. See ",
+                          {
+                           "text": "Habitat",
+                           "italic": true
+                          },
+                          "."
+                         ],
+                         "set": {
+                          "space_before": 6.5
+                         }
+                        },
+                        {
+                         "type": "p",
+                         "style": "entry",
+                         "content": [
+                          {
+                           "text": "Habitat.",
+                           "span": "lab"
+                          },
+                          {
+                           "space": 4.680000000000001
+                          },
+                          " ",
+                          "Recursion with no floor to stand on. See ",
+                          {
+                           "text": "Field marks",
+                           "italic": true
+                          },
+                          "."
+                         ]
+                        },
+                        {
+                         "type": "p",
+                         "style": "entry",
+                         "content": [
+                          {
+                           "text": "Call.",
+                           "span": "lab"
+                          },
+                          {
+                           "space": 4.680000000000001
+                          },
+                          " ",
+                          {
+                           "text": "Maximum call stack size exceeded",
+                           "span": "code"
+                          },
+                          "."
+                         ]
+                        },
+                        {
+                         "type": "p",
+                         "style": "entry",
+                         "content": [
+                          {
+                           "text": "Similar species.",
+                           "span": "lab"
+                          },
+                          {
+                           "space": 4.680000000000001
+                          },
+                          " ",
+                          "The Infinite Loop (plate 20), which goes round. This one goes down."
+                         ]
+                        },
+                        {
+                         "type": "p",
+                         "style": "entry",
+                         "content": [
+                          {
+                           "text": "Control.",
+                           "span": "lab"
+                          },
+                          {
+                           "space": 4.680000000000001
+                          },
+                          " ",
+                          "Write the case that stops first and the case that continues second."
+                         ]
+                        }
+                       ],
+                       "style": "entry"
+                      }
+                     ]
+                    }
+                   ]
+                  },
+                  {
+                   "type": "text",
+                   "x": 0,
+                   "y": 263.52,
+                   "w": 345.6,
+                   "style": "cap",
+                   "content": [
+                    "Fig. 1. See Fig. 1."
+                   ],
+                   "set": {
+                    "align": "center"
+                   }
+                  },
+                  {
+                   "type": "text",
+                   "x": 0,
+                   "y": 290.88,
+                   "w": 345.6,
+                   "blocks": [
+                    {
+                     "type": "h",
+                     "level": 1,
+                     "style": "name",
+                     "content": [
+                      "The Stack Overflow"
+                     ]
+                    },
+                    {
+                     "type": "canvas",
+                     "w": 345.6,
+                     "h": 38.3288113976206,
+                     "space_before": 3.5,
+                     "space_after": 0,
+                     "elements": [
+                      {
+                       "type": "text",
+                       "x": 0,
+                       "y": 0,
+                       "w": 278.42,
+                       "style": "latin",
+                       "content": [
+                        "Strues sine fine"
+                       ]
+                      },
+                      {
+                       "type": "text",
+                       "x": 345.6,
+                       "y": 0.19599999999999973,
+                       "anchor": "top-right",
+                       "style": "status",
+                       "text": "SEE STATUS",
+                       "stroke": {
+                        "width": 17.328811397620598,
+                        "color": "accent"
+                       },
+                       "radius": 2.5,
+                       "inset": {
+                        "top": 2.95,
+                        "right": 6.578,
+                        "bottom": 2.55,
+                        "left": 5.75
+                       }
+                      },
+                      {
+                       "type": "line",
+                       "x1": 0,
+                       "y1": 29.6644056988103,
+                       "x2": 345.6,
+                       "y2": 29.6644056988103,
+                       "stroke": {
+                        "width": 17.328811397620598,
+                        "color": "rule"
+                       }
+                      }
+                     ]
+                    },
+                    {
+                     "type": "p",
+                     "style": "entry",
+                     "content": [
+                      {
+                       "text": "Field marks.",
+                       "span": "lab"
+                      },
+                      {
+                       "space": 4.680000000000001
+                      },
+                      " ",
+                      "A function that, to do its work, first asks itself. See ",
+                      {
+                       "text": "Habitat",
+                       "italic": true
+                      },
+                      "."
+                     ],
+                     "set": {
+                      "space_before": 6.5
+                     }
+                    },
+                    {
+                     "type": "p",
+                     "style": "entry",
+                     "content": [
+                      {
+                       "text": "Habitat.",
+                       "span": "lab"
+                      },
+                      {
+                       "space": 4.680000000000001
+                      },
+                      " ",
+                      "Recursion with no floor to stand on. See ",
+                      {
+                       "text": "Field marks",
+                       "italic": true
+                      },
+                      "."
+                     ]
+                    },
+                    {
+                     "type": "p",
+                     "style": "entry",
+                     "content": [
+                      {
+                       "text": "Call.",
+                       "span": "lab"
+                      },
+                      {
+                       "space": 4.680000000000001
+                      },
+                      " ",
+                      {
+                       "text": "Maximum call stack size exceeded",
+                       "span": "code"
+                      },
+                      "."
+                     ]
+                    },
+                    {
+                     "type": "p",
+                     "style": "entry",
+                     "content": [
+                      {
+                       "text": "Similar species.",
+                       "span": "lab"
+                      },
+                      {
+                       "space": 4.680000000000001
+                      },
+                      " ",
+                      "The Infinite Loop (plate 20), which goes round. This one goes down."
+                     ]
+                    },
+                    {
+                     "type": "p",
+                     "style": "entry",
+                     "content": [
+                      {
+                       "text": "Control.",
+                       "span": "lab"
+                      },
+                      {
+                       "space": 4.680000000000001
+                      },
+                      " ",
+                      "Write the case that stops first and the case that continues second."
+                     ]
+                    }
+                   ],
+                   "style": "entry"
+                  }
+                 ]
+                }
+               ]
+              },
+              {
+               "type": "text",
+               "x": 0,
+               "y": 263.52,
+               "w": 345.6,
+               "style": "cap",
+               "content": [
+                "Fig. 1. See Fig. 1."
+               ],
+               "set": {
+                "align": "center"
+               }
+              },
+              {
+               "type": "text",
+               "x": 0,
+               "y": 290.88,
+               "w": 345.6,
+               "blocks": [
+                {
+                 "type": "h",
+                 "level": 1,
+                 "style": "name",
+                 "content": [
+                  "The Stack Overflow"
+                 ]
+                },
+                {
+                 "type": "canvas",
+                 "w": 345.6,
+                 "h": 27.08414568170459,
+                 "space_before": 3.5,
+                 "space_after": 0,
+                 "elements": [
+                  {
+                   "type": "text",
+                   "x": 0,
+                   "y": 0,
+                   "w": 278.42,
+                   "style": "latin",
+                   "content": [
+                    "Strues sine fine"
+                   ]
+                  },
+                  {
+                   "type": "text",
+                   "x": 345.6,
+                   "y": 0.19599999999999973,
+                   "anchor": "top-right",
+                   "style": "status",
+                   "text": "SEE STATUS",
+                   "stroke": {
+                    "width": 6.084145681704592,
+                    "color": "accent"
+                   },
+                   "radius": 2.5,
+                   "inset": {
+                    "top": 2.95,
+                    "right": 6.578,
+                    "bottom": 2.55,
+                    "left": 5.75
+                   }
+                  },
+                  {
+                   "type": "line",
+                   "x1": 0,
+                   "y1": 24.042072840852295,
+                   "x2": 345.6,
+                   "y2": 24.042072840852295,
+                   "stroke": {
+                    "width": 6.084145681704592,
+                    "color": "rule"
+                   }
+                  }
+                 ]
+                },
+                {
+                 "type": "p",
+                 "style": "entry",
+                 "content": [
+                  {
+                   "text": "Field marks.",
+                   "span": "lab"
+                  },
+                  {
+                   "space": 4.680000000000001
+                  },
+                  " ",
+                  "A function that, to do its work, first asks itself. See ",
+                  {
+                   "text": "Habitat",
+                   "italic": true
+                  },
+                  "."
+                 ],
+                 "set": {
+                  "space_before": 6.5
+                 }
+                },
+                {
+                 "type": "p",
+                 "style": "entry",
+                 "content": [
+                  {
+                   "text": "Habitat.",
+                   "span": "lab"
+                  },
+                  {
+                   "space": 4.680000000000001
+                  },
+                  " ",
+                  "Recursion with no floor to stand on. See ",
+                  {
+                   "text": "Field marks",
+                   "italic": true
+                  },
+                  "."
+                 ]
+                },
+                {
+                 "type": "p",
+                 "style": "entry",
+                 "content": [
+                  {
+                   "text": "Call.",
+                   "span": "lab"
+                  },
+                  {
+                   "space": 4.680000000000001
+                  },
+                  " ",
+                  {
+                   "text": "Maximum call stack size exceeded",
+                   "span": "code"
+                  },
+                  "."
+                 ]
+                },
+                {
+                 "type": "p",
+                 "style": "entry",
+                 "content": [
+                  {
+                   "text": "Similar species.",
+                   "span": "lab"
+                  },
+                  {
+                   "space": 4.680000000000001
+                  },
+                  " ",
+                  "The Infinite Loop (plate 20), which goes round. This one goes down."
+                 ]
+                },
+                {
+                 "type": "p",
+                 "style": "entry",
+                 "content": [
+                  {
+                   "text": "Control.",
+                   "span": "lab"
+                  },
+                  {
+                   "space": 4.680000000000001
+                  },
+                  " ",
+                  "Write the case that stops first and the case that continues second."
+                 ]
+                }
+               ],
+               "style": "entry"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "type": "text",
+           "x": 0,
+           "y": 263.52,
+           "w": 345.6,
+           "style": "cap",
+           "content": [
+            "Fig. 1. See Fig. 1."
+           ],
+           "set": {
+            "align": "center"
+           }
+          },
+          {
+           "type": "text",
+           "x": 0,
+           "y": 290.88,
+           "w": 345.6,
+           "blocks": [
+            {
+             "type": "h",
+             "level": 1,
+             "style": "name",
+             "content": [
+              "The Stack Overflow"
+             ]
+            },
+            {
+             "type": "canvas",
+             "w": 345.6,
+             "h": 23.136143548846483,
+             "space_before": 3.5,
+             "space_after": 0,
+             "elements": [
+              {
+               "type": "text",
+               "x": 0,
+               "y": 0,
+               "w": 278.42,
+               "style": "latin",
+               "content": [
+                "Strues sine fine"
+               ]
+              },
+              {
+               "type": "text",
+               "x": 345.6,
+               "y": 0.19599999999999973,
+               "anchor": "top-right",
+               "style": "status",
+               "text": "SEE STATUS",
+               "stroke": {
+                "width": 2.136143548846482,
+                "color": "accent"
+               },
+               "radius": 2.5,
+               "inset": {
+                "top": 2.95,
+                "right": 6.578,
+                "bottom": 2.55,
+                "left": 5.75
+               }
+              },
+              {
+               "type": "line",
+               "x1": 0,
+               "y1": 22.06807177442324,
+               "x2": 345.6,
+               "y2": 22.06807177442324,
+               "stroke": {
+                "width": 2.136143548846482,
+                "color": "rule"
+               }
+              }
+             ]
+            },
+            {
+             "type": "p",
+             "style": "entry",
+             "content": [
+              {
+               "text": "Field marks.",
+               "span": "lab"
+              },
+              {
+               "space": 4.680000000000001
+              },
+              " ",
+              "A function that, to do its work, first asks itself. See ",
+              {
+               "text": "Habitat",
+               "italic": true
+              },
+              "."
+             ],
+             "set": {
+              "space_before": 6.5
+             }
+            },
+            {
+             "type": "p",
+             "style": "entry",
+             "content": [
+              {
+               "text": "Habitat.",
+               "span": "lab"
+              },
+              {
+               "space": 4.680000000000001
+              },
+              " ",
+              "Recursion with no floor to stand on. See ",
+              {
+               "text": "Field marks",
+               "italic": true
+              },
+              "."
+             ]
+            },
+            {
+             "type": "p",
+             "style": "entry",
+             "content": [
+              {
+               "text": "Call.",
+               "span": "lab"
+              },
+              {
+               "space": 4.680000000000001
+              },
+              " ",
+              {
+               "text": "Maximum call stack size exceeded",
+               "span": "code"
+              },
+              "."
+             ]
+            },
+            {
+             "type": "p",
+             "style": "entry",
+             "content": [
+              {
+               "text": "Similar species.",
+               "span": "lab"
+              },
+              {
+               "space": 4.680000000000001
+              },
+              " ",
+              "The Infinite Loop (plate 20), which goes round. This one goes down."
+             ]
+            },
+            {
+             "type": "p",
+             "style": "entry",
+             "content": [
+              {
+               "text": "Control.",
+               "span": "lab"
+              },
+              {
+               "space": 4.680000000000001
+              },
+              " ",
+              "Write the case that stops first and the case that continues second."
+             ]
+            }
+           ],
+           "style": "entry"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 263.52,
+       "w": 345.6,
+       "style": "cap",
+       "content": [
+        "Fig. 1. See Fig. 1."
+       ],
+       "set": {
+        "align": "center"
+       }
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 290.88,
+       "w": 345.6,
+       "blocks": [
+        {
+         "type": "h",
+         "level": 1,
+         "style": "name",
+         "content": [
+          "The Stack Overflow"
+         ]
+        },
+        {
+         "type": "canvas",
+         "w": 345.6,
+         "h": 21.75,
+         "space_before": 3.5,
+         "space_after": 0,
+         "elements": [
+          {
+           "type": "text",
+           "x": 0,
+           "y": 0,
+           "w": 278.42,
+           "style": "latin",
+           "content": [
+            "Strues sine fine"
+           ]
+          },
+          {
+           "type": "text",
+           "x": 345.6,
+           "y": 0.19599999999999973,
+           "anchor": "top-right",
+           "style": "status",
+           "text": "SEE STATUS",
+           "stroke": {
+            "width": 0.75,
+            "color": "accent"
+           },
+           "radius": 2.5,
+           "inset": {
+            "top": 2.95,
+            "right": 6.578,
+            "bottom": 2.55,
+            "left": 5.75
+           }
+          },
+          {
+           "type": "line",
+           "x1": 0,
+           "y1": 21.375,
+           "x2": 345.6,
+           "y2": 21.375,
+           "stroke": {
+            "width": 0.75,
+            "color": "rule"
+           }
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Field marks.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "A function that, to do its work, first asks itself. See ",
+          {
+           "text": "Habitat",
+           "italic": true
+          },
+          "."
+         ],
+         "set": {
+          "space_before": 6.5
+         }
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Habitat.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Recursion with no floor to stand on. See ",
+          {
+           "text": "Field marks",
+           "italic": true
+          },
+          "."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Call.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          {
+           "text": "Maximum call stack size exceeded",
+           "span": "code"
+          },
+          "."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Similar species.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "The Infinite Loop (plate 20), which goes round. This one goes down."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Control.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Write the case that stops first and the case that continues second."
+         ]
+        }
+       ],
+       "style": "entry",
+       "id": "entry-26",
+       "h": 265.67999999999995
+      }
+     ]
+    },
+    {
+     "type": "path",
+     "x": -9.0,
+     "y": -9.0,
+     "w": 441.0,
+     "h": 666.0,
+     "viewbox": [
+      0,
+      0,
+      612.5,
+      925.0
+     ],
+     "d": "M519.7,912.5 L520.1,914.9 L520.6,917.2 L521.1,919.5 L521.6,921.8 L522.3,924.1 L523.1,926.3 L524.0,928.5 L524.9,930.7 L526.0,932.8 L527.2,934.8 L528.4,936.8 L529.6,938.8 L530.9,940.7 L532.2,942.6 L533.4,944.4 L534.6,946.3 L535.6,948.2 L536.7,950.1 L537.6,952.1 L538.4,954.1 L539.2,956.2 L539.9,958.4 L540.5,960.6 L541.1,962.9 L541.8,965.2 L542.4,967.6 L543.2,970.0 L544.0,972.4 L544.9,974.7 L546.0,977.0 L547.2,979.2 L548.6,981.3 L550.0,983.3 L551.7,985.1 L553.4,986.9 L555.3,988.4 L557.3,989.9 L559.4,991.2 L561.5,992.5 L563.6,993.7 L565.8,994.8 L568.0,995.9 L570.2,997.0 L572.4,998.1 L574.6,999.2 L576.8,1000.4 L578.9,1001.7 L581.1,1003.0 L583.3,1004.3 L585.5,1005.7 L587.8,1007.1 L590.1,1008.4 L592.5,1009.7 L594.9,1011.0 L597.4,1012.1 L599.9,1013.1 L602.5,1013.9 L605.2,1014.5 L607.8,1014.9 L610.5,1015.1 L613.2,1015.1 L615.9,1014.8 L618.5,1014.4 L621.1,1013.7 L623.7,1012.9 L626.3,1012.0 L628.7,1010.9 L631.2,1009.8 L633.6,1008.6 L635.9,1007.4 L638.3,1006.2 L640.6,1005.1 L642.9,1004.0 L645.2,1002.9 L647.5,1001.8 L649.8,1000.8 L652.1,999.8 L654.5,998.8 L656.9,997.9 L659.2,996.9 L661.6,995.8 L663.9,994.7 L666.2,993.6 L668.5,992.3 L670.7,990.9 L672.8,989.5 L674.9,987.9 L676.9,986.2 L678.8,984.5 L680.6,982.6 L682.4,980.7 L684.0,978.7 L685.6,976.6 L687.1,974.5 L688.5,972.3 L689.8,970.1 L691.1,967.9 L692.4,965.7 L693.6,963.4 L694.7,961.1 L695.7,958.8 L696.7,956.4 L697.5,954.0 L698.3,951.6 L698.9,949.1 L699.4,946.6 L699.7,944.1 L699.9,941.5 L699.9,939.0 L699.8,936.4 L699.6,933.9 L699.2,931.4 L698.7,928.9 L698.2,926.4 L697.6,924.0 L697.1,921.6 L696.6,919.3 L696.1,917.0 L695.8,914.7 L695.6,912.5 L695.6,910.3 L695.7,908.0 L696.0,905.8 L696.5,903.5 L697.2,901.1 L698.0,898.6 L698.9,896.1 L699.9,893.5 L700.8,890.8 L701.7,888.1 L702.5,885.2 L703.2,882.4 L703.6,879.5 L703.8,876.7 L703.7,873.9 L703.3,871.2 L702.6,868.6 L701.5,866.1 L700.1,863.9 L698.4,861.8 L696.4,859.8 L694.3,858.1 L691.9,856.6 L689.4,855.2 L686.8,853.9 L684.2,852.8 L681.7,851.7 L679.2,850.7 L676.8,849.6 L674.5,848.5 L672.4,847.3 L670.4,846.0 L668.5,844.6 L666.8,843.0 L665.1,841.3 L663.6,839.5 L662.0,837.5 L660.5,835.5 L659.0,833.4 L657.4,831.3 L655.7,829.3 L653.9,827.3 L652.0,825.5 L650.0,823.8 L647.8,822.3 L645.6,821.1 L643.2,820.1 L640.8,819.4 L638.2,818.9 L635.7,818.6 L633.0,818.6 L630.4,818.7 L627.8,819.0 L625.2,819.4 L622.7,819.9 L620.2,820.4 L617.7,820.9 L615.3,821.3 L612.9,821.7 L610.5,822.1 L608.1,822.3 L605.8,822.5 L603.4,822.6 L601.1,822.6 L598.7,822.6 L596.3,822.7 L593.9,822.7 L591.4,822.8 L589.0,823.0 L586.6,823.3 L584.2,823.7 L581.8,824.3 L579.5,824.9 L577.2,825.8 L575.0,826.7 L572.8,827.7 L570.6,828.8 L568.4,830.0 L566.3,831.1 L564.2,832.3 L562.0,833.4 L559.8,834.5 L557.6,835.5 L555.2,836.4 L552.8,837.3 L550.3,838.1 L547.6,838.9 L544.8,839.6 L542.0,840.3 L539.0,841.0 L536.1,841.9 L533.1,842.8 L530.1,843.8 L527.2,845.1 L524.4,846.5 L521.8,848.1 L519.4,849.9 L517.3,852.0 L515.4,854.2 L513.8,856.7 L512.6,859.3 L511.6,862.1 L511.0,865.1 L510.7,868.1 L510.7,871.2 L510.9,874.3 L511.3,877.4 L511.9,880.5 L512.6,883.5 L513.4,886.5 L514.2,889.4 L515.0,892.2 L515.8,894.9 L516.5,897.6 L517.2,900.2 L517.8,902.8 L518.4,905.2 L518.8,907.7 L519.3,910.1 Z",
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 414.648,
+     "y": 550.296,
+     "w": 3.312,
+     "h": 3.312,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 362.52,
+     "y": 572.904,
+     "w": 7.056,
+     "h": 7.056,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 369.072,
+     "y": 578.16,
+     "w": 2.592,
+     "h": 2.592,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 371.01599999999996,
+     "y": 576.9359999999999,
+     "w": 7.343999999999999,
+     "h": 7.343999999999999,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 353.88,
+     "y": 580.3199999999999,
+     "w": 4.896,
+     "h": 4.896,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 393.264,
+     "y": 548.496,
+     "w": 7.199999999999999,
+     "h": 7.199999999999999,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 382.10400000000004,
+     "y": 580.3199999999999,
+     "w": 5.4719999999999995,
+     "h": 5.4719999999999995,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 357.768,
+     "y": 574.4159999999999,
+     "w": 5.903999999999999,
+     "h": 5.903999999999999,
+     "fill": "ink",
+     "decorative": true
+    },
+    {
+     "type": "ellipse",
+     "x": 361.51199999999994,
+     "y": 580.1759999999999,
+     "w": 4.608,
+     "h": 4.608,
+     "fill": "ink",
+     "decorative": true
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "infinite-loop",
+   "master": "page",
+   "elements": [
+    {
+     "type": "group",
+     "x": 51.839999999999996,
+     "y": 33.120000000000005,
+     "w": 345.6,
+     "h": 578.88,
+     "children": [
+      {
+       "type": "use",
+       "component": "head-recto",
+       "x": 0,
+       "y": 0,
+       "props": {
+        "head": "Order 3 · Logica",
+        "plate": "PLATE 20"
+       }
+      },
+      {
+       "type": "use",
+       "component": "foot-recto",
+       "x": 0,
+       "y": 0,
+       "props": {
+        "folio": "37"
+       }
+      },
+      {
+       "type": "image",
+       "src": "book/build/plates/infinite-loop.png",
+       "x": 39.6,
+       "y": 17.28,
+       "w": 266.40000000000003,
+       "h": 266.40000000000003,
+       "fit": "stretch"
+      },
+      {
+       "type": "svg",
+       "x": 0,
+       "y": 17.28,
+       "w": 345.6,
+       "h": 280.8,
+       "markup": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 480 390\"><defs><path id=\"ringpath\" d=\"M 240 185 m -147 0 a 147 147 0 1 1 294 0 a 147 147 0 1 1 -294 0\"/></defs><circle cx=\"240\" cy=\"185\" r=\"172\" fill=\"none\" stroke=\"#6b5a48\" stroke-width=\"0.5\"/><text font-family=\"Adobe Caslon Pro\" font-style=\"italic\" font-size=\"9.39\" fill=\"#3a322a\"><textPath href=\"#ringpath\" textLength=\"923.63\" lengthAdjust=\"spacing\">follows the one in front, which follows the one in front, which follows the one in front, which follows the one in front, which follows the one in front, which follows the one in front, which follows the one in front, which follows the one in front, which </textPath></text></svg>",
+       "fit": "stretch"
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 288.0,
+       "w": 345.6,
+       "style": "cap",
+       "content": [
+        "Fig. 1. A colony, from above, some hours in."
+       ],
+       "set": {
+        "align": "center"
+       }
+      },
+      {
+       "type": "text",
+       "x": 0,
+       "y": 318.24,
+       "w": 345.6,
+       "blocks": [
+        {
+         "type": "h",
+         "level": 1,
+         "style": "name",
+         "content": [
+          "The Infinite Loop"
+         ]
+        },
+        {
+         "type": "canvas",
+         "w": 345.6,
+         "h": 21.75,
+         "space_before": 3.5,
+         "space_after": 0,
+         "elements": [
+          {
+           "type": "text",
+           "x": 0,
+           "y": 0,
+           "w": 273.452,
+           "style": "latin",
+           "content": [
+            "Circulus infinitus"
+           ]
+          },
+          {
+           "type": "text",
+           "x": 345.6,
+           "y": 0.19599999999999973,
+           "anchor": "top-right",
+           "style": "status",
+           "text": "IN PROGRESS",
+           "stroke": {
+            "width": 0.75,
+            "color": "accent"
+           },
+           "radius": 2.5,
+           "inset": {
+            "top": 2.95,
+            "right": 6.578,
+            "bottom": 2.55,
+            "left": 5.75
+           }
+          },
+          {
+           "type": "line",
+           "x1": 0,
+           "y1": 21.375,
+           "x2": 345.6,
+           "y2": 21.375,
+           "stroke": {
+            "width": 0.75,
+            "color": "rule"
+           }
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Field marks.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "A fan growing louder. A cursor that stopped blinking some time ago."
+         ],
+         "set": {
+          "space_before": 6.5
+         }
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Habitat.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          {
+           "text": "while (true)",
+           "span": "code"
+          },
+          ", with an exit the author was sure of."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "In nature.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Army ants do this. Each follows the ant in front, and if the column closes into a ring they march until they drop."
+         ]
+        },
+        {
+         "type": "p",
+         "style": "entry",
+         "content": [
+          {
+           "text": "Control.",
+           "span": "lab"
+          },
+          {
+           "space": 4.680000000000001
+          },
+          " ",
+          "Decide how it ends before deciding how it begins."
+         ]
+        }
+       ],
+       "style": "entry",
+       "id": "entry-37",
+       "h": 238.31999999999994
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

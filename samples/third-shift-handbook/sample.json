@@ -1,0 +1,12 @@
+{
+  "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/third-shift-handbook",
+  "pdf": "release/third-shift-handbook-interior.pdf",
+  "bleed": false,
+  "pages": [
+    {"original": 1, "rebuilt": 1, "what": "title page: faux-bold League Gothic stack, issue panel filled in by hand, two free notes, one struck"},
+    {"original": 7, "rebuilt": 3, "what": "Section 1 opener: yellow chip, mascot in the margin, justified Schola, taped typed slip, entry in the gap, margin notes"},
+    {"original": 25, "rebuilt": 5, "what": "NOTES page: 24 blue rules, five handwritten paragraphs on the rules"},
+    {"original": 30, "rebuilt": 6, "what": "No. 3 machine: code-drawn diagram, two-column key with a struck figure, pencil and pen notes"},
+    {"original": 75, "rebuilt": 7, "what": "Notice of Reprimand: turned pink form with tape, filled in two hands, ticked box, notes below, hand folio"}
+  ]
+}

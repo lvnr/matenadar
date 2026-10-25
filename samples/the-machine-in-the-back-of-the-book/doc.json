@@ -1,0 +1,3315 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "The Machine in the Back of the Book (sample pages)",
+  "author": "Ani Kazarian",
+  "lang": "en-US"
+ },
+ "fonts": [
+  "book/assets/fonts"
+ ],
+ "design": {
+  "colors": {
+   "ink": "#1b1b1a",
+   "teal": "#1d5f73",
+   "red": "#c23b2e",
+   "gray": "#5d6670",
+   "ball": "#24399c",
+   "rule": "#cfcabb",
+   "tint": "#f1f5f6",
+   "kicker": "#bcd6dd",
+   "strike-ink": "#3a3a3a",
+   "hair": "#d7dfe2",
+   "sheet": "#fbfaf6",
+   "sheet-edge": "#d8d4c8",
+   "type": "#232323",
+   "cart": "#222324",
+   "rib": "#3a3b3d",
+   "cart-foot": "#1a1a1b",
+   "label": "#f4f0e6",
+   "life": "#f3dcd5",
+   "brass-ink": "#5a4210"
+  },
+  "fonts": {},
+  "base": {
+   "font": "IBM Plex Serif",
+   "size": 9.6,
+   "line_height": "14pt",
+   "color": "ink",
+   "lang": "en-US",
+   "hyphenate": true
+  },
+  "styles": {
+   "body": {
+    "space_after": 7
+   },
+   "body-t2": {
+    "line_height": "13.6pt",
+    "space_after": 4.5
+   },
+   "h2": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "weight": 600,
+    "size": 11.6,
+    "line_height": "13.5pt",
+    "tracking": "0.005em",
+    "space_before": 15,
+    "space_after": 6,
+    "keep_with_next": true,
+    "hyphenate": false,
+    "rule_above": {
+     "stroke": {
+      "width": 2.2,
+      "color": "teal"
+     },
+     "width": 15.84,
+     "gap": 7.2
+    }
+   },
+   "li": {
+    "space_after": 0
+   },
+   "li-t2": {
+    "line_height": "13.6pt",
+    "space_after": 0
+   },
+   "ol-mark": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "weight": 600,
+    "size": 8.6,
+    "color": "teal",
+    "align": "right",
+    "hyphenate": false,
+    "space_after": 0
+   },
+   "ul-mark": {
+    "color": "teal",
+    "align": "right",
+    "hyphenate": false,
+    "space_after": 0
+   },
+   "note": {
+    "font": "Caveat",
+    "weight": 500,
+    "size": 12.6,
+    "line_height": "13.2pt",
+    "color": "ball",
+    "hyphenate": false
+   },
+   "red": {
+    "font": "Nanum Pen",
+    "size": 14.2,
+    "line_height": "13pt",
+    "color": "red",
+    "hyphenate": false
+   },
+   "th": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "weight": 600,
+    "size": 6.9,
+    "line_height": "9pt",
+    "tracking": "0.08em",
+    "case": "upper",
+    "space_before": 0,
+    "space_after": 0,
+    "hyphenate": false
+   },
+   "td": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "size": 8.4,
+    "line_height": "11pt",
+    "space_before": 0,
+    "space_after": 0,
+    "hyphenate": false
+   },
+   "code": {
+    "font": "IBM Plex Mono",
+    "size": 8.4,
+    "line_height": "12.2pt",
+    "features": [
+     "zero"
+    ],
+    "hyphenate": false,
+    "space_before": 0,
+    "space_after": 0
+   },
+   "listing": {
+    "font": "IBM Plex Mono",
+    "size": 8.4,
+    "line_height": "12pt",
+    "features": [
+     "zero"
+    ],
+    "hyphenate": false,
+    "space_before": 0,
+    "space_after": 0
+   },
+   "lhead": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "weight": 600,
+    "size": 6.9,
+    "line_height": "9pt",
+    "tracking": "0.12em",
+    "case": "upper",
+    "color": "gray",
+    "space_before": 6,
+    "space_after": 4,
+    "keep_with_next": true
+   },
+   "bt": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "weight": 600,
+    "size": 7,
+    "line_height": "7pt",
+    "tracking": "0.15em",
+    "case": "upper",
+    "color": "teal",
+    "space_after": 6
+   },
+   "bli": {
+    "size": 9.1,
+    "line_height": "12.8pt",
+    "space_after": 0
+   },
+   "cap": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "size": 7.6,
+    "line_height": "10pt",
+    "color": "gray",
+    "space_before": 5,
+    "space_after": 6
+   },
+   "ql": {
+    "font": "IBM Plex Mono",
+    "weight": 500,
+    "size": 6.4,
+    "line_height": "8pt",
+    "tracking": "0.02em",
+    "color": "gray",
+    "space_before": 2
+   },
+   "runhead": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "weight": 600,
+    "size": 6.6,
+    "line_height": 1,
+    "tracking": "0.13em",
+    "case": "upper",
+    "color": "gray",
+    "hyphenate": false
+   },
+   "folio": {
+    "font": "IBM Plex Mono",
+    "weight": 600,
+    "size": 7.6,
+    "line_height": 1,
+    "tracking": "0.02em"
+   },
+   "kicker": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "weight": 600,
+    "size": 7,
+    "line_height": 1,
+    "tracking": "0.16em",
+    "case": "upper",
+    "color": "kicker"
+   },
+   "opener-num": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "weight": 700,
+    "size": 66,
+    "line_height": 0.8,
+    "tracking": "-0.01em",
+    "color": "#ffffff"
+   },
+   "opener-title": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "weight": 600,
+    "size": 21,
+    "line_height": "23pt",
+    "color": "#ffffff",
+    "hyphenate": false
+   },
+   "lh-name": {
+    "font": "IBM Plex Serif",
+    "weight": 600,
+    "size": 13.5,
+    "line_height": 1,
+    "tracking": "0.16em",
+    "color": "#4a5059"
+   },
+   "lh-div": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "size": 7.4,
+    "line_height": 1.3,
+    "tracking": "0.1em",
+    "case": "upper",
+    "color": "gray"
+   },
+   "memo-t": {
+    "font": "Courier Prime",
+    "weight": 700,
+    "size": 9.5,
+    "line_height": 1,
+    "tracking": "0.3em",
+    "case": "upper",
+    "color": "#2a2a2a",
+    "space_before": 14,
+    "space_after": 10
+   },
+   "ty": {
+    "font": "Courier Prime",
+    "size": 9,
+    "line_height": "12.6pt",
+    "color": "type",
+    "hyphenate": false,
+    "space_after": 10
+   },
+   "ty-meta": {
+    "inherits": "ty",
+    "space_after": 0
+   },
+   "ty-meta-l": {
+    "inherits": "ty-meta",
+    "weight": 700
+   },
+   "ty-items": {
+    "inherits": "ty",
+    "size": 8.2,
+    "line_height": "11pt",
+    "space_after": 0
+   },
+   "ty-items-h": {
+    "inherits": "ty-items",
+    "weight": 700
+   },
+   "lrg": {
+    "font": "Nanum Pen",
+    "size": 13.6,
+    "line_height": "12.6pt",
+    "color": "red",
+    "space_after": 7,
+    "hyphenate": false
+   },
+   "ani-review": {
+    "font": "Caveat",
+    "weight": 500,
+    "size": 15.5,
+    "line_height": "17pt",
+    "color": "ball",
+    "hyphenate": false
+   },
+   "lb-mark": {
+    "font": "Archivo",
+    "weight": 900,
+    "stretch": 125,
+    "size": 13,
+    "line_height": 1,
+    "tracking": "0.01em",
+    "color": "#ffffff"
+   },
+   "lb-no": {
+    "font": "IBM Plex Mono",
+    "weight": 600,
+    "size": 7.4,
+    "line_height": 1,
+    "tracking": "0.14em",
+    "color": "#cfe3e8",
+    "align": "right",
+    "margin_right": 1.0360000000000003
+   },
+   "lb-title": {
+    "font": "Archivo",
+    "weight": 800,
+    "stretch": 68,
+    "size": 34,
+    "line_height": 0.95,
+    "case": "upper",
+    "color": "#ffffff",
+    "hyphenate": false
+   },
+   "lb-by": {
+    "font": "IBM Plex Sans",
+    "stretch": 75,
+    "size": 7.6,
+    "line_height": 1,
+    "tracking": "0.04em",
+    "color": "#d7e7eb"
+   },
+   "h2-t2": {
+    "inherits": "h2",
+    "space_before": 9,
+    "space_after": 4
+   }
+  },
+  "spans": {
+   "code": {
+    "font": "IBM Plex Mono",
+    "size": 8.5,
+    "features": [
+     "zero"
+    ]
+   },
+   "dash": {
+    "font": "Caveat",
+    "weight": 500
+   }
+  },
+  "masters": {
+   "flow": {
+    "width": "7in",
+    "height": "10in",
+    "bleed": "0.125in",
+    "margins": {
+     "top": 43.199999999999996,
+     "bottom": 46.799999999999955,
+     "inside": 54.0,
+     "outside": 154.8
+    },
+    "style": "body",
+    "notes": {
+     "width": 104.39999999999999,
+     "gap": 14.4,
+     "side": "outside",
+     "style": "note",
+     "spacing": 7
+    },
+    "foreground": [
+     {
+      "type": "text",
+      "x": 0,
+      "y": 24.48,
+      "w": 468.0,
+      "style": "runhead",
+      "content": [
+       {
+        "field": "section.num",
+        "color": "teal"
+       },
+       {
+        "text": "   "
+       },
+       {
+        "field": "section.title"
+       }
+      ],
+      "set": {
+       "align": "right",
+       "margin_right": 0.858
+      },
+      "when": "recto"
+     },
+     {
+      "type": "text",
+      "x": 36.0,
+      "y": 24.48,
+      "w": 288.0,
+      "style": "runhead",
+      "content": [
+       "Magpie Service Manual",
+       {
+        "text": "   "
+       },
+       "Draft 7"
+      ],
+      "when": "verso"
+     },
+     {
+      "type": "text",
+      "x": 0,
+      "y": 688.64,
+      "w": 468.0,
+      "style": "folio",
+      "content": [
+       {
+        "field": "page"
+       }
+      ],
+      "set": {
+       "align": "right",
+       "margin_right": 0.152
+      },
+      "when": "recto"
+     },
+     {
+      "type": "text",
+      "x": 36.0,
+      "y": 688.64,
+      "w": 144.0,
+      "style": "folio",
+      "content": [
+       {
+        "field": "page"
+       }
+      ],
+      "when": "verso"
+     }
+    ]
+   },
+   "chapter": {
+    "inherits": "flow",
+    "background": [
+     {
+      "type": "rect",
+      "x": -9,
+      "y": -9,
+      "w": 522.0,
+      "h": 295.2,
+      "fill": "teal",
+      "when": "first",
+      "decorative": true
+     },
+     {
+      "type": "text",
+      "x": 54.0,
+      "y": 34.199999999999996,
+      "w": 216.0,
+      "style": "kicker",
+      "text": "Chapter",
+      "when": "first"
+     },
+     {
+      "type": "text",
+      "x": 54.0,
+      "y": 52.92,
+      "w": 216.0,
+      "style": "opener-num",
+      "content": [
+       {
+        "field": "section.num"
+       }
+      ],
+      "when": "first"
+     },
+     {
+      "type": "text",
+      "x": 54.0,
+      "y": 131.4,
+      "w": 147.6,
+      "style": "opener-title",
+      "content": [
+       {
+        "field": "section.title"
+       }
+      ],
+      "when": "first"
+     }
+    ],
+    "foreground": [
+     {
+      "type": "text",
+      "x": 0,
+      "y": 24.48,
+      "w": 468.0,
+      "style": "runhead",
+      "content": [
+       {
+        "field": "section.num",
+        "color": "teal"
+       },
+       {
+        "text": "   "
+       },
+       {
+        "field": "section.title"
+       }
+      ],
+      "set": {
+       "align": "right",
+       "margin_right": 0.858
+      },
+      "when": "recto not-first"
+     },
+     {
+      "type": "text",
+      "x": 36.0,
+      "y": 24.48,
+      "w": 288.0,
+      "style": "runhead",
+      "content": [
+       "Magpie Service Manual",
+       {
+        "text": "   "
+       },
+       "Draft 7"
+      ],
+      "when": "verso not-first"
+     },
+     {
+      "type": "text",
+      "x": 0,
+      "y": 688.64,
+      "w": 468.0,
+      "style": "folio",
+      "content": [
+       {
+        "field": "page"
+       }
+      ],
+      "set": {
+       "align": "right",
+       "margin_right": 0.152
+      },
+      "when": "recto"
+     },
+     {
+      "type": "text",
+      "x": 36.0,
+      "y": 688.64,
+      "w": 144.0,
+      "style": "folio",
+      "content": [
+       {
+        "field": "page"
+       }
+      ],
+      "when": "verso"
+     }
+    ]
+   },
+   "fixed": {
+    "width": "7in",
+    "height": "10in",
+    "bleed": "0.125in",
+    "margins": {
+     "top": 43.199999999999996,
+     "bottom": 46.799999999999955,
+     "inside": 54.0,
+     "outside": 154.8
+    }
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "section",
+   "id": "ch01",
+   "master": "chapter",
+   "start": "recto",
+   "numbering": "1",
+   "page_from": 9,
+   "title": "Before You Begin",
+   "vars": {
+    "num": "1"
+   },
+   "flow": [
+    {
+     "type": "canvas",
+     "h": 266.4,
+     "space_before": 0,
+     "space_after": 0,
+     "elements": [
+      {
+       "type": "image",
+       "src": "book/build/art/ch01.png",
+       "x": 163.8,
+       "y": 54.505699831365966,
+       "w": 259.2,
+       "h": 172.65430016863405,
+       "fit": "contain",
+       "decorative": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "This is the service manual for the Magpie pocket computer. It describes everything the Magpie does, in the order it does it, down to the last number. That is unusual for a manual, so here is why."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "style": "h2",
+     "content": [
+      "Who this is for"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If you are reading this, there may not be a Magpie left for you to look at. You won’t need one. Everything a Magpie is lives in these pages, and with this manual and any other computer you can make one."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "A Magpie is a set of rules: there are this many numbers in memory, this is what each instruction does to them, this is what the screen shows. The case and the chips only follow them. Anything that follows the rules exactly is a Magpie. A program running on another computer can follow them. When it does, every cartridge made for the Magpie will run on it, and nothing, including the cartridge, can tell the difference."
+     ]
+    },
+    {
+     "type": "margin",
+     "dy": -2.2,
+     "blocks": [
+      {
+       "type": "p",
+       "style": "red",
+       "content": [
+        "Owners do not repair. Reduce to 16 pp. owner’s guide (item 9). ",
+        {
+         "text": "—",
+         "span": "dash"
+        },
+        "LRG"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "note",
+       "content": [
+        "Noted."
+       ],
+       "set": {
+        "space_before": 7
+       }
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "style": "h2",
+     "content": [
+      "What you need"
+     ]
+    },
+    {
+     "type": "table",
+     "columns": [
+      15.12,
+      "1fr"
+     ],
+     "rows": [
+      [
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "ul-mark",
+          "content": [
+           {
+            "text": "• ",
+            "baseline": "0.05em"
+           }
+          ],
+          "set": {
+           "line_height": "14pt",
+           "size": 12.77
+          }
+         }
+        ]
+       },
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "li",
+          "content": [
+           "A computer. Any computer that will run a program you write: the one on your desk, the one at work, or one that hasn’t been built yet."
+          ]
+         }
+        ]
+       }
+      ]
+     ],
+     "stroke": "none",
+     "inset": 0,
+     "row_gap": 3.5,
+     "style": "li",
+     "space_before": 0,
+     "space_after": 8
+    }
+   ]
+  },
+  {
+   "type": "section",
+   "id": "ch02",
+   "master": "flow",
+   "start": "next",
+   "numbering": "1",
+   "page_from": 14,
+   "title": "The Magpie at a Glance",
+   "vars": {
+    "num": "2"
+   },
+   "style": "body-t2",
+   "flow": [
+    {
+     "type": "table",
+     "columns": [
+      15.12,
+      "1fr"
+     ],
+     "rows": [
+      [
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "ol-mark",
+          "content": [
+           "8. "
+          ],
+          "set": {
+           "line_height": "13.6pt"
+          }
+         }
+        ]
+       },
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "li-t2",
+          "content": [
+           {
+            "text": "Batteries.",
+            "strong": true
+           },
+           " Four AA cells, about twenty hours."
+          ]
+         }
+        ]
+       }
+      ],
+      [
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "ol-mark",
+          "content": [
+           "9. "
+          ],
+          "set": {
+           "line_height": "13.6pt"
+          }
+         }
+        ]
+       },
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "li-t2",
+          "content": [
+           {
+            "text": "Red lamp.",
+            "strong": true
+           },
+           " Lights when the Magpie stops on something it doesn’t understand. Chapter 4."
+          ]
+         }
+        ]
+       }
+      ],
+      [
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "ol-mark",
+          "content": [
+           "10. "
+          ],
+          "set": {
+           "line_height": "13.6pt"
+          }
+         }
+        ]
+       },
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "li-t2",
+          "content": [
+           {
+            "text": "Owner’s plate.",
+            "strong": true
+           },
+           " Brass, on the underside, engraved with the owner’s name."
+          ]
+         }
+        ]
+       }
+      ]
+     ],
+     "stroke": "none",
+     "inset": 0,
+     "row_gap": 3.5,
+     "style": "li-t2",
+     "space_before": 0,
+     "space_after": 8
+    },
+    {
+     "type": "margin",
+     "dy": 0,
+     "blocks": [
+      {
+       "type": "p",
+       "style": "red",
+       "content": [
+        "Plate: DELETE (item 7). ",
+        {
+         "text": "—",
+         "span": "dash"
+        },
+        "LRG"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "note",
+       "content": [
+        "Not deleted."
+       ],
+       "set": {
+        "space_before": 7
+       }
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "style": "h2-t2",
+     "content": [
+      "The owner’s plate"
+     ]
+    },
+    {
+     "type": "p",
+     "style": "body-t2",
+     "content": [
+      {
+       "text": "On the underside of every Magpie is a brass plate with its owner’s name on it. The plate is wired to the processor. Instruction 07 reads it: each time the Magpie meets 07 it puts the next letter of the name into A, spaces included, and sets Z as LDA does. After the last letter it gives 0, and the next 07 starts again from the first letter. A Magpie with no name on its plate gives 0 every time. A plate holds up to fourteen letters. A Magpie built on another computer has a plate too: give it the owner’s name when you start it.",
+       "mark": {
+        "kind": "strike",
+        "stroke": {
+         "width": 0.94,
+         "color": "red",
+         "cap": "round"
+        },
+        "extent": 1.5,
+        "offset": -2.6
+       }
+      }
+     ],
+     "set": {
+      "color": "strike-ink"
+     }
+    },
+    {
+     "type": "box",
+     "space_before": 4,
+     "space_after": 6,
+     "blocks": [
+      {
+       "type": "canvas",
+       "h": 196.87897271268056,
+       "space_before": 0,
+       "space_after": 0,
+       "elements": [
+        {
+         "type": "image",
+         "src": "book/build/art/underside.png",
+         "x": 0,
+         "y": 0,
+         "w": 295.2,
+         "h": 196.87897271268056,
+         "fit": "stretch"
+        },
+        {
+         "type": "group",
+         "x": 111.43470416030422,
+         "y": 74.01717023413431,
+         "w": 59.30009408709618,
+         "h": 13.780747814235397,
+         "rotate": 13.87,
+         "skew": 13.978,
+         "children": [
+          {
+           "type": "text",
+           "x": 0,
+           "y": 2.1141692671673713,
+           "w": 59.30009408709618,
+           "text": "MAGPIE No. 1",
+           "set": {
+            "font": "IBM Plex Mono",
+            "weight": 600,
+            "size": 4.146067415730337,
+            "color": "brass-ink",
+            "align": "center",
+            "line_height": 1,
+            "tracking": "0.1429em"
+           }
+          },
+          {
+           "type": "text",
+           "x": 0,
+           "y": 7.167110132387015,
+           "w": 59.30009408709618,
+           "text": "TALIN KAZARIAN",
+           "set": {
+            "font": "IBM Plex Mono",
+            "weight": 600,
+            "size": 4.146067415730337,
+            "color": "brass-ink",
+            "align": "center",
+            "line_height": 1,
+            "tracking": "0.0343em"
+           }
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "cap",
+       "content": [
+        "The underside, with the owner’s plate."
+       ],
+       "set": {
+        "space_after": 0
+       }
+      }
+     ]
+    },
+    {
+     "type": "margin",
+     "dy": -2.2,
+     "blocks": [
+      {
+       "type": "p",
+       "style": "red",
+       "content": [
+        "DELETE. Machines are not pets. ",
+        {
+         "text": "—",
+         "span": "dash"
+        },
+        "LRG"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "note",
+       "content": [
+        "Talin asked if it knew it was hers. It does now."
+       ],
+       "set": {
+        "space_before": 7
+       }
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "style": "h2-t2",
+     "content": [
+      "Switching on"
+     ]
+    },
+    {
+     "type": "p",
+     "style": "body-t2",
+     "content": [
+      "When you switch on a Magpie with a cartridge in it:"
+     ],
+     "set": {
+      "keep_with_next": true
+     }
+    },
+    {
+     "type": "table",
+     "columns": [
+      15.12,
+      "1fr"
+     ],
+     "rows": [
+      [
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "ol-mark",
+          "content": [
+           "1. "
+          ],
+          "set": {
+           "line_height": "13.6pt"
+          }
+         }
+        ]
+       },
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "li-t2",
+          "content": [
+           "Every byte of memory is set to 0."
+          ]
+         }
+        ]
+       }
+      ],
+      [
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "ol-mark",
+          "content": [
+           "2. "
+          ],
+          "set": {
+           "line_height": "13.6pt"
+          }
+         }
+        ]
+       },
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "li-t2",
+          "content": [
+           "The cartridge’s bytes are copied into memory, starting at address $0000."
+          ]
+         }
+        ]
+       }
+      ],
+      [
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "ol-mark",
+          "content": [
+           "3. "
+          ],
+          "set": {
+           "line_height": "13.6pt"
+          }
+         }
+        ]
+       },
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "li-t2",
+          "content": [
+           "The registers are set: A to 0, P to 0, S to $FFF0, PC to $0000, and both flags to 0."
+          ]
+         }
+        ]
+       }
+      ],
+      [
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "ol-mark",
+          "content": [
+           "4. "
+          ],
+          "set": {
+           "line_height": "13.6pt"
+          }
+         }
+        ]
+       },
+       {
+        "blocks": [
+         {
+          "type": "p",
+          "style": "li-t2",
+          "content": [
+           "The processor starts running at $0000."
+          ]
+         }
+        ]
+       }
+      ]
+     ],
+     "stroke": "none",
+     "inset": 0,
+     "row_gap": 3.5,
+     "style": "li-t2",
+     "space_before": 0,
+     "space_after": 8
+    },
+    {
+     "type": "p",
+     "style": "body-t2",
+     "content": [
+      "With no cartridge in it, the Magpie runs the zeros in its memory. Zero means stop, so it stops at once. That is why a Magpie with no cartridge looks dead."
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "cost-review",
+   "master": "fixed",
+   "elements": [
+    {
+     "type": "group",
+     "x": 44.64,
+     "y": 54.0,
+     "w": 414.0,
+     "h": 615.6,
+     "rotate": -0.5,
+     "fill": "sheet",
+     "children": [
+      {
+       "type": "rect",
+       "x": 0.375,
+       "y": 0.375,
+       "w": 413.25,
+       "h": 614.85,
+       "stroke": {
+        "width": 0.75,
+        "color": "sheet-edge"
+       }
+      },
+      {
+       "type": "text",
+       "x": 43.949999999999996,
+       "y": 40.35,
+       "w": 326.1,
+       "blocks": [
+        {
+         "type": "canvas",
+         "h": 41.87,
+         "elements": [
+          {
+           "type": "path",
+           "x": 0,
+           "y": 0,
+           "w": 30.24,
+           "h": 33.120000000000005,
+           "viewbox": [
+            0,
+            0,
+            42,
+            46
+           ],
+           "fill": "gray",
+           "d": "M3 44 V12 H9 V6 H15 V12 H18 V6 H24 V12 H27 V6 H33 V12 H39 V44 Z M17 44 V33 C17 29 25 29 25 33 V44 Z"
+          },
+          {
+           "type": "text",
+           "x": 40.239999999999995,
+           "y": 3.5,
+           "w": 285.86,
+           "style": "lh-name",
+           "text": "CASTELLAN CORPORATION"
+          },
+          {
+           "type": "text",
+           "x": 40.239999999999995,
+           "y": 20.0,
+           "w": 285.86,
+           "style": "lh-div",
+           "text": "Consumer Products Engineering"
+          },
+          {
+           "type": "line",
+           "x1": 0,
+           "y1": 41.495,
+           "x2": 326.1,
+           "y2": 41.495,
+           "stroke": {
+            "width": 0.75,
+            "color": "gray"
+           }
+          }
+         ],
+         "space_before": 0,
+         "space_after": 0
+        },
+        {
+         "type": "p",
+         "style": "memo-t",
+         "content": [
+          "Engineering Cost Review"
+         ]
+        },
+        {
+         "type": "table",
+         "columns": [
+          51.2,
+          "1fr"
+         ],
+         "stroke": "none",
+         "style": "ty-meta",
+         "inset": {
+          "top": 0,
+          "right": 8,
+          "bottom": 1,
+          "left": 0
+         },
+         "space_before": 0,
+         "space_after": 6,
+         "rows": [
+          [
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta-l",
+              "content": [
+               "TO:"
+              ]
+             }
+            ]
+           },
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta",
+              "content": [
+               "Magpie Product Group (formerly Magpie Computer Company)"
+              ]
+             }
+            ]
+           }
+          ],
+          [
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta-l",
+              "content": [
+               "FROM:"
+              ]
+             }
+            ]
+           },
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta",
+              "content": [
+               "Consumer Products Engineering"
+              ]
+             }
+            ]
+           }
+          ],
+          [
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta-l",
+              "content": [
+               "COPY:"
+              ]
+             }
+            ]
+           },
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta",
+              "content": [
+               "L. R. Garrow, Vice President, Consumer Products"
+              ]
+             }
+            ]
+           }
+          ],
+          [
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta-l",
+              "content": [
+               "DATE:"
+              ]
+             }
+            ]
+           },
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta",
+              "content": [
+               "April 30, 1984"
+              ]
+             }
+            ]
+           }
+          ],
+          [
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta-l",
+              "content": [
+               "SUBJECT:"
+              ]
+             }
+            ]
+           },
+           {
+            "blocks": [
+             {
+              "type": "p",
+              "style": "ty-meta",
+              "content": [
+               "Magpie Rev. C. Cost review"
+              ]
+             }
+            ]
+           }
+          ]
+         ]
+        },
+        {
+         "type": "canvas",
+         "w": 326.1,
+         "h": 0.75,
+         "space_before": 4,
+         "space_after": 12,
+         "elements": [
+          {
+           "type": "line",
+           "x1": 0,
+           "y1": 0.375,
+           "x2": 326.1,
+           "y2": 0.375,
+           "stroke": {
+            "width": 0.75,
+            "color": "#9a9a95"
+           }
+          }
+         ]
+        },
+        {
+         "type": "p",
+         "style": "ty",
+         "content": [
+          "Per our discussion of April 27, the following changes are approved for the production design (Rev. C). Unit savings are at a volume of 100,000."
+         ]
+        },
+        {
+         "type": "box",
+         "blocks": [
+          {
+           "type": "table",
+           "columns": [
+            24.44,
+            100.04,
+            85.64000000000001,
+            46.76
+           ],
+           "rows": [
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items-h",
+                "content": [
+                 "Item"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items-h",
+                "content": [
+                 "Part"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items-h",
+                "content": [
+                 "Decision"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items-h",
+                "content": [
+                 "Unit saving"
+                ]
+               }
+              ]
+             }
+            ]
+           ],
+           "stroke": {
+            "bottom": {
+             "width": 0.75,
+             "color": "#555555"
+            },
+            "top": "none",
+            "left": "none",
+            "right": "none"
+           },
+           "valign": "bottom",
+           "inset": {
+            "top": 0,
+            "right": 5,
+            "bottom": 2.375,
+            "left": 0
+           },
+           "style": "ty-items-h",
+           "space_before": 0,
+           "space_after": 0
+          },
+          {
+           "type": "table",
+           "columns": [
+            24.44,
+            100.04,
+            85.64000000000001,
+            46.76
+           ],
+           "rows": [
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "1"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Case, two colors"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "One color, Castellan gray"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "$0.41"
+                ]
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "2"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Printer"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Retain"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "—"
+                ]
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "3"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Screen"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Retain"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "—"
+                ]
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "4"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Keyboard, rubber keys"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Membrane keyboard"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "$0.95"
+                ]
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "5"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Memory, 64K"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Retain"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "—"
+                ]
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "6"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Dice circuit"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Retain"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "—"
+                ]
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "7"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Owner's plate and instruction 07"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Delete"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "$2.85"
+                ]
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "8"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Price"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "$149 (was $99)"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "—"
+                ]
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "9"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Service manual, 148 pp."
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Owner's guide, 16 pp."
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "$2.70"
+                ]
+               }
+              ]
+             }
+            ],
+            [
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "10"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Cartridge listings in manual"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "Delete"
+                ]
+               }
+              ]
+             },
+             {
+              "blocks": [
+               {
+                "type": "p",
+                "style": "ty-items",
+                "content": [
+                 "$0.38"
+                ]
+               }
+              ]
+             }
+            ]
+           ],
+           "stroke": {
+            "bottom": {
+             "width": 0.75,
+             "color": "#aaaaaa",
+             "dash": "dotted"
+            },
+            "top": "none",
+            "left": "none",
+            "right": "none"
+           },
+           "inset": {
+            "top": 2.575,
+            "right": 5,
+            "bottom": 2.575,
+            "left": 0
+           },
+           "style": "ty-items",
+           "space_before": 0,
+           "space_after": 0
+          }
+         ],
+         "space_before": 4,
+         "space_after": 10
+        },
+        {
+         "type": "p",
+         "style": "ty",
+         "content": [
+          "Total saving per unit: $7.29."
+         ]
+        }
+       ],
+       "style": "ty"
+      },
+      {
+       "type": "text",
+       "x": 310.90999999999997,
+       "y": 405.3,
+       "w": 80.64000000000001,
+       "blocks": [
+        {
+         "type": "p",
+         "style": "lrg",
+         "content": [
+          {
+           "text": "7. "
+          },
+          "Machines are not pets. ",
+          {
+           "text": "—",
+           "span": "dash"
+          },
+          "LRG"
+         ]
+        },
+        {
+         "type": "p",
+         "style": "lrg",
+         "content": [
+          {
+           "text": "8. "
+          },
+          "Protects the Scholar line. ",
+          {
+           "text": "—",
+           "span": "dash"
+          },
+          "LRG"
+         ]
+        },
+        {
+         "type": "p",
+         "style": "lrg",
+         "content": [
+          {
+           "text": "9. "
+          },
+          "Customers do not repair. A manual is a promise. ",
+          {
+           "text": "—",
+           "span": "dash"
+          },
+          "LRG"
+         ]
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "x": 43.949999999999996,
+       "y": 544.85,
+       "w": 309.59999999999997,
+       "h": 34,
+       "style": "ani-review",
+       "text": "He priced my daughter's question at two dollars and eighty-five cents.",
+       "rotate": -1.5
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "section",
+   "id": "ch07",
+   "master": "flow",
+   "start": "recto",
+   "numbering": "1",
+   "page_from": 29,
+   "title": "Arithmetic",
+   "vars": {
+    "num": "7"
+   },
+   "flow": [
+    {
+     "type": "box",
+     "stroke": {
+      "left": {
+       "width": 1.5,
+       "color": "teal"
+      }
+     },
+     "inset": {
+      "left": 10.86,
+      "top": 1,
+      "bottom": 1,
+      "right": 0
+     },
+     "blocks": [
+      {
+       "type": "p",
+       "style": "code",
+       "content": [
+        "        LDA $8001"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "code",
+       "content": [
+        "        JNC nocarry"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "code",
+       "content": [
+        "        INC"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "code",
+       "content": [
+        "nocarry: STA $8001"
+       ]
+      }
+     ],
+     "space_before": 0,
+     "space_after": 10
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "style": "h2",
+     "content": [
+      "Bits"
+     ]
+    },
+    {
+     "type": "box",
+     "blocks": [
+      {
+       "type": "table",
+       "columns": [
+        50.3,
+        25.7,
+        "1fr"
+       ],
+       "rows": [
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "th",
+            "content": [
+             "Opcodes"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "th",
+            "content": [
+             "Name"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "th",
+            "content": [
+             "What it does"
+            ]
+           }
+          ]
+         }
+        ]
+       ],
+       "stroke": {
+        "bottom": {
+         "width": 0.75,
+         "color": "ink"
+        },
+        "top": "none",
+        "left": "none",
+        "right": "none"
+       },
+       "inset": {
+        "top": 0,
+        "right": 6,
+        "bottom": 2.875,
+        "left": 0
+       },
+       "valign": "bottom",
+       "style": "th",
+       "space_before": 0,
+       "space_after": 0
+      },
+      {
+       "type": "table",
+       "columns": [
+        50.3,
+        25.7,
+        "1fr"
+       ],
+       "rows": [
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "$61 $62 $63"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "AND"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "Each bit of A stays 1 only if it is 1 in the number too."
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "$71 $72 $73"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "OR"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "Each bit of A becomes 1 if it is 1 in either."
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "$81 $82 $83"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "XOR"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "Each bit of A becomes 1 if it is 1 in one but not both."
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "$03"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "SHL"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "C := the top bit of A; every bit moves up one; the bottom bit becomes 0."
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "$04"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "SHR"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "C := the bottom bit of A; every bit moves down one; the top bit becomes 0."
+            ]
+           }
+          ]
+         }
+        ]
+       ],
+       "stroke": {
+        "bottom": {
+         "width": 0.75,
+         "color": "rule"
+        },
+        "top": "none",
+        "left": "none",
+        "right": "none"
+       },
+       "inset": {
+        "top": 2.975,
+        "right": 6,
+        "bottom": 2.975,
+        "left": 0
+       },
+       "style": "td",
+       "space_before": 0,
+       "space_after": 0
+      }
+     ],
+     "space_before": 2,
+     "space_after": 10
+    },
+    {
+     "type": "p",
+     "content": [
+      "All five set Z. AND, OR and XOR leave C alone. SHL doubles A and SHR halves it, with the bit that falls off going into C."
+     ]
+    },
+    {
+     "type": "margin",
+     "dy": -2.2,
+     "blocks": [
+      {
+       "type": "p",
+       "style": "note",
+       "content": [
+        "AND, OR and XOR leave C alone on purpose. It took me two weeks to decide, and I am not changing it now."
+       ]
+      }
+     ]
+    },
+    {
+     "type": "box",
+     "blocks": [
+      {
+       "type": "table",
+       "columns": [
+        68.7,
+        99.0,
+        68.7,
+        "1fr"
+       ],
+       "rows": [
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "th",
+            "content": [
+             "A"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "th",
+            "content": [
+             "Instruction"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "th",
+            "content": [
+             "A after"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "th",
+            "content": [
+             "C after"
+            ]
+           }
+          ]
+         }
+        ]
+       ],
+       "stroke": {
+        "bottom": {
+         "width": 0.75,
+         "color": "ink"
+        },
+        "top": "none",
+        "left": "none",
+        "right": "none"
+       },
+       "inset": {
+        "top": 0,
+        "right": 6,
+        "bottom": 2.875,
+        "left": 0
+       },
+       "valign": "bottom",
+       "style": "th",
+       "space_before": 0,
+       "space_after": 0
+      },
+      {
+       "type": "table",
+       "columns": [
+        68.7,
+        99.0,
+        68.7,
+        "1fr"
+       ],
+       "rows": [
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%1111 0000"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "AND #%0011 1100"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%0011 0000"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "unchanged"
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%1111 0000"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "OR #%0000 1111"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%1111 1111"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "unchanged"
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%1111 1111"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "XOR #%0000 1111"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%1111 0000"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "unchanged"
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%1000 0001"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "SHL"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%0000 0010"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "1"
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%1000 0001"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "SHR"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "%0100 0000"
+            ]
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "td",
+            "content": [
+             "1"
+            ]
+           }
+          ]
+         }
+        ]
+       ],
+       "stroke": {
+        "bottom": {
+         "width": 0.75,
+         "color": "rule"
+        },
+        "top": "none",
+        "left": "none",
+        "right": "none"
+       },
+       "inset": {
+        "top": 2.975,
+        "right": 6,
+        "bottom": 2.975,
+        "left": 0
+       },
+       "style": "td",
+       "space_before": 0,
+       "space_after": 0
+      }
+     ],
+     "space_before": 2,
+     "space_after": 10
+    },
+    {
+     "type": "p",
+     "content": [
+      "A % in front of a number means it is written in bits."
+     ]
+    },
+    {
+     "type": "box",
+     "fill": "tint",
+     "stroke": {
+      "top": {
+       "width": 1.5,
+       "color": "teal"
+      }
+     },
+     "inset": {
+      "top": 9.5,
+      "left": 10,
+      "right": 10,
+      "bottom": 8
+     },
+     "space_before": 4,
+     "space_after": 12,
+     "blocks": [
+      {
+       "type": "p",
+       "style": "bt",
+       "content": [
+        "Build it ",
+        {
+         "text": "· Arithmetic",
+         "color": "ink"
+        }
+       ]
+      },
+      {
+       "type": "table",
+       "columns": [
+        13.68,
+        "1fr"
+       ],
+       "rows": [
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "ul-mark",
+            "content": [
+             {
+              "text": "• ",
+              "baseline": "0.05em"
+             }
+            ],
+            "set": {
+             "line_height": "12.8pt",
+             "size": 12.1
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "bli",
+            "content": [
+             "ADD, SUB, AND, OR, XOR in all three columns."
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "ul-mark",
+            "content": [
+             {
+              "text": "• ",
+              "baseline": "0.05em"
+             }
+            ],
+            "set": {
+             "line_height": "12.8pt",
+             "size": 12.1
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "bli",
+            "content": [
+             "INC, DEC, SHL, SHR."
+            ]
+           }
+          ]
+         }
+        ],
+        [
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "ul-mark",
+            "content": [
+             {
+              "text": "• ",
+              "baseline": "0.05em"
+             }
+            ],
+            "set": {
+             "line_height": "12.8pt",
+             "size": 12.1
+            }
+           }
+          ]
+         },
+         {
+          "blocks": [
+           {
+            "type": "p",
+            "style": "bli",
+            "content": [
+             "Z from every one of them; C as the tables say."
+            ]
+           }
+          ]
+         }
+        ]
+       ],
+       "stroke": "none",
+       "inset": 0,
+       "row_gap": 3,
+       "style": "bli",
+       "space_before": 0,
+       "space_after": 0
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "style": "h2",
+     "content": [
+      "Test cartridge 4: SUMS"
+     ]
+    },
+    {
+     "type": "p",
+     "style": "lhead",
+     "content": [
+      {
+       "text": "Listing",
+       "color": "teal"
+      },
+      "  644 bytes in 41 records  ·  a QR code beside every eight"
+     ]
+    },
+    {
+     "type": "box",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "listing",
+       "content": [
+        {
+         "text": "0000:",
+         "color": "teal",
+         "weight": 500
+        },
+        " 11 07 51 2A 11 02 31 03  B3 08 02 B1 08 02 51 05 ",
+        {
+         "text": "23",
+         "color": "gray"
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "listing",
+       "content": [
+        {
+         "text": "0010:",
+         "color": "teal",
+         "weight": 500
+        },
+        " B2 08 02 11 2E 22 F0 FF  11 C8 31 64 B4 08 02 51 ",
+        {
+         "text": "1D",
+         "color": "gray"
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "listing",
+       "content": [
+        {
+         "text": "0020:",
+         "color": "teal",
+         "weight": 500
+        },
+        " 2C B2 08 02 11 2E 22 F0  FF 11 FF 31 01 B4 08 02 ",
+        {
+         "text": "20",
+         "color": "gray"
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "listing",
+       "content": [
+        {
+         "text": "0030:",
+         "color": "teal",
+         "weight": 500
+        },
+        " B2 08 02 11 2E 22 F0 FF  11 0A 32 2E 02 51 1E B2 ",
+        {
+         "text": "A9",
+         "color": "gray"
+        }
+       ],
+       "set": {
+        "rule_below": {
+         "stroke": {
+          "width": 0.75,
+          "color": "hair"
+         },
+         "gap": 0
+        },
+        "space_after": 0.75
+       }
+      },
+      {
+       "type": "p",
+       "style": "listing",
+       "content": [
+        {
+         "text": "0040:",
+         "color": "teal",
+         "weight": 500
+        },
+        " 08 02 91 2E 02 11 05 33  51 19 B2 08 02 11 2E 22 ",
+        {
+         "text": "50",
+         "color": "gray"
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "listing",
+       "content": [
+        {
+         "text": "0050:",
+         "color": "teal",
+         "weight": 500
+        },
+        " F0 FF 11 07 51 2A 11 09  41 04 B3 08 02 51 05 B2 ",
+        {
+         "text": "87",
+         "color": "gray"
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "listing",
+       "content": [
+        {
+         "text": "0060:",
+         "color": "teal",
+         "weight": 500
+        },
+        " 08 02 11 2E 22 F0 FF 11  04 41 09 B4 08 02 51 FB ",
+        {
+         "text": "45",
+         "color": "gray"
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "listing",
+       "content": [
+        {
+         "text": "0070:",
+         "color": "teal",
+         "weight": 500
+        },
+        " B2 08 02 11 2E 22 F0 FF  11 07 41 07 B2 08 02 B3 ",
+        {
+         "text": "1F",
+         "color": "gray"
+        }
+       ]
+      }
+     ],
+     "space_before": 0,
+     "space_after": 8
+    },
+    {
+     "type": "margin",
+     "dy": 0,
+     "blocks": [
+      {
+       "type": "canvas",
+       "w": 86.544,
+       "h": 86.544,
+       "space_before": 0,
+       "space_after": 0,
+       "elements": [
+        {
+         "type": "qr",
+         "x": 0,
+         "y": 0,
+         "w": 86.544,
+         "data": "0000: 1107512A11023103B30802B108025105B20802112E22F0FF11C83164B40802512CB20802112E22F0FF11FF3101B40802B20802112E22F0FF110A322E02511EB2 49 0040: 0802912E021105335119B20802112E22F0FF1107512A11094104B308025105B20802112E22F0FF11044109B4080251FBB20802112E22F0FF11074107B20802B3 74",
+         "ecc": "M",
+         "quiet": 4,
+         "color": "ink",
+         "background": "#ffffff"
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "ql",
+       "content": [
+        "0000–007F"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "label-life",
+   "master": "fixed",
+   "fill": "life",
+   "elements": [
+    {
+     "type": "group",
+     "x": 75.60000000000001,
+     "y": 104.39999999999999,
+     "w": 352.8,
+     "h": 511.2,
+     "children": [
+      {
+       "type": "rect",
+       "x": 0,
+       "y": 0,
+       "w": 352.8,
+       "h": 511.2,
+       "fill": "cart",
+       "radius": {
+        "top_left": 11.52,
+        "top_right": 11.52,
+        "bottom_left": 7.2,
+        "bottom_right": 7.2
+       }
+      },
+      {
+       "type": "rect",
+       "x": 39.6,
+       "y": 12.959999999999999,
+       "w": 3.6,
+       "h": 30.24,
+       "fill": "rib",
+       "radius": 1.44
+      },
+      {
+       "type": "rect",
+       "x": 73.35,
+       "y": 12.959999999999999,
+       "w": 3.6,
+       "h": 30.24,
+       "fill": "rib",
+       "radius": 1.44
+      },
+      {
+       "type": "rect",
+       "x": 107.1,
+       "y": 12.959999999999999,
+       "w": 3.6,
+       "h": 30.24,
+       "fill": "rib",
+       "radius": 1.44
+      },
+      {
+       "type": "rect",
+       "x": 140.85,
+       "y": 12.959999999999999,
+       "w": 3.6,
+       "h": 30.24,
+       "fill": "rib",
+       "radius": 1.44
+      },
+      {
+       "type": "rect",
+       "x": 174.6,
+       "y": 12.959999999999999,
+       "w": 3.6,
+       "h": 30.24,
+       "fill": "rib",
+       "radius": 1.44
+      },
+      {
+       "type": "rect",
+       "x": 208.35,
+       "y": 12.959999999999999,
+       "w": 3.6,
+       "h": 30.24,
+       "fill": "rib",
+       "radius": 1.44
+      },
+      {
+       "type": "rect",
+       "x": 242.1,
+       "y": 12.959999999999999,
+       "w": 3.6,
+       "h": 30.24,
+       "fill": "rib",
+       "radius": 1.44
+      },
+      {
+       "type": "rect",
+       "x": 275.85,
+       "y": 12.959999999999999,
+       "w": 3.6,
+       "h": 30.24,
+       "fill": "rib",
+       "radius": 1.44
+      },
+      {
+       "type": "rect",
+       "x": 309.6,
+       "y": 12.959999999999999,
+       "w": 3.6,
+       "h": 30.24,
+       "fill": "rib",
+       "radius": 1.44
+      },
+      {
+       "type": "group",
+       "x": 28.8,
+       "y": 56.160000000000004,
+       "w": 295.2,
+       "h": 401.76,
+       "children": [
+        {
+         "type": "rect",
+         "x": 0,
+         "y": 0,
+         "w": 295.2,
+         "h": 401.76,
+         "fill": "label"
+        },
+        {
+         "type": "image",
+         "src": "book/build/art/label-life.png",
+         "x": 0,
+         "y": 0,
+         "w": 295.2,
+         "h": 295.2
+        },
+        {
+         "type": "rect",
+         "x": 0,
+         "y": 295.2,
+         "w": 295.2,
+         "h": 106.56,
+         "fill": "teal"
+        },
+        {
+         "type": "text",
+         "x": 11.52,
+         "y": 303.84,
+         "w": 144.0,
+         "style": "lb-mark",
+         "text": "MAGPIE"
+        },
+        {
+         "type": "text",
+         "x": 139.68,
+         "y": 307.69,
+         "w": 144.0,
+         "style": "lb-no",
+         "text": "CARTRIDGE 01"
+        },
+        {
+         "type": "text",
+         "x": 11.52,
+         "y": 325.47999999999996,
+         "w": 272.15999999999997,
+         "style": "lb-title",
+         "set": {},
+         "text": "LIFE"
+        },
+        {
+         "type": "text",
+         "x": 11.52,
+         "y": 384.79999999999995,
+         "w": 272.15999999999997,
+         "style": "lb-by",
+         "content": [
+          "Ani Kazarian, after John Conway (1970)"
+         ]
+        }
+       ]
+      },
+      {
+       "type": "rect",
+       "x": 0,
+       "y": 485.28,
+       "w": 352.8,
+       "h": 25.919999999999998,
+       "fill": "cart-foot",
+       "radius": {
+        "top_left": 0,
+        "top_right": 0,
+        "bottom_left": 7.2,
+        "bottom_right": 7.2
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

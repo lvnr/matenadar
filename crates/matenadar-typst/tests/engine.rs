@@ -142,3 +142,22 @@ fn bleed_puts_the_trim_box_inside_the_media_box() {
     let text = String::from_utf8_lossy(&pdf);
     assert!(text.contains("/TrimBox"), "the PDF marks the trim");
 }
+
+#[test]
+fn a_frame_aligned_to_the_bottom_keeps_its_table_cells_on_top() {
+    let s = session(book(
+        json!([{"type": "p", "id": "p1", "text": "x"}]),
+        json!([{"type": "page", "id": "pg", "master": "body", "elements": [
+            {"type": "text", "id": "low", "x": 72, "y": 72, "w": 200, "h": 200, "valign": "bottom", "blocks": [
+                {"type": "p", "id": "tail", "text": "At the foot."},
+                {"type": "table", "id": "tbl", "columns": [60, 140], "rows": [["top", "one two three four five six seven eight nine ten eleven twelve"]]}
+            ]}
+        ]}]),
+    ));
+    let report = inspect::report(&s);
+    let page = report.iter().find(|p| p.nodes.iter().any(|n| n.id == "tail")).expect("page");
+    let tail = page.nodes.iter().find(|n| n.id == "tail").unwrap();
+    let tbl = page.nodes.iter().find(|n| n.id == "tbl").unwrap();
+    assert!(tbl.rect.y1 > 262.0 && tbl.rect.y1 <= 273.0, "the content ends at the frame's foot: {tbl:?}");
+    assert!(tail.rect.y0 > 150.0, "and starts low in the frame: {tail:?}");
+}

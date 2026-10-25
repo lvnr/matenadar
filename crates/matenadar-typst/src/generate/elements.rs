@@ -346,8 +346,8 @@ impl Gen<'_> {
         };
         // Aligning the frame's content must not align what is inside it.
         let inner = match t.valign.as_deref() {
-            Some("middle") | Some("center") if hi.is_some() => format!("align(horizon, {{ set align(top); {inner} }})"),
-            Some("bottom") if hi.is_some() => format!("align(bottom, {{ set align(top); {inner} }})"),
+            Some("middle") | Some("center") if hi.is_some() => format!("align(horizon, block(width: 100%, {{ set align(top); {inner} }}))"),
+            Some("bottom") if hi.is_some() => format!("align(bottom, block(width: 100%, {{ set align(top); {inner} }}))"),
             _ => inner,
         };
         let mut args = vec![format!("width: {}", if auto_w { "auto".to_string() } else { w.typst() })];

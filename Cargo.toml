@@ -12,6 +12,7 @@ publish = false
 [workspace.dependencies]
 matenadar-model = { path = "crates/matenadar-model" }
 matenadar-typst = { path = "crates/matenadar-typst" }
+matenadar-epub = { path = "crates/matenadar-epub" }
 anyhow = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }

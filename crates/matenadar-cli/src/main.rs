@@ -16,6 +16,8 @@ const HELP: &str = "matenadar — lays out Matenadar documents
 
 Usage:
   matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check]
+  matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts]
+                 [--cover image.jpg] [--identifier urn:isbn:…]
   matenadar check <doc.json> [--safe 0.25in] [--min-ppi 300]
   matenadar validate <doc.json>
   matenadar layout <doc.json> [--pages 1-3]
@@ -44,7 +46,7 @@ impl Args {
         let cmd = it.next().unwrap_or_else(|| "help".into());
         let mut pos = Vec::new();
         let mut opts = Vec::new();
-        let flags = ["--bleed", "--check", "--json", "--no-system-fonts"];
+        let flags = ["--bleed", "--check", "--json", "--no-system-fonts", "--embed-fonts"];
         let mut rest: Vec<String> = it.collect();
         rest.reverse();
         while let Some(a) = rest.pop() {
@@ -276,6 +278,36 @@ fn run() -> Result<ExitCode> {
         }
         "serve" => {
             serve::serve()?;
+            Ok(ExitCode::SUCCESS)
+        }
+        "epub" => {
+            let start = Instant::now();
+            let (doc, paths) = load(&args)?;
+            let problems = validate(&doc);
+            if !problems.is_empty() {
+                let list: Vec<String> = problems.iter().map(|p| format!("  {}: {}", p.path, p.message)).collect();
+                bail!("the document has problems:\n{}", list.join("\n"));
+            }
+            let out = args.get("-o").map(PathBuf::from).unwrap_or_else(|| args.doc_path().unwrap_or_default().with_extension("epub"));
+            let opts = matenadar_epub::Options {
+                layout: match args.get("--layout") {
+                    Some("fixed") => matenadar_epub::Layout::Fixed,
+                    Some("reflowable") | None => matenadar_epub::Layout::Reflowable,
+                    Some(other) => bail!("--layout is reflowable or fixed, not {other}"),
+                },
+                dpi: args.get("--dpi").map(str::parse).transpose()?.unwrap_or(200.0),
+                embed_fonts: args.flag("--embed-fonts"),
+                cover: args.get("--cover").map(PathBuf::from),
+                identifier: args.get("--identifier").map(str::to_string),
+            };
+            let epub = matenadar_epub::build(&doc, &paths, &opts).map_err(|e| anyhow!("EPUB failed: {e}"))?;
+            fs::write(&out, &epub)?;
+            let total = start.elapsed();
+            if json {
+                println!("{}", serde_json::json!({"epub": out, "bytes": epub.len(), "total_ms": total.as_secs_f64() * 1000.0}));
+            } else {
+                println!("{} ({:.1} MB, {} ms)", out.display(), epub.len() as f64 / 1e6, total.as_millis());
+            }
             Ok(ExitCode::SUCCESS)
         }
         "debug-typst" => {

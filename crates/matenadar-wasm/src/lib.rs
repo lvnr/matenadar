@@ -22,7 +22,8 @@
 //!   `close`, `fonts`.
 //! - Pages: `pages`, `spreads`, `svg` `{page, bleed}`, `png` `{page, scale
 //!   | dpi, bleed}`, `rgba` `{page, scale, bleed}` (8 bytes of width and
-//!   height, little-endian, then the pixels), `pdf`, `fingerprint`.
+//!   height, little-endian, then the pixels), `pdf`, `fingerprint`,
+//!   `fonts_used`.
 //! - Finding: `hit` `{page, x, y}`, `rects` `{id}`, `node` `{id}`, `lines`
 //!   `{id}`, `locate`, `position` `{id}`, `layout` `{pages}`, `document`.
 //! - Editing, each one step to undo: `apply` `{ops}`, `set_words` `{id,
@@ -232,6 +233,7 @@ impl Engine {
             }
             "pdf" => Out::Bytes(e.session().pdf().map_err(|e| e.to_string())?),
             "fingerprint" => Out::Json(json!(e.session().fingerprints())),
+            "fonts_used" => Out::Json(json!(e.session().fonts_used())),
             "hit" => Out::Json(json!(e.hit(page()?, num_of("x")?, num_of("y")?))),
             "rects" => Out::Json(json!(e.rects(id_of()?))),
             "node" => Out::Json(e.node(id_of()?).unwrap_or(Value::Null)),

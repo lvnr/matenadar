@@ -135,6 +135,7 @@ assert.deepEqual(patch.layout.map((op) => `${op.op} ${op.path ?? ""}`.trim()), [
   "insert",
 ]);
 assert.ok(Array.isArray(mt.diagnostics()));
+assert.ok(mt.fontsUsed().some((f) => f.family === family && f.pages.includes(1)));
 
 if (process.env.MATENADAR_BIN) {
   // The same document and edits, laid out by the command line, give the same pages.

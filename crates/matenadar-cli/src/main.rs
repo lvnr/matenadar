@@ -24,7 +24,7 @@ Usage:
   matenadar locate <doc.json> --page N --x PT --y PT
   matenadar fingerprint <doc.json>      (a hash per page, the same as the WebAssembly build's)
   matenadar apply <doc.json> <ops.json> [-o new.json]
-  matenadar fonts
+  matenadar fonts [--used <doc.json>]   (the families found; with --used, the faces a layout drew with and their files)
   matenadar bench <doc.json> [--edits 50]
   matenadar serve                       (JSON lines on stdin; see serve.rs)
 
@@ -47,7 +47,7 @@ impl Args {
         let cmd = it.next().unwrap_or_else(|| "help".into());
         let mut pos = Vec::new();
         let mut opts = Vec::new();
-        let flags = ["--bleed", "--check", "--json", "--no-system-fonts", "--embed-fonts"];
+        let flags = ["--bleed", "--check", "--json", "--no-system-fonts", "--embed-fonts", "--used"];
         let mut rest: Vec<String> = it.collect();
         rest.reverse();
         while let Some(a) = rest.pop() {
@@ -262,6 +262,11 @@ fn run() -> Result<ExitCode> {
             let out = args.get("-o").map(PathBuf::from).unwrap_or(args.doc_path()?);
             fs::write(&out, s.document().to_json())?;
             println!("{}", serde_json::to_string_pretty(&changes)?);
+            Ok(ExitCode::SUCCESS)
+        }
+        "fonts" if args.flag("--used") => {
+            let s = session(&args)?;
+            println!("{}", serde_json::to_string_pretty(&s.fonts_used())?);
             Ok(ExitCode::SUCCESS)
         }
         "fonts" => {

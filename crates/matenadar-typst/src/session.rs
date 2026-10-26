@@ -65,6 +65,22 @@ pub struct PageInfo {
     pub margins: Option<Margins>,
 }
 
+/// A font face the layout drew with.
+#[derive(Clone, Debug, Serialize)]
+pub struct UsedFont {
+    pub family: String,
+    pub weight: u16,
+    pub italic: bool,
+    pub stretch: f64,
+    /// The file it was read from (and its index in a collection); none for
+    /// a font given as bytes or bundled with Typst.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub file: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub index: Option<u32>,
+    pub pages: Vec<usize>,
+}
+
 #[derive(Clone, Copy, Debug, Serialize)]
 pub struct Size {
     pub w: f64,
@@ -341,6 +357,51 @@ impl Session {
                 }
             })
             .collect()
+    }
+
+    /// The font faces the layout drew with, and where each came from: what
+    /// another engine (the browser's) needs to lay the document out the same.
+    pub fn fonts_used(&self) -> Vec<UsedFont> {
+        fn visit(frame: &typst::layout::Frame, page: usize, out: &mut Vec<(typst::text::Font, usize)>) {
+            for (_, item) in frame.items() {
+                match item {
+                    typst::layout::FrameItem::Group(g) => visit(&g.frame, page, out),
+                    typst::layout::FrameItem::Text(t) => {
+                        let font = t.font.font();
+                        if !out.iter().any(|(f, p)| f == font && *p == page) {
+                            out.push((font.clone(), page));
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        let mut seen = Vec::new();
+        for (i, p) in self.layout.pages().iter().enumerate() {
+            visit(&p.frame, i + 1, &mut seen);
+        }
+        let mut out: Vec<(typst::text::Font, UsedFont)> = Vec::new();
+        for (font, page) in seen {
+            if let Some((_, used)) = out.iter_mut().find(|(f, _)| *f == font) {
+                used.pages.push(page);
+                continue;
+            }
+            let info = font.info();
+            let file = self.fonts.file_of(&font);
+            out.push((
+                font.clone(),
+                UsedFont {
+                    family: info.family.clone(),
+                    weight: info.variant.weight.to_number(),
+                    italic: info.variant.style != typst::text::FontStyle::Normal,
+                    stretch: info.variant.stretch.to_ratio().get() * 100.0,
+                    file: file.as_ref().map(|f| f.0.display().to_string()),
+                    index: file.map(|f| f.1),
+                    pages: vec![page],
+                },
+            ));
+        }
+        out.into_iter().map(|(_, u)| u).collect()
     }
 
     /// One hash per page, equal wherever the engine runs when the pages are

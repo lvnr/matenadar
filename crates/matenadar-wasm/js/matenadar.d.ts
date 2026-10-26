@@ -95,6 +95,18 @@ export interface Patch {
   layout: Op[];
 }
 
+export interface UsedFont {
+  family: string;
+  weight: number;
+  italic: boolean;
+  /** Width in percent (100 is normal). */
+  stretch: number;
+  /** The file it was read from, on the command line; none for a font given as bytes. */
+  file?: string;
+  index?: number;
+  pages: number[];
+}
+
 export interface Opened {
   pages: number;
   problems: string[];
@@ -143,6 +155,7 @@ export interface MatenadarApi {
   rgba(page: number, options?: RenderOptions): Pixels;
   pdf(): Uint8Array;
   fingerprint(): string[];
+  fontsUsed(): UsedFont[];
 
   hit(page: number, x: number, y: number): Hit | null;
   rects(id: string): { page: number; rect: Rect }[];
@@ -190,6 +203,7 @@ export declare class Matenadar implements MatenadarApi {
   rgba(page: number, options?: RenderOptions): Pixels;
   pdf(): Uint8Array;
   fingerprint(): string[];
+  fontsUsed(): UsedFont[];
   hit(page: number, x: number, y: number): Hit | null;
   rects(id: string): { page: number; rect: Rect }[];
   node(id: string): Json;

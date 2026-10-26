@@ -222,6 +222,15 @@ fn diagnostics_after_edits_match_a_full_check() {
 }
 
 #[test]
+fn the_fonts_a_layout_used_are_listed() {
+    let e = editor();
+    let used = e.session().fonts_used();
+    let body = used.iter().find(|f| f.family == "Libertinus Serif" && f.weight == 400 && !f.italic).expect("the body face");
+    assert!(body.pages.contains(&1));
+    assert!(body.file.is_none(), "Typst's own faces have no file");
+}
+
+#[test]
 fn pages_report_their_geometry() {
     let e = editor();
     let pages = e.session().pages();

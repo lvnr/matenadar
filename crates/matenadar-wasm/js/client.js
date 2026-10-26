@@ -11,7 +11,7 @@
 
 const METHODS = [
   "assets", "addFont", "addFile", "open", "fonts", "close",
-  "pages", "spreads", "svg", "png", "rgba", "pdf", "fingerprint",
+  "pages", "spreads", "svg", "png", "rgba", "pdf", "fingerprint", "fontsUsed",
   "hit", "rects", "node", "lines", "locate", "position", "layout", "document",
   "apply", "setWords", "insertText", "deleteText", "insertBlock", "removeBlock",
   "setFields", "setPicture", "setBlock", "moveFrame", "breakBefore", "hideOnPage", "nudge", "undo", "redo",

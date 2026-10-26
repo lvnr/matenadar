@@ -112,6 +112,11 @@ export class Matenadar {
     return this.#call("fingerprint", {});
   }
 
+  /** The faces the layout drew with, and on which pages; `matenadar fonts --used` gives the server's. */
+  fontsUsed() {
+    return this.#call("fonts_used", {});
+  }
+
   // ---- Finding ----
 
   /** What is under a point, or null: `{id, kind, page, rect, offset?, element?, ancestors}`. */

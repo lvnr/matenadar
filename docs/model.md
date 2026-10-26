@@ -408,8 +408,10 @@ epubcheck in the tests.
 
 It lays out exactly as the command line does: the same document, fonts and
 pictures give the same pages, and `fingerprint` (a hash per page) shows it.
-Give the browser every face the book uses (bold and italic included); the
-command line also has Typst's own faces, `--embedded-fonts` adds them to the
+Give the browser every face the book uses (bold and italic included):
+`matenadar fonts --used <doc.json>` lists the faces a layout drew with and
+the file each came from, and `fontsUsed()` gives the browser's. The command
+line also has Typst's own faces; `--embedded-fonts` adds them to the
 WebAssembly build (about 5 MB).
 
 ```js
@@ -434,7 +436,7 @@ diagnostics (checked again only on the pages that changed):
 | | |
 |---|---|
 | Loading | `assets(doc)`, `addFont(bytes)`, `addFile(path, bytes)`, `open(doc, check)`, `fonts()`, `close()` |
-| Pages | `pages()` (trim, bleed per side, recto or verso, master, margins), `spreads()`, `svg(page, {bleed})`, `png(page, {scale, bleed})`, `rgba(page, {scale, bleed})` (for a canvas), `pdf()`, `fingerprint()` |
+| Pages | `pages()` (trim, bleed per side, recto or verso, master, margins), `spreads()`, `svg(page, {bleed})`, `png(page, {scale, bleed})`, `rgba(page, {scale, bleed})` (for a canvas), `pdf()`, `fingerprint()`, `fontsUsed()` |
 | Finding | `hit(page, x, y)` (the innermost node, its extent on the page, the byte offset in its words, the element around it and every ancestor), `rects(id)`, `node(id)`, `lines(id)`, `locate`, `position`, `layout`, `document()` |
 | Words | `setWords(id, runs)`, `insertText(id, offset, text)` and `deleteText(id, start, end)` (marks kept), `insertBlock({after}, block)`, `removeBlock(id)` |
 | Pictures | `setPicture(id, {src, crop, fit, focus, w, h, x, y, opacity})` |
@@ -466,7 +468,7 @@ matenadar layout <doc.json> [--pages 1-3]        # every node on every page, wit
 matenadar locate <doc.json> --page N --x PT --y PT
 matenadar fingerprint <doc.json>                  # a hash per page, as the WebAssembly build gives
 matenadar apply <doc.json> <ops.json> [-o new.json]
-matenadar fonts [--fonts DIR]
+matenadar fonts [--fonts DIR] [--used <doc.json>]  # the families found; with --used, the faces a layout drew with and their files
 matenadar bench <doc.json> [--edits 50]           # layout and edit timings
 matenadar serve                                   # one document kept open, driven by JSON lines on stdin
 ```

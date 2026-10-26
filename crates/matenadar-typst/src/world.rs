@@ -76,6 +76,24 @@ impl Fonts {
         self.font(id)
     }
 
+    /// Where a font came from: its file (and index in a collection), or
+    /// `None` for one given as bytes or bundled with Typst.
+    pub fn file_of(&self, font: &Font) -> Option<(PathBuf, u32)> {
+        let book = self.book();
+        let info = font.info();
+        (0..).map_while(|i| book.info(i).map(|f| (i, f))).filter(|(_, f)| *f == info).find_map(|(i, _)| {
+            let source: &dyn std::any::Any = self.store.source(i)?;
+            #[cfg(not(target_arch = "wasm32"))]
+            if let Some(path) = source.downcast_ref::<typst_kit::fonts::FontPath>()
+                && self.store.font(i).as_ref() == Some(font)
+            {
+                return Some((path.path.clone(), path.index));
+            }
+            let _ = source;
+            None
+        })
+    }
+
     /// Every family name, sorted.
     pub fn families(&self) -> Vec<String> {
         let mut v: Vec<String> = self.book().families().map(|(name, _)| name.to_string()).collect();

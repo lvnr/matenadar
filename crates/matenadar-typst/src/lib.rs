@@ -14,5 +14,5 @@ pub mod world;
 
 pub use check::{CheckOptions, Issue, Severity, check};
 pub use editor::Editor;
-pub use session::{Change, Changes, EngineError, PageInfo, Paths, Session, source_of};
+pub use session::{Change, Changes, EngineError, PageInfo, Paths, Session, UsedFont, source_of};
 pub use world::{Files, Fonts};

@@ -329,14 +329,34 @@ impl<'a> Gen<'a> {
         }
     }
 
-    /// A marker labelled with the node's id, for positions and references.
+    /// A marker labelled with the node's id, for positions and references,
+    /// and what the node's page leaves out (`on_page`).
     pub fn label(&mut self, id: Option<&str>) {
         if let Some(id) = id
             && self.labels
             && label_safe(id)
         {
             self.raw(&format!("#metadata({}) <{id}>", str_lit(id)));
+            if let Some(on) = self.doc.on_page.get(id)
+                && !on.hide.is_empty()
+            {
+                let list: Vec<String> = on.hide.iter().map(|h| str_lit(h)).collect();
+                self.raw(&format!("#metadata(({},)) <mt-hide>", list.join(", ")));
+            }
         }
+    }
+
+    /// The names `on_page.hide` knows a master element by (its id and, for
+    /// text, its style), when some node's page hides one of them.
+    fn hide_names(&self, e: &matenadar_model::Element) -> Option<Vec<String>> {
+        let mut names: Vec<String> = e.id().map(str::to_string).into_iter().collect();
+        if let matenadar_model::Element::Text(t) = e
+            && let Some(st) = &t.style
+        {
+            names.push(st.clone());
+        }
+        let hidden = self.doc.on_page.values().any(|on| on.hide.iter().any(|h| h == "all" || names.contains(h)));
+        hidden.then_some(names)
     }
 
     pub fn text_segment(&mut self, node: &str, text_start: usize, escaped: &str, escapes: Vec<usize>) {
@@ -546,7 +566,15 @@ impl<'a> Gen<'a> {
             let labels = std::mem::replace(&mut self.labels, false);
             self.raw("[");
             for e in list {
-                self.element(e, false);
+                if let Some(names) = self.hide_names(e) {
+                    let at = self.out.len();
+                    self.element(e, false);
+                    let body = self.out.split_off(at);
+                    let names: String = names.iter().map(|n| format!("{}, ", str_lit(n))).collect();
+                    self.raw(&format!("#context if not mt-hidden(({names})) [{body}]\n"));
+                } else {
+                    self.element(e, false);
+                }
             }
             self.raw("]");
             self.labels = labels;

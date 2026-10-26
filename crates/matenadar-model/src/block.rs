@@ -60,7 +60,8 @@ impl Block {
             Block::Toc(b) => b.id.as_deref(),
             Block::Keep(b) => b.id.as_deref(),
             Block::Columns(b) => b.id.as_deref(),
-            Block::PageBreak(_) | Block::Space(_) | Block::ColumnBreak(_) => None,
+            Block::PageBreak(b) => b.id.as_deref(),
+            Block::Space(_) | Block::ColumnBreak(_) => None,
         }
     }
 
@@ -154,6 +155,12 @@ pub struct Figure {
     pub h: Option<Length>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fit: Option<String>,
+    /// Only this part of the picture (see the image element's `crop`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub crop: Option<crate::element::Crop>,
+    /// For `cover`: which part stays in view, as fractions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub focus: Option<(f64, f64)>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub align: Option<Align>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -432,9 +439,14 @@ pub struct UseBlock {
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct PageBreak {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
     /// `"recto"` or `"verso"`: the next page on that side.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub to: Option<String>,
+    /// No break when the page has nothing on it yet (default false).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub weak: Option<bool>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

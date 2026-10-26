@@ -79,10 +79,22 @@ impl Gen<'_> {
                     }
                     _ => None,
                 };
-                let mut body = match (focused, shown) {
-                    (Some(f), _) => f,
-                    (None, Some(p)) => format!("image({}, {})", str_lit(&p), args.join(", ")),
-                    (None, None) => format!(
+                let cropped = match (i.crop, &shown) {
+                    (Some(c), Some(p)) => Some(crop_call(
+                        p,
+                        &c,
+                        place.w.map(|w| w.typst()),
+                        place.h.map(|h| h.typst()),
+                        i.fit.as_deref().unwrap_or("cover"),
+                        i.focus,
+                    )),
+                    _ => None,
+                };
+                let mut body = match (cropped, focused, shown) {
+                    (Some(c), _, _) => c,
+                    (None, Some(f), _) => f,
+                    (None, None, Some(p)) => format!("image({}, {})", str_lit(&p), args.join(", ")),
+                    (None, None, None) => format!(
                         "rect({}, fill: luma(88%), stroke: 0.5pt + red)",
                         args.iter().filter(|a| !a.starts_with("fit")).cloned().collect::<Vec<_>>().join(", ")
                     ),
@@ -837,4 +849,22 @@ fn origin_align(word: &str) -> &'static str {
         "bottom-right" => "bottom + right",
         _ => "center + horizon",
     }
+}
+
+/// A picture cut to `crop` and fitted into its box (`mt-crop` in the prelude).
+pub(crate) fn crop_call(path: &str, c: &matenadar_model::element::Crop, w: Option<String>, h: Option<String>, fit: &str, focus: Option<(f64, f64)>) -> String {
+    let (fx, fy) = focus.unwrap_or((0.5, 0.5));
+    format!(
+        "mt-crop({}, ({}, {}, {}, {}), width: {}, height: {}, fit: {}, focus: ({}, {}))",
+        str_lit(path),
+        num(c.x),
+        num(c.y),
+        num(c.w),
+        num(c.h),
+        w.unwrap_or_else(|| "auto".into()),
+        h.unwrap_or_else(|| "auto".into()),
+        str_lit(fit),
+        num(fx.clamp(0.0, 1.0)),
+        num(fy.clamp(0.0, 1.0))
+    )
 }

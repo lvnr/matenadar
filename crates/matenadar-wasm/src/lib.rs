@@ -16,19 +16,20 @@
 //!   `matenadar serve`. Results are JSON, except `svg` (text) and `png`
 //!   and `pdf` (bytes).
 //!
-//! Methods:
-//! - `open`: `{"doc": {…}}`. Lays the document out.
-//! - `apply`: `{"ops": [op…]}`. Returns the changes, with inverses and changed pages.
-//! - `svg`: `{"page": 3, "bleed": false}`
-//! - `png`: `{"page": 3, "dpi": 100, "bleed": false}`
-//! - `pdf`
-//! - `check`: `{"safe": "0.25in", "min_ppi": 300}`
-//! - `layout`: `{"pages": [1, 2]}`
-//! - `locate`: `{"page", "x", "y"}`
-//! - `position`: `{"id"}`
-//! - `document`: the current document
-//! - `fonts`: the font families given
-//! - `close`
+//! Methods (`js/matenadar.js` names them in camelCase):
+//!
+//! - Loading: `assets` `{doc}` (the files to fetch), `open` `{doc, check}`,
+//!   `close`, `fonts`.
+//! - Pages: `pages`, `spreads`, `svg` `{page, bleed}`, `png` `{page, scale
+//!   | dpi, bleed}`, `rgba` `{page, scale, bleed}` (8 bytes of width and
+//!   height, little-endian, then the pixels), `pdf`, `fingerprint`.
+//! - Finding: `hit` `{page, x, y}`, `rects` `{id}`, `node` `{id}`, `lines`
+//!   `{id}`, `locate`, `position` `{id}`, `layout` `{pages}`, `document`.
+//! - Editing, each one step to undo: `apply` `{ops}`, `set_words` `{id,
+//!   content}`, `set_fields` `{id, fields, style}`, `break_before` `{id,
+//!   to}`, `hide_on_page` `{id, hide}`, `nudge` `{id, lines}`; then `undo`,
+//!   `redo`.
+//! - Results: `diagnostics`, `check` `{safe, min_ppi}`, `patch`, `rebase`.
 
 use std::alloc::Layout;
 use std::cell::RefCell;
@@ -36,7 +37,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use matenadar_model::{Document, Op};
-use matenadar_typst::{CheckOptions, Files, Fonts, Paths, Session, check, inspect};
+use matenadar_typst::{CheckOptions, Editor, Files, Fonts, Paths, Session, check, inspect};
 use serde_json::{Value, json};
 use typst::foundations::Bytes;
 
@@ -46,7 +47,7 @@ struct Engine {
     /// The font set, built when a document opens; a new font drops it.
     built: Option<Arc<Fonts>>,
     files: Files,
-    session: Option<Session>,
+    editor: Option<Editor>,
     result: Vec<u8>,
 }
 
@@ -162,20 +163,26 @@ impl Engine {
     fn call(&mut self, method: &str, p: &Value) -> Result<Out> {
         let str_of = |k: &str| p.get(k).and_then(Value::as_str);
         let num_of = |k: &str| p.get(k).and_then(Value::as_f64).ok_or_else(|| format!("{method} needs {k}"));
+        let id_of = || str_of("id").ok_or_else(|| format!("{method} needs id"));
         let bleed = p.get("bleed").and_then(Value::as_bool).unwrap_or(false);
         match method {
+            "assets" => {
+                let doc = Document::from_json(&p.get("doc").ok_or("assets needs doc")?.to_string())?;
+                return Ok(Out::Json(json!({"fonts": doc.fonts, "files": doc.assets()})));
+            }
             "open" => {
-                let doc = p.get("doc").ok_or("open needs doc")?;
-                let doc = Document::from_json(&doc.to_string())?;
+                let doc = Document::from_json(&p.get("doc").ok_or("open needs doc")?.to_string())?;
                 let problems = matenadar_model::validate(&doc);
                 if !problems.is_empty() {
                     return Err(format!("the document has problems: {}", json!(problems)));
                 }
+                let opts = check_options(p.get("check").unwrap_or(&Value::Null))?;
                 let fonts = self.built.get_or_insert_with(|| Arc::new(Fonts::from_data(self.fonts.iter().cloned()))).clone();
                 let paths = Paths { root: PathBuf::new(), font_dirs: vec![], system_fonts: false };
                 let s = Session::with_files(doc, paths, fonts, self.files.clone()).map_err(|e| e.to_string())?;
-                let out = json!({"pages": s.page_count(), "problems": s.problems(), "warnings": s.warnings()});
-                self.session = Some(s);
+                let editor = Editor::new(s, opts);
+                let out = json!({"pages": editor.session().page_count(), "problems": editor.session().problems(), "warnings": editor.session().warnings(), "diagnostics": editor.diagnostics()});
+                self.editor = Some(editor);
                 return Ok(Out::Json(out));
             }
             "fonts" => {
@@ -183,53 +190,114 @@ impl Engine {
                 return Ok(Out::Json(json!(fonts.families())));
             }
             "close" => {
-                self.session = None;
+                self.editor = None;
                 return Ok(Out::Json(json!(true)));
             }
             _ => {}
         }
-        let s = self.session.as_mut().ok_or("open a document first")?;
+        let e = self.editor.as_mut().ok_or("open a document first")?;
         let page = || num_of("page").map(|n| n as usize);
+        let scale = || -> Result<f32> {
+            match (p.get("scale").and_then(Value::as_f64), p.get("dpi").and_then(Value::as_f64)) {
+                (Some(s), _) => Ok(s as f32),
+                (None, Some(d)) => Ok((d / 72.0) as f32),
+                _ => Ok(100.0 / 72.0),
+            }
+        };
+        let edited = |r: std::result::Result<matenadar_typst::editor::Edited, matenadar_typst::EngineError>| r.map(|x| Out::Json(json!(x))).map_err(|e| e.to_string());
         Ok(match method {
-            "apply" => {
-                let ops: Vec<Op> = serde_json::from_value(p.get("ops").cloned().unwrap_or(json!([]))).map_err(|e| e.to_string())?;
-                let mut changes = Vec::new();
-                for op in &ops {
-                    changes.push(s.apply(op).map_err(|e| e.to_string())?);
+            "pages" => Out::Json(json!(e.session().pages())),
+            "spreads" => {
+                let n = e.session().page_count();
+                let mut spreads = vec![json!([1])];
+                let mut p = 2;
+                while p <= n {
+                    spreads.push(if p < n { json!([p, p + 1]) } else { json!([p]) });
+                    p += 2;
                 }
-                Out::Json(json!(changes))
+                Out::Json(json!(spreads))
             }
-            "svg" => Out::Text(s.svg(page()?, bleed).ok_or("no such page")?),
+            "svg" => Out::Text(e.session().svg(page()?, bleed).ok_or("no such page")?),
             "png" => {
-                let dpi = p.get("dpi").and_then(Value::as_f64).unwrap_or(100.0) as f32;
-                Out::Bytes(s.png(page()?, dpi, bleed).ok_or("no such page")?)
+                let dpi = scale()? * 72.0;
+                Out::Bytes(e.session().png(page()?, dpi, bleed).ok_or("no such page")?)
             }
-            "pdf" => Out::Bytes(s.pdf().map_err(|e| e.to_string())?),
-            "check" => {
-                let mut o = CheckOptions::default();
-                if let Some(safe) = str_of("safe") {
-                    o.safe_pt = matenadar_model::Length::parse(safe)?.resolve(11.0, 0.0);
-                }
-                if let Some(ppi) = p.get("min_ppi").and_then(Value::as_f64) {
-                    o.min_ppi = ppi;
-                }
-                Out::Json(json!(check(s, &o)))
+            "rgba" => {
+                let (w, h, data) = e.session().rgba(page()?, scale()?, bleed).ok_or("no such page")?;
+                let mut out = Vec::with_capacity(8 + data.len());
+                out.extend_from_slice(&w.to_le_bytes());
+                out.extend_from_slice(&h.to_le_bytes());
+                out.extend_from_slice(&data);
+                Out::Bytes(out)
             }
-            "layout" => {
-                let wanted: Option<Vec<usize>> = p.get("pages").and_then(|v| serde_json::from_value(v.clone()).ok());
-                let report: Vec<_> = inspect::report(s).into_iter().filter(|r| wanted.as_ref().is_none_or(|w| w.contains(&r.page))).collect();
-                Out::Json(json!(report))
-            }
-            "locate" => Out::Json(match s.locate(page()?, num_of("x")?, num_of("y")?) {
+            "pdf" => Out::Bytes(e.session().pdf().map_err(|e| e.to_string())?),
+            "fingerprint" => Out::Json(json!(e.session().fingerprints())),
+            "hit" => Out::Json(json!(e.hit(page()?, num_of("x")?, num_of("y")?))),
+            "rects" => Out::Json(json!(e.rects(id_of()?))),
+            "node" => Out::Json(e.node(id_of()?).unwrap_or(Value::Null)),
+            "lines" => Out::Json(json!(e.lines(id_of()?))),
+            "locate" => Out::Json(match e.session().locate(page()?, num_of("x")?, num_of("y")?) {
                 Some((node, offset)) => json!({"node": node, "offset": offset}),
                 None => Value::Null,
             }),
-            "position" => Out::Json(match s.position(str_of("id").ok_or("position needs id")?) {
+            "position" => Out::Json(match e.session().position(id_of()?) {
                 Some((page, x, y)) => json!({"page": page, "x": x, "y": y}),
                 None => Value::Null,
             }),
-            "document" => Out::Json(json!(s.document())),
+            "layout" => {
+                let wanted: Option<Vec<usize>> = p.get("pages").and_then(|v| serde_json::from_value(v.clone()).ok());
+                let report: Vec<_> = inspect::report(e.session()).into_iter().filter(|r| wanted.as_ref().is_none_or(|w| w.contains(&r.page))).collect();
+                Out::Json(json!(report))
+            }
+            "document" => Out::Json(json!(e.document())),
+            "apply" => {
+                let ops: Vec<Op> = serde_json::from_value(p.get("ops").cloned().unwrap_or(json!([]))).map_err(|e| e.to_string())?;
+                edited(e.edit(ops))?
+            }
+            "set_words" => edited(e.set_words(id_of()?, p.get("content").cloned().ok_or("set_words needs content")?))?,
+            "set_fields" => {
+                let fields = p.get("fields").and_then(Value::as_object).ok_or("set_fields needs fields")?;
+                edited(e.set_fields(id_of()?, fields, p.get("style").and_then(Value::as_bool).unwrap_or(false)))?
+            }
+            "break_before" => edited(e.break_before(id_of()?, str_of("to")))?,
+            "hide_on_page" => {
+                let hide: Vec<String> = serde_json::from_value(p.get("hide").cloned().unwrap_or(json!([]))).map_err(|e| e.to_string())?;
+                edited(e.hide_on_page(id_of()?, &hide))?
+            }
+            "nudge" => {
+                let lines = p.get("lines").and_then(Value::as_i64).ok_or("nudge needs lines")?;
+                Out::Json(json!(e.nudge(id_of()?, lines as i32).map_err(|e| e.to_string())?))
+            }
+            "undo" => edited(e.undo())?,
+            "redo" => edited(e.redo())?,
+            "diagnostics" => Out::Json(json!(e.diagnostics())),
+            "check" => Out::Json(json!(check(e.session(), &check_options(p)?))),
+            "patch" => Out::Json(json!(e.patch())),
+            "rebase" => {
+                e.rebase();
+                Out::Json(json!(true))
+            }
             other => return Err(format!("unknown method \"{other}\"")),
         })
     }
+}
+
+/// Check settings: `{"safe": "0.25in", "gutter": "0.5in", "min_ppi": 300}`.
+fn check_options(p: &Value) -> Result<CheckOptions> {
+    let mut o = CheckOptions::default();
+    let len = |k: &str| -> Result<Option<f64>> {
+        match p.get(k) {
+            Some(Value::Number(n)) => Ok(n.as_f64()),
+            Some(Value::String(s)) => Ok(Some(matenadar_model::Length::parse(s)?.resolve(11.0, 0.0))),
+            _ => Ok(None),
+        }
+    };
+    if let Some(v) = len("safe")? {
+        o.safe_pt = v;
+    }
+    o.gutter_pt = len("gutter")?;
+    if let Some(ppi) = p.get("min_ppi").and_then(Value::as_f64) {
+        o.min_ppi = ppi;
+    }
+    Ok(o)
 }

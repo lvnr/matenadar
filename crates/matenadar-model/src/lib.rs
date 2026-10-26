@@ -47,6 +47,21 @@ pub struct Document {
     #[serde(default)]
     pub design: Design,
     pub content: Vec<Item>,
+    /// Settings for the page a node lands on, keyed by the node's id. They
+    /// follow the node when the text reflows; a key whose node is gone does
+    /// nothing.
+    #[serde(default, skip_serializing_if = "IndexMap::is_empty")]
+    pub on_page: IndexMap<String, OnPage>,
+}
+
+/// What changes on the page where a node lands.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct OnPage {
+    /// Master elements not drawn there: by id, by the style of a text
+    /// element (`"folio"`, `"running"`), or `"all"`.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub hide: Vec<String>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -158,5 +173,29 @@ impl Document {
 
     pub fn to_json(&self) -> String {
         serde_json::to_string_pretty(self).expect("documents serialize")
+    }
+
+    /// The files the document draws (pictures and drawings), as it names
+    /// them under the asset root, each once.
+    pub fn assets(&self) -> Vec<String> {
+        fn scan(v: &serde_json::Value, out: &mut indexmap::IndexSet<String>) {
+            match v {
+                serde_json::Value::Object(map) => {
+                    for (k, child) in map {
+                        match (k.as_str(), child) {
+                            ("src" | "image", serde_json::Value::String(path)) if !path.is_empty() => {
+                                out.insert(path.trim_start_matches('/').to_string());
+                            }
+                            _ => scan(child, out),
+                        }
+                    }
+                }
+                serde_json::Value::Array(items) => items.iter().for_each(|i| scan(i, out)),
+                _ => {}
+            }
+        }
+        let mut out = indexmap::IndexSet::new();
+        scan(&serde_json::to_value(self).unwrap_or_default(), &mut out);
+        out.into_iter().collect()
     }
 }

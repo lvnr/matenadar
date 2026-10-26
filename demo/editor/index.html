@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matenadar page editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bar">
+    <strong class="brand">Matenadar</strong>
+    <select id="sample" aria-label="Book"></select>
+    <div class="group">
+      <button id="undo" title="Undo (⌘Z)" disabled>Undo</button>
+      <button id="redo" title="Redo (⇧⌘Z)" disabled>Redo</button>
+    </div>
+    <div class="group">
+      <label>Zoom <select id="zoom">
+        <option value="0.75">75%</option>
+        <option value="1" selected>100%</option>
+        <option value="1.5">150%</option>
+        <option value="2">200%</option>
+      </select></label>
+      <label><input type="checkbox" id="guides" checked> Guides</label>
+      <label><input type="checkbox" id="bleed" checked> Bleed</label>
+    </div>
+    <button id="pdf">PDF</button>
+    <span id="status" class="status">Loading the engine…</span>
+  </header>
+  <main>
+    <section id="pages" class="pages" aria-label="Pages"></section>
+    <aside class="side">
+      <section id="inspector" class="panel">
+        <h2>Selection</h2>
+        <p class="hint">Click anything on a page.</p>
+      </section>
+      <section class="panel">
+        <h2>Diagnostics <span id="count" class="count"></span></h2>
+        <ol id="issues" class="issues"></ol>
+      </section>
+      <section class="panel">
+        <h2>Patch</h2>
+        <p class="hint">What Aldus saves: words go to the chapter, layout to <code>design/interior.json</code>.</p>
+        <pre id="patch" class="patch">{}</pre>
+      </section>
+    </aside>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

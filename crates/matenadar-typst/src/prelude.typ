@@ -27,6 +27,43 @@
 
 #let mt-is-recto() = calc.odd(here().page())
 
+// Whether the page leaves out a master element known by `names` (its id,
+// its style): a node on the page asked (`on_page.hide`).
+#let mt-hidden(names) = {
+  let p = here().page()
+  query(<mt-hide>).any(m => m.location().page() == p and m.value.any(h => h == "all" or h in names))
+}
+
+// A length given relative to a container, made absolute.
+#let mt-abs(v, full) = if type(v) == ratio { v * full } else if type(v) == relative { v.ratio * full + v.length.to-absolute() } else { v.to-absolute() }
+
+// A picture cut to `crop` (x, y, w, h as fractions of the picture), fitted
+// into its box as if that part were the whole: `cover` fills the box (the
+// window on the part chosen by `focus`), `contain` shows all of it,
+// `stretch` distorts it to the box. Without a width or height, the box
+// takes the part's proportions.
+#let mt-crop(src, crop, width: auto, height: auto, fit: "cover", focus: (0.5, 0.5)) = layout(size => {
+  let nat = measure(image(src))
+  let (cx, cy, cw, ch) = crop
+  let (pw, ph) = (nat.width * cw, nat.height * ch)
+  let w = if width == auto { none } else { mt-abs(width, size.width) }
+  let h = if height == auto { none } else { mt-abs(height, size.height) }
+  if w == none and h == none { w = size.width }
+  if w == none { w = h * (pw / ph) }
+  if h == none { h = w * (ph / pw) }
+  let (sx, sy) = if fit == "stretch" { (w / pw, h / ph) } else {
+    let s = if fit == "contain" { calc.min(w / pw, h / ph) } else { calc.max(w / pw, h / ph) }
+    (s, s)
+  }
+  let (vw, vh) = (pw * sx, ph * sy)
+  let (ww, wh) = (calc.min(vw, w), calc.min(vh, h))
+  box(width: w, height: h, place(top + left, dx: (w - ww) / 2, dy: (h - wh) / 2,
+    box(width: ww, height: wh, clip: true, place(top + left,
+      dx: -nat.width * cx * sx - (vw - ww) * focus.at(0),
+      dy: -nat.height * cy * sy - (vh - wh) * focus.at(1),
+      image(src, width: nat.width * sx, height: nat.height * sy, fit: "stretch")))))
+})
+
 // A paragraph at the narrowest width that keeps its number of lines.
 #let mt-balanced(al, body) = layout(size => {
   let w = size.width

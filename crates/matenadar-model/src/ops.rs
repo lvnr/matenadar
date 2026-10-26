@@ -28,13 +28,19 @@ pub enum Op {
         path: String,
     },
     /// Inserts `value` into the array `field` of the node (at the end
-    /// without an `index`).
+    /// without an `index`), or next to a sibling: `before` or `after` an id,
+    /// which keeps its place when the list around it changes.
     Insert {
         #[serde(flatten)]
         node: Target,
+        #[serde(default, skip_serializing_if = "String::is_empty")]
         field: String,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         index: Option<usize>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        before: Option<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        after: Option<String>,
         value: Value,
     },
     /// Removes the node from the array that holds it.
@@ -120,10 +126,12 @@ pub fn apply_value(root: &mut Value, op: &Op) -> Result<Op, OpError> {
             let base = resolve(root, node)?;
             let full = format!("{base}{path}");
             let old = root.pointer(&full).cloned();
+            // Objects the setting makes on the way go again on undo.
+            let made = if old.is_none() { first_missing(root, &base, path) } else { path.clone() };
             set_pointer(root, &full, value.clone())?;
             Ok(match old {
                 Some(v) => Op::Set { node: Target::at(base), path: path.clone(), value: v },
-                None => Op::Unset { node: Target::at(base), path: path.clone() },
+                None => Op::Unset { node: Target::at(base), path: made },
             })
         }
         Op::Unset { node, path } => {
@@ -134,7 +142,16 @@ pub fn apply_value(root: &mut Value, op: &Op) -> Result<Op, OpError> {
             let old = obj.shift_remove(&key).ok_or_else(|| OpError(format!("nothing at {full}")))?;
             Ok(Op::Set { node: Target::at(base), path: path.clone(), value: old })
         }
-        Op::Insert { node, field, index, value } => {
+        Op::Insert { before, after, value, .. } if before.is_some() || after.is_some() => {
+            let sibling = before.as_deref().or(after.as_deref()).expect("checked");
+            let ptr = find_id(root, sibling).ok_or_else(|| OpError(format!("no node with id \"{sibling}\"")))?;
+            let (arr_ptr, key) = split(&ptr)?;
+            let i: usize = key.parse().map_err(|_| OpError(format!("\"{sibling}\" is not in a list")))?;
+            let (holder, field) = split(&arr_ptr)?;
+            let index = if after.is_some() { i + 1 } else { i };
+            apply_value(root, &Op::Insert { node: Target::at(holder), field, index: Some(index), before: None, after: None, value: value.clone() })
+        }
+        Op::Insert { node, field, index, value, .. } => {
             let base = resolve(root, node)?;
             let arr_ptr = format!("{base}/{}", escape(field));
             if root.pointer(&arr_ptr).is_none() {
@@ -164,7 +181,7 @@ pub fn apply_value(root: &mut Value, op: &Op) -> Result<Op, OpError> {
             }
             let old = arr.remove(i);
             let (holder, field) = split(&parent)?;
-            Ok(Op::Insert { node: Target::at(holder), field: unescape(&field), index: Some(i), value: old })
+            Ok(Op::Insert { node: Target::at(holder), field: unescape(&field), index: Some(i), before: None, after: None, value: old })
         }
         Op::Move { node, to, field, index } => {
             let from = resolve(root, node)?;
@@ -177,7 +194,7 @@ pub fn apply_value(root: &mut Value, op: &Op) -> Result<Op, OpError> {
             // Removing may shift the target's pointer; find it again by id when possible.
             let target = resolve(root, to).or_else(|_| Ok::<_, OpError>(target_before))?;
             let Op::Insert { node: old_holder, field: old_field, index: old_index, .. } = undo_remove else { unreachable!() };
-            let undo_insert = apply_value(root, &Op::Insert { node: Target::at(target), field: field.clone(), index: *index, value: Value::Null })
+            let undo_insert = apply_value(root, &Op::Insert { node: Target::at(target), field: field.clone(), index: *index, before: None, after: None, value: Value::Null })
                 .and_then(|inv| {
                     // Put the real value where the placeholder went.
                     if let Op::Remove { node: Target { at: Some(p), .. } } = &inv {
@@ -213,6 +230,19 @@ pub fn apply_value(root: &mut Value, op: &Op) -> Result<Op, OpError> {
             }
         }
     }
+}
+
+/// The shortest part of `path` (under `base`) that is not there yet.
+fn first_missing(root: &Value, base: &str, path: &str) -> String {
+    let mut at = String::new();
+    for part in path.split('/').skip(1) {
+        at.push('/');
+        at.push_str(part);
+        if root.pointer(&format!("{base}{at}")).is_none() {
+            return at;
+        }
+    }
+    path.to_string()
 }
 
 fn resolve(root: &Value, t: &Target) -> Result<String, OpError> {
@@ -413,7 +443,8 @@ mod tests {
         roundtrip(Op::Set { node: Target::id("p2"), path: "/style".into(), value: json!("body") });
         roundtrip(Op::Set { node: Target::at("/design"), path: "/colors/ink".into(), value: json!("#222") });
         roundtrip(Op::Unset { node: Target::id("p2"), path: "/text".into() });
-        roundtrip(Op::Insert { node: Target::id("s1"), field: "flow".into(), index: Some(1), value: json!({"type": "p", "id": "p9", "text": "New"}) });
+        roundtrip(Op::Insert { node: Target::id("s1"), field: "flow".into(), index: Some(1), before: None, after: None, value: json!({"type": "p", "id": "p9", "text": "New"}) });
+        roundtrip(serde_json::from_value(json!({"op": "insert", "after": "p1", "value": {"type": "page-break", "id": "pb"}})).unwrap());
         roundtrip(Op::Remove { node: Target::id("p1") });
         roundtrip(Op::Move { node: Target::id("p2"), to: Target::id("s1"), field: "flow".into(), index: Some(0) });
         roundtrip(Op::InsertText { node: Target::id("p1"), offset: 6, text: "very ".into() });
@@ -435,8 +466,30 @@ mod tests {
         let before = d.clone();
         assert!(d.apply(&Op::Remove { node: Target::id("ghost") }).is_err());
         assert!(d.apply(&Op::Set { node: Target::id("p1"), path: "/type".into(), value: json!("nonsense") }).is_err());
-        assert!(d.apply(&Op::Insert { node: Target::id("s1"), field: "flow".into(), index: None, value: json!({"type": "p", "id": "p1"}) }).is_err());
+        assert!(d.apply(&Op::Insert { node: Target::id("s1"), field: "flow".into(), index: None, before: None, after: None, value: json!({"type": "p", "id": "p1"}) }).is_err());
         assert_eq!(d, before);
+    }
+
+    #[test]
+    fn undoing_a_setting_removes_what_it_made() {
+        let mut d = doc();
+        let before = d.clone();
+        let inv = d.apply(&Op::Set { node: Target::id("p2"), path: "/set/space_before".into(), value: json!("6pt") }).unwrap();
+        assert_eq!(inv, Op::Unset { node: Target::at("/content/0/flow/1"), path: "/set".into() });
+        d.apply(&inv).unwrap();
+        assert_eq!(d, before);
+    }
+
+    #[test]
+    fn inserts_next_to_a_sibling() {
+        let mut d = doc();
+        let op: Op = serde_json::from_value(json!({"op": "insert", "before": "p2", "value": {"type": "page-break", "id": "pb"}})).unwrap();
+        d.apply(&op).unwrap();
+        let v = serde_json::to_value(&d).unwrap();
+        assert_eq!(v.pointer("/content/0/flow/1/id").unwrap(), "pb");
+        assert_eq!(v.pointer("/content/0/flow/2/id").unwrap(), "p2");
+        let text = serde_json::to_string(&op).unwrap();
+        assert_eq!(text, r#"{"op":"insert","before":"p2","value":{"type":"page-break","id":"pb"}}"#);
     }
 
     #[test]

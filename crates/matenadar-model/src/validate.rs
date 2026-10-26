@@ -100,6 +100,12 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
         }
     }
 
+    for (id, on) in &doc.on_page {
+        if on.hide.iter().any(|h| h.trim().is_empty()) {
+            report(&format!("on_page.{id}.hide"), "hide lists the ids of master elements".into());
+        }
+    }
+
     // The content.
     let mut ids: HashMap<String, String> = HashMap::new();
     let mut seen = |id: &str, path: &str, report: &mut dyn FnMut(&str, String)| {
@@ -153,6 +159,14 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
             }
             if let Block::Box(x) = b {
                 check_word(&format!("{path}.stroke_align"), &x.stroke_align, &STROKE_ALIGNS, &mut report);
+            }
+            if let Block::Figure(f) = b
+                && let Some(Err(e)) = f.crop.map(|c| c.check())
+            {
+                report(&format!("{path}.crop"), e);
+            }
+            if let Block::PageBreak(x) = b {
+                check_word(&format!("{path}.to"), &x.to, &["recto", "verso", "odd", "even"], &mut report);
             }
             if let Block::List(l) = b {
                 if let Some(sp) = &l.marker_style
@@ -293,6 +307,9 @@ fn check_element(
             }
             if i.src.is_empty() {
                 report(&format!("{path}.src"), "an image needs a src".into());
+            }
+            if let Some(Err(e)) = i.crop.map(|c| c.check()) {
+                report(&format!("{path}.crop"), e);
             }
         }
         Element::Rect(s) | Element::Ellipse(s) => {

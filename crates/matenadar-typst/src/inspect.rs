@@ -66,6 +66,32 @@ pub fn items(s: &Session) -> Vec<Item> {
     out
 }
 
+/// The items on some pages (1-based; pages past the end are skipped).
+pub fn items_on(s: &Session, pages: impl IntoIterator<Item = usize>) -> Vec<Item> {
+    let mut out = Vec::new();
+    let all = s.layout().pages();
+    for page in pages {
+        if let Some(p) = page.checked_sub(1).and_then(|i| all.get(i)) {
+            walk(s, &p.frame, Transform::identity(), page, &mut out);
+        }
+    }
+    out
+}
+
+impl Rect {
+    pub fn contains(&self, x: f64, y: f64, slop: f64) -> bool {
+        x >= self.x0 - slop && x <= self.x1 + slop && y >= self.y0 - slop && y <= self.y1 + slop
+    }
+
+    pub fn area(&self) -> f64 {
+        (self.x1 - self.x0).max(0.0) * (self.y1 - self.y0).max(0.0)
+    }
+
+    pub fn join(self, o: Rect) -> Rect {
+        self.union(o)
+    }
+}
+
 fn node_of(s: &Session, span: Span) -> Option<(String, &'static str)> {
     let source = s.world().main_source();
     let node = source.find(span)?;

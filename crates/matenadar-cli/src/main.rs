@@ -22,6 +22,7 @@ Usage:
   matenadar validate <doc.json>
   matenadar layout <doc.json> [--pages 1-3]
   matenadar locate <doc.json> --page N --x PT --y PT
+  matenadar fingerprint <doc.json>      (a hash per page, the same as the WebAssembly build's)
   matenadar apply <doc.json> <ops.json> [-o new.json]
   matenadar fonts
   matenadar bench <doc.json> [--edits 50]
@@ -228,6 +229,11 @@ fn run() -> Result<ExitCode> {
             let wanted = pages(args.get("--pages"), s.page_count())?;
             let report: Vec<_> = inspect::report(&s).into_iter().filter(|p| wanted.contains(&p.page)).collect();
             println!("{}", serde_json::to_string_pretty(&report)?);
+            Ok(ExitCode::SUCCESS)
+        }
+        "fingerprint" => {
+            let s = session(&args)?;
+            println!("{}", serde_json::json!({ "pages": s.page_count(), "fingerprints": s.fingerprints() }));
             Ok(ExitCode::SUCCESS)
         }
         "locate" => {

@@ -135,6 +135,14 @@ impl Gen<'_> {
                 }
                 args.push(format!("fit: {}", str_lit(f.fit.as_deref().unwrap_or("contain"))));
                 let img = match self.asset(&f.src) {
+                    Some(p) if f.crop.is_some() || f.focus.is_some() => super::elements::crop_call(
+                        &p,
+                        &f.crop.unwrap_or(matenadar_model::element::Crop { x: 0.0, y: 0.0, w: 1.0, h: 1.0 }),
+                        Some(f.w.map(|w| w.typst()).unwrap_or_else(|| "100%".into())),
+                        f.h.map(|h| h.typst()),
+                        f.fit.as_deref().unwrap_or("contain"),
+                        f.focus,
+                    ),
                     Some(p) => format!("image({}, {})", str_lit(&p), args.join(", ")),
                     None => format!("rect({}, fill: luma(85%))", args.iter().filter(|a| !a.starts_with("fit")).cloned().collect::<Vec<_>>().join(", ")),
                 };
@@ -388,11 +396,16 @@ impl Gen<'_> {
                     _ => self.problem(format!("component \"{}\" is missing or nested too deeply", u.component)),
                 }
             }
-            Block::PageBreak(p) => match p.to.as_deref() {
-                Some("recto") | Some("odd") => self.raw("#pagebreak(to: \"odd\")\n"),
-                Some("verso") | Some("even") => self.raw("#pagebreak(to: \"even\")\n"),
-                _ => self.raw("#pagebreak()\n"),
-            },
+            Block::PageBreak(p) => {
+                let weak = if p.weak == Some(true) { "weak: true" } else { "" };
+                let to = match p.to.as_deref() {
+                    Some("recto") | Some("odd") => "to: \"odd\"",
+                    Some("verso") | Some("even") => "to: \"even\"",
+                    _ => "",
+                };
+                let args: Vec<&str> = [weak, to].into_iter().filter(|a| !a.is_empty()).collect();
+                self.raw(&format!("#pagebreak({})\n", args.join(", ")));
+            }
             Block::Space(s) => self.raw(&format!("#v({}, weak: {})\n", track(&s.h), s.weak.unwrap_or(true))),
             Block::ColumnBreak(_) => self.raw("#colbreak()\n"),
             Block::Columns(c) => {

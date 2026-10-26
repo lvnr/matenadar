@@ -6,7 +6,10 @@ out with [Typst](https://typst.app) and renders it to PDF, PNG or SVG. It can
 also say what landed where, check pages the way a printer or KDP's previewer
 would, and apply edits as operations that can be undone.
 
-It makes EPUB 3 from the same model, and runs in the browser as WebAssembly.
+It makes EPUB 3 from the same model, and runs in the browser as WebAssembly,
+with a page editor's API: find what is under the pointer, change words,
+pictures, spacing and breaks, undo, and keep the edits as a patch that the
+command line replays to the same pages.
 
 It is the engine behind Aldus's typesetting, and Imprimo's successor. The plan
 it grew from is `~/projects/imprimo/docs/plans/2026-10-25-imprimo-v1.md`; the
@@ -36,7 +39,8 @@ NEO-related parts and the imports were dropped for now.
 crates/matenadar-model   the document model, validation, components, operations (no Typst)
 crates/matenadar-typst   generator, Typst world, session, inspection, checks
 crates/matenadar-epub    EPUB 3, reflowable or one picture per page
-crates/matenadar-wasm    the engine as WebAssembly, with a JavaScript wrapper
+crates/matenadar-wasm    the engine as WebAssembly: the page editor's API, a worker and a client
+demo/editor/             a page editor on the samples, on the WebAssembly build
 crates/matenadar-cli     the `matenadar` command
 docs/model.md            the model, field by field
 samples/                 pages of real books rebuilt in Matenadar, with compare sheets
@@ -64,6 +68,7 @@ target/debug/matenadar bench tests/fixtures/smoke.json
   cross the margins and the bleed and still pass KDP's text checks.
 - EPUB 3, reflowable or fixed layout, passes epubcheck.
 - The WebAssembly build lays out, edits and renders in the browser
-  (`scripts/wasm.sh --test`).
+  (`scripts/wasm.sh --test`), with undo, hit-testing, diagnostics after each
+  edit, and a patch; its pages match the command line's (`fingerprint`).
 - Also: opacity on photographs, clipping to ellipses and paths, and
   hyphenation exceptions.

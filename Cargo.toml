@@ -18,7 +18,7 @@ matenadar-epub = { path = "crates/matenadar-epub" }
 matenadar-wasm = { path = "crates/matenadar-wasm" }
 anyhow = "1"
 serde = { version = "1", features = ["derive"] }
-serde_json = { version = "1", features = ["preserve_order"] }
+serde_json = { version = "1", features = ["preserve_order", "float_roundtrip"] }
 indexmap = { version = "2", features = ["serde"] }
 typst = "=0.15.1"
 typst-layout = "=0.15.1"

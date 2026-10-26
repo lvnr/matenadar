@@ -8,7 +8,7 @@ use typst::foundations::Label;
 use typst::introspection::Introspector;
 use typst::utils::PicoStr;
 
-use crate::inspect::{Kind, items};
+use crate::inspect::{Item, Kind, items, items_on};
 use crate::session::Session;
 
 #[derive(Clone, Debug, Serialize, PartialEq)]
@@ -62,6 +62,14 @@ pub fn kdp_gutter(pages: usize) -> f64 {
 }
 
 pub fn check(s: &Session, opts: &CheckOptions) -> Vec<Issue> {
+    let mut out = document_issues(s);
+    out.extend(page_issues(s, opts, &items(s), None));
+    out
+}
+
+/// What the document as a whole reports: problems generating it and the
+/// compiler's warnings.
+pub fn document_issues(s: &Session) -> Vec<Issue> {
     let mut out = Vec::new();
     for p in s.problems() {
         let code = if p.starts_with("missing file") { "missing-file" } else { "compiler" };
@@ -70,6 +78,21 @@ pub fn check(s: &Session, opts: &CheckOptions) -> Vec<Issue> {
     for w in s.warnings() {
         out.push(Issue { severity: Severity::Warning, code: "compiler", page: None, node: None, message: w.clone() });
     }
+    out
+}
+
+/// The issues on some pages only, for an editor that checks again just
+/// the pages an edit changed. Their neighbours are looked at too, since a
+/// widow is known only from the page before.
+pub fn check_pages(s: &Session, opts: &CheckOptions, pages: &BTreeSet<usize>) -> Vec<Issue> {
+    let around: BTreeSet<usize> = pages.iter().flat_map(|&p| [p.saturating_sub(1), p, p + 1]).filter(|&p| p > 0).collect();
+    page_issues(s, opts, &items_on(s, around), Some(pages))
+}
+
+/// Issues found in `all` (items of some or every page), kept only for
+/// `keep` when given.
+fn page_issues(s: &Session, opts: &CheckOptions, all: &[Item], keep: Option<&BTreeSet<usize>>) -> Vec<Issue> {
+    let mut out = Vec::new();
 
     // Frames whose text doesn't fit.
     let intro = s.layout().introspector();
@@ -96,14 +119,13 @@ pub fn check(s: &Session, opts: &CheckOptions) -> Vec<Issue> {
 
     let pages = s.layout().pages();
     let gutter = opts.gutter_pt.unwrap_or_else(|| kdp_gutter(pages.len()));
-    let all = items(s);
     let design_families: BTreeSet<String> = design_families(s);
     let mut fallback: BTreeMap<String, BTreeSet<usize>> = BTreeMap::new();
     let mut margin_hits: BTreeMap<(usize, String), usize> = BTreeMap::new();
     // Lines per paragraph per page, for widows and orphans.
     let mut lines: BTreeMap<String, BTreeMap<usize, BTreeSet<i64>>> = BTreeMap::new();
 
-    for item in &all {
+    for item in all {
         let decorative = matches!(item.element, Some((_, "decorative")));
         match &item.kind {
             Kind::Text { text, family, missing, baseline, .. } => {
@@ -186,6 +208,9 @@ pub fn check(s: &Session, opts: &CheckOptions) -> Vec<Issue> {
                 out.push(Issue { severity: Severity::Warning, code: "widow", page: Some(*p1), node: Some(id.clone()), message: format!("{id} carries one line to the top of page {p1}") });
             }
         }
+    }
+    if let Some(keep) = keep {
+        out.retain(|i| i.page.is_some_and(|p| keep.contains(&p)));
     }
     out
 }

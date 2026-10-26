@@ -199,6 +199,21 @@ A page is laid out by hand:
 The master gives the page its size and bleed. `layers: true` also draws the
 master's background and foreground. Pages take `start` too.
 
+### On the page of a node
+
+`on_page` (at the document's top level) changes the page where a node
+lands, keyed by the node's id, so the change follows the node when the text
+reflows:
+
+```json
+"on_page": {"f-plate-3": {"hide": ["folio", "running"]}}
+```
+
+- `hide`: master elements not drawn on that page. Each entry is an element's
+  `id`, the style of a text element (`"folio"`, `"running"`), or `"all"`.
+  Use it for a page with a full-bleed picture, or a part title.
+- A key whose node is gone does nothing.
+
 ## Elements (placed)
 
 Every element takes:
@@ -239,6 +254,9 @@ The types:
     in absolute units.
   - `fit` is `cover` (default; fills the box and crops), `contain` or
     `stretch`.
+  - `crop: {"x", "y", "w", "h"}` shows only that part of the picture (fractions
+    of its width and height from its top-left corner; `x` and `y` default to
+    0, `w` and `h` to 1), which `fit` and `focus` then treat as the whole.
   - Also: `radius`, `stroke`, `flip` (`x`, `y`, `both`), `clip` (a shape).
 - **`rect`**, **`ellipse`**: `w`, `h`, `fill`, `stroke`, `radius` (rect only).
 - **`line`**: `x1`, `y1`, `x2`, `y2`, `stroke`.
@@ -287,14 +305,14 @@ The types:
 | `p` | `id`, `style`, `text` or `content` (runs), `set` |
 | `h` | `level`, `style` (defaults to `h1`, `h2`… when the design has them), `text`/`content`, `outline` (listed in the contents), `short` (title for running heads and contents) |
 | `break` | a scene break: `style`, `text` (the ornament) |
-| `figure` | `src`, `w`, `h`, `fit`, `align`, `caption`/`caption_content`, `caption_style`, `float` (`top`, `bottom`), `stroke`, `radius` |
+| `figure` | `src`, `w`, `h`, `fit`, `crop` and `focus` (as for images), `align`, `caption`/`caption_content`, `caption_style`, `float` (`top`, `bottom`), `stroke`, `radius` |
 | `box` | `blocks`, `style`, `fill`, `stroke`, `stroke_align`, `radius`, `inset`, `w`, `h`, `align` (places the box; its text keeps its own alignment), `breakable`, `rotate`, `space_before`, `space_after`, `margin_left`/`margin_right` (negative hangs the box into the margins) |
 | `table` | `columns` (lengths, `"auto"`, `"1fr"`), `header`, `rows` (cells: a string or `{"text"/"content"/"blocks", "colspan", "rowspan", "fill", "align", "style", "set"}`), `style`, `header_style`, `header_fill`, `zebra`, `stroke`, `rules` (book-style horizontal rules in place of the grid: `{"top", "header", "rows", "bottom", "columns"}`, each a stroke), `inset`, `align` (per column), `valign` (`top`, `middle`, `bottom`), `row_gap`, `repeat_header` (default true) |
 | `list` | `items` (strings or lists of blocks), `ordered`, `marker` (or a numbering pattern such as `"1."`), `style`, `indent`, `gap`, `spacing`, `start`, `marker_style` (a span for the markers), `marker_shape` (`{"shape": "ellipse" \| "rect", "w", "h", "fill", "stroke", "radius"}`: a disc or tile behind each marker, centred on it), `marker_align` (`left`, or `right` for numbers, the default) |
 | `code` | `text` (spaces kept), `style`, `fill`, `stroke`, `inset`, `radius`, `breakable` |
 | `canvas` | an inline drawing: `w` (default the column's width), `h` (a length, or `"1fr"` for what is left), `elements`, `align`, `fill`, `stroke`, `radius`, `clip`. Percentages inside are of the canvas. |
 | `use` | a component instance (made of blocks, or of elements as a canvas) |
-| `page-break` | `to`: `recto` or `verso` |
+| `page-break` | `id`; `to`: `recto` or `verso`; `weak: true` (no break where the page has nothing on it yet) |
 | `space` | `h` (a length, or `"1fr"` to push what follows to the foot), `weak` |
 | `columns` | `count`, `gutter`, `blocks`, `rule` (a stroke between columns), `balance: true` (blocks shared out so the columns end level; blocks stay whole — for indexes) |
 | `column-break` | continue in the next column |
@@ -335,12 +353,18 @@ addressed by `id`, or by `at`, a JSON pointer from the root.
 {"op": "set", "id": "p12", "path": "/style", "value": "lede"}
 {"op": "unset", "id": "p12", "path": "/set/size"}
 {"op": "insert", "id": "ch1", "field": "flow", "index": 3, "value": {"type": "p", "id": "p99", "text": "…"}}
+{"op": "insert", "after": "p12", "value": {"type": "p", "id": "p99", "text": "…"}}
 {"op": "remove", "id": "p99"}
 {"op": "move", "id": "fig2", "to": {"id": "ch2"}, "field": "flow", "index": 0}
 {"op": "insert-text", "id": "p12", "offset": 40, "text": "very "}
 {"op": "delete-text", "id": "p12", "start": 40, "end": 45}
 {"op": "set", "at": "/design/styles/body", "path": "/size", "value": 10.5}
 ```
+
+`insert` with `before` or `after` a sibling's id keeps its place when the
+list around it changes, so an edit replayed on a document recomposed from a
+changed manuscript still lands where it was made. Prefer ids to `index` and
+`at` in anything kept.
 
 ## Checks
 
@@ -372,29 +396,64 @@ epubcheck in the tests.
   `--cover` sets the cover image, and `--identifier` the book's ID (an ISBN
   URN). Without one, the ID is derived from the title and author.
 
-## WebAssembly
+## WebAssembly and the page editor
 
-`scripts/wasm.sh` builds `dist/matenadar.wasm` and `dist/matenadar.js`, the
-engine for a browser editor. It runs the same layout as the command line,
-without a server: the page hands it fonts and pictures as bytes, opens the
-document, applies operations as the user edits, and redraws the pages each
-change lists.
+`scripts/wasm.sh` builds the engine for the browser into `dist/`:
+
+- `matenadar.wasm` (about 24 MB, 7 MB with brotli; no imports) and
+  `matenadar.js`, the engine with a synchronous API;
+- `worker.js`, which runs it in a worker, and `client.js`, the page's side,
+  which gives every method as a promise;
+- `matenadar.d.ts` and `client.d.ts`, the types; `REVISION`, the commit built.
+
+It lays out exactly as the command line does: the same document, fonts and
+pictures give the same pages, and `fingerprint` (a hash per page) shows it.
+Give the browser every face the book uses (bold and italic included); the
+command line also has Typst's own faces, `--embedded-fonts` adds them to the
+WebAssembly build (about 5 MB).
 
 ```js
-import { Matenadar } from "./matenadar.js";
-const mt = await Matenadar.load(fetch("matenadar.wasm"));
-mt.addFont(await (await fetch("fonts/Body-Regular.otf")).arrayBuffer());
-mt.addFile("images/plate.jpg", await (await fetch("images/plate.jpg")).arrayBuffer());
-const { pages } = mt.open(doc);
-pageEl.innerHTML = mt.svg(1);
-const [change] = mt.apply([{ op: "insert-text", id: "p1", offset: 0, text: "Once " }]);
+import { MatenadarClient } from "./client.js";
+const mt = await MatenadarClient.start({ base: "/matenadar/<commit>/" });
+const { fonts, files } = await mt.assets(doc);         // what to fetch
+for (const font of fontFiles) await mt.addFont(font);  // ArrayBuffers
+for (const path of files) await mt.addFile(path, await fetchBytes(path));
+const { pages, diagnostics } = await mt.open(doc);
+pageEl.innerHTML = await mt.svg(1, { bleed: true });
+const hit = await mt.hit(1, x, y);                     // points from the trim's corner
+const done = await mt.setBlock(hit.id, { space_before: "12pt" });
+for (const n of done.changed_pages) redraw(n);
+await mt.undo();
+const { words, layout } = await mt.patch();
 ```
 
-It also gives `png`, `pdf`, `check`, `layout`, `locate`, `position` and
-`document`, as `serve` does. Calls are synchronous, so a page should run it
-in a worker. The module has no imports; any WebAssembly host can drive it
-through the C functions described in `crates/matenadar-wasm/src/lib.rs`.
-`--embedded-fonts` adds Typst's own faces as a fallback (about 5 MB).
+The engine keeps the document and an undo history. Each edit is one step,
+laid out once, and returns the pages to draw again, the page count and the
+diagnostics (checked again only on the pages that changed):
+
+| | |
+|---|---|
+| Loading | `assets(doc)`, `addFont(bytes)`, `addFile(path, bytes)`, `open(doc, check)`, `fonts()`, `close()` |
+| Pages | `pages()` (trim, bleed per side, recto or verso, master, margins), `spreads()`, `svg(page, {bleed})`, `png(page, {scale, bleed})`, `rgba(page, {scale, bleed})` (for a canvas), `pdf()`, `fingerprint()` |
+| Finding | `hit(page, x, y)` (the innermost node, its extent on the page, the byte offset in its words, the element around it and every ancestor), `rects(id)`, `node(id)`, `lines(id)`, `locate`, `position`, `layout`, `document()` |
+| Words | `setWords(id, runs)`, `insertText(id, offset, text)` and `deleteText(id, start, end)` (marks kept), `insertBlock({after}, block)`, `removeBlock(id)` |
+| Pictures | `setPicture(id, {src, crop, fit, focus, w, h, x, y, opacity})` |
+| Blocks | `setBlock(id, {space_before, space_after, align, keep_with_next, keep_together, …})`: a paragraph's or heading's style overrides |
+| Pages | `moveFrame(id, {x, y, w, h, rotate})` for placed elements; `breakBefore(id, "page" \| "recto" \| "verso" \| null)` forces or takes back a break (a weak `page-break` with the id `<id>--break`, or the style's `page_break_before` turned off); `hideOnPage(id, ["folio"])`; `nudge(id, -1 \| 1)` sets a paragraph a line shorter or longer by the least tracking that does it (at most 0.02 em) |
+| Any | `apply(ops)` |
+| History | `undo()`, `redo()`, `rebase()` (after saving the patch) |
+| Results | `diagnostics()`, `check(options)`, `patch()` |
+
+`patch()` gives the edits since the document opened, every one addressed by
+id: `words` (changes to paragraphs', headings', figures' and lists' words,
+for the manuscript, with the ids `touched`) and `layout` (everything else,
+each field folded to its last setting, settings back to where they started
+dropped). Replayed on the opened document, words first, they give the same
+pages: `crates/matenadar-typst/tests/editor.rs` checks it.
+
+`demo/editor/` is a page editor on the samples:
+`scripts/wasm.sh && python3 scripts/demo.py && python3 -m http.server 5199`,
+then `http://localhost:5199/demo/editor/`.
 
 ## Command line
 
@@ -405,6 +464,7 @@ matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [-
 matenadar validate <doc.json>
 matenadar layout <doc.json> [--pages 1-3]        # every node on every page, with its extent
 matenadar locate <doc.json> --page N --x PT --y PT
+matenadar fingerprint <doc.json>                  # a hash per page, as the WebAssembly build gives
 matenadar apply <doc.json> <ops.json> [-o new.json]
 matenadar fonts [--fonts DIR]
 matenadar bench <doc.json> [--edits 50]           # layout and edit timings

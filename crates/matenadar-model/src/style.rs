@@ -208,11 +208,21 @@ pub struct Limits {
     pub max: Option<Length>,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Deserialize)]
 #[serde(untagged)]
 pub enum LineHeight {
     Factor(f64),
     Length(Length),
+}
+
+impl Serialize for LineHeight {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        match self {
+            LineHeight::Factor(f) => s.serialize_f64(*f),
+            // Always with its unit: a bare number reads back as a factor.
+            LineHeight::Length(l) => s.serialize_str(&l.to_string()),
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

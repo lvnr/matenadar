@@ -37,6 +37,56 @@ pub struct Change {
     pub compile: Duration,
 }
 
+/// What a list of operations, applied together, changed.
+#[derive(Debug, Serialize)]
+pub struct Changes {
+    /// The operations that undo them, in the order to apply them.
+    pub inverses: Vec<Op>,
+    pub changed_pages: Vec<usize>,
+    pub page_count: usize,
+    #[serde(serialize_with = "ms")]
+    pub compile: Duration,
+}
+
+/// A page's geometry, in points from the trim's top-left corner.
+#[derive(Clone, Debug, Serialize)]
+pub struct PageInfo {
+    pub page: usize,
+    /// The page number as printed.
+    pub label: String,
+    /// `recto` (odd pages, on the right) or `verso`.
+    pub side: &'static str,
+    /// The section or page it belongs to, and that item's master.
+    pub item: Option<String>,
+    pub master: Option<String>,
+    pub trim: Size,
+    pub bleed: Sides,
+    /// The master's margins (the text area's distance from the trim).
+    pub margins: Option<Margins>,
+}
+
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct Size {
+    pub w: f64,
+    pub h: f64,
+}
+
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct Sides {
+    pub top: f64,
+    pub right: f64,
+    pub bottom: f64,
+    pub left: f64,
+}
+
+#[derive(Clone, Copy, Debug, Serialize)]
+pub struct Margins {
+    pub top: f64,
+    pub bottom: f64,
+    pub inside: f64,
+    pub outside: f64,
+}
+
 fn ms<S: serde::Serializer>(d: &Duration, s: S) -> Result<S::Ok, S::Error> {
     s.serialize_f64(d.as_secs_f64() * 1000.0)
 }
@@ -179,8 +229,20 @@ impl Session {
     /// Applies `op`, regenerates the program and lays it out again
     /// incrementally. On failure the session is unchanged.
     pub fn apply(&mut self, op: &Op) -> Result<Change, EngineError> {
+        let c = self.apply_all(std::slice::from_ref(op))?;
+        Ok(Change { inverse: c.inverses.into_iter().next().expect("one operation"), changed_pages: c.changed_pages, page_count: c.page_count, compile: c.compile })
+    }
+
+    /// Applies operations in order and lays the result out once. On
+    /// failure the session is unchanged.
+    pub fn apply_all(&mut self, ops: &[Op]) -> Result<Changes, EngineError> {
         let mut doc = self.doc.clone();
-        let inverse = doc.apply(op).map_err(|e| EngineError(e.to_string()))?;
+        let mut inverses = Vec::with_capacity(ops.len());
+        for (i, op) in ops.iter().enumerate() {
+            let inverse = doc.apply(op).map_err(|e| EngineError(if ops.len() > 1 { format!("operation {}: {e}", i + 1) } else { e.to_string() }))?;
+            inverses.push(inverse);
+        }
+        inverses.reverse();
         let generated = generate(&doc, &self.fonts, &self.virt, &self.files);
         self.world.set_source(&generated.source);
         let start = Stopwatch::start();
@@ -196,7 +258,7 @@ impl Session {
                 self.hashes = hashes;
                 self.warnings = warnings;
                 self.compile_time = compile;
-                Ok(Change { inverse, changed_pages, page_count: self.layout.pages().len(), compile })
+                Ok(Changes { inverses, changed_pages, page_count: self.layout.pages().len(), compile })
             }
             Err(e) => {
                 let old = generate(&self.doc, &self.fonts, &self.virt, &self.files);
@@ -230,6 +292,63 @@ impl Session {
         Some((pos.page.get(), pos.point.x.to_pt(), pos.point.y.to_pt()))
     }
 
+    /// Every page's geometry: trim, bleed, side, master and margins.
+    pub fn pages(&self) -> Vec<PageInfo> {
+        // Sections and pages mark their first page (`<mt-sec>`).
+        let intro = self.layout.introspector();
+        let mut starts: Vec<(usize, String)> = Vec::new();
+        if let Some(label) = Label::new(PicoStr::intern("mt-sec")) {
+            for m in intro.query(&typst::foundations::Selector::Label(label)).iter() {
+                let page = m.location().and_then(|l| PagedIntrospector::page(intro, l)).map(|p| p.get());
+                let id = match m.get_by_name("value").ok() {
+                    Some(typst::foundations::Value::Dict(d)) => d.get("id").ok().and_then(|v| v.clone().cast::<typst::foundations::Str>().ok()).map(|s| s.to_string()),
+                    _ => None,
+                };
+                if let (Some(p), Some(id)) = (page, id) {
+                    starts.push((p, id));
+                }
+            }
+        }
+        starts.sort_by_key(|s| s.0);
+        let pt = |l: Option<matenadar_model::Length>, d: f64| l.and_then(|l| l.pt()).unwrap_or(d);
+        self.layout
+            .pages()
+            .iter()
+            .enumerate()
+            .map(|(i, p)| {
+                let page = i + 1;
+                let item = starts.iter().rev().find(|s| s.0 <= page).map(|s| s.1.clone());
+                let master = item.as_deref().and_then(|id| self.doc.content.iter().find(|c| c.id() == id)).and_then(|c| c.master().map(str::to_string));
+                let margins = master.as_deref().and_then(|m| self.doc.design.master(m)).map(|m| {
+                    let mg = m.margins.unwrap_or_default();
+                    let recto = page % 2 == 1;
+                    let (inside, outside) = match (mg.left, mg.right) {
+                        (None, None) => (pt(mg.inside, 36.0), pt(mg.outside, 36.0)),
+                        (l, r) if recto => (pt(l, 36.0), pt(r, 36.0)),
+                        (l, r) => (pt(r, 36.0), pt(l, 36.0)),
+                    };
+                    Margins { top: pt(mg.top, 36.0), bottom: pt(mg.bottom, 36.0), inside, outside }
+                });
+                PageInfo {
+                    page,
+                    label: p.number.to_string(),
+                    side: if page % 2 == 1 { "recto" } else { "verso" },
+                    item,
+                    master,
+                    trim: Size { w: p.frame.width().to_pt(), h: p.frame.height().to_pt() },
+                    bleed: Sides { top: p.bleed.top.to_pt(), right: p.bleed.right.to_pt(), bottom: p.bleed.bottom.to_pt(), left: p.bleed.left.to_pt() },
+                    margins,
+                }
+            })
+            .collect()
+    }
+
+    /// One hash per page, equal wherever the engine runs when the pages are
+    /// the same (the browser's build and the command line's).
+    pub fn fingerprints(&self) -> Vec<String> {
+        self.hashes.iter().map(|h| format!("{h:032x}")).collect()
+    }
+
     pub fn pdf(&self) -> Result<Vec<u8>, EngineError> {
         let opts = typst_pdf::PdfOptions { ident: typst::foundations::Smart::Custom(self.doc.meta.title.clone()), ..Default::default() };
         typst_pdf::pdf(&self.layout, &opts).map_err(diagnostics)
@@ -249,6 +368,27 @@ impl Session {
         let opts = typst_render::RenderOptions { pixel_per_pt: typst::utils::Scalar::new((dpi * factor / 72.0).into()), render_bleed: bleed };
         let pixmap = typst_render::render(p, &opts);
         if factor == 1.0 { pixmap.encode_png().ok() } else { halve(&pixmap)?.encode_png().ok() }
+    }
+}
+
+impl Session {
+    /// A page as straight (not premultiplied) RGBA pixels, `scale` pixels
+    /// per point, for a canvas: (width, height, pixels).
+    pub fn rgba(&self, page: usize, scale: f32, bleed: bool) -> Option<(u32, u32, Vec<u8>)> {
+        let p = self.layout.pages().get(page.checked_sub(1)?)?;
+        let opts = typst_render::RenderOptions { pixel_per_pt: typst::utils::Scalar::new(scale.into()), render_bleed: bleed };
+        let pixmap = typst_render::render(p, &opts);
+        let (w, h) = (pixmap.width(), pixmap.height());
+        let mut data = pixmap.take();
+        for px in data.as_chunks_mut::<4>().0 {
+            let a = px[3] as u32;
+            if a != 0 && a != 255 {
+                for c in &mut px[..3] {
+                    *c = ((*c as u32 * 255 + a / 2) / a).min(255) as u8;
+                }
+            }
+        }
+        Some((w, h, data))
     }
 }
 
@@ -299,5 +439,36 @@ fn diagnostics(errors: typst::ecow::EcoVec<typst::diag::SourceDiagnostic>) -> En
 }
 
 fn page_hashes(doc: &PagedDocument) -> Vec<u128> {
-    doc.pages().iter().map(|p| typst::utils::hash128(&p.frame)).collect()
+    doc.pages().iter().map(|p| print_of(&p.frame)).collect()
+}
+
+/// A hash of what a frame draws, leaving out where in the generated
+/// program each piece came from: those positions differ between a document
+/// edited in place and the same document laid out afresh.
+fn print_of(frame: &typst::layout::Frame) -> u128 {
+    fn visit(frame: &typst::layout::Frame, out: &mut Vec<u128>) {
+        use typst::layout::FrameItem;
+        use typst::utils::hash128;
+        out.push(hash128(&frame.size()));
+        for (pos, item) in frame.items() {
+            match item {
+                FrameItem::Group(g) => {
+                    out.push(hash128(&(pos, g.transform, &g.clip)));
+                    visit(&g.frame, out);
+                    out.push(0);
+                }
+                FrameItem::Text(t) => {
+                    let glyphs: Vec<_> = t.glyphs.iter().map(|g| (g.id, g.x_advance, g.x_offset, g.y_advance, g.y_offset)).collect();
+                    out.push(hash128(&(pos, &t.font, t.size, &t.fill, &t.stroke, t.lang, t.region, &t.text, glyphs)));
+                }
+                FrameItem::Shape(shape, _) => out.push(hash128(&(pos, shape))),
+                FrameItem::Image(image, size, _) => out.push(hash128(&(pos, image, size))),
+                FrameItem::Link(_, size) => out.push(hash128(&(pos, size))),
+                FrameItem::Tag(_) => {}
+            }
+        }
+    }
+    let mut parts = Vec::new();
+    visit(frame, &mut parts);
+    typst::utils::hash128(&parts)
 }

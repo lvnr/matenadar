@@ -229,6 +229,9 @@ pub struct ImageEl {
     /// For `cover`: which part stays in view, as fractions (0.5, 0.5 = centre).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub focus: Option<(f64, f64)>,
+    /// Only this part of the picture, which `fit` then treats as the whole.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub crop: Option<Crop>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radius: Option<Radius>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -238,6 +241,35 @@ pub struct ImageEl {
     /// Show the picture through a shape (see `Clip`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clip: Option<Clip>,
+}
+
+/// A part of a picture, in fractions of its width and height from its
+/// top-left corner: `{"x": 0.1, "y": 0, "w": 0.6, "h": 0.8}`.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Crop {
+    #[serde(default)]
+    pub x: f64,
+    #[serde(default)]
+    pub y: f64,
+    #[serde(default = "one")]
+    pub w: f64,
+    #[serde(default = "one")]
+    pub h: f64,
+}
+
+fn one() -> f64 {
+    1.0
+}
+
+impl Crop {
+    pub fn check(&self) -> Result<(), String> {
+        let ok = |v: f64| (0.0..=1.0).contains(&v);
+        if !(ok(self.x) && ok(self.y) && self.w > 0.0 && self.h > 0.0 && self.x + self.w <= 1.0 + 1e-9 && self.y + self.h <= 1.0 + 1e-9) {
+            return Err("a crop is a part of the picture: x, y from 0 to 1, w and h above 0, and x + w and y + h at most 1".into());
+        }
+        Ok(())
+    }
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]

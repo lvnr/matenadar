@@ -227,7 +227,7 @@ fn run() -> Result<ExitCode> {
         "layout" => {
             let s = session(&args)?;
             let wanted = pages(args.get("--pages"), s.page_count())?;
-            let report: Vec<_> = inspect::report(&s).into_iter().filter(|p| wanted.contains(&p.page)).collect();
+            let report = inspect::report_on(&s, Some(&wanted));
             println!("{}", serde_json::to_string_pretty(&report)?);
             Ok(ExitCode::SUCCESS)
         }

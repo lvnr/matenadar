@@ -111,11 +111,26 @@ impl Document {
     /// Applies `op` and returns its inverse. The document is unchanged when
     /// the operation fails or would leave it malformed.
     pub fn apply(&mut self, op: &Op) -> Result<Op, OpError> {
-        let mut root = serde_json::to_value(&*self).map_err(|e| OpError(e.to_string()))?;
-        let inverse = apply_value(&mut root, op)?;
+        let (doc, mut inverses) = self.applied(std::slice::from_ref(op))?;
+        *self = doc;
+        Ok(inverses.remove(0))
+    }
+
+    /// The document as it is after `ops`, applied in order as one change,
+    /// with each operation's inverse (in the order the operations ran). The
+    /// document is read and written once whatever the number of operations;
+    /// only the result has to be well formed. A failing operation is named
+    /// by its place when there are several.
+    pub fn applied(&self, ops: &[Op]) -> Result<(Document, Vec<Op>), OpError> {
+        let mut root = serde_json::to_value(self).map_err(|e| OpError(e.to_string()))?;
+        let mut inverses = Vec::with_capacity(ops.len());
+        for (i, op) in ops.iter().enumerate() {
+            let inverse = apply_value(&mut root, op).map_err(|e| if ops.len() > 1 { OpError(format!("operation {}: {e}", i + 1)) } else { e })?;
+            inverses.push(inverse);
+        }
         let text = serde_json::to_string(&root).map_err(|e| OpError(e.to_string()))?;
-        *self = Document::from_json(&text).map_err(|e| OpError(format!("the change would leave the document malformed: {e}")))?;
-        Ok(inverse)
+        let doc = Document::from_json(&text).map_err(|e| OpError(format!("the change would leave the document malformed: {e}")))?;
+        Ok((doc, inverses))
     }
 }
 

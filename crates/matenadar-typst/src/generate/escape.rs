@@ -25,6 +25,13 @@ pub fn escape(text: &str) -> (String, Vec<usize>) {
 /// where the added characters' bytes are. `exceptions` maps a lowercase word
 /// to the character counts before each allowed break.
 pub fn with_breaks(text: &str, exceptions: &std::collections::HashMap<String, Vec<usize>>) -> (String, Vec<usize>) {
+    // No exceptions (most books): nothing to add, no word to look up.
+    if exceptions.is_empty() {
+        return (text.to_string(), Vec::new());
+    }
+    // Only words as long as some exception are looked up (lowercased into one buffer).
+    let (shortest, longest) = exceptions.keys().map(|k| k.chars().count()).fold((usize::MAX, 0), |(lo, hi), n| (lo.min(n), hi.max(n)));
+    let mut lower = String::new();
     let mut out = String::with_capacity(text.len() + 8);
     let mut added = Vec::new();
     let mut rest = text;
@@ -37,7 +44,15 @@ pub fn with_breaks(text: &str, exceptions: &std::collections::HashMap<String, Ve
             continue;
         }
         let word = &rest[..word_len];
-        match exceptions.get(&word.to_lowercase()) {
+        let chars = word.chars().count();
+        let found = if chars < shortest || chars > longest {
+            None
+        } else {
+            lower.clear();
+            lower.extend(word.chars().flat_map(char::to_lowercase));
+            exceptions.get(lower.as_str())
+        };
+        match found {
             Some(breaks) => {
                 let mark = |out: &mut String, added: &mut Vec<usize>, c: char| {
                     added.extend(out.len()..out.len() + c.len_utf8());

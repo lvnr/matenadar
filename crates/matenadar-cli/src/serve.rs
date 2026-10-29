@@ -121,7 +121,7 @@ fn handle(session: &mut Option<Session>, method: &str, p: &Value) -> Result<Valu
         }
         "layout" => {
             let wanted: Option<Vec<usize>> = p.get("pages").and_then(|v| serde_json::from_value(v.clone()).ok());
-            let report: Vec<_> = inspect::report(s).into_iter().filter(|r| wanted.as_ref().is_none_or(|w| w.contains(&r.page))).collect();
+            let report = inspect::report_on(s, wanted.as_deref());
             Ok(serde_json::to_value(report)?)
         }
         "locate" => {

@@ -153,7 +153,10 @@ pub struct Session {
     generated: Generated,
     world: MtWorld,
     layout: PagedDocument,
+    /// Each page's print, for telling which pages a change touched.
     hashes: Vec<u128>,
+    /// The prints of the frames of `layout` (see `page_prints`).
+    prints: Prints,
     warnings: Vec<String>,
     compile_time: Duration,
 }
@@ -206,8 +209,8 @@ impl Session {
         let (layout, warnings) = compile(&world)?;
         let layout = crate::effects::apply(layout, &generated.effects);
         let compile_time = start.elapsed();
-        let hashes = page_hashes(&layout);
-        Ok(Self { doc, paths, files, fonts, virt, generated, world, layout, hashes, warnings, compile_time })
+        let (hashes, prints) = page_prints(&layout, &Prints::new());
+        Ok(Self { doc, paths, files, fonts, virt, generated, world, layout, hashes, prints, warnings, compile_time })
     }
 
     pub fn document(&self) -> &Document {
@@ -269,12 +272,7 @@ impl Session {
     /// Applies operations in order and lays the result out once. On
     /// failure the session is unchanged.
     pub fn apply_all(&mut self, ops: &[Op]) -> Result<Changes, EngineError> {
-        let mut doc = self.doc.clone();
-        let mut inverses = Vec::with_capacity(ops.len());
-        for (i, op) in ops.iter().enumerate() {
-            let inverse = doc.apply(op).map_err(|e| EngineError(if ops.len() > 1 { format!("operation {}: {e}", i + 1) } else { e.to_string() }))?;
-            inverses.push(inverse);
-        }
+        let (doc, mut inverses) = self.doc.applied(ops).map_err(|e| EngineError(e.to_string()))?;
         inverses.reverse();
         let generated = generate(&doc, &self.fonts, &self.virt, &self.files);
         self.world.set_source(&generated.source);
@@ -283,12 +281,13 @@ impl Session {
             Ok((layout, warnings)) => {
                 let layout = crate::effects::apply(layout, &generated.effects);
                 let compile = start.elapsed();
-                let hashes = page_hashes(&layout);
+                let (hashes, prints) = page_prints(&layout, &self.prints);
                 let changed_pages = (0..hashes.len()).filter(|&i| self.hashes.get(i) != Some(&hashes[i])).map(|i| i + 1).collect();
                 self.doc = doc;
                 self.generated = generated;
                 self.layout = layout;
                 self.hashes = hashes;
+                self.prints = prints;
                 self.warnings = warnings;
                 self.compile_time = compile;
                 Ok(Changes { inverses, changed_pages, page_count: self.layout.pages().len(), compile })
@@ -453,7 +452,7 @@ impl Session {
     /// One hash per page, equal wherever the engine runs when the pages are
     /// the same (the browser's build and the command line's).
     pub fn fingerprints(&self) -> Vec<String> {
-        self.hashes.iter().map(|h| format!("{h:032x}")).collect()
+        self.layout.pages().iter().map(|p| format!("{:032x}", print_of(&p.frame))).collect()
     }
 
     pub fn pdf(&self) -> Result<Vec<u8>, EngineError> {
@@ -550,8 +549,52 @@ fn diagnostics(errors: typst::ecow::EcoVec<typst::diag::SourceDiagnostic>) -> En
     )
 }
 
-fn page_hashes(doc: &PagedDocument) -> Vec<u128> {
-    doc.pages().iter().map(|p| print_of(&p.frame)).collect()
+/// Prints of frames (what they draw, as in `frame_print`), by where a
+/// frame's items are in memory and its size. Those of the layout in hand: that
+/// layout keeps their items alive, so a frame of the next layout whose items
+/// are at the same place is the very same frame, kept by Typst's memory of
+/// layouts, and its print is known without looking at it again.
+type Prints = HashMap<(usize, usize, u64, u64), u128>;
+
+/// Each page's print, for telling which pages a change touched, and the
+/// prints of every frame met (for the next change). After an edit, only the
+/// frames laid out anew are looked at: a long book costs what the edit does.
+fn page_prints(doc: &PagedDocument, known: &Prints) -> (Vec<u128>, Prints) {
+    let mut next = Prints::with_capacity(known.len());
+    let pages = doc.pages().iter().map(|p| frame_print(&p.frame, known, &mut next)).collect();
+    (pages, next)
+}
+
+/// What a frame draws, leaving out where in the generated program each
+/// piece came from (those positions move when text before them changes).
+fn frame_print(frame: &typst::layout::Frame, known: &Prints, next: &mut Prints) -> u128 {
+    use typst::layout::FrameItem;
+    use typst::utils::hash128;
+    let items = frame.items().as_slice();
+    let size = frame.size();
+    let key = (items.as_ptr() as usize, items.len(), size.x.to_raw().to_bits(), size.y.to_raw().to_bits());
+    if let Some(&h) = known.get(&key).or_else(|| next.get(&key)) {
+        next.insert(key, h);
+        return h;
+    }
+    let mut parts = Vec::with_capacity(items.len() + 1);
+    parts.push(hash128(&size));
+    for (pos, item) in items {
+        match item {
+            FrameItem::Group(g) => parts.push(hash128(&(pos, g.transform, &g.clip, frame_print(&g.frame, known, next)))),
+            FrameItem::Text(t) => {
+                let glyphs: Vec<_> = t.glyphs.iter().map(|g| (g.id, g.x_advance, g.x_offset, g.y_advance, g.y_offset)).collect();
+                parts.push(hash128(&(pos, &t.font, t.size, &t.fill, &t.stroke, t.lang, t.region, &t.text, glyphs)));
+            }
+            FrameItem::Shape(shape, _) => parts.push(hash128(&(pos, shape))),
+            FrameItem::Image(image, size, _) => parts.push(hash128(&(pos, image, size))),
+            FrameItem::Link(_, size) => parts.push(hash128(&(pos, size))),
+            FrameItem::Tag(_) => {}
+        }
+    }
+    let h = hash128(&parts);
+    next.insert(key, h);
+    h
 }
 
 /// A hash of what a frame draws, leaving out where in the generated

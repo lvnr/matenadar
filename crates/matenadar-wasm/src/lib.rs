@@ -248,8 +248,7 @@ impl Engine {
             }),
             "layout" => {
                 let wanted: Option<Vec<usize>> = p.get("pages").and_then(|v| serde_json::from_value(v.clone()).ok());
-                let report: Vec<_> = inspect::report(e.session()).into_iter().filter(|r| wanted.as_ref().is_none_or(|w| w.contains(&r.page))).collect();
-                Out::Json(json!(report))
+                Out::Json(json!(inspect::report_on(e.session(), wanted.as_deref())))
             }
             "document" => Out::Json(json!(e.document())),
             "apply" => {

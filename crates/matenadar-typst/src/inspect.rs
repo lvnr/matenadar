@@ -220,22 +220,33 @@ pub struct PageReport {
 /// Every page and the nodes on it, with their extents: what an agent reads
 /// to know what is where.
 pub fn report(s: &Session) -> Vec<PageReport> {
-    let all = items(s);
-    let mut pages: Vec<PageReport> = s
-        .layout()
-        .pages()
+    report_on(s, None)
+}
+
+/// What `report` says of some pages only (1-based, in page order; pages past
+/// the end are skipped), or of every page when `wanted` is None. Only those
+/// pages are walked, so asking after one page of a long book costs one page.
+pub fn report_on(s: &Session, wanted: Option<&[usize]>) -> Vec<PageReport> {
+    let all = s.layout().pages();
+    let numbers: Vec<usize> = match wanted {
+        Some(w) => {
+            let mut v: Vec<usize> = w.iter().copied().filter(|&n| n >= 1 && n <= all.len()).collect();
+            v.sort_unstable();
+            v.dedup();
+            v
+        }
+        None => (1..=all.len()).collect(),
+    };
+    let mut pages: Vec<PageReport> = numbers
         .iter()
-        .enumerate()
-        .map(|(i, p)| PageReport {
-            page: i + 1,
-            label: p.number.to_string(),
-            width: p.frame.width().to_pt(),
-            height: p.frame.height().to_pt(),
-            nodes: Vec::new(),
+        .map(|&n| {
+            let p = &all[n - 1];
+            PageReport { page: n, label: p.number.to_string(), width: p.frame.width().to_pt(), height: p.frame.height().to_pt(), nodes: Vec::new() }
         })
         .collect();
-    for item in all {
-        let page = &mut pages[item.page - 1];
+    for item in items_on(s, numbers.iter().copied()) {
+        let Ok(i) = numbers.binary_search(&item.page) else { continue };
+        let page = &mut pages[i];
         // Outermost first, so frames come before what is in them.
         for (id, kind) in item.ancestors.iter().rev() {
             match page.nodes.iter_mut().find(|n| &n.id == id) {

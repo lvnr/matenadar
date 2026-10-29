@@ -857,7 +857,7 @@ fn origin_align(word: &str) -> &'static str {
 pub(crate) fn crop_call(path: &str, c: &matenadar_model::element::Crop, w: Option<String>, h: Option<String>, fit: &str, focus: Option<(f64, f64)>) -> String {
     let (fx, fy) = focus.unwrap_or((0.5, 0.5));
     format!(
-        "mt-crop({}, ({}, {}, {}, {}), width: {}, height: {}, fit: {}, focus: ({}, {}))",
+        "mt-crop({}, ({}, {}, {}, {}), width: {}, height: {}, fit: {}, focus: ({}, {}), draw: (w, h) => image({}, width: w, height: h, fit: \"stretch\"))",
         str_lit(path),
         num(c.x),
         num(c.y),
@@ -867,7 +867,8 @@ pub(crate) fn crop_call(path: &str, c: &matenadar_model::element::Crop, w: Optio
         h.unwrap_or_else(|| "auto".into()),
         str_lit(fit),
         num(fx.clamp(0.0, 1.0)),
-        num(fy.clamp(0.0, 1.0))
+        num(fy.clamp(0.0, 1.0)),
+        str_lit(path)
     )
 }
 

@@ -42,7 +42,9 @@
 // window on the part chosen by `focus`), `contain` shows all of it,
 // `stretch` distorts it to the box. Without a width or height, the box
 // takes the part's proportions.
-#let mt-crop(src, crop, width: auto, height: auto, fit: "cover", focus: (0.5, 0.5)) = layout(size => {
+// `draw(w, h)`, written where the picture is placed, draws it at a size, so
+// that the picture on the page is traced back to its element.
+#let mt-crop(src, crop, width: auto, height: auto, fit: "cover", focus: (0.5, 0.5), draw: none) = layout(size => {
   let nat = measure(image(src))
   let (cx, cy, cw, ch) = crop
   let (pw, ph) = (nat.width * cw, nat.height * ch)
@@ -61,7 +63,7 @@
     box(width: ww, height: wh, clip: true, place(top + left,
       dx: -nat.width * cx * sx - (vw - ww) * focus.at(0),
       dy: -nat.height * cy * sy - (vh - wh) * focus.at(1),
-      image(src, width: nat.width * sx, height: nat.height * sy, fit: "stretch")))))
+      if draw == none { image(src, width: nat.width * sx, height: nat.height * sy, fit: "stretch") } else { draw(nat.width * sx, nat.height * sy) }))))
 })
 
 // A paragraph at the narrowest width that keeps its number of lines.
@@ -259,6 +261,11 @@
     let p = here().page()
     let hs = query(<mt-h>).filter(h => h.value.level == 1 and h.location().page() <= p)
     if hs.len() > 0 { hs.last().value.title } else { [] }
+  } else if name == "doc.title" {
+    let t = document.title
+    if t == none { "" } else { t }
+  } else if name == "doc.author" {
+    document.author.join(", ")
   } else if name == "section.title" {
     info.at("title", default: "")
   } else if name.starts-with("section.") {

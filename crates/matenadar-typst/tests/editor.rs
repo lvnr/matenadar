@@ -492,3 +492,34 @@ fn a_drop_cap_paragraph_has_a_caret() {
     assert!(spaces.len() == 1 && spaces[0].rect.x1 > spaces[0].rect.x0, "the space after the first word is the paragraph's");
     assert_eq!(e.text_lines("p2").len(), e.lines("p2"));
 }
+
+#[test]
+fn a_cropped_picture_is_still_found_on_its_page() {
+    let mut e = editor();
+    let plate = e.session().page_count();
+    e.set_fields("ph", &fields(json!({"crop": {"x": 0.25, "w": 0.5}})), false).unwrap();
+    let rects = e.rects("ph");
+    assert_eq!(rects.len(), 1, "a cropped picture has its extent");
+    assert!((rects[0].rect.x0 - 72.0).abs() < 0.5 && (rects[0].rect.x1 - 216.0).abs() < 0.5, "{:?}", rects[0].rect);
+    assert_eq!(e.hit(plate, 144.0, 108.0).map(|h| h.id), Some("ph".to_string()));
+}
+
+#[test]
+fn fields_give_the_books_title_and_author() {
+    let mut e = editor();
+    let plate = e.session().page_count();
+    e.edit(vec![
+        op_of(json!({"op": "set", "at": "/meta", "path": "/author", "value": "A. Writer"})),
+        op_of(json!({"op": "insert", "id": "plate", "field": "elements", "value": {"type": "text", "id": "head", "x": 72, "y": 300, "w": 200, "content": [{"field": "doc.title"}, " by ", {"field": "doc.author"}]}})),
+    ])
+    .unwrap();
+    let words: String = items_on(e.session(), [plate])
+        .iter()
+        .filter_map(|i| match &i.kind {
+            matenadar_typst::inspect::Kind::Text { text, .. } => Some(text.as_str()),
+            _ => None,
+        })
+        .collect::<Vec<_>>()
+        .join(" ");
+    assert!(words.contains("Edit") && words.contains("Writer"), "the running head reads the book's title and author: {words}");
+}

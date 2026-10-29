@@ -61,7 +61,7 @@ pub struct Item {
 pub fn items(s: &Session) -> Vec<Item> {
     let mut out = Vec::new();
     for (i, page) in s.layout().pages().iter().enumerate() {
-        walk(s, &page.frame, Transform::identity(), i + 1, &mut out);
+        walk(s, &page.frame, Transform::identity(), None, i + 1, &mut out);
     }
     out
 }
@@ -72,7 +72,7 @@ pub fn items_on(s: &Session, pages: impl IntoIterator<Item = usize>) -> Vec<Item
     let all = s.layout().pages();
     for page in pages {
         if let Some(p) = page.checked_sub(1).and_then(|i| all.get(i)) {
-            walk(s, &p.frame, Transform::identity(), page, &mut out);
+            walk(s, &p.frame, Transform::identity(), None, page, &mut out);
         }
     }
     out
@@ -122,19 +122,35 @@ fn corners(at: Point, size: Size, ts: Transform) -> Rect {
     Rect::of(&pts.map(|p| p.transform(ts)))
 }
 
-fn walk(s: &Session, frame: &Frame, ts: Transform, page: usize, out: &mut Vec<Item>) {
+/// What is drawn of `rect` inside a clipping region, if anything.
+fn cut(rect: Rect, clip: Option<Rect>) -> Option<Rect> {
+    let Some(c) = clip else { return Some(rect) };
+    let r = Rect { x0: rect.x0.max(c.x0), y0: rect.y0.max(c.y0), x1: rect.x1.min(c.x1), y1: rect.y1.min(c.y1) };
+    (r.x0 < r.x1 && r.y0 < r.y1).then_some(r)
+}
+
+/// The items in a frame, in page coordinates; a group that clips (a cropped
+/// picture, a clipped frame) cuts what is inside it to its own bounds.
+fn walk(s: &Session, frame: &Frame, ts: Transform, clip: Option<Rect>, page: usize, out: &mut Vec<Item>) {
     for (pos, item) in frame.items() {
         match item {
             FrameItem::Group(group) => {
                 let ts = ts.pre_concat(Transform::translate(pos.x, pos.y)).pre_concat(group.transform);
-                walk(s, &group.frame, ts, page, out);
+                let clip = match &group.clip {
+                    Some(_) => match cut(corners(Point::zero(), group.frame.size(), ts), clip) {
+                        Some(c) => Some(c),
+                        None => continue,
+                    },
+                    None => clip,
+                };
+                walk(s, &group.frame, ts, clip, page, out);
             }
             FrameItem::Text(text) => {
                 let width = text.glyphs.iter().map(|g| g.x_advance.at(text.size)).sum::<typst::layout::Abs>();
                 let size = text.size;
                 let metrics = text.font.metrics();
                 let top = Point::new(pos.x, pos.y - metrics.ascender.at(size));
-                let rect = corners(top, Size::new(width, metrics.ascender.at(size) - metrics.descender.at(size)), ts);
+                let Some(rect) = cut(corners(top, Size::new(width, metrics.ascender.at(size) - metrics.descender.at(size)), ts), clip) else { continue };
                 let span = text.glyphs.first().map(|g| g.span.0).unwrap_or(Span::detached());
                 let missing = text.glyphs.iter().any(|g| g.id == 0);
                 out.push(Item {
@@ -158,15 +174,16 @@ fn walk(s: &Session, frame: &Frame, ts: Transform, page: usize, out: &mut Vec<It
                     typst::visualize::ImageKind::Raster(r) => Some((r.width(), r.height())),
                     _ => None,
                 };
-                let rect = corners(*pos, *size, ts);
-                // The placed size, after any scaling of the groups above it.
-                let (w, h) = (rect.x1 - rect.x0, rect.y1 - rect.y0);
+                let drawn = corners(*pos, *size, ts);
+                // The placed size, after any scaling of the groups above it (all of it, cropped or not).
+                let (w, h) = (drawn.x1 - drawn.x0, drawn.y1 - drawn.y0);
                 let (w, h) = if is_rotated(ts) { (size.x.to_pt() * scale_of(ts), size.y.to_pt() * scale_of(ts)) } else { (w, h) };
+                let Some(rect) = cut(drawn, clip) else { continue };
                 out.push(Item { page, rect, kind: Kind::Image { px, w, h }, span: *span, node: node_of(s, *span), element: element_of(s, *span), ancestors: ancestors_of(s, *span) });
             }
             FrameItem::Shape(shape, span) => {
                 let b = shape.bbox(true);
-                let rect = corners(*pos + b.min, Size::new(b.max.x - b.min.x, b.max.y - b.min.y), ts);
+                let Some(rect) = cut(corners(*pos + b.min, Size::new(b.max.x - b.min.x, b.max.y - b.min.y), ts), clip) else { continue };
                 out.push(Item { page, rect, kind: Kind::Shape, span: *span, node: node_of(s, *span), element: element_of(s, *span), ancestors: ancestors_of(s, *span) });
             }
             _ => {}

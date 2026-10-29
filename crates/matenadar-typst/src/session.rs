@@ -520,6 +520,11 @@ fn halve(src: &tiny_skia::Pixmap) -> Option<tiny_skia::Pixmap> {
 
 pub(crate) fn compile(world: &MtWorld) -> Result<(PagedDocument, Vec<String>), EngineError> {
     let warned = typst::compile::<PagedDocument>(world);
+    // Typst memoizes the layout and keeps every result until told to forget:
+    // without this, each edit's layouts stay for good (half a megabyte a
+    // keystroke on a short book, and WebAssembly memory never shrinks).
+    // What the last few layouts used stays, as in Typst's own watch mode.
+    comemo::evict(10);
     let warnings = warned
         .warnings
         .iter()

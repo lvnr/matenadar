@@ -160,6 +160,34 @@ assert.ok(source.prelude > 1000 && source.text.length > source.prelude);
 const p1node = source.nodes.find((n) => n.id === "p1");
 assert.ok(p1node && source.text.slice(p1node.start, p1node.end).includes("<p1>"), "the source map finds p1 in the program");
 
+// ---- Memory ----
+
+// A long edit costs no more memory than a short one: what the layout keeps
+// from earlier versions of the document ages out. (WebAssembly memory never
+// shrinks, so a leak here only grows until the page is closed.)
+{
+  const { instance } = await WebAssembly.instantiate(readFileSync(wasm), {});
+  const fresh = new Matenadar(instance.exports);
+  for (const font of fontFiles) fresh.addFont(readFileSync(font));
+  fresh.addFile("images/black.png", readFileSync(join(here, "../../matenadar-typst/tests/black.png")));
+  fresh.open(doc);
+  // Each round lays out a version of the words not seen before, then the words as they were.
+  const edit = (from, to) => {
+    for (let i = from; i < to; i++) {
+      const mark = `${i} `;
+      fresh.insertText("p1", 0, mark);
+      fresh.deleteText("p1", 0, mark.length);
+    }
+  };
+  const mb = () => instance.exports.memory.buffer.byteLength / 1048576;
+  edit(0, 100);
+  const settled = mb();
+  edit(100, 500);
+  const grown = mb() - settled;
+  assert.ok(grown < 8, `400 more edits grew the engine's memory by ${grown.toFixed(1)} MB (from ${settled.toFixed(0)} MB)`);
+  console.log(`memory: ${settled.toFixed(0)} MB after 100 edits, +${grown.toFixed(1)} MB after 400 more`);
+}
+
 if (process.env.MATENADAR_BIN) {
   // The same document and edits, laid out by the command line, give the same pages.
   const { execFileSync } = await import("node:child_process");

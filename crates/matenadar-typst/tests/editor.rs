@@ -390,7 +390,7 @@ fn a_paragraph_splits_and_joins_with_its_marks() {
     e.set_words("p3", json!(["Night shift ", {"text": "kept its", "em": true}, " own hours."])).unwrap();
     let before = e.document().clone();
     let prints = e.session().fingerprints();
-    e.split_block("p3", 15, "p3b").unwrap();
+    e.split_block("p3", 15, 15, "p3b").unwrap();
     assert_eq!(e.node("p3").unwrap()["content"], json!(["Night shift ", {"text": "kep", "em": true}]));
     assert_eq!(e.node("p3b").unwrap()["content"], json!([{"text": "t its", "em": true}, " own hours."]));
     let ids = flow_ids(&e);
@@ -410,13 +410,20 @@ fn a_paragraph_splits_and_joins_with_its_marks() {
     let patch = e.patch();
     assert!(patch.layout.is_empty(), "splitting and joining change words: {:?}", patch.layout);
     assert!(e.join_block("p1").is_err(), "nothing before the first paragraph");
+    // Enter over a selection: the selected words go, and the paragraph splits there, in one step.
+    let joined_up = e.document().clone();
+    e.split_block("p3", 12, 15, "p3c").unwrap();
+    assert_eq!(e.node("p3").unwrap()["text"], json!("Night shift "));
+    assert_eq!(e.node("p3c").unwrap()["content"], json!([{"text": "t its", "em": true}, " own hours."]));
+    e.undo().unwrap();
+    assert_eq!(e.document(), &joined_up, "one undo puts the words and the paragraph back");
 }
 
 #[test]
 fn a_split_off_paragraph_keeps_the_style_but_not_the_start() {
     let mut e = editor();
     e.set_fields("p4", &fields(json!({"space_before": "18pt", "align": "center"})), true).unwrap();
-    e.split_block("p4", 3, "p4b").unwrap();
+    e.split_block("p4", 3, 3, "p4b").unwrap();
     let b = e.node("p4b").unwrap();
     assert_eq!(b.pointer("/set/align"), Some(&json!("center")));
     assert_eq!(b.pointer("/set/space_before"), None);
@@ -425,13 +432,13 @@ fn a_split_off_paragraph_keeps_the_style_but_not_the_start() {
     assert_eq!(a["text"].as_str().unwrap().len(), 3, "plain words stay plain text");
     // A heading split at its end is followed by a paragraph; in the middle, by a heading.
     e.edit(vec![op_of(json!({"op": "insert", "before": "p5", "value": {"type": "h", "id": "h9", "level": 2, "text": "A heading"}}))]).unwrap();
-    e.split_block("h9", 9, "h9b").unwrap();
+    e.split_block("h9", 9, 9, "h9b").unwrap();
     assert_eq!(e.node("h9b").unwrap(), json!({"type": "p", "id": "h9b"}));
-    e.split_block("h9", 2, "h9c").unwrap();
+    e.split_block("h9", 2, 2, "h9c").unwrap();
     assert_eq!(e.node("h9c").unwrap()["type"], json!("h"));
     assert_eq!(e.node("h9c").unwrap()["text"], json!("heading"));
-    assert!(e.split_block("ph", 0, "x").is_err(), "a picture has no words to split");
-    assert!(e.split_block("p4", 999, "x").is_err(), "past the end");
+    assert!(e.split_block("ph", 0, 0, "x").is_err(), "a picture has no words to split");
+    assert!(e.split_block("p4", 999, 999, "x").is_err(), "past the end");
 }
 
 #[test]

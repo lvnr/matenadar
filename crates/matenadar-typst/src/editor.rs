@@ -354,14 +354,17 @@ impl Editor {
 
     // ---- Words ----
 
-    /// Splits a paragraph or heading at a byte offset of its words: it keeps
-    /// the words before, and a new block after it, `new_id`, takes the rest,
-    /// with the same type, style and overrides (but not those of a
-    /// paragraph's start, such as space before or a drop cap). A heading
-    /// split at its end is followed by a paragraph.
-    pub fn split_block(&mut self, id: &str, offset: usize, new_id: &str) -> Result<Edited, EngineError> {
+    /// Splits a paragraph or heading at a byte offset of its words, taking
+    /// out the words `start..end` first (Enter over a selection; equal for a
+    /// caret): it keeps the words before, and a new block after it, `new_id`,
+    /// takes the rest, with the same type, style and overrides (but not those
+    /// of a paragraph's start, such as space before or a drop cap). A heading
+    /// split at its end is followed by a paragraph. One step.
+    pub fn split_block(&mut self, id: &str, start: usize, end: usize, new_id: &str) -> Result<Edited, EngineError> {
         let node = self.words_block(id)?;
-        let (before, after) = runs::split_at(&runs::runs_of(&node), offset).map_err(engine)?;
+        let (start, end) = (start.min(end), start.max(end));
+        let (before, rest) = runs::split_at(&runs::runs_of(&node), start).map_err(engine)?;
+        let (_, after) = runs::split_at(&rest, end - start).map_err(engine)?;
         let mut block = if node["type"] == "h" && after.is_empty() {
             json!({"type": "p"})
         } else {

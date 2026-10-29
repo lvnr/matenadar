@@ -274,7 +274,11 @@ impl Engine {
             "offset_at" => Out::Json(json!(e.offset_at(id_of()?, page()?, num_of("x")?, num_of("y")?))),
             "selection_rects" => Out::Json(json!(e.selection_rects(id_of()?, num_of("start")? as usize, num_of("end")? as usize))),
             "text_lines" => Out::Json(json!(e.text_lines(id_of()?))),
-            "split_block" => edited(e.split_block(id_of()?, num_of("offset")? as usize, str_of("new_id").ok_or("split_block needs new_id")?))?,
+            "split_block" => {
+                let offset = num_of("offset")? as usize;
+                let end = p.get("end").and_then(Value::as_f64).map_or(offset, |n| n as usize);
+                edited(e.split_block(id_of()?, offset, end, str_of("new_id").ok_or("split_block needs new_id")?))?
+            }
             "join_block" => Out::Json(json!(e.join_block(id_of()?).map_err(|e| e.to_string())?)),
             "mark_text" => edited(e.mark_text(
                 id_of()?,

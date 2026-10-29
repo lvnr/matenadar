@@ -207,7 +207,7 @@ export interface MatenadarApi {
   deleteText(id: string, start: number, end: number): Edited;
   insertBlock(where: { after: string } | { before: string }, block: Json): Edited;
   removeBlock(id: string): Edited;
-  splitBlock(id: string, offset: number, newId: string): Edited;
+  splitBlock(id: string, offset: number, newId: string, end?: number): Edited;
   joinBlock(id: string): Joined;
   markText(id: string, start: number, end: number, field: string, value: Json): Edited;
   setFields(id: string, fields: Record<string, Json>, options?: { style?: boolean }): Edited;
@@ -261,7 +261,7 @@ export declare class Matenadar implements MatenadarApi {
   deleteText(id: string, start: number, end: number): Edited;
   insertBlock(where: { after: string } | { before: string }, block: Json): Edited;
   removeBlock(id: string): Edited;
-  splitBlock(id: string, offset: number, newId: string): Edited;
+  splitBlock(id: string, offset: number, newId: string, end?: number): Edited;
   joinBlock(id: string): Joined;
   markText(id: string, start: number, end: number, field: string, value: Json): Edited;
   setFields(id: string, fields: Record<string, Json>, options?: { style?: boolean }): Edited;

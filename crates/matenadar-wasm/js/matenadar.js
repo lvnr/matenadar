@@ -215,9 +215,9 @@ export class Matenadar {
     return this.apply({ op: "remove", id });
   }
 
-  /** Splits a paragraph or heading at a byte of its words; the words after go to a new block `newId` after it. */
-  splitBlock(id, offset, newId) {
-    return this.#call("split_block", { id, offset, new_id: newId });
+  /** Splits a paragraph or heading at a byte of its words; the words after go to a new block `newId` after it. With `end`, the words `offset..end` go first (Enter over a selection), in the same step. */
+  splitBlock(id, offset, newId, end = offset) {
+    return this.#call("split_block", { id, offset, end, new_id: newId });
   }
 
   /** Joins a paragraph or heading to the one before it: `{into, offset, ...edited}`, where its words now start. */

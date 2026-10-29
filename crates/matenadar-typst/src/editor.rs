@@ -11,11 +11,13 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
+use matenadar_model::runs;
 use matenadar_model::walk::{Node, walk};
 use matenadar_model::{Block, Document, Element, Item, Length, Op};
 use serde::Serialize;
 use serde_json::{Map, Value, json};
 
+use crate::caret::{Caret, TextLine};
 use crate::check::{CheckOptions, Issue, check_pages, document_issues};
 use crate::inspect::{Kind, Rect, items_on};
 use crate::session::{EngineError, Session};
@@ -29,6 +31,10 @@ const WORD_BLOCKS: [(&str, &[&str]); 6] = [
     ("list", &["/items"]),
     ("code", &["/text"]),
 ];
+
+/// Paragraph settings that belong to where a paragraph starts, which the
+/// second half of a split one does not take.
+const STARTS: [&str; 5] = ["space_before", "drop_cap", "rule_above", "page_break_before", "indent_first"];
 
 /// The tracking steps `nudge` tries, in ems, and how far it goes.
 const NUDGE_STEP: f64 = 0.0025;
@@ -87,7 +93,17 @@ pub struct Hit {
     pub ancestors: Vec<NodeRef>,
 }
 
-#[derive(Clone, Copy, Debug, Serialize)]
+/// A join: the block that took the words, where they start in it, and
+/// the edit.
+#[derive(Debug, Serialize)]
+pub struct Joined {
+    pub into: String,
+    pub offset: usize,
+    #[serde(flatten)]
+    pub edited: Edited,
+}
+
+#[derive(Clone, Copy, Debug, Serialize, PartialEq)]
 pub struct PageRect {
     pub page: usize,
     pub rect: Rect,
@@ -312,23 +328,114 @@ impl Editor {
 
     /// How many lines a paragraph sets in.
     pub fn lines(&self, id: &str) -> usize {
-        let count = self.session.page_count();
-        let start = self.session.position(id).map(|p| p.0).unwrap_or(1);
-        let mut baselines = BTreeSet::new();
-        for page in start..=count {
-            let before = baselines.len();
-            for item in items_on(&self.session, [page]) {
-                if let (Kind::Text { baseline, .. }, Some((node, _))) = (&item.kind, &item.node)
-                    && node == id
-                {
-                    baselines.insert((page, (baseline * 10.0).round() as i64));
+        crate::caret::text_lines(&self.session, id).len()
+    }
+
+    /// The caret before the byte `offset` of a node's words; `upstream`
+    /// keeps it at the end of a line that breaks there.
+    pub fn caret(&self, id: &str, offset: usize, upstream: bool) -> Option<Caret> {
+        crate::caret::caret(&self.session, id, offset, upstream)
+    }
+
+    /// The place in a node's words nearest a point on a page.
+    pub fn offset_at(&self, id: &str, page: usize, x: f64, y: f64) -> Option<usize> {
+        crate::caret::offset_at(&self.session, id, page, x, y)
+    }
+
+    /// A rectangle per line over the bytes `start..end` of a node's words.
+    pub fn selection_rects(&self, id: &str, start: usize, end: usize) -> Vec<PageRect> {
+        crate::caret::selection_rects(&self.session, id, start, end)
+    }
+
+    /// The lines a node's words set in, with the bytes each sets.
+    pub fn text_lines(&self, id: &str) -> Vec<TextLine> {
+        crate::caret::text_lines(&self.session, id)
+    }
+
+    // ---- Words ----
+
+    /// Splits a paragraph or heading at a byte offset of its words: it keeps
+    /// the words before, and a new block after it, `new_id`, takes the rest,
+    /// with the same type, style and overrides (but not those of a
+    /// paragraph's start, such as space before or a drop cap). A heading
+    /// split at its end is followed by a paragraph.
+    pub fn split_block(&mut self, id: &str, offset: usize, new_id: &str) -> Result<Edited, EngineError> {
+        let node = self.words_block(id)?;
+        let (before, after) = runs::split_at(&runs::runs_of(&node), offset).map_err(engine)?;
+        let mut block = if node["type"] == "h" && after.is_empty() {
+            json!({"type": "p"})
+        } else {
+            let mut b = node.clone();
+            if let Some(m) = b.as_object_mut() {
+                for key in ["id", "text", "content", "short"] {
+                    m.shift_remove(key);
+                }
+                if let Some(Value::Object(set)) = m.get_mut("set") {
+                    for key in STARTS {
+                        set.shift_remove(key);
+                    }
+                    if set.is_empty() {
+                        m.shift_remove("set");
+                    }
                 }
             }
-            if baselines.len() == before && before > 0 {
-                break;
-            }
+            b
+        };
+        block["id"] = json!(new_id);
+        match runs::as_text(&after) {
+            Some(t) if t.is_empty() => {}
+            Some(t) => block["text"] = json!(t),
+            None => block["content"] = json!(after),
         }
-        baselines.len()
+        let mut ops = words_ops(id, &node, before)?;
+        ops.push(op(json!({"op": "insert", "after": id, "value": block}))?);
+        self.edit(ops)
+    }
+
+    /// Joins a paragraph or heading to the paragraph or heading before it in
+    /// the same list, which takes its words; it goes. Says which block took
+    /// them, and where they start in it.
+    pub fn join_block(&mut self, id: &str) -> Result<Joined, EngineError> {
+        let node = self.words_block(id)?;
+        let root = serde_json::to_value(self.session.document()).map_err(|e| engine(e.to_string()))?;
+        let at = matenadar_model::ops::find_id(&root, id).ok_or_else(|| engine(format!("no node with id \"{id}\"")))?;
+        let (list, index) = at.rsplit_once('/').unwrap_or_default();
+        let prev = index.parse::<usize>().ok().and_then(|i| i.checked_sub(1)).and_then(|i| root.pointer(&format!("{list}/{i}")));
+        let Some(prev) = prev.filter(|p| matches!(p.get("type").and_then(Value::as_str), Some("p" | "h"))) else {
+            return Err(engine(format!("there is no paragraph or heading before {id} to join it to")));
+        };
+        let into = prev.get("id").and_then(Value::as_str).ok_or_else(|| engine("the block before has no id"))?.to_string();
+        let words = runs::runs_of(prev);
+        let offset = runs::plain(&words).len();
+        let mut ops = words_ops(&into, prev, runs::join(words, runs::runs_of(&node)))?;
+        ops.push(op(json!({"op": "remove", "id": id}))?);
+        let edited = self.edit(ops)?;
+        Ok(Joined { into, offset, edited })
+    }
+
+    /// Marks the words `start..end` of a paragraph, heading or text frame:
+    /// `em`, `strong`, `span` (a character style), `color`, `size`,
+    /// `tracking`, `case`… A null value takes the mark off.
+    pub fn mark_text(&mut self, id: &str, start: usize, end: usize, field: &str, value: Value) -> Result<Edited, EngineError> {
+        let node = self.node(id).ok_or_else(|| engine(format!("no node with id \"{id}\"")))?;
+        if !matches!(node.get("type").and_then(Value::as_str), Some("p" | "h" | "text")) {
+            return Err(engine(format!("{id} has no words to mark")));
+        }
+        let marked = runs::set_mark(&runs::runs_of(&node), start, end, field, &value).map_err(engine)?;
+        let ops = words_ops(id, &node, marked)?;
+        if ops.is_empty() {
+            return Err(engine("nothing to change"));
+        }
+        self.edit(ops)
+    }
+
+    /// A paragraph or heading, as JSON.
+    fn words_block(&self, id: &str) -> Result<Value, EngineError> {
+        let node = self.node(id).ok_or_else(|| engine(format!("no node with id \"{id}\"")))?;
+        match node.get("type").and_then(Value::as_str) {
+            Some("p" | "h") => Ok(node),
+            kind => Err(engine(format!("{id} is a {}, not a paragraph or heading", kind.unwrap_or("node")))),
+        }
     }
 
     // ---- Gestures ----
@@ -594,6 +701,32 @@ fn same(a: &Value, b: &Value) -> bool {
         (Value::Object(x), Value::Object(y)) => x.len() == y.len() && x.iter().all(|(k, v)| y.get(k).is_some_and(|w| same(v, w))),
         _ => a == b,
     }
+}
+
+/// The operations that give a node these words: plain `text` when they
+/// have no marks, else `content`.
+fn words_ops(id: &str, node: &Value, words: Vec<Value>) -> Result<Vec<Op>, EngineError> {
+    let mut ops = Vec::new();
+    match runs::as_text(&words) {
+        Some(text) => {
+            if node.get("content").is_some() {
+                ops.push(op(json!({"op": "unset", "id": id, "path": "/content"}))?);
+            }
+            match node.get("text") {
+                Some(_) if text.is_empty() => ops.push(op(json!({"op": "unset", "id": id, "path": "/text"}))?),
+                Some(t) if *t == json!(text) => {}
+                _ if text.is_empty() => {}
+                _ => ops.push(op(json!({"op": "set", "id": id, "path": "/text", "value": text}))?),
+            }
+        }
+        None => {
+            if node.get("text").is_some() {
+                ops.push(op(json!({"op": "unset", "id": id, "path": "/text"}))?);
+            }
+            ops.push(op(json!({"op": "set", "id": id, "path": "/content", "value": words}))?);
+        }
+    }
+    Ok(ops)
 }
 
 fn op(v: Value) -> Result<Op, EngineError> {

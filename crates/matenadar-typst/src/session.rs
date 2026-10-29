@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::num::NonZeroUsize;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -127,6 +128,22 @@ impl Paths {
 }
 
 /// A document laid out by Typst, kept up to date as operations arrive.
+/// The generated program, with where each node is in it.
+#[derive(Debug, Serialize)]
+pub struct SourceExport {
+    pub text: String,
+    pub prelude: usize,
+    pub nodes: Vec<SourceNode>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct SourceNode {
+    pub id: String,
+    pub kind: &'static str,
+    pub start: usize,
+    pub end: usize,
+}
+
 pub struct Session {
     doc: Document,
     paths: Paths,
@@ -308,7 +325,36 @@ impl Session {
         Some((pos.page.get(), pos.point.x.to_pt(), pos.point.y.to_pt()))
     }
 
-    /// Every page's geometry: trim, bleed, side, master and margins.
+        /// The program the engine generated, and where each node is in it, in
+    /// UTF-16 code units (as JavaScript counts); `prelude` is the length of
+    /// Matenadar's own definitions at its start.
+    pub fn source_export(&self) -> SourceExport {
+        let text = &self.generated.source;
+        let nodes = self.generated.map.nodes();
+        let mut wanted: Vec<usize> = nodes.iter().flat_map(|n| [n.src.start, n.src.end]).collect();
+        wanted.push(crate::generate::PRELUDE.len().min(text.len()));
+        wanted.sort_unstable();
+        wanted.dedup();
+        // One pass over the text turns byte offsets into UTF-16 ones.
+        let mut utf16 = HashMap::with_capacity(wanted.len());
+        let (mut byte, mut unit) = (0, 0);
+        let mut chars = text.chars();
+        for &w in &wanted {
+            while byte < w {
+                let Some(c) = chars.next() else { break };
+                byte += c.len_utf8();
+                unit += c.len_utf16();
+            }
+            utf16.insert(w, unit);
+        }
+        SourceExport {
+            text: text.clone(),
+            prelude: utf16[&crate::generate::PRELUDE.len().min(text.len())],
+            nodes: nodes.iter().map(|n| SourceNode { id: n.id.clone(), kind: n.kind, start: utf16[&n.src.start], end: utf16[&n.src.end] }).collect(),
+        }
+    }
+
+/// Every page's geometry: trim, bleed, side, master and margins.
     pub fn pages(&self) -> Vec<PageInfo> {
         // Sections and pages mark their first page (`<mt-sec>`).
         let intro = self.layout.introspector();

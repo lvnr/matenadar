@@ -137,6 +137,29 @@ assert.deepEqual(patch.layout.map((op) => `${op.op} ${op.path ?? ""}`.trim()), [
 assert.ok(Array.isArray(mt.diagnostics()));
 assert.ok(mt.fontsUsed().some((f) => f.family === family && f.pages.includes(1)));
 
+// ---- Words on the page ----
+
+const c0 = mt.caret("p1", 0);
+assert.equal(c0.page, mt.position("p1").page);
+assert.ok(c0.h > 5);
+const c4 = mt.caret("p1", 4);
+assert.ok(c4.x > c0.x && c4.y === c0.y, "further into the words, further right");
+assert.equal(mt.offsetAt("p1", c4.page, c4.x + 0.01, c4.y + c4.h / 2), 4);
+assert.equal(mt.textLines("p1").length, mt.lines("p1"));
+assert.equal(mt.selectionRects("p1", 0, 3).length, 1);
+const words = mt.node("p1").content;
+assert.ok(mt.splitBlock("p1", 4, "p1b").can_undo);
+assert.equal(mt.node("p1").text, "New ");
+const joined = mt.joinBlock("p1b");
+assert.deepEqual([joined.into, joined.offset], ["p1", 4]);
+assert.deepEqual(mt.node("p1").content, words, "split and joined, the words are as they were");
+mt.markText("p1", 0, 3, "strong", true);
+assert.deepEqual(mt.node("p1").content[0], { text: "New", strong: true });
+const source = mt.source();
+assert.ok(source.prelude > 1000 && source.text.length > source.prelude);
+const p1node = source.nodes.find((n) => n.id === "p1");
+assert.ok(p1node && source.text.slice(p1node.start, p1node.end).includes("<p1>"), "the source map finds p1 in the program");
+
 if (process.env.MATENADAR_BIN) {
   // The same document and edits, laid out by the command line, give the same pages.
   const { execFileSync } = await import("node:child_process");

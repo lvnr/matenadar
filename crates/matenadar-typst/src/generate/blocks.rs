@@ -522,7 +522,14 @@ impl Gen<'_> {
             (None, [matenadar_model::block::Inline::Plain(t)]) => Some(t.clone()),
             _ => None,
         };
+        // Whose words these are: the paragraph's, or (in a text frame) the frame's from `base` on.
+        let (node, base, labelled) = match p.id.as_deref().and_then(|id| self.owners.get(id)) {
+            Some((n, b, l)) => (Some(n.clone()), *b, *l),
+            None => (p.id.clone(), 0, true),
+        };
+        let id = p.id.clone().filter(|_| labelled);
         if drop && let Some(text) = plain.filter(|t| !t.trim().is_empty()) {
+            let lead = text.len() - text.trim_start().len();
             let mut chars = text.trim_start().chars();
             let mut cap: String = chars.next().map(String::from).unwrap_or_default();
             // An opening quote goes with the cap.
@@ -530,12 +537,28 @@ impl Gen<'_> {
                 cap.extend(chars.next());
             }
             let rest: String = chars.collect();
-            self.raw(&format!("#mt-drop({st}, first: {first}{k}, {}, {})", str_lit(&cap), str_lit(&rest)));
-            if let Some(id) = p.id.as_deref().filter(|id| self.labels && label_safe(id)) {
+            // The cap and the words as markup, so that every letter is the
+            // paragraph's (for the caret); `mt-drop` sets the words around the cap.
+            self.raw(&format!("#mt-drop({st}, first: {first}{k}, ["));
+            let mut at = base + lead;
+            self.plain(node.as_deref(), at, &cap);
+            at += cap.len();
+            self.raw("], (");
+            // Each word with the space after it, so that spaces are the paragraph's too.
+            let words: Vec<&str> = rest.split(' ').collect();
+            for (i, word) in words.iter().enumerate() {
+                let spaced = if i + 1 < words.len() { format!("{word} ") } else { word.to_string() };
+                self.raw("[");
+                self.plain(node.as_deref(), at, &spaced);
+                self.raw("], ");
+                at += spaced.len();
+            }
+            self.raw("))");
+            if let Some(id) = id.as_deref().filter(|id| self.labels && label_safe(id)) {
                 self.raw(&format!("#metadata({}) <{id}>", str_lit(id)));
             }
             self.raw("\n");
-            self.node(p.id.as_deref(), "p", start);
+            self.node(id.as_deref(), "p", start);
             return;
         }
         if let Some(a) = anchor {
@@ -544,7 +567,7 @@ impl Gen<'_> {
         }
         let w = if cx.hug { ", w: auto" } else { "" };
         self.raw(&format!("#mt-par({st}, first: {first}{k}{w})["));
-        self.label(p.id.as_deref());
+        self.label(id.as_deref());
         let content = content_of(&p.text, &p.content);
         let mut resolved = match &p.style {
             Some(n) => self.doc.design.style(n),
@@ -553,14 +576,14 @@ impl Gen<'_> {
         if let Some(over) = &p.set {
             resolved = resolved.with(over);
         }
-        self.nbsp_at = if resolved.wrap.as_deref() == Some("pretty") { last_space(&content) } else { None };
+        self.nbsp_at = if resolved.wrap.as_deref() == Some("pretty") { last_space(&content).map(|n| n + base) } else { None };
         // Typst hyphenates justified text unless told otherwise.
         self.hyphenating = resolved.text.hyphenate.unwrap_or(resolved.align == Some(Align::Justify));
-        self.inlines(p.id.as_deref(), &content);
+        self.inlines_at(node.as_deref(), base, &content);
         self.hyphenating = false;
         self.nbsp_at = None;
         self.raw("]\n");
-        self.node(p.id.as_deref(), "p", start);
+        self.node(id.as_deref(), "p", start);
     }
 
     fn table(&mut self, t: &matenadar_model::block::Table, cx: &FlowCx, anchor: Option<&str>) {

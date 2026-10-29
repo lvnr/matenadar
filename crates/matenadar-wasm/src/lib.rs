@@ -270,6 +270,20 @@ impl Engine {
                 let lines = p.get("lines").and_then(Value::as_i64).ok_or("nudge needs lines")?;
                 Out::Json(json!(e.nudge(id_of()?, lines as i32).map_err(|e| e.to_string())?))
             }
+            "caret" => Out::Json(json!(e.caret(id_of()?, num_of("offset")? as usize, p.get("upstream").and_then(Value::as_bool).unwrap_or(false)))),
+            "offset_at" => Out::Json(json!(e.offset_at(id_of()?, page()?, num_of("x")?, num_of("y")?))),
+            "selection_rects" => Out::Json(json!(e.selection_rects(id_of()?, num_of("start")? as usize, num_of("end")? as usize))),
+            "text_lines" => Out::Json(json!(e.text_lines(id_of()?))),
+            "split_block" => edited(e.split_block(id_of()?, num_of("offset")? as usize, str_of("new_id").ok_or("split_block needs new_id")?))?,
+            "join_block" => Out::Json(json!(e.join_block(id_of()?).map_err(|e| e.to_string())?)),
+            "mark_text" => edited(e.mark_text(
+                id_of()?,
+                num_of("start")? as usize,
+                num_of("end")? as usize,
+                str_of("field").ok_or("mark_text needs field")?,
+                p.get("value").cloned().unwrap_or(Value::Null),
+            ))?,
+            "source" => Out::Json(json!(e.session().source_export())),
             "undo" => edited(e.undo())?,
             "redo" => edited(e.redo())?,
             "diagnostics" => Out::Json(json!(e.diagnostics())),

@@ -159,6 +159,33 @@ export class Matenadar {
     return this.#call("document", {});
   }
 
+  // ---- Words on the page (offsets are bytes of the node's plain text, UTF-8) ----
+
+  /** The caret before a byte of a node's words, `{page, x, y, h}` (y is the line's top), or null. `upstream` keeps it at the end of a line that breaks there. */
+  caret(id, offset, { upstream = false } = {}) {
+    return this.#call("caret", { id, offset, upstream });
+  }
+
+  /** The place in a node's words nearest a point on a page, or null. */
+  offsetAt(id, page, x, y) {
+    return this.#call("offset_at", { id, page, x, y });
+  }
+
+  /** A rectangle per line over the words `start..end`: `[{page, rect}]`. */
+  selectionRects(id, start, end) {
+    return this.#call("selection_rects", { id, start, end });
+  }
+
+  /** The lines a node's words set in: `[{page, rect, start, end}]`. */
+  textLines(id) {
+    return this.#call("text_lines", { id });
+  }
+
+  /** The program the engine generated, `{text, prelude, nodes: [{id, kind, start, end}]}`, in UTF-16 offsets. */
+  source() {
+    return this.#call("source", {});
+  }
+
   // ---- Editing: each call is one step to undo ----
 
   /** Matenadar operations, applied together. */
@@ -186,6 +213,21 @@ export class Matenadar {
 
   removeBlock(id) {
     return this.apply({ op: "remove", id });
+  }
+
+  /** Splits a paragraph or heading at a byte of its words; the words after go to a new block `newId` after it. */
+  splitBlock(id, offset, newId) {
+    return this.#call("split_block", { id, offset, new_id: newId });
+  }
+
+  /** Joins a paragraph or heading to the one before it: `{into, offset, ...edited}`, where its words now start. */
+  joinBlock(id) {
+    return this.#call("join_block", { id });
+  }
+
+  /** Marks the words `start..end`: `em`, `strong`, `span`, `color`, `size`, `tracking`, `case`…; null takes the mark off. */
+  markText(id, start, end, field, value) {
+    return this.#call("mark_text", { id, start, end, field, value });
   }
 
   /** Fields of a node (null removes one). With `{style: true}`, a paragraph's or heading's style overrides. */

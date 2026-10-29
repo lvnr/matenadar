@@ -11,7 +11,13 @@ impl Gen<'_> {
     /// Writes inline content as Typst markup. `node` is the paragraph's id,
     /// for the source map; offsets count the plain text.
     pub fn inlines(&mut self, node: Option<&str>, content: &[Inline]) {
-        let mut at = 0;
+        self.inlines_at(node, 0, content);
+    }
+
+    /// Inline content whose words start at `base` of the node's words (a
+    /// paragraph of a text frame is the frame's words from there on).
+    pub fn inlines_at(&mut self, node: Option<&str>, base: usize, content: &[Inline]) {
+        let mut at = base;
         for (i, x) in content.iter().enumerate() {
             // Typst tracks every letter of a run but its last, so a word split
             // into runs would lose letter spacing at each split: `mt-tr` adds
@@ -102,7 +108,7 @@ impl Gen<'_> {
         }
     }
 
-    fn plain(&mut self, node: Option<&str>, at: usize, text: &str) {
+    pub(crate) fn plain(&mut self, node: Option<&str>, at: usize, text: &str) {
         let mut offset = at;
         for (i, part) in text.split('\n').enumerate() {
             if i > 0 {

@@ -13,7 +13,9 @@ const METHODS = [
   "assets", "addFont", "addFile", "open", "fonts", "close",
   "pages", "spreads", "svg", "png", "rgba", "pdf", "fingerprint", "fontsUsed",
   "hit", "rects", "node", "lines", "locate", "position", "layout", "document",
+  "caret", "offsetAt", "selectionRects", "textLines", "source",
   "apply", "setWords", "insertText", "deleteText", "insertBlock", "removeBlock",
+  "splitBlock", "joinBlock", "markText",
   "setFields", "setPicture", "setBlock", "moveFrame", "breakBefore", "hideOnPage", "nudge", "undo", "redo",
   "diagnostics", "check", "patch", "rebase",
 ];

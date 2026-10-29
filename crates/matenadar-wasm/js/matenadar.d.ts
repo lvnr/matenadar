@@ -107,6 +107,36 @@ export interface UsedFont {
   pages: number[];
 }
 
+export interface Caret {
+  page: number;
+  x: number;
+  /** The top of the line, in points from the trim's top-left corner. */
+  y: number;
+  h: number;
+}
+
+export interface TextLine {
+  page: number;
+  rect: Rect;
+  /** The bytes of the node's words the line sets. */
+  start: number;
+  end: number;
+}
+
+/** A join: the block that took the words, and where they start in it. */
+export interface Joined extends Edited {
+  into: string;
+  offset: number;
+}
+
+/** The generated Typst program; offsets in UTF-16 code units. */
+export interface SourceExport {
+  text: string;
+  /** The length of Matenadar's own definitions at the program's start. */
+  prelude: number;
+  nodes: { id: string; kind: string; start: number; end: number }[];
+}
+
 export interface Opened {
   pages: number;
   problems: string[];
@@ -165,6 +195,11 @@ export interface MatenadarApi {
   position(id: string): { page: number; x: number; y: number } | null;
   layout(pages?: number[]): { page: number; label: string; width: number; height: number; nodes: { id: string; kind: string; rect: Rect }[] }[];
   document(): MatenadarDocument;
+  caret(id: string, offset: number, options?: { upstream?: boolean }): Caret | null;
+  offsetAt(id: string, page: number, x: number, y: number): number | null;
+  selectionRects(id: string, start: number, end: number): { page: number; rect: Rect }[];
+  textLines(id: string): TextLine[];
+  source(): SourceExport;
 
   apply(ops: Op | Op[]): Edited;
   setWords(id: string, content: Json[]): Edited;
@@ -172,6 +207,9 @@ export interface MatenadarApi {
   deleteText(id: string, start: number, end: number): Edited;
   insertBlock(where: { after: string } | { before: string }, block: Json): Edited;
   removeBlock(id: string): Edited;
+  splitBlock(id: string, offset: number, newId: string): Edited;
+  joinBlock(id: string): Joined;
+  markText(id: string, start: number, end: number, field: string, value: Json): Edited;
   setFields(id: string, fields: Record<string, Json>, options?: { style?: boolean }): Edited;
   setPicture(id: string, fields: Record<string, Json>): Edited;
   setBlock(id: string, fields: Record<string, Json>): Edited;
@@ -212,12 +250,20 @@ export declare class Matenadar implements MatenadarApi {
   position(id: string): { page: number; x: number; y: number } | null;
   layout(pages?: number[]): { page: number; label: string; width: number; height: number; nodes: { id: string; kind: string; rect: Rect }[] }[];
   document(): MatenadarDocument;
+  caret(id: string, offset: number, options?: { upstream?: boolean }): Caret | null;
+  offsetAt(id: string, page: number, x: number, y: number): number | null;
+  selectionRects(id: string, start: number, end: number): { page: number; rect: Rect }[];
+  textLines(id: string): TextLine[];
+  source(): SourceExport;
   apply(ops: Op | Op[]): Edited;
   setWords(id: string, content: Json[]): Edited;
   insertText(id: string, offset: number, text: string): Edited;
   deleteText(id: string, start: number, end: number): Edited;
   insertBlock(where: { after: string } | { before: string }, block: Json): Edited;
   removeBlock(id: string): Edited;
+  splitBlock(id: string, offset: number, newId: string): Edited;
+  joinBlock(id: string): Joined;
+  markText(id: string, start: number, end: number, field: string, value: Json): Edited;
   setFields(id: string, fields: Record<string, Json>, options?: { style?: boolean }): Edited;
   setPicture(id: string, fields: Record<string, Json>): Edited;
   setBlock(id: string, fields: Record<string, Json>): Edited;

@@ -219,10 +219,12 @@
   let top = tx.at("top-edge", default: 0.8em)
   let lead = top.em * base + top.abs - body-cap
   let narrow = size.width - capw
-  let words = rest.split(" ")
+  // The words: one string, or an array of words, each with the space after
+  // it (content that keeps each letter's place in the paragraph's source).
+  let (words, sep) = if type(rest) == str { (rest.split(" "), " ") } else { (rest, none) }
   let head = st + (below: 0pt)
   let tail = st + (above: 0pt, indent-first: false)
-  let part(ws) = mt-par(head, k: k, first: true, w: narrow, ws.join(" "))
+  let part(ws) = mt-par(head, k: k, first: true, w: narrow, ws.join(sep))
   let lo = 0
   let hi = words.len()
   while lo < hi {
@@ -232,9 +234,9 @@
   block(above: st.at("above", default: 0pt) * k, below: 0pt, grid(
     columns: (capw, narrow),
     move(dy: lead, cap-box),
-    mt-par(head + (above: 0pt), k: k, first: true, w: narrow, [#words.slice(0, lo).join(" ")#if lo < words.len() { linebreak(justify: true) }]),
+    mt-par(head + (above: 0pt), k: k, first: true, w: narrow, [#words.slice(0, lo).join(sep)#if lo < words.len() { linebreak(justify: true) }]),
   ))
-  if lo < words.len() { mt-par(tail, k: k, first: true, words.slice(lo).join(" ")) }
+  if lo < words.len() { mt-par(tail, k: k, first: true, words.slice(lo).join(sep)) }
 })
 
 // A heading: a paragraph in its style that is also a Typst heading (for the

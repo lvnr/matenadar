@@ -216,6 +216,10 @@ pub(crate) struct Gen<'a> {
     /// The opacity of the groups around what is being written, for drawings
     /// (SVG), which fade themselves.
     pub opacity: f64,
+    /// Paragraphs the generator makes whose words are another node's (a text
+    /// frame's): paragraph id → the node, where in its words they start, and
+    /// whether the paragraph is labelled itself.
+    pub owners: HashMap<String, (String, usize, bool)>,
 }
 
 /// A position in the source map's lists.
@@ -254,6 +258,7 @@ impl<'a> Gen<'a> {
             hyphenating: false,
             resolved: HashMap::new(),
             opacity: 1.0,
+            owners: HashMap::new(),
         }
     }
 

@@ -1,7 +1,7 @@
 //! Elements: things placed at a position.
 
 use matenadar_model::Length;
-use matenadar_model::block::{Block, Para};
+use matenadar_model::block::{Block, Inline, Para, Run, content_of};
 use matenadar_model::element::{Clip, Element, GridCell, GridRow, LetterGrid, Lettering, Origin, Place, TextFrame};
 use matenadar_model::style::{Stroke, TextStyle};
 use matenadar_model::units::num;
@@ -436,22 +436,24 @@ impl Gen<'_> {
         let fit_width = t.fit.as_deref() == Some("width");
         let hi = place.h.and_then(|h| h.pt()).map(|h| h - it - ib);
 
-        // The frame's paragraphs.
+        // The frame's paragraphs: its blocks, or its words with a blank line
+        // between paragraphs. Those stay the frame's words, for the caret.
         let blocks: Vec<Block> = if !t.blocks.is_empty() {
             t.blocks.clone()
-        } else if let Some(text) = &t.text {
-            text.split("\n\n")
+        } else {
+            let frame = place.id.clone();
+            paragraphs(&content_of(&t.text, &t.content))
+                .into_iter()
                 .enumerate()
-                .map(|(i, p)| {
-                    Block::P(Para {
-                        id: if i == 0 { place.id.as_ref().map(|id| format!("{id}.p")) } else { None },
-                        text: Some(p.to_string()),
-                        ..Para::default()
-                    })
+                .map(|(i, (base, content))| {
+                    let id = frame.as_ref().map(|f| if i == 0 { format!("{f}.p") } else { format!("{f}.p{}", i + 1) });
+                    if let (Some(f), Some(id)) = (&frame, &id) {
+                        // Only a `text` frame's first paragraph has been labelled (as `<id>.p`).
+                        self.owners.insert(id.clone(), (f.clone(), base, i == 0 && t.text.is_some()));
+                    }
+                    Block::P(Para { id, content, ..Para::default() })
                 })
                 .collect()
-        } else {
-            vec![Block::P(Para { content: t.content.clone(), ..Para::default() })]
         };
 
         let saved_notes = self.notes.take();
@@ -867,4 +869,34 @@ pub(crate) fn crop_call(path: &str, c: &matenadar_model::element::Crop, w: Optio
         num(fx.clamp(0.0, 1.0)),
         num(fy.clamp(0.0, 1.0))
     )
+}
+
+/// Inline content cut into paragraphs at each blank line in its words, each
+/// with where its words start in the whole.
+fn paragraphs(content: &[Inline]) -> Vec<(usize, Vec<Inline>)> {
+    let mut out: Vec<(usize, Vec<Inline>)> = vec![(0, Vec::new())];
+    let mut at = 0;
+    for x in content {
+        let text = match x {
+            Inline::Plain(s) => s.as_str(),
+            Inline::Run(r) => r.text.as_str(),
+            other => {
+                out.last_mut().expect("one paragraph at least").1.push(other.clone());
+                continue;
+            }
+        };
+        for (i, piece) in text.split("\n\n").enumerate() {
+            if i > 0 {
+                at += 2;
+                out.push((at, Vec::new()));
+            }
+            let words = match x {
+                Inline::Run(r) => Inline::Run(Run { text: piece.to_string(), ..r.clone() }),
+                _ => Inline::Plain(piece.to_string()),
+            };
+            out.last_mut().expect("one paragraph at least").1.push(words);
+            at += piece.len();
+        }
+    }
+    out
 }

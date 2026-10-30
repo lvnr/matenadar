@@ -1,0 +1,215 @@
+{
+  "trim": "8.5x11",
+  "pages": 32,
+  "ends": "separate",
+  "title": "How Dinosaurs Worked",
+  "subtitle": "Answers to Dinosaur Why Questions for Curious Kids",
+  "author": "Nell Bramley",
+  "publisher": "Whynarium",
+  "copyright": "Text and illustrations copyright © 2026 Nell Bramley. All rights reserved.\nNo part of this book may be reproduced, stored or shared in any form without written permission, except for brief quotations in reviews.\nFirst edition, 2026.",
+  "fonts": {
+    "display": "Cooper Hewitt",
+    "text": "Cooper Hewitt"
+  },
+  "font_dirs": [
+    "build/fonts"
+  ],
+  "design": {
+    "base": {
+      "weight": 705
+    },
+    "styles": {
+      "title": {
+        "weight": 711,
+        "size": 46
+      },
+      "subtitle": {
+        "weight": 707
+      },
+      "heading": {
+        "weight": 711
+      },
+      "publisher": {
+        "weight": 707
+      },
+      "story": {
+        "weight": 707
+      }
+    }
+  },
+  "story": [
+    {
+      "src": "book/visuals/accepted/p003-f-welcome-r1.jpg",
+      "id": "p03-welcome",
+      "alt": "Front of the book. Peek the chameleon waves hello beside Juno, Grandpa and Dr. Nora the paleontologist, with round windows showing glimpses of the whole dig day, from a striped hill to birds at sunset."
+    },
+    {
+      "id": "p04-dig-site",
+      "spread": true,
+      "src": "art/dig-site.svg",
+      "gutter": "0.125in",
+      "alt": "A striped hill at sunrise, a white tent on its top and old bones in the sand below.",
+      "left": {
+        "text": "Long ago, this hill was the muddy bank of a river."
+      },
+      "right": {
+        "words": [
+          {
+            "type": "text",
+            "id": "p04-dig-site-right-words",
+            "x": "36pt",
+            "y": "684pt",
+            "w": "540pt",
+            "anchor": "bottom-left",
+            "style": "story",
+            "safe": true,
+            "text": "Animals came to drink. Some never left, and their bones are still inside the stone.",
+            "scrim": {
+              "opacity": 0.82,
+              "feather": "10pt",
+              "inset": "10pt",
+              "radius": "10pt"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "src": "book/visuals/accepted/p006-f-how-to-r1.jpg",
+      "id": "p06",
+      "alt": "Front of the book. A key to the book's features: Predict first, Peek's-eye view (a look-and-find page), Trace it, Say it, Size check, Whoa, What if, Myth or true, Still a mystery, Gross but true and Try it, each with an icon and a short explanation."
+    },
+    {
+      "src": "book/visuals/accepted/p007-w1-opener-r3.jpg",
+      "id": "p07",
+      "alt": "World opener: a scene, questions and a predict-first invitation. A striped badlands hill at 7:00 in the morning. Juno kneels in a dig pit beside a brown knob in the rock while Grandpa watches, Dr. Nora points to a thin pale line near the hilltop, and six numbered questions sit around the hill."
+    },
+    {
+      "src": "book/visuals/accepted/p008-w1-peeks-eye-r1.jpg",
+      "id": "p08",
+      "alt": "Page-turn reveal: read this world's fossil clues. The quarry hill sliced open like a layer cake. Sea layers with shells lie low down, river layers above hold dinosaur bones, two pale ash stripes carry little hourglasses, and no dinosaur bones lie above the thin line near the top."
+    },
+    {
+      "src": "book/visuals/accepted/p009-w1-where-to-dig-r1.jpg",
+      "id": "p09",
+      "alt": "How it works. A trail of little bone scraps leads up a striped slope to a bone sticking out of the rock. Juno and Dr. Nora walk slowly with their eyes on the ground, following the scraps uphill."
+    },
+    {
+      "src": "book/visuals/accepted/p010-w1-bone-or-rock-r1.jpg",
+      "id": "p10",
+      "alt": "How it works. A plain striped rock beside a piece of fossil bone with a honeycomb of tiny holes at its broken end and fine lines along its outside. Juno checks her own knob with a magnifying glass while Grandpa watches."
+    },
+    {
+      "src": "book/visuals/accepted/p011-w1-lick-r1.jpg",
+      "id": "p11",
+      "alt": "Gross but true: a funny fact. A scientist touches a scrap of fossil bone to her tongue. A zoom circle shows spit soaking into the bone's tiny holes, so it sticks, while spit slides off a plain pebble. Then she checks it with a hand lens."
+    },
+    {
+      "src": "book/visuals/accepted/p012-w1-into-rock-r1.jpg",
+      "id": "p12",
+      "alt": "How it works. Four panels show bones by a river getting buried by a flood, then covered by more and more layers, until the squeezed, glued mud hardens into rock around them."
+    },
+    {
+      "src": "book/visuals/accepted/p013-w1-to-stone-r1.jpg",
+      "id": "p13",
+      "alt": "A closer or wider look. A zoom ladder from a fossil bone in rock down to its honeycomb. Water with minerals dissolved in it seeps through, and crystals grow on the bone's walls until most of the holes are full of stone."
+    },
+    {
+      "src": "book/visuals/accepted/p014-w1-how-old-r1.jpg",
+      "id": "p14",
+      "alt": "How it works. A fossil bone lies between two thin layers of volcanic ash. Tiny crystals in the ash work like hourglasses that start when the ash falls. The lower ash is older and the upper ash is younger, so the bone's age lies between them."
+    },
+    {
+      "src": "book/visuals/accepted/p015-w1-how-long-ago-r1.jpg",
+      "id": "p15",
+      "alt": "Whoa! A surprising fact. A long path of footprints across a field, one step for every million years. People like us are a third of a step away, the last T. rex is 66 steps away, and the first dinosaurs are 230 steps away."
+    },
+    {
+      "src": "book/visuals/accepted/p016-w1-jurassic-r1.jpg",
+      "id": "p16",
+      "alt": "How it works. A three-layer rock cake shows dinosaur times: the Triassic, named for three rocks in Germany, with the first dinosaurs; the Jurassic, named for the Jura Mountains, with Stegosaurus and long-necks; and the Cretaceous, named for chalk, with T. rex and Triceratops."
+    },
+    {
+      "src": "book/visuals/accepted/p017-w1-cave-people-r1.jpg",
+      "id": "p17",
+      "alt": "Myth or true? A common belief tested. A tall cutaway of rock layers. Dinosaur bones lie deep down, stone tools lie far above, and a huge gap of layers sits between them. A cartoon of a cave person riding a dinosaur is stamped MYTH."
+    },
+    {
+      "src": "book/visuals/accepted/p018-w1-sea-monster-r1.jpg",
+      "id": "p18",
+      "alt": "How it works. A map shows a sea that once split North America in two. In a cutaway hill, low sea layers hold shells and a mosasaur skeleton, and higher river layers hold dinosaur bones."
+    },
+    {
+      "src": "book/visuals/accepted/p019-w1-backyard-r1.jpg",
+      "id": "p19",
+      "alt": "How it works. On a beach in Wales, waves and weather wear away an old boulder, a small girl spots a three-toed dinosaur footprint on a walk with her dad, and a scientist checks it."
+    },
+    {
+      "src": "book/visuals/accepted/p020-w1-hike-r1.jpg",
+      "id": "p20",
+      "alt": "What if? A thought experiment. Juno finds a bone on a hike. She leaves it in place, Grandpa photographs it with her shoe beside it for size, and they show the photo and a map pin to someone at the museum."
+    },
+    {
+      "src": "book/visuals/accepted/p021-w1-bonebed-r1.jpg",
+      "id": "p21",
+      "alt": "How it works. A herd gathers at a drying water hole, their bones later lie scattered, a rushing river sweeps the bones along, and they pile up at a slow bend in the river as a bonebed."
+    },
+    {
+      "src": "book/visuals/accepted/p022-w1-jacket-r1.jpg",
+      "id": "p22",
+      "alt": "How it works. Diggers trench around a big bone, cover it with damp paper, wrap it in plaster strips, flip the hard jacket and plaster its bottom. A helicopter lifts a jacket away while Juno carries her own small jacket down the hill."
+    },
+    {
+      "src": "book/visuals/accepted/p023-w1-try-it-r1.jpg",
+      "id": "p23",
+      "alt": "An activity to share with a grown-up. Juno and Grandpa unroll a long strip of toilet paper along a park path. Each square is a million years, and Juno draws Stegosaurus far from T. rex and Triceratops, then adds more dinosaurs."
+    },
+    {
+      "src": "book/visuals/accepted/p024-w1-quick-fire-r1.jpg",
+      "id": "p24",
+      "alt": "Quick-fire whys and the look-again game. Five quick answers in small panels: rain uncovering bones, tiny brushes on fragile fossils, a skeleton taking several summers to dig, what the word dinosaur means, and sail-backed Dimetrodon, which was not a dinosaur."
+    },
+    {
+      "src": "book/visuals/accepted/p025-w2-opener-r1.jpg",
+      "id": "p25",
+      "alt": "World opener: a scene, questions and a predict-first invitation. A museum prep lab. A worker opens Juno's small plaster jacket while Grandpa holds open a drawer of fossil foot bones. Around the lab are an air tool, a scan screen, a lizard skeleton, a half-built model head and a slab of fossil skin, each with a numbered question."
+    },
+    {
+      "src": "book/visuals/accepted/p026-w2-peeks-eye-r1.jpg",
+      "id": "p26",
+      "alt": "Page-turn reveal: read this world's fossil clues. The prep lab seen through Peek's scanner eyes. Glowing, see-through views show Juno's toe bone and its match in a drawer, a skeleton inside rock, a skull in slices, a hole in a hip socket, muscles on a skull and fossil skin."
+    },
+    {
+      "src": "book/visuals/accepted/p027-w2-one-bone-r1.jpg",
+      "id": "p27",
+      "alt": "How it works. Juno's bone is compared with a drawer of fossil foot bones. Its broad, flat, spade-like shape matches the tip of a back toe of a duck-billed dinosaur called Edmontosaurus."
+    },
+    {
+      "src": "book/visuals/accepted/p028-w2-rock-off-r1.jpg",
+      "id": "p28",
+      "alt": "How it works. A preparator uses a pen-sized buzzing tool to chip rock off a fossil bone, one grain at a time, then brushes the dust away and glues the cracks."
+    },
+    {
+      "src": "book/visuals/accepted/p029-w2-scan-r1.jpg",
+      "id": "p29",
+      "alt": "How it works. A plaster jacket slides through a ring-shaped scanner. Thin picture slices stack up on a computer into a see-through 3-D skull still hidden inside the rock."
+    },
+    {
+      "src": "book/visuals/accepted/p030-w2-lizards-r1.jpg",
+      "id": "p30",
+      "alt": "How it works. A lizard's legs bend out to the sides, while a dinosaur's legs stand straight underneath its body. A close-up shows the hole right through a dinosaur's hip socket."
+    }
+  ],
+  "back": [
+    {
+      "id": "about",
+      "heading": "About this book",
+      "text": "How can a footprint tell you how fast a dinosaur walked? Did T. rex have lips? And how do scientists know what a dinosaur looked like?\n\nJoin Juno, Grandpa and Peek the chameleon for one Dig Day at a badlands dinosaur museum. From a bone peeking out of a hillside to birds flying home at sunset, eight stops reveal eight kinds of clues.\n\nHow Dinosaurs Worked answers children's dinosaur questions by showing how we know. Follow rock layers, bones, tracks, eggs, bites, scars, living cousins and the thin line left by an asteroid's impact. Short explanations and numbered routes connect each surprising answer to the evidence behind it."
+    },
+    {
+      "id": "grown-ups",
+      "heading": "For grown-ups",
+      "text": "A note for grown-ups: enjoy the activities together. Supervise scissors, raw eggs and chicken bones. Wash hands and surfaces after handling raw eggs. Do not taste rocks or fossil poop. Leave fossils where you find them; see the fossil rules on page 157.\n\nThe science is simplified for young readers. Ages, sizes and other numbers are rounded. Living ancient animals in the pictures are reconstructions from clues, not photographs. Colors and behaviors may be uncertain. Pages marked “Still a mystery!” show questions scientists are still investigating. Birds are living dinosaurs."
+    }
+  ]
+}

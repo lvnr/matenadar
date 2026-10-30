@@ -11,6 +11,7 @@ pub mod generate;
 pub mod glyphs;
 pub mod inspect;
 pub mod session;
+pub mod tone;
 pub mod world;
 
 pub use check::{CheckOptions, Issue, Severity, check};

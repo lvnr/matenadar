@@ -73,6 +73,9 @@ pub struct Writer<'a> {
     files: HashMap<String, String>,
     /// A node's id to its title (headings, sections), for references.
     titles: HashMap<String, String>,
+    /// Numbered figures' numbers and labels, by figure and by id.
+    fig_numbers: HashMap<usize, (String, String)>,
+    fig_ids: HashMap<String, (String, String)>,
     out: String,
     notes: Vec<String>,
     note_no: usize,
@@ -92,8 +95,12 @@ impl<'a> Writer<'a> {
             Some(match doc.content.get(i)? {
                 Item::Section(s) => format!("{}.xhtml", super::file_stem("s", &s.id, i)),
                 Item::Page(p) => format!("{}.xhtml", super::file_stem("p", &p.id, i)),
+                Item::Spread(s) => format!("{}.xhtml", super::file_stem("p", &s.id, i)),
             })
         };
+        let numbered = matenadar_model::figures::numbered(doc);
+        let fig_ids = numbered.iter().filter_map(|n| Some((n.figure.id.clone()?, (n.number.clone(), n.label.clone())))).collect();
+        let fig_numbers = numbered.into_iter().map(|n| (matenadar_model::figures::key(n.figure), (n.number, n.label))).collect();
         walk(doc, &mut |path, node| {
             let Some(file) = file_of(path) else { return };
             match node {
@@ -128,6 +135,8 @@ impl<'a> Writer<'a> {
             paths,
             fonts,
             dpi,
+            fig_numbers,
+            fig_ids,
             files,
             titles,
             out: String::new(),
@@ -227,9 +236,10 @@ impl<'a> Writer<'a> {
                 self.out.push_str(&format!("<p{}{}>{}</p>\n", Self::id_attr(x.id.as_deref()), self.attrs(&classes, vec![]), esc(&text)));
             }
             Block::Figure(f) => {
-                let src = self.picture(&f.src, assets);
+                let src = self.picture(&f.src, f.filter.as_ref(), assets);
                 let caption = content_of(&f.caption, &f.caption_content);
-                let alt = plain_text(&caption);
+                let alt = f.alt.clone().unwrap_or_else(|| plain_text(&caption));
+                let numbered = self.fig_numbers.get(&matenadar_model::figures::key(f)).cloned();
                 self.out.push_str(&format!("<figure{}>", Self::id_attr(f.id.as_deref())));
                 match src {
                     Some(href) => {
@@ -238,10 +248,18 @@ impl<'a> Writer<'a> {
                     }
                     None => self.out.push_str(&format!("<p>[{}]</p>", esc(&f.src))),
                 }
-                if !caption.is_empty() {
+                if !caption.is_empty() || numbered.is_some() {
                     let cs = f.caption_style.clone().or_else(|| self.doc.design.styles.contains_key("caption").then(|| "caption".to_string()));
                     let classes: Vec<String> = cs.iter().map(|n| class("s", n)).collect();
                     self.out.push_str(&format!("<figcaption{}>", self.attrs(&classes, vec![])));
+                    if let Some((_, label)) = &numbered {
+                        let figs = self.doc.design.figures.clone().unwrap_or_default();
+                        let span: Vec<String> = figs.span.iter().map(|n| class("c", n)).collect();
+                        self.out.push_str(&format!("<span{}>{}</span>", self.attrs(&span, vec![]), esc(label)));
+                        if !caption.is_empty() {
+                            self.text(figs.separator.as_deref().unwrap_or(". "));
+                        }
+                    }
                     self.inlines(&caption, assets);
                     self.out.push_str("</figcaption>");
                 }
@@ -374,6 +392,18 @@ impl<'a> Writer<'a> {
                         && let Some(title) = &s.title
                     {
                         self.out.push_str(&format!("<li><a href=\"{}.xhtml\">{}</a></li>\n", super::file_stem("s", &s.id, i), esc(title)));
+                    }
+                }
+                self.out.push_str("</ol></nav>\n");
+            }
+            Block::Lof(l) => {
+                // Figures by number and caption, each a link to where it stands.
+                self.out.push_str(&format!("<nav class=\"lof\"{}><ol>\n", Self::id_attr(l.id.as_deref())));
+                for n in matenadar_model::figures::numbered(self.doc) {
+                    let text = format!("{} {}", n.number, matenadar_model::figures::list_caption(n.figure));
+                    match n.figure.id.as_ref().and_then(|id| Some((id, self.files.get(id)?))) {
+                        Some((id, file)) => self.out.push_str(&format!("<li><a href=\"{file}#{}\">{}</a></li>\n", esc(id), esc(&text))),
+                        None => self.out.push_str(&format!("<li>{}</li>\n", esc(&text))),
                     }
                 }
                 self.out.push_str("</ol></nav>\n");
@@ -570,7 +600,12 @@ impl<'a> Writer<'a> {
                     self.text(&value);
                 }
                 Inline::Ref(r) => {
-                    let text = self.titles.get(&r.target).cloned().unwrap_or_else(|| "↗".into());
+                    let figure = self.fig_ids.get(&r.target);
+                    let text = match (r.show.as_deref(), figure) {
+                        (Some("number"), Some((number, _))) => number.clone(),
+                        (Some("label"), Some((_, label))) => label.clone(),
+                        _ => self.titles.get(&r.target).cloned().unwrap_or_else(|| "↗".into()),
+                    };
                     match self.files.get(&r.target) {
                         Some(file) => self.out.push_str(&format!("<a href=\"{file}#{}\">{}</a>", esc(&r.target), esc(&text))),
                         None => self.text(&text),
@@ -581,7 +616,7 @@ impl<'a> Writer<'a> {
                     let href = if img.image.is_empty() {
                         img.markup.as_ref().map(|m| assets.add(&format!("markup:{m}"), "images/inline", "svg", m.clone().into_bytes()))
                     } else {
-                        self.picture(&img.image, assets)
+                        self.picture(&img.image, None, assets)
                     };
                     if let Some(href) = href {
                         let h = img.h.map(|h| format!("height: {}em; ", num(h.resolve(self.css.base, 0.0) / self.css.base))).unwrap_or_default();
@@ -658,13 +693,22 @@ impl<'a> Writer<'a> {
     }
 
     /// A picture from the document's files, added to the book.
-    fn picture(&self, src: &str, assets: &mut Assets) -> Option<String> {
+    /// A picture of the book, as a file of the EPUB. Its own filter is part
+    /// of its design and applies; the book's black-ink filter does not,
+    /// since a screen shows colour.
+    fn picture(&self, src: &str, filter: Option<&matenadar_model::element::Filter>, assets: &mut Assets) -> Option<String> {
         let rel = src.trim_start_matches('/');
         if rel.contains("..") {
             return None;
         }
         let ext = rel.rsplit_once('.')?.1.to_ascii_lowercase();
         let data = self.session.files().read(rel)?.to_vec();
+        if let Some(f) = filter.filter(|f| !f.is_identity() && ext != "svg")
+            && let Some((data, ext)) = matenadar_typst::tone::apply(&data, f)
+        {
+            let key = format!("file:{rel}|{}", serde_json::to_string(f).unwrap_or_default());
+            return Some(assets.add(&key, "images/img", ext, data));
+        }
         match ext.as_str() {
             "jpg" | "jpeg" | "png" | "gif" | "svg" | "webp" => Some(assets.add(&format!("file:{rel}"), "images/img", &ext, data)),
             // Other formats as PNG.

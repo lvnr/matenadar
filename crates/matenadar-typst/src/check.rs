@@ -23,8 +23,8 @@ pub enum Severity {
 pub struct Issue {
     pub severity: Severity,
     /// A stable code: `overflow`, `text-in-margin`, `low-resolution`,
-    /// `missing-glyph`, `fallback-font`, `widow`, `orphan`, `missing-file`,
-    /// `compiler`.
+    /// `color-in-black-ink`, `missing-glyph`, `fallback-font`, `widow`,
+    /// `orphan`, `missing-file`, `compiler`.
     pub code: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub page: Option<usize>,
@@ -41,11 +41,14 @@ pub struct CheckOptions {
     pub gutter_pt: Option<f64>,
     /// Raster images must reach this resolution at their printed size.
     pub min_ppi: f64,
+    /// Hold the pages to a black-ink interior even when the document doesn't
+    /// say it is one (`print.ink`).
+    pub black_ink: bool,
 }
 
 impl Default for CheckOptions {
     fn default() -> Self {
-        Self { safe_pt: 18.0, gutter_pt: None, min_ppi: 300.0 }
+        Self { safe_pt: 18.0, gutter_pt: None, min_ppi: 300.0, black_ink: false }
     }
 }
 
@@ -157,7 +160,7 @@ fn page_issues(s: &Session, opts: &CheckOptions, all: &[Item], keep: Option<&BTr
                     lines.entry(id.clone()).or_default().entry(item.page).or_default().insert((baseline * 10.0).round() as i64);
                 }
             }
-            Kind::Image { px: Some((pw, ph)), w, h } => {
+            Kind::Image { px: Some((pw, ph)), w, h, .. } => {
                 let ppi = (*pw as f64 / (w / 72.0)).min(*ph as f64 / (h / 72.0));
                 if ppi + 0.5 < opts.min_ppi && *w > 1.0 && *h > 1.0 {
                     out.push(Issue {
@@ -209,10 +212,100 @@ fn page_issues(s: &Session, opts: &CheckOptions, all: &[Item], keep: Option<&BTr
             }
         }
     }
+    if opts.black_ink || s.document().black_ink() {
+        out.extend(colour_issues(all));
+    }
     if let Some(keep) = keep {
         out.retain(|i| i.page.is_some_and(|p| keep.contains(&p)));
     }
     out
+}
+
+/// On a black-ink interior, whatever is drawn in colour: a printer turns it
+/// to grey with tones nobody chose. One issue per element (or node) and page.
+fn colour_issues(all: &[Item]) -> Vec<Issue> {
+    let mut hits: BTreeMap<(usize, String), String> = BTreeMap::new();
+    for item in all {
+        let what = match &item.kind {
+            Kind::Text { fill, .. } => colour_of(fill).map(|c| format!("text in {c}")),
+            Kind::Shape { paints } => paints.iter().find_map(colour_of).map(|c| format!("a shape in {c}")),
+            Kind::Image { image, .. } => picture_colour(image)
+                .filter(crate::tone::Colour::is_colour)
+                .map(|c| format!("a colour picture ({:.0}% of it clearly in colour)", c.share * 100.0)),
+        };
+        if let Some(what) = what {
+            let id = item.element.as_ref().or(item.node.as_ref()).map(|n| n.0.clone()).unwrap_or_default();
+            hits.entry((item.page, id)).or_insert(what);
+        }
+    }
+    hits.into_iter()
+        .map(|((page, id), what)| Issue {
+            severity: Severity::Error,
+            code: "color-in-black-ink",
+            page: Some(page),
+            node: (!id.is_empty()).then(|| id.clone()),
+            message: format!("{what} on a black-ink page; give pictures a grey filter (\"filter\": {{\"gray\": true}}) and set type and shapes in greys"),
+        })
+        .collect()
+}
+
+/// A paint's colour as `#rrggbb` when it is not a grey (a gradient's first
+/// coloured stop).
+fn colour_of(p: &typst::visualize::Paint) -> Option<String> {
+    use typst::visualize::Paint;
+    let hex = |c: &typst::visualize::Color| {
+        let rgb = c.to_rgb();
+        crate::tone::is_chromatic(rgb.red, rgb.green, rgb.blue)
+            .then(|| format!("#{:02x}{:02x}{:02x}", (rgb.red * 255.0).round() as u8, (rgb.green * 255.0).round() as u8, (rgb.blue * 255.0).round() as u8))
+    };
+    match p {
+        Paint::Solid(c) => hex(c),
+        Paint::Gradient(g) => g.stops_ref().iter().find_map(|(c, _)| hex(c)),
+        Paint::Tiling(_) => None,
+    }
+}
+
+/// How much colour a picture holds, measured once per picture: a raster's
+/// pixels, or a drawing rendered small.
+fn picture_colour(image: &typst::visualize::Image) -> Option<crate::tone::Colour> {
+    use std::collections::HashMap;
+    use std::sync::{Mutex, OnceLock};
+    static SEEN: OnceLock<Mutex<HashMap<u128, crate::tone::Colour>>> = OnceLock::new();
+    let key = typst::utils::hash128(image);
+    let seen = SEEN.get_or_init(Default::default);
+    if let Some(c) = seen.lock().ok()?.get(&key) {
+        return Some(*c);
+    }
+    let colour = match image.kind() {
+        typst::visualize::ImageKind::Raster(r) => crate::tone::colour(r.dynamic()),
+        _ => {
+            // A drawing: rendered with its longest side about 256 pixels.
+            use typst::layout::{Abs, Frame, FrameItem, Point, Size};
+            let longest = image.width().max(image.height()).max(1.0);
+            let k = 256.0 / longest;
+            let size = Size::new(Abs::pt(image.width() * k), Abs::pt(image.height() * k));
+            let mut frame = Frame::hard(size);
+            frame.push(Point::zero(), FrameItem::Image(image.clone(), size, typst::syntax::Span::detached()));
+            let page = typst_layout::Page {
+                frame,
+                bleed: Default::default(),
+                fill: typst::foundations::Smart::Custom(None),
+                numbering: None,
+                supplement: Default::default(),
+                number: 1,
+            };
+            let px = typst_render::render(&page, &typst_render::RenderOptions { pixel_per_pt: typst::utils::Scalar::new(1.0), render_bleed: false });
+            let img = image::RgbaImage::from_raw(px.width(), px.height(), px.data().to_vec())?;
+            crate::tone::colour(&image::DynamicImage::ImageRgba8(img))
+        }
+    };
+    if let Ok(mut s) = seen.lock() {
+        if s.len() > 4096 {
+            s.clear();
+        }
+        s.insert(key, colour);
+    }
+    Some(colour)
 }
 
 fn list(pages: &BTreeSet<usize>) -> String {

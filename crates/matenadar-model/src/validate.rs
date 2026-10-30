@@ -105,6 +105,20 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
             report(&format!("on_page.{id}.hide"), "hide lists the ids of master elements".into());
         }
     }
+    if let Some(f) = &d.figures {
+        check_word("design.figures.per", &f.per, &["book", "chapter"], &mut report);
+        if let Some(sp) = &f.span
+            && !d.spans.contains_key(sp)
+        {
+            report("design.figures.span", format!("no character style \"{sp}\""));
+        }
+    }
+    if let Some(p) = &doc.print {
+        check_word("print.ink", &p.ink, &["black", "color"], &mut report);
+        if let Some(Err(e)) = p.filter.as_ref().map(|f| f.check()) {
+            report("print.filter", e);
+        }
+    }
 
     // The content.
     let mut ids: HashMap<String, String> = HashMap::new();
@@ -146,6 +160,38 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
                         check_fill(&format!("{path}.fill"), f, &color_name, &mut report);
                     }
                 }
+                Item::Spread(s) => {
+                    if let Some(m) = &s.master
+                        && !d.masters.contains_key(m)
+                    {
+                        report(&format!("{path}.master"), format!("no master \"{m}\""));
+                    }
+                    check_word(&format!("{path}.numbering"), &s.numbering, &NUMBERINGS, &mut report);
+                    if let Some(f) = &s.fill {
+                        check_fill(&format!("{path}.fill"), f, &color_name, &mut report);
+                    }
+                    if s.src.is_none() && (s.left.src.is_none() || s.right.src.is_none()) {
+                        report(path, "a spread needs a picture: src, or a src on each side".into());
+                    }
+                    let in_unit = |v: f64| (0.0..=1.0).contains(&v);
+                    for (field, focus) in [("focus", s.focus), ("left.focus", s.left.focus), ("right.focus", s.right.focus)] {
+                        if let Some((fx, fy)) = focus
+                            && !(in_unit(fx) && in_unit(fy))
+                        {
+                            report(&format!("{path}.{field}"), "a focus is two fractions from 0 to 1".into());
+                        }
+                    }
+                    for (field, crop) in [("crop", s.crop), ("left.crop", s.left.crop), ("right.crop", s.right.crop)] {
+                        if let Some(Err(e)) = crop.map(|c| c.check()) {
+                            report(&format!("{path}.{field}"), e);
+                        }
+                    }
+                    for (field, filter) in [("filter", &s.filter), ("left.filter", &s.left.filter), ("right.filter", &s.right.filter)] {
+                        if let Some(Err(e)) = filter.as_ref().map(|f| f.check()) {
+                            report(&format!("{path}.{field}"), e);
+                        }
+                    }
+                }
             }
         }
         Node::Block(b) => {
@@ -160,10 +206,21 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
             if let Block::Box(x) = b {
                 check_word(&format!("{path}.stroke_align"), &x.stroke_align, &STROKE_ALIGNS, &mut report);
             }
-            if let Block::Figure(f) = b
-                && let Some(Err(e)) = f.crop.map(|c| c.check())
+            if let Block::Figure(f) = b {
+                if let Some(Err(e)) = f.crop.map(|c| c.check()) {
+                    report(&format!("{path}.crop"), e);
+                }
+                if let Some(Err(e)) = f.filter.as_ref().map(|c| c.check()) {
+                    report(&format!("{path}.filter"), e);
+                }
+                check_word(&format!("{path}.plate"), &f.plate, &["half", "full", "bleed"], &mut report);
+                check_word(&format!("{path}.float"), &f.float, &["here", "top", "bottom"], &mut report);
+            }
+            if let Block::Lof(l) = b
+                && let Some(st) = &l.style
+                && !has_style(st)
             {
-                report(&format!("{path}.crop"), e);
+                report(&format!("{path}.style"), format!("no style \"{st}\""));
             }
             if let Block::PageBreak(x) = b {
                 check_word(&format!("{path}.to"), &x.to, &["recto", "verso", "odd", "even"], &mut report);
@@ -251,6 +308,7 @@ fn block_styles(b: &Block) -> Vec<(&'static str, &str)> {
         Block::List(x) => push(&mut v, "style", &x.style),
         Block::Code(x) => push(&mut v, "style", &x.style),
         Block::Margin(x) => push(&mut v, "style", &x.style),
+        Block::Lof(x) => push(&mut v, "style", &x.style),
         _ => {}
     }
     v
@@ -300,6 +358,18 @@ fn check_element(
             if let Some(b) = &t.stroke {
                 check_border(&format!("{path}.stroke"), b, color_name, report);
             }
+            if let Some(s) = &t.scrim {
+                if let Some(c) = &s.color {
+                    check_color(&format!("{path}.scrim.color"), c, color_name, report);
+                }
+                if s.opacity.is_some_and(|o| !(0.0..=1.0).contains(&o)) {
+                    report(&format!("{path}.scrim.opacity"), "opacity runs from 0 to 1".into());
+                }
+                check_word(&format!("{path}.scrim.shape"), &s.shape, &["rect", "ellipse"], report);
+            }
+            if t.safe.is_some() && t.place.w.is_none() {
+                report(&format!("{path}.safe"), "a frame kept in the safe zone needs a width (w)".into());
+            }
         }
         Element::Image(i) => {
             if i.place.w.is_none() && i.place.h.is_none() {
@@ -310,6 +380,9 @@ fn check_element(
             }
             if let Some(Err(e)) = i.crop.map(|c| c.check()) {
                 report(&format!("{path}.crop"), e);
+            }
+            if let Some(Err(e)) = i.filter.as_ref().map(|c| c.check()) {
+                report(&format!("{path}.filter"), e);
             }
         }
         Element::Rect(s) | Element::Ellipse(s) => {

@@ -37,10 +37,11 @@ impl Rect {
 pub enum Kind {
     /// A glyph run: its text, font family and size, and whether a glyph is
     /// missing from the font (`.notdef`).
-    Text { text: String, family: String, size: f64, missing: bool, baseline: f64 },
+    Text { text: String, family: String, size: f64, missing: bool, baseline: f64, fill: typst::visualize::Paint },
     /// An image: pixel size (none for vector images) and placed size in points.
-    Image { px: Option<(u32, u32)>, w: f64, h: f64 },
-    Shape,
+    Image { px: Option<(u32, u32)>, w: f64, h: f64, image: typst::visualize::Image },
+    /// A shape, with the paints it is drawn with (fill, stroke).
+    Shape { paints: Vec<typst::visualize::Paint> },
 }
 
 #[derive(Clone, Debug)]
@@ -162,6 +163,7 @@ fn walk(s: &Session, frame: &Frame, ts: Transform, clip: Option<Rect>, page: usi
                         size: size.to_pt(),
                         missing,
                         baseline: Point::new(pos.x, pos.y).transform(ts).y.to_pt(),
+                        fill: text.fill.clone(),
                     },
                     span,
                     node: node_of(s, span),
@@ -179,12 +181,14 @@ fn walk(s: &Session, frame: &Frame, ts: Transform, clip: Option<Rect>, page: usi
                 let (w, h) = (drawn.x1 - drawn.x0, drawn.y1 - drawn.y0);
                 let (w, h) = if is_rotated(ts) { (size.x.to_pt() * scale_of(ts), size.y.to_pt() * scale_of(ts)) } else { (w, h) };
                 let Some(rect) = cut(drawn, clip) else { continue };
-                out.push(Item { page, rect, kind: Kind::Image { px, w, h }, span: *span, node: node_of(s, *span), element: element_of(s, *span), ancestors: ancestors_of(s, *span) });
+                let kind = Kind::Image { px, w, h, image: image.clone() };
+                out.push(Item { page, rect, kind, span: *span, node: node_of(s, *span), element: element_of(s, *span), ancestors: ancestors_of(s, *span) });
             }
             FrameItem::Shape(shape, span) => {
                 let b = shape.bbox(true);
                 let Some(rect) = cut(corners(*pos + b.min, Size::new(b.max.x - b.min.x, b.max.y - b.min.y), ts), clip) else { continue };
-                out.push(Item { page, rect, kind: Kind::Shape, span: *span, node: node_of(s, *span), element: element_of(s, *span), ancestors: ancestors_of(s, *span) });
+                let paints = shape.fill.iter().cloned().chain(shape.stroke.iter().map(|s| s.paint.clone())).collect();
+                out.push(Item { page, rect, kind: Kind::Shape { paints }, span: *span, node: node_of(s, *span), element: element_of(s, *span), ancestors: ancestors_of(s, *span) });
             }
             _ => {}
         }

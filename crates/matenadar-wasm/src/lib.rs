@@ -19,7 +19,7 @@
 //! Methods (`js/matenadar.js` names them in camelCase):
 //!
 //! - Loading: `assets` `{doc}` (the files to fetch), `open` `{doc, check}`,
-//!   `close`, `fonts`.
+//!   `close`, `fonts`; `template` `{kind, spec}` (a book kind's document).
 //! - Pages: `pages`, `spreads`, `svg` `{page, bleed}`, `png` `{page, scale
 //!   | dpi, bleed}`, `rgba` `{page, scale, bleed}` (8 bytes of width and
 //!   height, little-endian, then the pixels), `pdf`, `fingerprint`,
@@ -30,7 +30,8 @@
 //!   content}`, `set_fields` `{id, fields, style}`, `break_before` `{id,
 //!   to}`, `hide_on_page` `{id, hide}`, `nudge` `{id, lines}`; then `undo`,
 //!   `redo`.
-//! - Results: `diagnostics`, `check` `{safe, min_ppi}`, `patch`, `rebase`.
+//! - Results: `diagnostics`, `check` `{safe, gutter, min_ppi, ink}`, `patch`,
+//!   `rebase`.
 
 use std::alloc::Layout;
 use std::cell::RefCell;
@@ -171,6 +172,11 @@ impl Engine {
                 let doc = Document::from_json(&p.get("doc").ok_or("assets needs doc")?.to_string())?;
                 return Ok(Out::Json(json!({"fonts": doc.fonts, "files": doc.assets()})));
             }
+            "template" => {
+                let kind = str_of("kind").ok_or("template needs a kind")?;
+                let doc = matenadar_model::template::compose(kind, p.get("spec").ok_or("template needs a spec")?)?;
+                return Ok(Out::Json(json!(doc)));
+            }
             "open" => {
                 let doc = Document::from_json(&p.get("doc").ok_or("open needs doc")?.to_string())?;
                 let problems = matenadar_model::validate(&doc);
@@ -301,7 +307,7 @@ impl Engine {
     }
 }
 
-/// Check settings: `{"safe": "0.25in", "gutter": "0.5in", "min_ppi": 300}`.
+/// Check settings: `{"safe": "0.25in", "gutter": "0.5in", "min_ppi": 300, "ink": "black"}`.
 fn check_options(p: &Value) -> Result<CheckOptions> {
     let mut o = CheckOptions::default();
     let len = |k: &str| -> Result<Option<f64>> {
@@ -318,5 +324,6 @@ fn check_options(p: &Value) -> Result<CheckOptions> {
     if let Some(ppi) = p.get("min_ppi").and_then(Value::as_f64) {
         o.min_ppi = ppi;
     }
+    o.black_ink = p.get("ink").and_then(Value::as_str) == Some("black");
     Ok(o)
 }

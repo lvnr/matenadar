@@ -630,7 +630,7 @@ impl Editor {
             match n {
                 Node::Block(b) if b.id() == Some(id) => out = Some(b.kind()),
                 Node::Element(e) if e.id() == Some(id) => out = Some(element_kind(e)),
-                Node::Item(i) if i.id() == id => out = Some(if matches!(i, Item::Section(_)) { "section" } else { "page" }),
+                Node::Item(i) if i.id() == id => out = Some(i.kind()),
                 _ => {}
             }
         });

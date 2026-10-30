@@ -14,6 +14,8 @@ use crate::glyphs::{LetterSpec, letter, pick, qr_runs, svg_group, tint_svg, weig
 impl Gen<'_> {
     pub fn element(&mut self, e: &Element, scaled: bool) {
         let start = self.out.len();
+        // Only an element placed on the page itself knows the page's safe zone.
+        let geom = self.page_geom.take();
         if let Element::Line(l) = e {
             let p = |v: &Option<Length>| v.map(|l| l.typst()).unwrap_or_else(|| "0pt".into());
             let stroke = l.stroke.as_ref().map(|s| self.pal.stroke(s, scaled)).unwrap_or_else(|| "1pt".into());
@@ -40,7 +42,7 @@ impl Gen<'_> {
                 if let Some(id) = place.id.as_deref().filter(|id| self.labels && super::label_safe(id)) {
                     self.raw(&format!("#place(top + left, dx: {x}, dy: {y}, [#metadata({}) <{id}>])\n", str_lit(id)));
                 }
-                self.text_frame(t, &place, &x, &y, fx, fy, rot, scaled);
+                self.text_frame(t, &place, &x, &y, fx, fy, rot, scaled, geom);
                 self.placed_node(place.id.as_deref(), if place.decorative == Some(true) { "decorative" } else { "text" }, start);
                 return;
             }
@@ -55,10 +57,12 @@ impl Gen<'_> {
                 args.push(format!("fit: {}", str_lit(i.fit.as_deref().unwrap_or("cover"))));
                 let asset = self.asset(&i.src);
                 let op = place.opacity.unwrap_or(1.0) * self.opacity;
-                // Faded, the picture is drawn from a copy with its alpha scaled.
-                let shown = match &asset {
-                    Some(p) if op < 1.0 => self.faded(p, op).or_else(|| Some(p.clone())),
-                    other => other.clone(),
+                // Filtered or faded, the picture is drawn from a changed copy.
+                let filter = asset.as_ref().and_then(|p| self.filter_for(i.filter.as_ref(), p));
+                let shown = match (&asset, &filter) {
+                    (Some(p), Some(f)) => self.toned(p, f, op).or_else(|| Some(p.clone())),
+                    (Some(p), None) if op < 1.0 => self.faded(p, op).or_else(|| Some(p.clone())),
+                    (other, _) => other.clone(),
                 };
                 let focused = match (&asset, &shown, i.focus, place.w.and_then(|w| w.pt()), place.h.and_then(|h| h.pt())) {
                     (Some(orig), Some(p), Some((fx, fy)), Some(bw), Some(bh)) if i.fit.as_deref().unwrap_or("cover") == "cover" => {
@@ -415,7 +419,8 @@ impl Gen<'_> {
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn text_frame(&mut self, t: &TextFrame, place: &Place, x: &str, y: &str, fx: f64, fy: f64, rot: f64, scaled: bool) {
+    #[allow(clippy::too_many_arguments)]
+    fn text_frame(&mut self, t: &TextFrame, place: &Place, x: &str, y: &str, fx: f64, fy: f64, rot: f64, scaled: bool, geom: Option<super::PageGeom>) {
         let style_name = t.style.clone();
         let st = match (&style_name, &t.set) {
             (Some(n), s) => self.style_with(n, s.as_ref()),
@@ -516,6 +521,23 @@ impl Gen<'_> {
             effect.clip = clip;
             frame = self.with_effect(&frame, effect);
         }
+        if let Some(sc) = &t.scrim {
+            // Behind the frame, out of its flow: the frame keeps its size.
+            let paint = sc.color.as_ref().map(|c| self.pal.color(c)).unwrap_or_else(|| "white".into());
+            let pad = sc.inset.clone().unwrap_or(matenadar_model::style::Insets::All(Length::Pt(6.0)));
+            let (st, sr, sb, sl) = insets_pt(Some(&pad), size_pt);
+            frame = format!(
+                "context {{ let f = {frame}; let s = measure(f); box({{ place(top + left, dx: -{}pt, dy: -{}pt, mt-scrim(s.width + {}pt, s.height + {}pt, {paint}, {}, {}, {}, {})); f }}) }}",
+                num(sl),
+                num(st),
+                num(sl + sr),
+                num(st + sb),
+                num(sc.opacity.unwrap_or(0.8).clamp(0.0, 1.0)),
+                sc.feather.map(|f| f.typst()).unwrap_or_else(|| "0pt".into()),
+                sc.radius.map(|r| r.typst()).unwrap_or_else(|| "0pt".into()),
+                str_lit(sc.shape.as_deref().unwrap_or("rect")),
+            );
+        }
         frame = self.rotated(place, rot, frame);
         let check = match (&hi, shrink, &place.id) {
             (Some(h), false, Some(id)) if self.labels => format!("; mt-overflow({}, {wi}, {}pt, c)", str_lit(id), num(*h)),
@@ -552,10 +574,33 @@ impl Gen<'_> {
             _ => (y.to_string(), fy),
         };
         let y = y.as_str();
+        // Kept in the safe zone: placed, then moved inside it at layout.
+        let zone = match (&t.safe, &geom) {
+            (Some(matenadar_model::element::Safe::Margins(true)), Some(g)) => Some((g.margins, g.mirrored, g)),
+            (Some(matenadar_model::element::Safe::Inset(l)), Some(g)) => {
+                let v = l.resolve(size_pt, g.w);
+                Some(([v; 4], false, g))
+            }
+            _ => None,
+        };
+        let at = match zone {
+            Some((m, mirrored, g)) => format!(
+                "mt-safe-at({x}, {y}, {}, {}, ({}pt, {}pt, {}pt, {}pt), {mirrored}, ({}pt, {}pt), {frame})",
+                num(fx),
+                num(fy),
+                num(m[0]),
+                num(m[1]),
+                num(m[2]),
+                num(m[3]),
+                num(g.w),
+                num(g.h)
+            ),
+            None => format!("mt-at({x}, {y}, {}, {}, {frame})", num(fx), num(fy)),
+        };
         let code = if shadow.is_empty() {
-            format!("{{ let c = {inner}; mt-at({x}, {y}, {}, {}, {frame}){check} }}", num(fx), num(fy))
+            format!("{{ let c = {inner}; {at}{check} }}")
         } else {
-            format!("context {{ let c = {inner}; {shadow}mt-at({x}, {y}, {}, {}, {frame}){check} }}", num(fx), num(fy))
+            format!("context {{ let c = {inner}; {shadow}{at}{check} }}")
         };
         self.wrap_when(place.when.as_deref(), &code);
     }

@@ -126,6 +126,13 @@ impl Gen<'_> {
                 self.raw("]]\n");
             }
             Block::Figure(f) => {
+                let numbered = self.figure_number(f);
+                let path = self.picture(&f.src, f.filter.as_ref());
+                if let Some(kind) = f.plate.as_deref() {
+                    self.plate(f, kind, path, numbered, cx);
+                    self.node(b.id(), b.kind(), start);
+                    return;
+                }
                 let mut args = vec!["width: 100%".to_string()];
                 if let Some(w) = &f.w {
                     args[0] = format!("width: {}", w.typst());
@@ -134,7 +141,7 @@ impl Gen<'_> {
                     args.push(format!("height: {}", h.typst()));
                 }
                 args.push(format!("fit: {}", str_lit(f.fit.as_deref().unwrap_or("contain"))));
-                let img = match self.asset(&f.src) {
+                let img = match path {
                     Some(p) if f.crop.is_some() || f.focus.is_some() => super::elements::crop_call(
                         &p,
                         &f.crop.unwrap_or(matenadar_model::element::Crop { x: 0.0, y: 0.0, w: 1.0, h: 1.0 }),
@@ -166,19 +173,12 @@ impl Gen<'_> {
                 }
                 self.raw("[");
                 self.label(f.id.as_deref());
+                if let Some((number, label)) = &numbered {
+                    self.figure_marker(f, number, label);
+                }
                 marker(self);
                 self.raw(&format!("]; {img}"));
-                let caption = content_of(&f.caption, &f.caption_content);
-                if !caption.is_empty() {
-                    let st = match &f.caption_style {
-                        Some(n) => self.style_var(n),
-                        None if self.doc.design.styles.contains_key("caption") => self.style_var("caption"),
-                        None => cx.style.clone(),
-                    };
-                    self.raw(&format!("; mt-par({st}, first: true{k})["));
-                    self.inlines(None, &caption);
-                    self.raw("]");
-                }
+                self.caption(f, numbered.as_ref(), cx, "; ");
                 self.raw(if float { " }))\n" } else { " }))\n" });
                 if float {
                     self.raw(")\n");
@@ -491,6 +491,17 @@ impl Gen<'_> {
                 self.label(t.id.as_deref());
                 self.raw(&format!("#mt-toc({depth}, ({},), {leader})]\n", styles.join(", ")));
             }
+            Block::Lof(l) => {
+                let name = l.style.clone().or_else(|| ["lof", "toc-1"].into_iter().find(|n| self.doc.design.styles.contains_key(*n)).map(str::to_string));
+                let st = name.map(|n| self.style_var(&n)).unwrap_or_else(|| cx.style.clone());
+                let leader = match &l.leader {
+                    Some(l) => format!("[{}]", super::escape::escape(l).0),
+                    None => "none".into(),
+                };
+                self.raw("#block(width: 100%)[");
+                self.label(l.id.as_deref());
+                self.raw(&format!("#mt-lof({st}, {leader})]\n"));
+            }
             Block::Keep(x) => {
                 self.raw("#block(breakable: false, width: 100%)[");
                 self.label(x.id.as_deref());
@@ -500,6 +511,107 @@ impl Gen<'_> {
             }
         }
         self.node(b.id(), b.kind(), start);
+    }
+
+    /// A figure's caption (after `sep`, in code mode), with its label and
+    /// number when it is numbered.
+    fn caption(&mut self, f: &matenadar_model::block::Figure, numbered: Option<&(String, String)>, cx: &FlowCx, sep: &str) {
+        let caption = content_of(&f.caption, &f.caption_content);
+        if caption.is_empty() && numbered.is_none() {
+            return;
+        }
+        let k = self.k(cx);
+        let st = match &f.caption_style {
+            Some(n) => self.style_var(n),
+            None if self.doc.design.styles.contains_key("caption") => self.style_var("caption"),
+            None => cx.style.clone(),
+        };
+        self.raw(&format!("{sep}mt-par({st}, first: true{k})["));
+        if let Some((_, label)) = numbered {
+            let figs = self.doc.design.figures.clone().unwrap_or_default();
+            let text = super::escape::escape(label).0;
+            match &figs.span {
+                Some(span) => {
+                    let var = self.span_var(span);
+                    self.raw(&format!("#mt-span({var}, [{text}])"));
+                }
+                None => self.raw(&text),
+            }
+            if !caption.is_empty() {
+                self.raw(&super::escape::escape(figs.separator.as_deref().unwrap_or(". ")).0);
+            }
+        }
+        self.inlines(None, &caption);
+        self.raw("]");
+    }
+
+    /// A plate: a figure that takes half a page or a whole one, floated so
+    /// the text runs on past it. A full-bleed plate covers the page to its
+    /// bleed and hides the master's elements there.
+    fn plate(&mut self, f: &matenadar_model::block::Figure, kind: &str, path: Option<String>, numbered: Option<(String, String)>, cx: &FlowCx) {
+        let full = matenadar_model::element::Crop { x: 0.0, y: 0.0, w: 1.0, h: 1.0 };
+        let fit = f.fit.as_deref().unwrap_or(if kind == "bleed" { "cover" } else { "contain" });
+        let crop = f.crop.unwrap_or(full);
+        let picture = match &path {
+            Some(p) if f.crop.is_some() || f.focus.is_some() => {
+                super::elements::crop_call(p, &crop, Some("100%".into()), Some("100%".into()), fit, f.focus)
+            }
+            Some(p) => format!("image({}, width: 100%, height: 100%, fit: {})", str_lit(p), str_lit(fit)),
+            None => "rect(width: 100%, height: 100%, fill: luma(85%))".into(),
+        };
+        // A half plate sits at the foot of the page unless asked otherwise,
+        // which keeps it from floating above a chapter's title.
+        let at = match (kind, f.float.as_deref()) {
+            (_, Some("top")) => "top",
+            ("half", _) | (_, Some("bottom")) => "bottom",
+            _ => "top",
+        };
+        let height = if kind == "half" { "50%" } else { "100%" };
+        self.raw(&format!("#place({at}, float: true, scope: \"parent\", clearance: 1em, block(width: 100%, height: {height}, breakable: false, {{ ["));
+        self.label(f.id.as_deref());
+        if let Some((number, label)) = &numbered {
+            self.figure_marker(f, number, label);
+        }
+        if kind == "bleed" {
+            self.raw("#metadata((\"all\",)) <mt-hide>");
+        }
+        self.raw("]; ");
+        if kind == "bleed" {
+            let m = self.master_now.clone().unwrap_or_default();
+            let g = super::PageGeom::of(&m);
+            let b = m.bleed.and_then(|b| b.pt()).unwrap_or(0.0);
+            let [top, _, a, c] = g.margins;
+            // The page's left margin and bleed: a recto's left edge is the spine.
+            let left = if g.mirrored { format!("if recto {{ {}pt }} else {{ {}pt }}", num(a), num(c)) } else { format!("{}pt", num(a)) };
+            self.raw(&format!(
+                "context {{ let recto = calc.odd(here().page()); let ml = {left}; let bl = if recto {{ 0pt }} else {{ {b}pt }}; place(top + left, dx: -ml - bl, dy: -{top}pt - {b}pt, box(width: {w}pt, height: {h}pt, clip: true, {picture})) }}",
+                b = num(b),
+                top = num(top),
+                w = num(g.w + b),
+                h = num(g.h + 2.0 * b),
+            ));
+            let has_caption = f.caption.is_some() || !f.caption_content.is_empty();
+            if has_caption {
+                self.raw("; place(bottom + left, block(width: 100%, inset: (x: 8pt, y: 6pt), fill: white.transparentize(12%), {");
+                self.caption(f, numbered.as_ref(), cx, "");
+                self.raw("}))");
+            }
+        } else if let (Some(p), "contain") = (&path, fit) {
+            // The whole picture, as large as it fits, its caption under it.
+            let draw = if f.crop.is_some() {
+                format!("(w, h) => {}", super::elements::crop_call(p, &crop, Some("w".into()), Some("h".into()), "stretch", None))
+            } else {
+                format!("(w, h) => image({}, width: w, height: h, fit: \"stretch\")", str_lit(p))
+            };
+            let caption = self.capture(|g| g.caption(f, numbered.as_ref(), cx, ""));
+            let caption = if caption.is_empty() { "none".to_string() } else { caption };
+            self.emit(&format!("mt-plate({}, ({}, {}, {}, {}), {draw}, {caption}, 0.6em)", str_lit(p), num(crop.x), num(crop.y), num(crop.w), num(crop.h)));
+        } else {
+            self.raw(&format!("grid(columns: 100%, rows: (1fr, auto), row-gutter: 0.6em, align(center + horizon, {picture}), {{"));
+            self.caption(f, numbered.as_ref(), cx, "");
+            self.raw("})");
+        }
+        self.raw(" }))\n");
     }
 
     fn paragraph(&mut self, p: &Para, cx: &FlowCx, first: bool, anchor: Option<&str>) {

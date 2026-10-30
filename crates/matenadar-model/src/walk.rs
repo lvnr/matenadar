@@ -31,6 +31,13 @@ pub fn walk<'a>(doc: &'a Document, f: &mut dyn FnMut(&str, Node<'a>)) {
                     element(&format!("{path}.elements[{j}]"), e, f);
                 }
             }
+            Item::Spread(s) => {
+                for (side, sp) in [("left", &s.left), ("right", &s.right)] {
+                    for (j, e) in sp.elements.iter().enumerate() {
+                        element(&format!("{path}.{side}.elements[{j}]"), e, f);
+                    }
+                }
+            }
         }
     }
 }

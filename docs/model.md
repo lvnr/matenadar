@@ -8,8 +8,9 @@ layout program from it on every build and never stores that program.
   "matenadar": "1",
   "meta": {"title": "…", "author": "…", "lang": "en-US"},
   "fonts": ["design/fonts"],
-  "design": {"colors": {}, "fonts": {}, "base": {}, "styles": {}, "spans": {}, "masters": {}, "components": {}, "hyphenation": {}},
-  "content": [ {"type": "section", …}, {"type": "page", …} ]
+  "design": {"colors": {}, "fonts": {}, "base": {}, "styles": {}, "spans": {}, "masters": {}, "components": {}, "hyphenation": {}, "figures": {}},
+  "content": [ {"type": "section", …}, {"type": "page", …}, {"type": "spread", …} ],
+  "print": {"ink": "black"}
 }
 ```
 
@@ -18,6 +19,12 @@ layout program from it on every build and never stores that program.
 - **Asset root:** image, SVG and font paths are relative to it. On the command
   line it defaults to the document's folder; `--root` sets it. Nothing outside
   it can be read.
+- `print`: how the book is printed, which the checks hold it to.
+  - `ink`: `"black"` (a black-ink interior: anything drawn in colour is
+    reported, `color-in-black-ink`) or `"color"`.
+  - `filter`: a filter for every raster picture that sets none of its own,
+    such as `{"gray": true, "contrast": 3}` (see Pictures). A picture opts
+    out with `"filter": {}`.
 
 ## Units, colours, coordinates
 
@@ -115,6 +122,28 @@ may break, and a word written without hyphens never breaks.
 Matching ignores case. The exceptions apply in paragraphs that hyphenate:
 justified ones, unless `hyphenate` is false, and any with `hyphenate: true`.
 
+### Figures
+
+`figures` turns numbering on. Every figure with a caption then gets a number
+(`numbered: false` leaves one out; `numbered: true` numbers one without a
+caption), set before the caption as a label:
+
+```json
+"figures": {"label": "Fig.", "per": "chapter", "separator": ". ", "span": "figlabel"}
+```
+
+- `label`: the word before the number (default `"Figure"`). A no-break space
+  joins it to the number.
+- `per`: `"book"` (default: 1, 2, 3… through the book) or `"chapter"`: the
+  count restarts in each section, after the section's `chapter` var when it
+  has one (`3.1`, `3.2`).
+- `separator`: between the number and the caption's words (default `". "`).
+- `span`: a character style for the label and number.
+
+Figures are numbered in the order they stand in the document, wherever a float
+or plate puts them; print and EPUB number them alike. The list of figures
+(`lof`) and references (`{"ref": "fig-id", "show": "label"}`) find them by id.
+
 ### Masters
 
 A master is a page size, a flow area and what is drawn on every page:
@@ -199,6 +228,32 @@ A page is laid out by hand:
 The master gives the page its size and bleed. `layers: true` also draws the
 master's background and foreground. Pages take `start` too.
 
+### Spreads
+
+A spread is two facing pages under one picture: a verso and the recto after
+it. It always opens on a verso (a blank page is left before it if needed).
+
+```json
+{"type": "spread", "id": "s-dig", "master": "page", "src": "art/dig-site.jpg",
+ "focus": [0.5, 0.6], "gutter": "0.125in", "alt": "…",
+ "left": {"elements": [ … ]}, "right": {"elements": [ … ]}}
+```
+
+- The picture covers both trims and their outer bleeds (top, bottom and each
+  page's outside edge; there is no bleed at the spine), `cover`-fitted, with
+  `crop` and `focus` as for images.
+- `gutter`: how much of each page the binding hides at the spine. That strip
+  is repeated on both sides of the fold, so the picture reads across it
+  without losing what is there. Default 0, for lay-flat bindings; perfect-bound
+  paperbacks want about 0.125 in.
+- `left` and `right` are the pages: `elements` placed over the picture from
+  that page's trim corner (words over art, see text frames), and their own
+  `crop` and `focus`, which move only that page's half. A side can have its
+  own `src`: a spread drawn as two halves, each covering its page and its
+  outer bleed.
+- `filter`, `layers`, `fill`, `title`, `vars`, `page_from` and `numbering`
+  as for pages.
+
 ### On the page of a node
 
 `on_page` (at the document's top level) changes the page where a node
@@ -247,6 +302,17 @@ The types:
   - `fit: "width"` scales the type up or down until the longest line fills
     `w`, between `min_size` and `max_size`.
   - A frame with an `h` and an `id` reports overflow when its text doesn't fit.
+  - **Words over art.** A frame set over a picture can have:
+    - `scrim`: a soft panel behind it, so its words read on any part of the
+      art: `{"color": "#fff", "opacity": 0.8, "feather": "10pt", "inset":
+      "8pt", "radius": "6pt", "shape": "rect" | "ellipse"}`. `feather` fades
+      the edge out; `inset` is how far the panel reaches past the frame.
+    - `safe`: `true` keeps the frame inside the master's margins, or a length
+      keeps it that far in from the trim on every side. The frame is moved,
+      never resized, when it would cross (at layout, so a frame whose height
+      depends on its words is kept in too). It applies to frames placed on a
+      page itself; it needs a `w`.
+    - A halo per glyph: `"set": {"halo": {"width": 2, "color": "#fff"}}`.
 - **`image`.**
   - `src` is a raster image or an SVG.
   - `focus: [fx, fy]` chooses which part of a cropped (`cover`) image stays in
@@ -258,6 +324,18 @@ The types:
     of its width and height from its top-left corner; `x` and `y` default to
     0, `w` and `h` to 1), which `fit` and `focus` then treat as the whole.
   - Also: `radius`, `stroke`, `flip` (`x`, `y`, `both`), `clip` (a shape).
+  - `alt`: what the picture shows, for readers who can't see it (ebooks).
+  - `filter`: changes a raster picture's tones before it is placed (an SVG
+    keeps its own): `{"gray": true, "contrast": 3, "black": 0.02, "white":
+    0.98, "gamma": 1.1}`.
+    - `gray`: shades of grey from Rec. 709 luma, for black-ink interiors.
+    - `black`, `white`: input levels (the tones that become black and white).
+    - `gamma`: midtones; above 1 lightens.
+    - `contrast`: an S-curve about the middle grey (0 none, 3 moderate, 8
+      strong) that never clips the ends.
+
+    Photographs stay JPEG; other pictures become PNG. The result is cached,
+    so editing around a filtered picture costs nothing more.
 - **`rect`**, **`ellipse`**: `w`, `h`, `fill`, `stroke`, `radius` (rect only).
 - **`line`**: `x1`, `y1`, `x2`, `y2`, `stroke`.
 - **`path`**: `d` (SVG path data) in a `w` × `h` box, whose coordinates are
@@ -305,7 +383,7 @@ The types:
 | `p` | `id`, `style`, `text` or `content` (runs), `set` |
 | `h` | `level`, `style` (defaults to `h1`, `h2`… when the design has them), `text`/`content`, `outline` (listed in the contents), `short` (title for running heads and contents) |
 | `break` | a scene break: `style`, `text` (the ornament) |
-| `figure` | `src`, `w`, `h`, `fit`, `crop` and `focus` (as for images), `align`, `caption`/`caption_content`, `caption_style`, `float` (`top`, `bottom`), `stroke`, `radius` |
+| `figure` | `src`, `w`, `h`, `fit`, `crop` and `focus` (as for images), `align`, `caption`/`caption_content`, `caption_style`, `float` (`top`, `bottom`), `stroke`, `radius`, `alt`, `filter` (as for images), `numbered`, `short` (the caption the list of figures gives); `plate`: `half` (half the text area, at the foot of a page unless `float: top`), `full` (a page of its own within the margins: the whole picture as large as it fits, its caption under it) or `bleed` (a page of its own to the bleed, the master's elements hidden there, the caption on a panel at the foot of the text area). Plates float: the text runs on past them. |
 | `box` | `blocks`, `style`, `fill`, `stroke`, `stroke_align`, `radius`, `inset`, `w`, `h`, `align` (places the box; its text keeps its own alignment), `breakable`, `rotate`, `space_before`, `space_after`, `margin_left`/`margin_right` (negative hangs the box into the margins) |
 | `table` | `columns` (lengths, `"auto"`, `"1fr"`), `header`, `rows` (cells: a string or `{"text"/"content"/"blocks", "colspan", "rowspan", "fill", "align", "style", "set"}`), `style`, `header_style`, `header_fill`, `zebra`, `stroke`, `rules` (book-style horizontal rules in place of the grid: `{"top", "header", "rows", "bottom", "columns"}`, each a stroke), `inset`, `align` (per column), `valign` (`top`, `middle`, `bottom`), `row_gap`, `repeat_header` (default true) |
 | `list` | `items` (strings or lists of blocks), `ordered`, `marker` (or a numbering pattern such as `"1."`), `style`, `indent`, `gap`, `spacing`, `start`, `marker_style` (a span for the markers), `marker_shape` (`{"shape": "ellipse" \| "rect", "w", "h", "fill", "stroke", "radius"}`: a disc or tile behind each marker, centred on it), `marker_align` (`left`, or `right` for numbers, the default) |
@@ -318,6 +396,7 @@ The types:
 | `column-break` | continue in the next column |
 | `margin` | a note in the master's note column, level with the top edge of the block before it (`at: "here"` for where it stands); `dy`; `text`/`content`/`blocks`. Several notes after one block stack under each other; notes never overlap. |
 | `toc` | the contents: `depth`, `style` (default `toc-1`, `toc-2`…), `leader` (such as `"."`) |
+| `lof` | the list of figures: every numbered figure's number, caption and page; `style` (default `lof`, then `toc-1`), `leader` |
 | `keep` | `blocks` that stay on one page |
 
 ## Inline content (runs)
@@ -339,7 +418,9 @@ The types:
 - **Field.** `{"field": "page" | "pages" | "heading" | "section.title" |
   "section.<var>" | "doc.title" | "doc.author"}`, filled in at layout.
 - **Page reference.** `{"ref": "node-id"}` gives the page number;
-  `{"ref": "node-id", "show": "title"}` gives the title.
+  `{"ref": "node-id", "show": "title"}` gives the title. For a numbered
+  figure, `"show": "number"` gives its number (`3.2`) and `"show": "label"`
+  its label (`Figure 3.2`).
 - **Line break.** `{"br": true}`.
 - **Inline image.** `{"image": "path", "h": "1em", "baseline": "0.2em"}`, or
   inline SVG: `{"image": "", "markup": "<svg …>", "h": "1em"}`.
@@ -374,11 +455,65 @@ changed manuscript still lands where it was made. Prefer ids to `index` and
 - `text-in-margin`: live text closer to the trim than KDP allows. That is
   0.25 in outside, and at the spine, KDP's minimum for the page count.
 - `low-resolution`: a raster image under 300 ppi at its printed size.
+- `color-in-black-ink`: on a black-ink interior (`print.ink`, or `--ink
+  black`), a picture with colour in it (more than a few clearly coloured
+  pixels, or an overall cast), or text or a shape in a colour that isn't a
+  grey. One report per element and page.
 - `missing-glyph`: no font has the glyph.
 - `fallback-font`: a family no style names was used.
 - `widow`, `orphan`.
 - `missing-file`.
 - `compiler`: notices from the layout engine.
+
+## Templates
+
+A template makes a book kind's whole document from a short description (a
+spec). The document is then edited like any other. Items keep the ids their
+spec gives them (`id`; otherwise their place, as `story-03`), so edits kept as
+operations land where they were made when the spec changes and the document
+is composed again. `matenadar template <kind> <spec.json> -o doc.json`; in
+WebAssembly, `template({kind, spec})`. Every spec takes `design`: changes to
+the template's design, merged into it object by object (`{"styles": {"title":
+{"size": 48}}}`).
+
+### `picture-book`
+
+Story pages are pictures to the bleed with their words lettered in the art
+(the default); front and back matter is typeset.
+
+```json
+{"trim": "8.5x11", "pages": 32, "ends": "separate", "title": "…", "subtitle": "…",
+ "author": "…", "illustrator": "…", "publisher": "…", "copyright": "…", "dedication": "…",
+ "fonts": {"display": "…", "text": "…"}, "font_dirs": ["fonts"],
+ "story": [
+   {"src": "art/p03.jpg", "alt": "…"},
+   {"spread": true, "src": "art/p04-05.jpg", "gutter": "0.125in",
+    "left": {"text": "Words set over the art, on request."}},
+   {"spread": true, "left": {"src": "art/p06.jpg"}, "right": {"src": "art/p07.jpg"}}
+ ],
+ "back": [{"heading": "About the author", "text": "…"}]}
+```
+
+- `trim`: `8.5x8.5`, `8x10` or `8.5x11` (inches), with a 0.125 in bleed
+  (`bleed` changes it). `pages`: 24, 32 or 40.
+- `ends: "separate"` (default; the endpapers are their own sheets): page 1 is
+  the title page (or with `half_title`, the half title, and the title page on
+  page 3), its back the copyright and dedication, and the story runs from
+  there.
+- `ends: "self"` (the first and last leaves are the endpapers): pages 1 and N
+  are pasted to the boards, 2–3 and N−2–N−1 are the endpapers (`endpapers`:
+  `{"src"}`, or `front` and `back`), 4 the copyright and dedication, 5 the
+  title page, and the story runs from 6 to N−3.
+- A story item is a page (`src`, with `crop`, `focus` and `alt`) or a spread
+  (`spread: true`, as the spread item). `text` sets words over the art in a
+  frame at the top of the page, kept in the safe zone on a soft panel;
+  `words` places any elements over it.
+- A spread must open on a left-hand (even) page, and the story and back
+  matter must fit: the template says which item breaks the plan rather than
+  leaving a page blank in the middle of a story. Pages left over at the end
+  are blank.
+- `title_art` puts a picture behind the title page, with the title on soft
+  panels over it.
 
 ## EPUB
 
@@ -464,8 +599,9 @@ then `http://localhost:5199/demo/editor/`.
 ```
 matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check] [--json]
 matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--cover image.jpg] [--identifier urn:isbn:…]
-matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--json]
+matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black] [--json]
 matenadar validate <doc.json>
+matenadar template <kind> <spec.json> [-o doc.json]
 matenadar layout <doc.json> [--pages 1-3]        # every node on every page, with its extent
 matenadar locate <doc.json> --page N --x PT --y PT
 matenadar fingerprint <doc.json>                  # a hash per page, as the WebAssembly build gives

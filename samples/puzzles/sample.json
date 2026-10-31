@@ -1,0 +1,13 @@
+{
+  "title": "Christmas puzzles, drawn from their data",
+  "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/q4-02-christmas-word-search",
+  "pages": [
+    {"rebuilt": 1, "what": "a maze from its walls, start and end marked"},
+    {"rebuilt": 2, "what": "a crossword: numbered cells, blocks, the letters left out, clues set as text"},
+    {"rebuilt": 3, "what": "a Sudoku: givens kept, 3 x 3 regions in heavier lines"},
+    {"rebuilt": 4, "what": "a logic grid in the staircase layout, with its story and clues"},
+    {"rebuilt": 5, "what": "a dot-to-dot: numbered dots, two closed shapes"},
+    {"rebuilt": 6, "what": "solutions: the maze's way through, the crossword and Sudoku filled"},
+    {"rebuilt": 7, "what": "solutions: the logic grid marked, the dot-to-dot drawn"}
+  ]
+}

@@ -5,6 +5,7 @@ mod blocks;
 mod escape;
 mod elements;
 mod inline;
+mod kinds;
 mod pictures;
 pub mod typ;
 
@@ -519,17 +520,29 @@ impl<'a> Gen<'a> {
                         over.push(format!("fill: {}", self.pal.fill(f)));
                     }
                     let start = self.out.len();
+                    // A repeated page is one page in a loop, each time with its own vars.
+                    let times = p.repeat.as_ref().map(|r| repeat_vars(&p.id, r, &mut self.problems));
+                    if let Some(list) = &times {
+                        self.raw(&format!("#for mt-v in ({},) [", list.join(", ")));
+                    }
                     self.raw(&format!("#page(..(mt-m-{mi} + ({})))[", over.join(", ")));
                     self.raw(&format!(
-                        "#mt-sec((id: {}, kind: \"page\", title: {}, vars: {}, numbering: {}))",
+                        "#mt-sec((id: {}, kind: \"page\", title: {}, vars: {}{}, numbering: {}))",
                         str_lit(&p.id),
                         str_lit(p.title.as_deref().unwrap_or("")),
                         vars(&p.vars),
+                        if times.is_some() { " + mt-v" } else { "" },
                         str_lit(&numbering)
                     ));
+                    if times.is_some() {
+                        self.raw("#if mt-v.n == \"1\" [");
+                    }
                     self.label(Some(&p.id));
                     if let Some(n) = p.page_from {
                         self.raw(&format!("#counter(page).update({n})"));
+                    }
+                    if times.is_some() {
+                        self.raw("]");
                     }
                     self.raw("\n");
                     let geom = doc.design.master(&master_name).map(|m| PageGeom::of(&m));
@@ -539,6 +552,9 @@ impl<'a> Gen<'a> {
                     }
                     self.page_geom = None;
                     self.raw(&format!("#mt-end({})]\n", str_lit(&p.id)));
+                    if times.is_some() {
+                        self.raw("]\n");
+                    }
                     self.node(Some(&p.id), "page", start);
                 }
                 Item::Spread(s) => {
@@ -1059,6 +1075,32 @@ impl<'a> Gen<'a> {
         format!("({})", parts.join(", "))
     }
 
+}
+
+/// Each time's vars for a repeated page: `n`, `date` with dates, and that
+/// time's own.
+fn repeat_vars(id: &str, r: &matenadar_model::Repeat, problems: &mut Vec<String>) -> Vec<String> {
+    let first = r.dates.as_ref().and_then(|d| match matenadar_model::parse_date(&d.from) {
+        Some((y, m, day)) => Some((matenadar_model::days_from_civil(y, m, day), d.step.unwrap_or(1))),
+        None => {
+            problems.push(format!("{id}: repeat.dates.from must be a date, YYYY-MM-DD"));
+            None
+        }
+    });
+    (0..r.times())
+        .map(|i| {
+            let mut v = IndexMap::new();
+            v.insert("n".to_string(), (i + 1).to_string());
+            if let Some((day0, step)) = first {
+                let (y, m, d) = matenadar_model::civil_from_days(day0 + i as i64 * step);
+                v.insert("date".to_string(), format!("{y:04}-{m:02}-{d:02}"));
+            }
+            if let Some(own) = r.vars.get(i) {
+                v.extend(own.iter().map(|(k, val)| (k.clone(), val.clone())));
+            }
+            vars(&v)
+        })
+        .collect()
 }
 
 fn vars(v: &IndexMap<String, String>) -> String {

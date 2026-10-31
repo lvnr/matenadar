@@ -226,7 +226,21 @@ A page is laid out by hand:
 ```
 
 The master gives the page its size and bleed. `layers: true` also draws the
-master's background and foreground. Pages take `start` too.
+master's background and foreground (a folio on a puzzle page). Pages take
+`start` too.
+
+`repeat` lays the page out again and again: dated journal pages, a page per
+prompt. Each time, the page's vars get `n` (1, 2, 3…), `date` (with `dates`)
+and that time's own `vars`, for fields such as `{"field": "section.date",
+"format": "[weekday], [day padding:none] [month repr:long]"}`.
+
+```json
+{"type": "page", "id": "day", "repeat": {"count": 7, "dates": {"from": "2026-11-02", "step": 1},
+ "vars": [{"prompt": "…"}, …]}, "elements": [ … ]}
+```
+
+`count` defaults to the number of `vars` (or 1). The page's id (and a
+reference to it) points at its first time.
 
 ### Spreads
 
@@ -365,9 +379,18 @@ The types:
     the letters standing on the path, turned to it; `start` (a length or a
     share, `"50%"`) and `align` (`left`, `center`, `right`) say where along
     it the text starts, centres or ends. For seals, postmarks and badges.
-- **`letter-grid`**: word searches, crosswords and letter puzzles.
+- **`letter-grid`**: word searches, crosswords, Sudoku and letter puzzles.
   - `rows`: one string per row, or rows of cells, each `"A"` or `{"text",
-    "fill", "color", "weight", "span", "number", "block"}`.
+    "fill", "color", "weight", "span", "number", "block", "given",
+    "circle"}`.
+  - The puzzle and its solution are the same data: `blank: true` leaves the
+    letters out except in cells marked `given`, keeping numbers, blocks and
+    circles.
+  - `regions` draws heavier lines where one region meets another: boxes
+    `[columns, rows]` (`[3, 3]` for Sudoku), or one string per row naming
+    each cell's region (`["aabb", "acbb", …]`, any shapes). `region_lines`
+    is their stroke (default the frame's, or 1.5 pt); without a `frame`
+    they also go round the grid.
   - Layout: `cell` (size), `cell_h`.
   - Type: `style` (a paragraph or character style), `set`.
   - Drawing: `lines` (between cells), `frame` (outer border), `fill`,
@@ -375,6 +398,66 @@ The types:
   - `highlights`: `{"from": [row, col], "to": [row, col], "fill", "stroke",
     "thickness"}`. These are capsules over found words, drawn under the
     letters; `"shape": "cells"` fills each cell instead.
+
+### Book kinds' elements
+
+Each is drawn from its data, as vector, so an edit to the data redraws it; a
+solution page is the same element with `solved: true`. Lines are SVG; words
+are live text in the element's `style`.
+
+- **`maze`**: `rows`, one string per row of cells, a hexadecimal digit per
+  cell giving its walls (1 top, 2 right, 4 bottom, 8 left, added up: `f` is
+  closed); or `segments` (`[x1, y1, x2, y2]` in cells) with `size`
+  (`[columns, rows]`) for mazes that aren't a grid. `cell` (default the
+  width over the columns), `start` and `end` (a cell `[row, column]`, or a
+  point in cells: a dot and a ring), `solution` (cells or points in order),
+  `solved`, `walls`, `path` (strokes), `marks` (the start's and end's
+  colour). Walls along one line are drawn as one stroke.
+- **`logic-grid`**: `categories` (`[{"name", "items": [...]}]`, two or more,
+  all the same length), set in the usual staircase: the first category down
+  the side with the others across the top, the last ones down the side under
+  it. `marks`: `{"a": [category, item], "b": [category, item], "mark": "o"}`
+  (`"o"` a dot, `"x"` a cross, or up to three letters). `cell` (default
+  14 pt), `style`, `lines`, `frame`.
+- **`dots`** (dot-to-dot): `points` in the `viewbox`'s units (default
+  points), numbered from `start` (default 1) beside each dot, outside the
+  turn the line makes there (`labels` gives `[dx, dy]` per point instead).
+  `breaks` (point indices) start new strokes; a stroke that ends on its first
+  point is closed, and that point isn't numbered again. `solved` draws the
+  line (`line`); `dot` and `size` (the dot's and the number's size), `color`,
+  `style`.
+- **`ruling`**: journal and planner rulings over `w` × `h`: `pattern`
+  (`lines`, `dots`, `grid`, `graph`, `isodots`), `pitch` (default 0.3 in for
+  lines, 0.2 in otherwise), `stroke`; `graph` makes every `major`-th line
+  (default 5) `major_stroke`; `lines` take `first` (the first line's depth)
+  and `margin` (a vertical rule that far in, `margin_stroke`). Grids and
+  dots are centred, so what is left over is even.
+- **`calendar`**: a month (`year`, `month`) from its first weekday, a box a
+  day: `week_start` (`monday`, default, or `sunday`), `days` (seven names),
+  `style` (day numbers), `header_style` and `header` (the weekday row's
+  height), `lines`, `outside: true` (the next and last months' days, in
+  `outside_color`).
+- **`craft`** (paper-craft sheets): `faces` (polygons, `points`, with
+  `fill`, or a picture `src` with `crop`, `focus` and `filter`, cut to the
+  face; `label`), `edges` (`from`, `to`, `kind`: `cut` (default),
+  `mountain`, `valley` or `score`; `tab: {"depth", "angle", "side",
+  "label"}` adds a glue tab and makes the edge a fold), `marks` (`at`,
+  `kind`: a registration target or `dot`, `label`), `viewbox`, the line
+  kinds' strokes (`cut` solid, `mountain` dash-dot, `valley` dashed, `score`
+  dotted), `glue` (the tabs' colour), `scissors: true` (on the first cut
+  line).
+- **`panels`** (comic pages): `rows` of `panels` (`{"h": "1fr", "panels":
+  [...]}`; heights and widths are lengths or shares, `"2fr"`), `gutter`,
+  `border`, `radius`, `fill`. A panel has `id`, `w`, a picture (`src`,
+  `crop`, `focus`, `filter`, `alt`) cut to it, `fill`, `border`, and
+  `elements` placed from its corner (balloons, captions) and free to break
+  its border.
+- **`balloon`**: `text` or `content` in `style` (default the design's
+  `balloon` style) with `set`, wrapped at `w` in lines of even length.
+  `shape`: `speech` (default) and `whisper` (dashed) ellipses, a `thought`
+  cloud, a `shout` burst, a `caption` box. `tail` is the point the tail runs
+  to (in the same coordinates as `x`, `y`); the balloon and its tail are one
+  outline. `fill`, `stroke`, `inset`.
 
 ## Blocks (in flows and frames)
 
@@ -416,7 +499,9 @@ The types:
   "lift", "gap"}` draws a line across the space: running feet, form lines.
 - **Space.** `{"space": "0.13in"}` is horizontal space inside a line.
 - **Field.** `{"field": "page" | "pages" | "heading" | "section.title" |
-  "section.<var>" | "doc.title" | "doc.author"}`, filled in at layout.
+  "section.<var>" | "doc.title" | "doc.author"}`, filled in at layout. A
+  value that is a date (`YYYY-MM-DD`) shows as `format` says, in Typst's
+  date format: `"[weekday], [month repr:long] [day padding:none]"`.
 - **Page reference.** `{"ref": "node-id"}` gives the page number;
   `{"ref": "node-id", "show": "title"}` gives the title. For a numbered
   figure, `"show": "number"` gives its number (`3.2`) and `"show": "label"`
@@ -515,6 +600,31 @@ Story pages are pictures to the bleed with their words lettered in the art
 - `title_art` puts a picture behind the title page, with the title on soft
   panels over it.
 
+### `coloring`
+
+Each picture has a right-hand page to itself and its back is left blank, so
+markers that bleed through spoil nothing; the front matter is typeset.
+
+```json
+{"trim": "8.5x11", "title": "…", "subtitle": "…", "author": "…", "copyright": "…",
+ "belongs_to": true, "back_note": "…", "test_page": "Try your pen here",
+ "pages": [{"src": "art/p01.svg", "title": "The Lamplighter", "alt": "…"},
+           {"src": "art/p02.svg", "full": true}]}
+```
+
+- `trim`: `8.5x11` (default), `8x10`, `8.5x8.5`, `7x10` or `6x9`; `margin`
+  (default 0.5 in) and `inside` (0.75 in) keep pictures clear of the edges.
+- The plan: the title page, the copyright page, "this book belongs to"
+  (`belongs_to`: true, false or its words), a blank page if needed so the
+  pictures open on a right-hand page, then each picture and its back.
+- A picture fits inside the margins, under its `title` if it has one;
+  `full: true` gives it the whole page: to the bleed with `bleed: true`, to
+  the trim otherwise (art drawn with its own white edge).
+- `single_sided: false` runs pictures on both sides; `back_note` sets small
+  words at the foot of each blank back; `folios` numbers the pictures'
+  pages; `test_page` (true or its heading) closes the book with squares to
+  try colors on.
+
 ## EPUB
 
 `matenadar epub` makes an EPUB 3 from the same model, checked with
@@ -601,7 +711,7 @@ matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pag
 matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--cover image.jpg] [--identifier urn:isbn:…]
 matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black] [--json]
 matenadar validate <doc.json>
-matenadar template <kind> <spec.json> [-o doc.json]
+matenadar template <kind> <spec.json> [-o doc.json]   # picture-book, coloring
 matenadar layout <doc.json> [--pages 1-3]        # every node on every page, with its extent
 matenadar locate <doc.json> --page N --x PT --y PT
 matenadar fingerprint <doc.json>                  # a hash per page, as the WebAssembly build gives

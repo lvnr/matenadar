@@ -123,6 +123,14 @@ pub enum Element {
     Qr(QrEl),
     Lettering(Lettering),
     LetterGrid(LetterGrid),
+    Maze(crate::kinds::Maze),
+    LogicGrid(crate::kinds::LogicGrid),
+    Dots(crate::kinds::Dots),
+    Ruling(crate::kinds::Ruling),
+    Calendar(crate::kinds::Calendar),
+    Craft(crate::kinds::Craft),
+    Panels(crate::kinds::Panels),
+    Balloon(crate::kinds::Balloon),
 }
 
 impl Element {
@@ -138,6 +146,14 @@ impl Element {
             Element::Qr(e) => &e.place,
             Element::Lettering(e) => &e.place,
             Element::LetterGrid(e) => &e.place,
+            Element::Maze(e) => &e.place,
+            Element::LogicGrid(e) => &e.place,
+            Element::Dots(e) => &e.place,
+            Element::Ruling(e) => &e.place,
+            Element::Calendar(e) => &e.place,
+            Element::Craft(e) => &e.place,
+            Element::Panels(e) => &e.place,
+            Element::Balloon(e) => &e.place,
             Element::Line(_) => return None,
         })
     }
@@ -163,6 +179,14 @@ impl Element {
             Element::Qr(_) => "qr",
             Element::Lettering(_) => "lettering",
             Element::LetterGrid(_) => "letter-grid",
+            Element::Maze(_) => "maze",
+            Element::LogicGrid(_) => "logic-grid",
+            Element::Dots(_) => "dots",
+            Element::Ruling(_) => "ruling",
+            Element::Calendar(_) => "calendar",
+            Element::Craft(_) => "craft",
+            Element::Panels(_) => "panels",
+            Element::Balloon(_) => "balloon",
         }
     }
 }
@@ -540,6 +564,38 @@ pub struct LetterGrid {
     /// Marks over found words, drawn under the letters.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub highlights: Vec<Highlight>,
+    /// The puzzle, not the solution: the letters are left out, except in
+    /// cells marked `given`; numbers, blocks and circles stay.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blank: Option<bool>,
+    /// Regions with heavier lines between them: boxes `[columns, rows]`
+    /// (`[3, 3]` for Sudoku), or one string per row, a letter per cell
+    /// naming its region (for regions of any shape).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub regions: Option<Regions>,
+    /// The lines between regions (default the frame's, or 1.5pt).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub region_lines: Option<Stroke>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum Regions {
+    Boxes([usize; 2]),
+    Named(Vec<String>),
+}
+
+impl Regions {
+    /// The region of a cell, as a number.
+    pub fn of(&self, row: usize, col: usize) -> Option<u32> {
+        match self {
+            Regions::Boxes([w, h]) => {
+                let (w, h) = ((*w).max(1), (*h).max(1));
+                Some(((row / h) * 1000 + col / w) as u32)
+            }
+            Regions::Named(rows) => rows.get(row)?.chars().filter(|c| !c.is_whitespace()).nth(col).map(|c| c as u32),
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -569,6 +625,10 @@ pub struct GridCellSpec {
     pub weight: Option<serde_json::Value>,
     /// A character style for this cell's letter.
     pub span: Option<String>,
+    /// Shown in the puzzle too (a Sudoku's givens).
+    pub given: Option<bool>,
+    /// A circle in the cell.
+    pub circle: Option<bool>,
 }
 
 /// A capsule from one cell to another (rows and columns from 0).

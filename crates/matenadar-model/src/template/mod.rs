@@ -7,6 +7,7 @@
 //!   front and back matter, 24, 32 or 40 pages, self or separate ends.
 //! - `coloring`: one picture per recto with its back left blank.
 
+mod coloring;
 mod picture_book;
 
 use serde::Deserialize;
@@ -15,15 +16,17 @@ use serde_json::{Value, json};
 use crate::Document;
 use crate::units::{Length, PT_PER_IN};
 
+pub use coloring::Coloring;
 pub use picture_book::PictureBook;
 
 /// The templates there are.
-pub const KINDS: [&str; 1] = ["picture-book"];
+pub const KINDS: [&str; 2] = ["picture-book", "coloring"];
 
 /// The document `kind`'s template makes from `spec`.
 pub fn compose(kind: &str, spec: &Value) -> Result<Document, String> {
     let value = match kind {
         "picture-book" => picture_book::compose(&parse(spec)?)?,
+        "coloring" => coloring::compose(&parse(spec)?)?,
         other => return Err(format!("no template \"{other}\" (there are {})", KINDS.join(", "))),
     };
     let doc = Document::from_json(&value.to_string())?;

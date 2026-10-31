@@ -101,6 +101,16 @@ pub fn element<'a>(path: &str, e: &'a Element, f: &mut dyn FnMut(&str, Node<'a>)
                 element(&format!("{path}.children[{i}]"), c, f);
             }
         }
+        Element::Panels(p) => {
+            for (i, row) in p.rows.iter().enumerate() {
+                for (j, panel) in row.panels.iter().enumerate() {
+                    for (k, c) in panel.elements.iter().enumerate() {
+                        element(&format!("{path}.rows[{i}].panels[{j}].elements[{k}]"), c, f);
+                    }
+                }
+            }
+        }
+        Element::Balloon(b) => inlines(&format!("{path}.content"), &b.content, f),
         _ => {}
     }
 }

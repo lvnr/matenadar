@@ -20,7 +20,7 @@ Usage:
                  [--cover image.jpg] [--identifier urn:isbn:…]
   matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black]
   matenadar validate <doc.json>
-  matenadar template <kind> <spec.json> [-o doc.json]   (a book kind's document: picture-book)
+  matenadar template <kind> <spec.json> [-o doc.json]   (a book kind's document: picture-book, coloring)
   matenadar layout <doc.json> [--pages 1-3]
   matenadar locate <doc.json> --page N --x PT --y PT
   matenadar fingerprint <doc.json>      (a hash per page, the same as the WebAssembly build's)

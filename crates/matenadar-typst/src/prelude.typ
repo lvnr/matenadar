@@ -248,7 +248,14 @@
   heading(level: level, outlined: outlined, bookmarked: outlined, body)
 }
 
-#let mt-field(name) = {
+// A date written `YYYY-MM-DD`, shown as `format` (Typst's date format).
+#let mt-date(s, format) = {
+  let p = s.split("-")
+  if p.len() != 3 { return s }
+  datetime(year: int(p.at(0)), month: int(p.at(1)), day: int(p.at(2))).display(format)
+}
+
+#let mt-field-of(name) = {
   let cur = mt-cur()
   let info = if cur == none { (:) } else { cur.value }
   if name == "page" {
@@ -271,6 +278,11 @@
   } else if name.starts-with("section.") {
     info.at("vars", default: (:)).at(name.slice(8), default: "")
   } else { "" }
+}
+
+#let mt-field(name, format: none) = {
+  let v = mt-field-of(name)
+  if format != none and type(v) == str { mt-date(v, format) } else { v }
 }
 
 // Places `body` with the anchor point (fractions of its size) at (x, y).
@@ -461,4 +473,177 @@
   x0 = calc.max(l, calc.min(x0, pw - r - s.width))
   y0 = calc.max(zt, calc.min(y0, ph - zb - s.height))
   place(top + left, dx: x0, dy: y0, body)
+}
+
+// A logic-grid puzzle: `cats` is ((name, (item, …)), …), every category the
+// same length. The first category runs down the side with the others across
+// the top; the last ones go down the side under it, in the usual staircase.
+// `marks` are (category, item, category, item, mark): "o" a dot, "x" a
+// cross, anything else written in the cell.
+#let mt-logic(cats, cell, marks, st, lines, frame) = context {
+  let k = cats.len()
+  let n = cats.at(0).at(1).len()
+  let tx = st.at("text", default: (:))
+  let ink = tx.at("fill", default: black)
+  let lab(s) = mt-span(st, text(top-edge: "cap-height", bottom-edge: "baseline", s))
+  let pad = 4pt
+  let across = range(1, k)
+  let down = (0,) + range(k - 1, 1, step: -1)
+  let up(s) = rotate(-90deg, reflow: true, lab(s))
+  let item-w(c) = calc.max(0pt, ..cats.at(c).at(1).map(i => measure(lab(i)).width))
+  let name-h = measure(lab("Hg")).height
+  let head = calc.max(0pt, ..across.map(item-w)) + pad * 2
+  let sidew = calc.max(0pt, ..down.map(item-w)) + pad * 2
+  let x0 = name-h + pad * 2 + sidew
+  let y0 = name-h + pad * 2 + head
+  let bw = cell * n
+  let cols(r) = if r == 0 { across.len() } else { across.len() - r }
+  box(width: x0 + bw * across.len(), height: y0 + bw * down.len(), {
+    for (j, c) in across.enumerate() {
+      let x = x0 + bw * j
+      place(top + left, dx: x, dy: 0pt, box(width: bw, height: name-h + pad, align(center + top, lab(cats.at(c).at(0)))))
+      for (i, it) in cats.at(c).at(1).enumerate() {
+        let s = measure(up(it))
+        place(top + left, dx: x + cell * i + (cell - s.width) / 2, dy: y0 - pad - s.height, up(it))
+      }
+    }
+    for (r, c) in down.enumerate() {
+      let y = y0 + bw * r
+      place(top + left, dx: 0pt, dy: y, box(width: name-h + pad, height: bw, align(left + horizon, up(cats.at(c).at(0)))))
+      for (i, it) in cats.at(c).at(1).enumerate() {
+        place(top + left, dx: name-h + pad * 2, dy: y + cell * i, box(width: sidew - pad, height: cell, align(right + horizon, lab(it))))
+      }
+      for j in range(cols(r)) {
+        let (bx, by) = (x0 + bw * j, y)
+        for a in range(1, n) {
+          place(top + left, line(start: (bx + cell * a, by), end: (bx + cell * a, by + bw), stroke: lines))
+          place(top + left, line(start: (bx, by + cell * a), end: (bx + bw, by + cell * a), stroke: lines))
+        }
+        place(top + left, dx: bx, dy: by, rect(width: bw, height: bw, fill: none, stroke: frame))
+      }
+    }
+    for (ac, ai, bc, bi, m) in marks {
+      let at = none
+      for (r, sc) in down.enumerate() {
+        for j in range(cols(r)) {
+          let tc = across.at(j)
+          if sc == ac and tc == bc { at = (r, j, ai, bi) }
+          if sc == bc and tc == ac { at = (r, j, bi, ai) }
+        }
+      }
+      if at != none {
+        let (r, j, row, col) = at
+        let cx = x0 + bw * j + cell * col
+        let cy = y0 + bw * r + cell * row
+        place(top + left, dx: cx, dy: cy, box(width: cell, height: cell, align(center + horizon, if m == "o" {
+          circle(radius: cell * 0.2, fill: ink, stroke: none)
+        } else if m == "x" {
+          let d = cell * 0.22
+          box(width: 2 * d, height: 2 * d, {
+            place(line(start: (0pt, 0pt), end: (2 * d, 2 * d), stroke: 0.8pt + ink))
+            place(line(start: (0pt, 2 * d), end: (2 * d, 0pt), stroke: 0.8pt + ink))
+          })
+        } else { lab(m) })))
+      }
+    }
+  })
+}
+
+// A comic balloon round `body`, the words, set at most `maxw` wide in lines
+// of even length: `speech` and `whisper` (dashed) ellipses, a `thought`
+// cloud, a `shout` burst or a `caption` box. The tail runs from inside the
+// balloon to `tail`, a point given from the balloon's anchor (`fx`, `fy` of
+// its size); balloon and tail are one outline.
+#let mt-balloon(shape, body, longest, st, maxw, inset, tail, fx, fy, fill, pen) = context {
+  let words = { set align(center); body }
+  let maxw = if maxw == none { 11em.to-absolute() } else { maxw.to-absolute() }
+  let inset = inset.to-absolute()
+  // The narrowest width that keeps as many lines, with no word sticking out.
+  let floor = calc.max(0pt, ..longest.map(w => measure(mt-span(st, w)).width))
+  let one = measure(words).width
+  let maxw = calc.max(maxw, floor)
+  let full = measure(block(width: maxw, words)).height
+  let (lo, hi) = (floor, calc.min(one, maxw))
+  for _ in range(12) {
+    let mid = (lo + hi) / 2
+    if measure(block(width: mid, words)).height > full + 0.01pt { lo = mid } else { hi = mid }
+  }
+  let (tw, th) = (hi, full)
+  let (w, h) = if shape == "caption" { (tw + 2 * inset, th + 2 * inset) } else { ((tw + 2 * inset) * calc.sqrt(2), (th + 2 * inset) * calc.sqrt(2)) }
+  let s = stroke(pen)
+  let ink = if s.paint == auto { black } else { s.paint }
+  let thick = if s.thickness == auto { 1pt } else { s.thickness }
+  let dash = if shape == "whisper" { "dashed" } else if s.dash == auto { none } else { s.dash }
+  let (cx, cy) = (w / 2, h / 2)
+  let (a, b) = (w / 2, h / 2)
+  // Shapes as functions of their fill and stroke, drawn twice: a thick
+  // stroke under every shape, then the fills over it, so only the outer
+  // edge of their union shows.
+  let shapes = ()
+  if shape == "caption" {
+    shapes.push((f, st) => place(top + left, rect(width: w, height: h, fill: f, stroke: st)))
+  } else if shape == "shout" {
+    let n = 14
+    let pts = range(2 * n).map(i => {
+      let t = 180deg * i / n
+      let r = if calc.even(i) { 1.3 } else { 1.02 }
+      (cx + a * r * calc.cos(t), cy + b * r * calc.sin(t))
+    })
+    shapes.push((f, st) => place(top + left, polygon(fill: f, stroke: st, ..pts)))
+  } else {
+    shapes.push((f, st) => place(top + left, ellipse(width: w, height: h, fill: f, stroke: st)))
+    if shape == "thought" {
+      let r = calc.min(w, h) * 0.17 + 2pt
+      let (af, bf) = (a / 1pt, b / 1pt)
+      let per = calc.pi * (3 * (af + bf) - calc.sqrt((3 * af + bf) * (af + 3 * bf))) * 1pt
+      let n = calc.max(8, int(calc.round(per / (r * 1.45))))
+      for i in range(n) {
+        let t = 360deg * i / n
+        let (px, py) = (cx + a * calc.cos(t), cy + b * calc.sin(t))
+        shapes.push((f, st) => place(top + left, dx: px - r, dy: py - r, circle(radius: r, fill: f, stroke: st)))
+      }
+    }
+  }
+  let bubbles = ()
+  if tail != none and shape != "caption" {
+    let (tx, ty) = (tail.at(0) + w * fx, tail.at(1) + h * fy)
+    let (dx, dy) = (tx - cx, ty - cy)
+    let len = calc.sqrt(calc.pow(dx / 1pt, 2) + calc.pow(dy / 1pt, 2)) * 1pt
+    if len > 1pt {
+      let (ux, uy) = (dx / len, dy / len)
+      // Where the line to the tip leaves the ellipse.
+      let edge = 1 / calc.sqrt(calc.pow(ux * 1pt / a, 2) + calc.pow(uy * 1pt / b, 2))
+      if shape == "thought" {
+        let m = calc.min(w, h)
+        for (t, r) in ((0.3, 0.1), (0.62, 0.065), (0.9, 0.04)) {
+          let d = edge * 1pt + (len - edge * 1pt) * t
+          bubbles.push((cx + ux * d - m * r, cy + uy * d - m * r, m * r))
+        }
+      } else {
+        let base = calc.min(w, h) * 0.3
+        let from = edge * 1pt * 0.55
+        let (bx, by) = (cx + ux * from, cy + uy * from)
+        let (nx, ny) = (-uy * base / 2, ux * base / 2)
+        // A slight bend, the same way on both sides.
+        let bend = (len - from) * 0.12
+        let mid(px, py) = ((px + tx) / 2 + uy * bend, (py + ty) / 2 - ux * bend)
+        let p1 = (bx + nx, by + ny)
+        let p2 = (bx - nx, by - ny)
+        shapes.push((f, st) => place(top + left, curve(fill: f, stroke: st,
+          curve.move(p1),
+          curve.quad(mid(..p1), (tx, ty)),
+          curve.quad(mid(..p2), p2),
+          curve.close(),
+        )))
+      }
+    }
+  }
+  let under = (paint: ink, thickness: 2 * thick, dash: dash, join: "round")
+  let over = (paint: ink, thickness: thick, dash: dash)
+  box(width: w, height: h, {
+    for sh in shapes { sh(fill, under) }
+    for sh in shapes { sh(fill, none) }
+    for (x, y, r) in bubbles { place(top + left, dx: x, dy: y, circle(radius: r, fill: fill, stroke: over)) }
+    place(center + horizon, block(width: tw, words))
+  })
 }

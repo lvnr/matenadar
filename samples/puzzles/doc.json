@@ -1,0 +1,2592 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "Christmas Puzzles",
+  "lang": "en-US"
+ },
+ "design": {
+  "colors": {
+   "ink": "#000000",
+   "soft": "#6b6b6b"
+  },
+  "fonts": {
+   "serif": [
+    "Chaparral Pro",
+    "Libertinus Serif"
+   ]
+  },
+  "base": {
+   "font": "serif",
+   "size": 11,
+   "line_height": 1.35,
+   "color": "ink"
+  },
+  "styles": {
+   "kicker": {
+    "size": 10,
+    "case": "upper",
+    "tracking": "0.14em",
+    "color": "soft"
+   },
+   "title": {
+    "size": 28,
+    "weight": 600,
+    "line_height": 1.15
+   },
+   "how": {
+    "size": 12,
+    "italic": true,
+    "line_height": 1.4
+   },
+   "grid": {
+    "size": 20,
+    "align": "center"
+   },
+   "grid-label": {
+    "size": 11
+   },
+   "clue-head": {
+    "size": 12,
+    "weight": 600,
+    "case": "upper",
+    "tracking": "0.1em"
+   },
+   "clue": {
+    "size": 11.5,
+    "line_height": 1.35,
+    "hanging": "1.2em"
+   },
+   "dot-number": {
+    "size": 8
+   },
+   "folio": {
+    "size": 10,
+    "align": "center",
+    "color": "soft"
+   }
+  },
+  "masters": {
+   "page": {
+    "width": "576.0pt",
+    "height": "720.0pt",
+    "margins": {
+     "top": "54.0pt",
+     "bottom": "54.0pt",
+     "inside": "75.0pt",
+     "outside": "66.6pt"
+    },
+    "foreground": [
+     {
+      "type": "text",
+      "id": "folio",
+      "style": "folio",
+      "x": 66.6,
+      "y": 684,
+      "w": 442.8,
+      "content": [
+       {
+        "field": "page"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "puzzle-1",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "p1-kicker",
+     "x": 75.0,
+     "y": 58,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 1"
+    },
+    {
+     "type": "text",
+     "id": "p1-title",
+     "x": 75.0,
+     "y": 76,
+     "w": 434.4,
+     "style": "title",
+     "text": "The long way to the stable"
+    },
+    {
+     "type": "text",
+     "id": "p1-how",
+     "x": 75.0,
+     "y": 118,
+     "w": 434.4,
+     "style": "how",
+     "text": "Start at the dot, end at the ring."
+    },
+    {
+     "type": "maze",
+     "id": "maze",
+     "x": 100.19999999999999,
+     "y": 170,
+     "cell": 24.0,
+     "rows": [
+      "3955553d13953953",
+      "c69539696aa96aba",
+      "9783aa96bc6ad46a",
+      "856aeaa945569552",
+      "c3bc56aad1556956",
+      "9681792c56b93ad3",
+      "c3ac56ab952ac692",
+      "baa917aaabac556a",
+      "86c6a96c42c5517a",
+      "c53bac553a93bc56",
+      "b9686d53ac6aa953",
+      "aabc553aa9786aba",
+      "aac17946a85696aa",
+      "aa9696956a95696a",
+      "86c1696d56ad5292",
+      "c53c3c55154516aa",
+      "93ad2953e953a96e",
+      "aac3ec3c3a96ac53",
+      "ac7c556bc6ad6952",
+      "c5555554554556d4"
+     ],
+     "start": [
+      0,
+      0
+     ],
+     "end": [
+      19,
+      15
+     ],
+     "solution": [
+      [
+       0,
+       0
+      ],
+      [
+       1,
+       0
+      ],
+      [
+       1,
+       1
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ],
+      [
+       0,
+       6
+      ],
+      [
+       1,
+       6
+      ],
+      [
+       1,
+       5
+      ],
+      [
+       2,
+       5
+      ],
+      [
+       3,
+       5
+      ],
+      [
+       4,
+       5
+      ],
+      [
+       4,
+       4
+      ],
+      [
+       4,
+       3
+      ],
+      [
+       3,
+       3
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       2,
+       2
+      ],
+      [
+       3,
+       2
+      ],
+      [
+       3,
+       1
+      ],
+      [
+       3,
+       0
+      ],
+      [
+       4,
+       0
+      ],
+      [
+       4,
+       1
+      ],
+      [
+       5,
+       1
+      ],
+      [
+       5,
+       0
+      ],
+      [
+       6,
+       0
+      ],
+      [
+       6,
+       1
+      ],
+      [
+       7,
+       1
+      ],
+      [
+       8,
+       1
+      ],
+      [
+       8,
+       0
+      ],
+      [
+       9,
+       0
+      ],
+      [
+       9,
+       1
+      ],
+      [
+       9,
+       2
+      ],
+      [
+       10,
+       2
+      ],
+      [
+       10,
+       1
+      ],
+      [
+       11,
+       1
+      ],
+      [
+       12,
+       1
+      ],
+      [
+       13,
+       1
+      ],
+      [
+       14,
+       1
+      ],
+      [
+       14,
+       0
+      ],
+      [
+       15,
+       0
+      ],
+      [
+       15,
+       1
+      ],
+      [
+       15,
+       2
+      ],
+      [
+       16,
+       2
+      ],
+      [
+       17,
+       2
+      ],
+      [
+       17,
+       3
+      ],
+      [
+       18,
+       3
+      ],
+      [
+       18,
+       4
+      ],
+      [
+       18,
+       5
+      ],
+      [
+       18,
+       6
+      ],
+      [
+       17,
+       6
+      ],
+      [
+       17,
+       5
+      ],
+      [
+       16,
+       5
+      ],
+      [
+       16,
+       6
+      ],
+      [
+       16,
+       7
+      ],
+      [
+       17,
+       7
+      ],
+      [
+       17,
+       8
+      ],
+      [
+       18,
+       8
+      ],
+      [
+       18,
+       9
+      ],
+      [
+       17,
+       9
+      ],
+      [
+       16,
+       9
+      ],
+      [
+       16,
+       10
+      ],
+      [
+       16,
+       11
+      ],
+      [
+       17,
+       11
+      ],
+      [
+       17,
+       10
+      ],
+      [
+       18,
+       10
+      ],
+      [
+       19,
+       10
+      ],
+      [
+       19,
+       11
+      ],
+      [
+       19,
+       12
+      ],
+      [
+       19,
+       13
+      ],
+      [
+       18,
+       13
+      ],
+      [
+       18,
+       14
+      ],
+      [
+       18,
+       15
+      ],
+      [
+       19,
+       15
+      ]
+     ],
+     "walls": {
+      "width": 1.6,
+      "color": "ink"
+     },
+     "marks": "ink"
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "puzzle-2",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "p2-kicker",
+     "x": 75.0,
+     "y": 58,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 2"
+    },
+    {
+     "type": "text",
+     "id": "p2-title",
+     "x": 75.0,
+     "y": 76,
+     "w": 434.4,
+     "style": "title",
+     "text": "A small crossword"
+    },
+    {
+     "type": "text",
+     "id": "p2-how",
+     "x": 75.0,
+     "y": 118,
+     "w": 434.4,
+     "style": "how",
+     "text": "Rows 1, 3 and 5 read across; columns 1, 3 and 5 read down."
+    },
+    {
+     "type": "letter-grid",
+     "id": "crossword-grid",
+     "x": 167.2,
+     "y": 180,
+     "cell": 50,
+     "rows": [
+      [
+       {
+        "text": "S",
+        "number": "1"
+       },
+       "T",
+       {
+        "text": "A",
+        "number": "2"
+       },
+       "R",
+       {
+        "text": "S",
+        "number": "3"
+       }
+      ],
+      [
+       "L",
+       {
+        "block": true
+       },
+       "N",
+       {
+        "block": true
+       },
+       "W"
+      ],
+      [
+       {
+        "text": "E",
+        "number": "4"
+       },
+       "A",
+       "G",
+       "L",
+       "E"
+      ],
+      [
+       "D",
+       {
+        "block": true
+       },
+       "E",
+       {
+        "block": true
+       },
+       "E"
+      ],
+      [
+       {
+        "text": "S",
+        "number": "5"
+       },
+       "P",
+       "L",
+       "I",
+       "T"
+      ]
+     ],
+     "blank": true,
+     "style": "grid",
+     "lines": {
+      "width": 0.8,
+      "color": "ink"
+     },
+     "frame": {
+      "width": 1.6,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "text",
+     "id": "cw-across-head",
+     "x": 75.0,
+     "y": 470,
+     "w": 207.2,
+     "style": "clue-head",
+     "text": "Across"
+    },
+    {
+     "type": "text",
+     "id": "cw-across-1",
+     "x": 75.0,
+     "y": 492,
+     "w": 207.2,
+     "style": "clue",
+     "content": [
+      {
+       "text": "1  ",
+       "weight": "bold"
+      },
+      "They shine on the tree and over the stable"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "cw-across-2",
+     "x": 75.0,
+     "y": 511,
+     "w": 207.2,
+     "style": "clue",
+     "content": [
+      {
+       "text": "4  ",
+       "weight": "bold"
+      },
+      "Bird on a carved ornament"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "cw-across-3",
+     "x": 75.0,
+     "y": 530,
+     "w": 207.2,
+     "style": "clue",
+     "content": [
+      {
+       "text": "5  ",
+       "weight": "bold"
+      },
+      "Break a cracker in two"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "cw-down-head",
+     "x": 302.2,
+     "y": 470,
+     "w": 207.2,
+     "style": "clue-head",
+     "text": "Down"
+    },
+    {
+     "type": "text",
+     "id": "cw-down-1",
+     "x": 302.2,
+     "y": 492,
+     "w": 207.2,
+     "style": "clue",
+     "content": [
+      {
+       "text": "1  ",
+       "weight": "bold"
+      },
+      "What the reindeer pull"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "cw-down-2",
+     "x": 302.2,
+     "y": 511,
+     "w": 207.2,
+     "style": "clue",
+     "content": [
+      {
+       "text": "2  ",
+       "weight": "bold"
+      },
+      "She sits at the very top of the tree"
+     ]
+    },
+    {
+     "type": "text",
+     "id": "cw-down-3",
+     "x": 302.2,
+     "y": 530,
+     "w": 207.2,
+     "style": "clue",
+     "content": [
+      {
+       "text": "3  ",
+       "weight": "bold"
+      },
+      "Like a candy cane"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "puzzle-3",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "p3-kicker",
+     "x": 75.0,
+     "y": 58,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 3"
+    },
+    {
+     "type": "text",
+     "id": "p3-title",
+     "x": 75.0,
+     "y": 76,
+     "w": 434.4,
+     "style": "title",
+     "text": "Nine by nine"
+    },
+    {
+     "type": "text",
+     "id": "p3-how",
+     "x": 75.0,
+     "y": 118,
+     "w": 434.4,
+     "style": "how",
+     "text": "Every row, column and box holds 1 to 9 once."
+    },
+    {
+     "type": "letter-grid",
+     "id": "sudoku-grid",
+     "x": 112.19999999999999,
+     "y": 180,
+     "cell": 40,
+     "rows": [
+      [
+       "7",
+       {
+        "text": "5",
+        "given": true
+       },
+       {
+        "text": "4",
+        "given": true
+       },
+       "9",
+       "6",
+       {
+        "text": "8",
+        "given": true
+       },
+       {
+        "text": "1",
+        "given": true
+       },
+       {
+        "text": "3",
+        "given": true
+       },
+       "2"
+      ],
+      [
+       {
+        "text": "8",
+        "given": true
+       },
+       "3",
+       "9",
+       "2",
+       {
+        "text": "1",
+        "given": true
+       },
+       "7",
+       "4",
+       "6",
+       {
+        "text": "5",
+        "given": true
+       }
+      ],
+      [
+       "1",
+       "2",
+       "6",
+       "5",
+       "3",
+       "4",
+       {
+        "text": "8",
+        "given": true
+       },
+       "7",
+       {
+        "text": "9",
+        "given": true
+       }
+      ],
+      [
+       "4",
+       "8",
+       {
+        "text": "7",
+        "given": true
+       },
+       {
+        "text": "3",
+        "given": true
+       },
+       "9",
+       "5",
+       "2",
+       {
+        "text": "1",
+        "given": true
+       },
+       "6"
+      ],
+      [
+       "6",
+       {
+        "text": "9",
+        "given": true
+       },
+       "3",
+       "4",
+       "2",
+       {
+        "text": "1",
+        "given": true
+       },
+       "7",
+       {
+        "text": "5",
+        "given": true
+       },
+       "8"
+      ],
+      [
+       {
+        "text": "5",
+        "given": true
+       },
+       {
+        "text": "1",
+        "given": true
+       },
+       "2",
+       "8",
+       "7",
+       {
+        "text": "6",
+        "given": true
+       },
+       {
+        "text": "9",
+        "given": true
+       },
+       "4",
+       {
+        "text": "3",
+        "given": true
+       }
+      ],
+      [
+       {
+        "text": "3",
+        "given": true
+       },
+       "4",
+       "1",
+       "6",
+       "8",
+       "9",
+       "5",
+       {
+        "text": "2",
+        "given": true
+       },
+       {
+        "text": "7",
+        "given": true
+       }
+      ],
+      [
+       "2",
+       "7",
+       "8",
+       "1",
+       {
+        "text": "5",
+        "given": true
+       },
+       "3",
+       "6",
+       "9",
+       "4"
+      ],
+      [
+       "9",
+       {
+        "text": "6",
+        "given": true
+       },
+       "5",
+       "7",
+       {
+        "text": "4",
+        "given": true
+       },
+       {
+        "text": "2",
+        "given": true
+       },
+       "3",
+       {
+        "text": "8",
+        "given": true
+       },
+       {
+        "text": "1",
+        "given": true
+       }
+      ]
+     ],
+     "blank": true,
+     "regions": [
+      3,
+      3
+     ],
+     "style": "grid",
+     "lines": {
+      "width": 0.6,
+      "color": "ink"
+     },
+     "region_lines": {
+      "width": 2,
+      "color": "ink"
+     }
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "puzzle-4",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "p4-kicker",
+     "x": 75.0,
+     "y": 58,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 4"
+    },
+    {
+     "type": "text",
+     "id": "p4-title",
+     "x": 75.0,
+     "y": 76,
+     "w": 434.4,
+     "style": "title",
+     "text": "Under the tree"
+    },
+    {
+     "type": "text",
+     "id": "p4-how",
+     "x": 75.0,
+     "y": 118,
+     "w": 434.4,
+     "style": "how",
+     "text": "Three children each found one gift under the tree, each in its own paper. Who found which gift, in which paper?"
+    },
+    {
+     "type": "logic-grid",
+     "id": "logic-grid",
+     "x": 142.2,
+     "y": 196,
+     "cell": 34,
+     "style": "grid-label",
+     "categories": [
+      {
+       "name": "Child",
+       "items": [
+        "Ana",
+        "Ben",
+        "Cleo"
+       ]
+      },
+      {
+       "name": "Gift",
+       "items": [
+        "Scarf",
+        "Sled",
+        "Book"
+       ]
+      },
+      {
+       "name": "Paper",
+       "items": [
+        "Red",
+        "Green",
+        "Gold"
+       ]
+      }
+     ],
+     "marks": [],
+     "lines": {
+      "width": 0.6,
+      "color": "ink"
+     },
+     "frame": {
+      "width": 1.4,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "text",
+     "id": "logic-clues-head",
+     "x": 75.0,
+     "y": 470,
+     "w": 434.4,
+     "style": "clue-head",
+     "text": "Clues"
+    },
+    {
+     "type": "text",
+     "id": "logic-clues-1",
+     "x": 75.0,
+     "y": 492,
+     "w": 434.4,
+     "style": "clue",
+     "content": [
+      {
+       "text": "1.  ",
+       "weight": "bold"
+      },
+      "The sled was wrapped in red."
+     ]
+    },
+    {
+     "type": "text",
+     "id": "logic-clues-2",
+     "x": 75.0,
+     "y": 511,
+     "w": 434.4,
+     "style": "clue",
+     "content": [
+      {
+       "text": "2.  ",
+       "weight": "bold"
+      },
+      "Ana's paper was red."
+     ]
+    },
+    {
+     "type": "text",
+     "id": "logic-clues-3",
+     "x": 75.0,
+     "y": 530,
+     "w": 434.4,
+     "style": "clue",
+     "content": [
+      {
+       "text": "3.  ",
+       "weight": "bold"
+      },
+      "The scarf was not in gold."
+     ]
+    },
+    {
+     "type": "text",
+     "id": "logic-clues-4",
+     "x": 75.0,
+     "y": 549,
+     "w": 434.4,
+     "style": "clue",
+     "content": [
+      {
+       "text": "4.  ",
+       "weight": "bold"
+      },
+      "The book was not Cleo's."
+     ]
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "puzzle-5",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "p5-kicker",
+     "x": 75.0,
+     "y": 58,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 5"
+    },
+    {
+     "type": "text",
+     "id": "p5-title",
+     "x": 75.0,
+     "y": 76,
+     "w": 434.4,
+     "style": "title",
+     "text": "Join the dots"
+    },
+    {
+     "type": "text",
+     "id": "p5-how",
+     "x": 75.0,
+     "y": 118,
+     "w": 434.4,
+     "style": "how",
+     "text": "From 1, in order; the star last."
+    },
+    {
+     "type": "dots",
+     "id": "dots-puzzle",
+     "x": 102.19999999999999,
+     "y": 170,
+     "w": 380,
+     "h": 450,
+     "points": [
+      [
+       150,
+       60
+      ],
+      [
+       184,
+       102
+      ],
+      [
+       168,
+       102
+      ],
+      [
+       206,
+       146
+      ],
+      [
+       184,
+       146
+      ],
+      [
+       228,
+       196
+      ],
+      [
+       164,
+       196
+      ],
+      [
+       164,
+       230
+      ],
+      [
+       136,
+       230
+      ],
+      [
+       136,
+       196
+      ],
+      [
+       72,
+       196
+      ],
+      [
+       116,
+       146
+      ],
+      [
+       94,
+       146
+      ],
+      [
+       132,
+       102
+      ],
+      [
+       116,
+       102
+      ],
+      [
+       150,
+       60
+      ],
+      [
+       150.0,
+       -4.0
+      ],
+      [
+       156.47,
+       13.1
+      ],
+      [
+       174.73,
+       13.97
+      ],
+      [
+       160.46,
+       25.4
+      ],
+      [
+       165.28,
+       43.03
+      ],
+      [
+       150.0,
+       33.0
+      ],
+      [
+       134.72,
+       43.03
+      ],
+      [
+       139.54,
+       25.4
+      ],
+      [
+       125.27,
+       13.97
+      ],
+      [
+       143.53,
+       13.1
+      ],
+      [
+       150.0,
+       -4.0
+      ]
+     ],
+     "breaks": [
+      16
+     ],
+     "viewbox": [
+      40,
+      -12,
+      220,
+      282
+     ],
+     "style": "dot-number",
+     "size": 8
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "solutions-1",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "s1-title",
+     "x": 75.0,
+     "y": 58,
+     "w": 434.4,
+     "style": "title",
+     "text": "Solutions"
+    },
+    {
+     "type": "text",
+     "id": "s1-maze",
+     "x": 75.0,
+     "y": 110,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 1"
+    },
+    {
+     "type": "maze",
+     "id": "maze-solved",
+     "x": 75.0,
+     "y": 130,
+     "cell": 12,
+     "rows": [
+      "3955553d13953953",
+      "c69539696aa96aba",
+      "9783aa96bc6ad46a",
+      "856aeaa945569552",
+      "c3bc56aad1556956",
+      "9681792c56b93ad3",
+      "c3ac56ab952ac692",
+      "baa917aaabac556a",
+      "86c6a96c42c5517a",
+      "c53bac553a93bc56",
+      "b9686d53ac6aa953",
+      "aabc553aa9786aba",
+      "aac17946a85696aa",
+      "aa9696956a95696a",
+      "86c1696d56ad5292",
+      "c53c3c55154516aa",
+      "93ad2953e953a96e",
+      "aac3ec3c3a96ac53",
+      "ac7c556bc6ad6952",
+      "c5555554554556d4"
+     ],
+     "start": [
+      0,
+      0
+     ],
+     "end": [
+      19,
+      15
+     ],
+     "solution": [
+      [
+       0,
+       0
+      ],
+      [
+       1,
+       0
+      ],
+      [
+       1,
+       1
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       0,
+       2
+      ],
+      [
+       0,
+       3
+      ],
+      [
+       0,
+       4
+      ],
+      [
+       0,
+       5
+      ],
+      [
+       0,
+       6
+      ],
+      [
+       1,
+       6
+      ],
+      [
+       1,
+       5
+      ],
+      [
+       2,
+       5
+      ],
+      [
+       3,
+       5
+      ],
+      [
+       4,
+       5
+      ],
+      [
+       4,
+       4
+      ],
+      [
+       4,
+       3
+      ],
+      [
+       3,
+       3
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       2,
+       2
+      ],
+      [
+       3,
+       2
+      ],
+      [
+       3,
+       1
+      ],
+      [
+       3,
+       0
+      ],
+      [
+       4,
+       0
+      ],
+      [
+       4,
+       1
+      ],
+      [
+       5,
+       1
+      ],
+      [
+       5,
+       0
+      ],
+      [
+       6,
+       0
+      ],
+      [
+       6,
+       1
+      ],
+      [
+       7,
+       1
+      ],
+      [
+       8,
+       1
+      ],
+      [
+       8,
+       0
+      ],
+      [
+       9,
+       0
+      ],
+      [
+       9,
+       1
+      ],
+      [
+       9,
+       2
+      ],
+      [
+       10,
+       2
+      ],
+      [
+       10,
+       1
+      ],
+      [
+       11,
+       1
+      ],
+      [
+       12,
+       1
+      ],
+      [
+       13,
+       1
+      ],
+      [
+       14,
+       1
+      ],
+      [
+       14,
+       0
+      ],
+      [
+       15,
+       0
+      ],
+      [
+       15,
+       1
+      ],
+      [
+       15,
+       2
+      ],
+      [
+       16,
+       2
+      ],
+      [
+       17,
+       2
+      ],
+      [
+       17,
+       3
+      ],
+      [
+       18,
+       3
+      ],
+      [
+       18,
+       4
+      ],
+      [
+       18,
+       5
+      ],
+      [
+       18,
+       6
+      ],
+      [
+       17,
+       6
+      ],
+      [
+       17,
+       5
+      ],
+      [
+       16,
+       5
+      ],
+      [
+       16,
+       6
+      ],
+      [
+       16,
+       7
+      ],
+      [
+       17,
+       7
+      ],
+      [
+       17,
+       8
+      ],
+      [
+       18,
+       8
+      ],
+      [
+       18,
+       9
+      ],
+      [
+       17,
+       9
+      ],
+      [
+       16,
+       9
+      ],
+      [
+       16,
+       10
+      ],
+      [
+       16,
+       11
+      ],
+      [
+       17,
+       11
+      ],
+      [
+       17,
+       10
+      ],
+      [
+       18,
+       10
+      ],
+      [
+       19,
+       10
+      ],
+      [
+       19,
+       11
+      ],
+      [
+       19,
+       12
+      ],
+      [
+       19,
+       13
+      ],
+      [
+       18,
+       13
+      ],
+      [
+       18,
+       14
+      ],
+      [
+       18,
+       15
+      ],
+      [
+       19,
+       15
+      ]
+     ],
+     "walls": {
+      "width": 1,
+      "color": "ink"
+     },
+     "marks": "ink",
+     "solved": true
+    },
+    {
+     "type": "text",
+     "id": "s1-cw",
+     "x": 305.0,
+     "y": 110,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 2"
+    },
+    {
+     "type": "letter-grid",
+     "id": "crossword-solved",
+     "x": 305.0,
+     "y": 130,
+     "cell": 34,
+     "rows": [
+      [
+       {
+        "text": "S",
+        "number": "1"
+       },
+       "T",
+       {
+        "text": "A",
+        "number": "2"
+       },
+       "R",
+       {
+        "text": "S",
+        "number": "3"
+       }
+      ],
+      [
+       "L",
+       {
+        "block": true
+       },
+       "N",
+       {
+        "block": true
+       },
+       "W"
+      ],
+      [
+       {
+        "text": "E",
+        "number": "4"
+       },
+       "A",
+       "G",
+       "L",
+       "E"
+      ],
+      [
+       "D",
+       {
+        "block": true
+       },
+       "E",
+       {
+        "block": true
+       },
+       "E"
+      ],
+      [
+       {
+        "text": "S",
+        "number": "5"
+       },
+       "P",
+       "L",
+       "I",
+       "T"
+      ]
+     ],
+     "blank": false,
+     "style": "grid",
+     "lines": {
+      "width": 0.8,
+      "color": "ink"
+     },
+     "frame": {
+      "width": 1.6,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "text",
+     "id": "s1-sd",
+     "x": 75.0,
+     "y": 400,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 3"
+    },
+    {
+     "type": "letter-grid",
+     "id": "sudoku-solved",
+     "x": 75.0,
+     "y": 420,
+     "cell": 26,
+     "rows": [
+      [
+       {
+        "text": "7",
+        "color": "soft"
+       },
+       {
+        "text": "5",
+        "given": true
+       },
+       {
+        "text": "4",
+        "given": true
+       },
+       {
+        "text": "9",
+        "color": "soft"
+       },
+       {
+        "text": "6",
+        "color": "soft"
+       },
+       {
+        "text": "8",
+        "given": true
+       },
+       {
+        "text": "1",
+        "given": true
+       },
+       {
+        "text": "3",
+        "given": true
+       },
+       {
+        "text": "2",
+        "color": "soft"
+       }
+      ],
+      [
+       {
+        "text": "8",
+        "given": true
+       },
+       {
+        "text": "3",
+        "color": "soft"
+       },
+       {
+        "text": "9",
+        "color": "soft"
+       },
+       {
+        "text": "2",
+        "color": "soft"
+       },
+       {
+        "text": "1",
+        "given": true
+       },
+       {
+        "text": "7",
+        "color": "soft"
+       },
+       {
+        "text": "4",
+        "color": "soft"
+       },
+       {
+        "text": "6",
+        "color": "soft"
+       },
+       {
+        "text": "5",
+        "given": true
+       }
+      ],
+      [
+       {
+        "text": "1",
+        "color": "soft"
+       },
+       {
+        "text": "2",
+        "color": "soft"
+       },
+       {
+        "text": "6",
+        "color": "soft"
+       },
+       {
+        "text": "5",
+        "color": "soft"
+       },
+       {
+        "text": "3",
+        "color": "soft"
+       },
+       {
+        "text": "4",
+        "color": "soft"
+       },
+       {
+        "text": "8",
+        "given": true
+       },
+       {
+        "text": "7",
+        "color": "soft"
+       },
+       {
+        "text": "9",
+        "given": true
+       }
+      ],
+      [
+       {
+        "text": "4",
+        "color": "soft"
+       },
+       {
+        "text": "8",
+        "color": "soft"
+       },
+       {
+        "text": "7",
+        "given": true
+       },
+       {
+        "text": "3",
+        "given": true
+       },
+       {
+        "text": "9",
+        "color": "soft"
+       },
+       {
+        "text": "5",
+        "color": "soft"
+       },
+       {
+        "text": "2",
+        "color": "soft"
+       },
+       {
+        "text": "1",
+        "given": true
+       },
+       {
+        "text": "6",
+        "color": "soft"
+       }
+      ],
+      [
+       {
+        "text": "6",
+        "color": "soft"
+       },
+       {
+        "text": "9",
+        "given": true
+       },
+       {
+        "text": "3",
+        "color": "soft"
+       },
+       {
+        "text": "4",
+        "color": "soft"
+       },
+       {
+        "text": "2",
+        "color": "soft"
+       },
+       {
+        "text": "1",
+        "given": true
+       },
+       {
+        "text": "7",
+        "color": "soft"
+       },
+       {
+        "text": "5",
+        "given": true
+       },
+       {
+        "text": "8",
+        "color": "soft"
+       }
+      ],
+      [
+       {
+        "text": "5",
+        "given": true
+       },
+       {
+        "text": "1",
+        "given": true
+       },
+       {
+        "text": "2",
+        "color": "soft"
+       },
+       {
+        "text": "8",
+        "color": "soft"
+       },
+       {
+        "text": "7",
+        "color": "soft"
+       },
+       {
+        "text": "6",
+        "given": true
+       },
+       {
+        "text": "9",
+        "given": true
+       },
+       {
+        "text": "4",
+        "color": "soft"
+       },
+       {
+        "text": "3",
+        "given": true
+       }
+      ],
+      [
+       {
+        "text": "3",
+        "given": true
+       },
+       {
+        "text": "4",
+        "color": "soft"
+       },
+       {
+        "text": "1",
+        "color": "soft"
+       },
+       {
+        "text": "6",
+        "color": "soft"
+       },
+       {
+        "text": "8",
+        "color": "soft"
+       },
+       {
+        "text": "9",
+        "color": "soft"
+       },
+       {
+        "text": "5",
+        "color": "soft"
+       },
+       {
+        "text": "2",
+        "given": true
+       },
+       {
+        "text": "7",
+        "given": true
+       }
+      ],
+      [
+       {
+        "text": "2",
+        "color": "soft"
+       },
+       {
+        "text": "7",
+        "color": "soft"
+       },
+       {
+        "text": "8",
+        "color": "soft"
+       },
+       {
+        "text": "1",
+        "color": "soft"
+       },
+       {
+        "text": "5",
+        "given": true
+       },
+       {
+        "text": "3",
+        "color": "soft"
+       },
+       {
+        "text": "6",
+        "color": "soft"
+       },
+       {
+        "text": "9",
+        "color": "soft"
+       },
+       {
+        "text": "4",
+        "color": "soft"
+       }
+      ],
+      [
+       {
+        "text": "9",
+        "color": "soft"
+       },
+       {
+        "text": "6",
+        "given": true
+       },
+       {
+        "text": "5",
+        "color": "soft"
+       },
+       {
+        "text": "7",
+        "color": "soft"
+       },
+       {
+        "text": "4",
+        "given": true
+       },
+       {
+        "text": "2",
+        "given": true
+       },
+       {
+        "text": "3",
+        "color": "soft"
+       },
+       {
+        "text": "8",
+        "given": true
+       },
+       {
+        "text": "1",
+        "given": true
+       }
+      ]
+     ],
+     "blank": false,
+     "regions": [
+      3,
+      3
+     ],
+     "style": "grid",
+     "lines": {
+      "width": 0.6,
+      "color": "ink"
+     },
+     "region_lines": {
+      "width": 2,
+      "color": "ink"
+     }
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "solutions-2",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "s2-title",
+     "x": 75.0,
+     "y": 58,
+     "w": 434.4,
+     "style": "title",
+     "text": "Solutions"
+    },
+    {
+     "type": "text",
+     "id": "s2-logic",
+     "x": 75.0,
+     "y": 110,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 4"
+    },
+    {
+     "type": "logic-grid",
+     "id": "logic-solved",
+     "x": 142.2,
+     "y": 136,
+     "cell": 34,
+     "style": "grid-label",
+     "categories": [
+      {
+       "name": "Child",
+       "items": [
+        "Ana",
+        "Ben",
+        "Cleo"
+       ]
+      },
+      {
+       "name": "Gift",
+       "items": [
+        "Scarf",
+        "Sled",
+        "Book"
+       ]
+      },
+      {
+       "name": "Paper",
+       "items": [
+        "Red",
+        "Green",
+        "Gold"
+       ]
+      }
+     ],
+     "marks": [
+      {
+       "a": [
+        0,
+        0
+       ],
+       "b": [
+        1,
+        0
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        0
+       ],
+       "b": [
+        1,
+        1
+       ],
+       "mark": "o"
+      },
+      {
+       "a": [
+        0,
+        0
+       ],
+       "b": [
+        1,
+        2
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        1
+       ],
+       "b": [
+        1,
+        0
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        1
+       ],
+       "b": [
+        1,
+        1
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        1
+       ],
+       "b": [
+        1,
+        2
+       ],
+       "mark": "o"
+      },
+      {
+       "a": [
+        0,
+        2
+       ],
+       "b": [
+        1,
+        0
+       ],
+       "mark": "o"
+      },
+      {
+       "a": [
+        0,
+        2
+       ],
+       "b": [
+        1,
+        1
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        2
+       ],
+       "b": [
+        1,
+        2
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        0
+       ],
+       "b": [
+        2,
+        0
+       ],
+       "mark": "o"
+      },
+      {
+       "a": [
+        0,
+        0
+       ],
+       "b": [
+        2,
+        1
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        0
+       ],
+       "b": [
+        2,
+        2
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        1
+       ],
+       "b": [
+        2,
+        0
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        1
+       ],
+       "b": [
+        2,
+        1
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        1
+       ],
+       "b": [
+        2,
+        2
+       ],
+       "mark": "o"
+      },
+      {
+       "a": [
+        0,
+        2
+       ],
+       "b": [
+        2,
+        0
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        0,
+        2
+       ],
+       "b": [
+        2,
+        1
+       ],
+       "mark": "o"
+      },
+      {
+       "a": [
+        0,
+        2
+       ],
+       "b": [
+        2,
+        2
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        2,
+        0
+       ],
+       "b": [
+        1,
+        0
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        2,
+        0
+       ],
+       "b": [
+        1,
+        1
+       ],
+       "mark": "o"
+      },
+      {
+       "a": [
+        2,
+        0
+       ],
+       "b": [
+        1,
+        2
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        2,
+        1
+       ],
+       "b": [
+        1,
+        0
+       ],
+       "mark": "o"
+      },
+      {
+       "a": [
+        2,
+        1
+       ],
+       "b": [
+        1,
+        1
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        2,
+        1
+       ],
+       "b": [
+        1,
+        2
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        2,
+        2
+       ],
+       "b": [
+        1,
+        0
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        2,
+        2
+       ],
+       "b": [
+        1,
+        1
+       ],
+       "mark": "x"
+      },
+      {
+       "a": [
+        2,
+        2
+       ],
+       "b": [
+        1,
+        2
+       ],
+       "mark": "o"
+      }
+     ],
+     "lines": {
+      "width": 0.6,
+      "color": "ink"
+     },
+     "frame": {
+      "width": 1.4,
+      "color": "ink"
+     }
+    },
+    {
+     "type": "text",
+     "id": "s2-dots",
+     "x": 75.0,
+     "y": 420,
+     "w": 434.4,
+     "style": "kicker",
+     "text": "Puzzle 5"
+    },
+    {
+     "type": "dots",
+     "id": "dots-solved",
+     "x": 135.0,
+     "y": 440,
+     "w": 200,
+     "h": 236,
+     "points": [
+      [
+       150,
+       60
+      ],
+      [
+       184,
+       102
+      ],
+      [
+       168,
+       102
+      ],
+      [
+       206,
+       146
+      ],
+      [
+       184,
+       146
+      ],
+      [
+       228,
+       196
+      ],
+      [
+       164,
+       196
+      ],
+      [
+       164,
+       230
+      ],
+      [
+       136,
+       230
+      ],
+      [
+       136,
+       196
+      ],
+      [
+       72,
+       196
+      ],
+      [
+       116,
+       146
+      ],
+      [
+       94,
+       146
+      ],
+      [
+       132,
+       102
+      ],
+      [
+       116,
+       102
+      ],
+      [
+       150,
+       60
+      ],
+      [
+       150.0,
+       -4.0
+      ],
+      [
+       156.47,
+       13.1
+      ],
+      [
+       174.73,
+       13.97
+      ],
+      [
+       160.46,
+       25.4
+      ],
+      [
+       165.28,
+       43.03
+      ],
+      [
+       150.0,
+       33.0
+      ],
+      [
+       134.72,
+       43.03
+      ],
+      [
+       139.54,
+       25.4
+      ],
+      [
+       125.27,
+       13.97
+      ],
+      [
+       143.53,
+       13.1
+      ],
+      [
+       150.0,
+       -4.0
+      ]
+     ],
+     "breaks": [
+      16
+     ],
+     "viewbox": [
+      40,
+      -12,
+      220,
+      282
+     ],
+     "solved": true,
+     "style": "dot-number",
+     "size": 6
+    }
+   ]
+  }
+ ]
+}

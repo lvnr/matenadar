@@ -1,0 +1,840 @@
+{
+  "matenadar": "1",
+  "meta": {
+    "title": "One Pen: Winter Lights",
+    "author": "Nell Bramley",
+    "lang": "en"
+  },
+  "design": {
+    "colors": {
+      "ink": "#000000"
+    },
+    "fonts": {
+      "display": [
+        "Adobe Caslon Pro",
+        "Libertinus Serif"
+      ],
+      "text": [
+        "Adobe Caslon Pro",
+        "Libertinus Serif"
+      ]
+    },
+    "base": {
+      "font": "text",
+      "size": 12.0,
+      "color": "ink",
+      "line_height": 1.4
+    },
+    "styles": {
+      "title": {
+        "font": "display",
+        "size": 46.0,
+        "weight": 600,
+        "line_height": 1.08,
+        "align": "center",
+        "balance": true
+      },
+      "subtitle": {
+        "font": "display",
+        "size": 18.0,
+        "italic": true,
+        "line_height": 1.25,
+        "align": "center",
+        "balance": true
+      },
+      "byline": {
+        "size": 16.0,
+        "align": "center"
+      },
+      "publisher": {
+        "size": 10.0,
+        "tracking": "0.12em",
+        "case": "upper",
+        "align": "center"
+      },
+      "small": {
+        "size": 9.0,
+        "line_height": 1.4
+      },
+      "belongs": {
+        "font": "display",
+        "size": 24.0,
+        "align": "center"
+      },
+      "picture-title": {
+        "font": "display",
+        "size": 22.0,
+        "align": "center"
+      },
+      "back-note": {
+        "size": 8.0,
+        "color": "#777777",
+        "align": "center"
+      },
+      "folio": {
+        "size": 9.0,
+        "align": "center"
+      }
+    },
+    "masters": {
+      "page": {
+        "width": 612.0,
+        "height": 792.0,
+        "bleed": 0.0,
+        "margins": {
+          "top": 36.0,
+          "bottom": 36.0,
+          "inside": 54.0,
+          "outside": 36.0,
+          "left": null,
+          "right": null
+        },
+        "foreground": [
+          {
+            "type": "text",
+            "id": "folio",
+            "x": 36.0,
+            "y": 758.0,
+            "w": 540.0,
+            "style": "folio",
+            "content": [
+              {
+                "field": "page"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "content": [
+    {
+      "type": "page",
+      "id": "title",
+      "master": "page",
+      "elements": [
+        {
+          "type": "text",
+          "id": "title-title",
+          "x": 54.0,
+          "y": 237.6,
+          "w": 522.0,
+          "style": "title",
+          "text": "One Pen: Winter Lights"
+        },
+        {
+          "type": "text",
+          "id": "title-subtitle",
+          "x": 54.0,
+          "y": 357.6,
+          "w": 522.0,
+          "style": "subtitle",
+          "text": "A Monochrome Coloring Book for Adults"
+        },
+        {
+          "type": "text",
+          "id": "title-author",
+          "x": 54.0,
+          "y": 491.04,
+          "w": 522.0,
+          "style": "byline",
+          "text": "Nell Bramley"
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "copyright",
+      "master": "page",
+      "elements": [
+        {
+          "type": "text",
+          "id": "copyright-words",
+          "x": 36.0,
+          "y": 646.0,
+          "w": 522.0,
+          "h": 110.0,
+          "style": "small",
+          "text": "Copyright © 2026 Nell Bramley. All rights reserved.",
+          "valign": "bottom"
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "belongs-to",
+      "master": "page",
+      "elements": [
+        {
+          "type": "text",
+          "id": "belongs-to-words",
+          "x": 54.0,
+          "y": 285.12,
+          "w": 522.0,
+          "style": "belongs",
+          "text": "This book belongs to"
+        },
+        {
+          "type": "line",
+          "id": "belongs-to-line",
+          "x1": 132.3,
+          "y1": 396.0,
+          "x2": 497.7,
+          "y2": 396.0,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          }
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "front-blank",
+      "master": "page",
+      "elements": []
+    },
+    {
+      "type": "page",
+      "id": "p01-the-lamplighter",
+      "master": "page",
+      "elements": [
+        {
+          "type": "image",
+          "id": "p01-the-lamplighter-art",
+          "x": 0.0,
+          "y": 0.0,
+          "w": 612.0,
+          "h": 792.0,
+          "src": "book/coloring/p01-the-lamplighter/p01-the-lamplighter.activity.svg",
+          "fit": "cover",
+          "alt": "The Lamplighter"
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "p01-the-lamplighter-back",
+      "master": "page",
+      "elements": [
+        {
+          "type": "text",
+          "id": "p01-the-lamplighter-back-note",
+          "x": 36.0,
+          "y": 742.0,
+          "w": 522.0,
+          "style": "back-note",
+          "text": "Use one pen or pencil to fill every small O. Leave unmarked spaces blank and let the scene emerge."
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "p02-oranges-under-the-awning",
+      "master": "page",
+      "elements": [
+        {
+          "type": "image",
+          "id": "p02-oranges-under-the-awning-art",
+          "x": 0.0,
+          "y": 0.0,
+          "w": 612.0,
+          "h": 792.0,
+          "src": "book/coloring/p02-oranges-under-the-awning/p02-oranges-under-the-awning.activity.svg",
+          "fit": "cover",
+          "alt": "Oranges Under the Awning"
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "p02-oranges-under-the-awning-back",
+      "master": "page",
+      "elements": [
+        {
+          "type": "text",
+          "id": "p02-oranges-under-the-awning-back-note",
+          "x": 36.0,
+          "y": 742.0,
+          "w": 522.0,
+          "style": "back-note",
+          "text": "Use one pen or pencil to fill every small O. Leave unmarked spaces blank and let the scene emerge."
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "p03-the-skating-pond",
+      "master": "page",
+      "elements": [
+        {
+          "type": "image",
+          "id": "p03-the-skating-pond-art",
+          "x": 0.0,
+          "y": 0.0,
+          "w": 612.0,
+          "h": 792.0,
+          "src": "book/coloring/p03-the-skating-pond/p03-the-skating-pond.activity.svg",
+          "fit": "cover",
+          "alt": "The Skating Pond"
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "p03-the-skating-pond-back",
+      "master": "page",
+      "elements": [
+        {
+          "type": "text",
+          "id": "p03-the-skating-pond-back-note",
+          "x": 36.0,
+          "y": 742.0,
+          "w": 522.0,
+          "style": "back-note",
+          "text": "Use one pen or pencil to fill every small O. Leave unmarked spaces blank and let the scene emerge."
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "p04-tram-number-seven",
+      "master": "page",
+      "elements": [
+        {
+          "type": "image",
+          "id": "p04-tram-number-seven-art",
+          "x": 0.0,
+          "y": 0.0,
+          "w": 612.0,
+          "h": 792.0,
+          "src": "book/coloring/p04-tram-number-seven/p04-tram-number-seven.activity.svg",
+          "fit": "cover",
+          "alt": "Tram Number Seven"
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "p04-tram-number-seven-back",
+      "master": "page",
+      "elements": [
+        {
+          "type": "text",
+          "id": "p04-tram-number-seven-back-note",
+          "x": 36.0,
+          "y": 742.0,
+          "w": 522.0,
+          "style": "back-note",
+          "text": "Use one pen or pencil to fill every small O. Leave unmarked spaces blank and let the scene emerge."
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "test-colours",
+      "master": "page",
+      "elements": [
+        {
+          "type": "text",
+          "id": "test-title",
+          "x": 54.0,
+          "y": 36.0,
+          "w": 522.0,
+          "style": "picture-title",
+          "text": "Try your pen here"
+        },
+        {
+          "type": "rect",
+          "x": 54.0,
+          "y": 96.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 161.2,
+          "y": 96.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 268.4,
+          "y": 96.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 375.6,
+          "y": 96.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 482.8,
+          "y": 96.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 54.0,
+          "y": 203.2,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 161.2,
+          "y": 203.2,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 268.4,
+          "y": 203.2,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 375.6,
+          "y": 203.2,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 482.8,
+          "y": 203.2,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 54.0,
+          "y": 310.4,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 161.2,
+          "y": 310.4,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 268.4,
+          "y": 310.4,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 375.6,
+          "y": 310.4,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 482.8,
+          "y": 310.4,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 54.0,
+          "y": 417.6,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 161.2,
+          "y": 417.6,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 268.4,
+          "y": 417.6,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 375.6,
+          "y": 417.6,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 482.8,
+          "y": 417.6,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 54.0,
+          "y": 524.8,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 161.2,
+          "y": 524.8,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 268.4,
+          "y": 524.8,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 375.6,
+          "y": 524.8,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 482.8,
+          "y": 524.8,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 54.0,
+          "y": 632.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 161.2,
+          "y": 632.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 268.4,
+          "y": 632.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 375.6,
+          "y": 632.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        },
+        {
+          "type": "rect",
+          "x": 482.8,
+          "y": 632.0,
+          "w": 93.2,
+          "h": 93.2,
+          "stroke": {
+            "width": 0.8,
+            "color": "ink",
+            "dash": null,
+            "cap": null,
+            "join": null,
+            "dash_offset": null
+          },
+          "radius": 4.0
+        }
+      ]
+    },
+    {
+      "type": "page",
+      "id": "test-colours-back",
+      "master": "page",
+      "elements": []
+    }
+  ]
+}

@@ -279,6 +279,14 @@ impl Gen<'_> {
             }
             Element::Lettering(l) => self.lettering(l, &place),
             Element::LetterGrid(g) => self.letter_grid(g, &place, scaled),
+            Element::Maze(m) => self.maze(m, &place),
+            Element::LogicGrid(g) => self.logic_grid(g),
+            Element::Dots(d) => self.dots(d, &place),
+            Element::Ruling(r) => self.ruling(r, &place),
+            Element::Calendar(c) => self.calendar(c, &place),
+            Element::Craft(c) => self.craft(c, &place),
+            Element::Panels(p) => self.panels(p, &place),
+            Element::Balloon(b) => self.balloon(b, &place),
             Element::Line(_) => unreachable!(),
         };
         let mut body = body;
@@ -778,7 +786,7 @@ impl Gen<'_> {
         let lines = g.lines.as_ref().map(|s| self.pal.stroke(s, scaled)).unwrap_or_else(|| "none".into());
         for (r, row) in rows.iter().enumerate() {
             for (c, cell) in row.iter().enumerate() {
-                let (text, fill, number, color, block, weight, cspan) = match cell {
+                let (mut text, fill, number, color, block, weight, cspan) = match cell {
                     GridCell::Text(t) => (t.clone(), None, None, None, false, None, None),
                     GridCell::Full(s) => (
                         s.text.clone().unwrap_or_default(),
@@ -789,6 +797,23 @@ impl Gen<'_> {
                         s.weight.as_ref().map(weight_number),
                         s.span.as_ref().map(|n| self.span_var(n)),
                     ),
+                };
+                let (given, circled) = match cell {
+                    GridCell::Full(s) => (s.given == Some(true), s.circle == Some(true)),
+                    GridCell::Text(_) => (false, false),
+                };
+                // The puzzle keeps only what it gives.
+                if g.blank == Some(true) && !given {
+                    text.clear();
+                }
+                let ring = if circled && !block {
+                    format!(
+                        "place(center + horizon, circle(radius: {}pt, fill: none, stroke: {})); ",
+                        num(cw.min(ch) * 0.4),
+                        g.lines.as_ref().map(|s| self.pal.stroke(s, scaled)).unwrap_or_else(|| "0.6pt + black".into())
+                    )
+                } else {
+                    String::new()
                 };
                 let fill = if block { Some(fill.unwrap_or_else(|| "black".into())) } else { fill };
                 let mut letter = format!("[{}]", super::escape::escape(&text).0);
@@ -809,7 +834,7 @@ impl Gen<'_> {
                     .map(|n| format!("place(top + left, dx: 1.5pt, dy: 1pt, text(size: {}pt, [{}])); ", num(ch * 0.28), super::escape::escape(&n).0))
                     .unwrap_or_default();
                 out.push_str(&format!(
-                    "place(top + left, dx: {}pt, dy: {}pt, box(width: {}pt, height: {}pt, stroke: {lines}{}, {{ {num_part}{} }})); ",
+                    "place(top + left, dx: {}pt, dy: {}pt, box(width: {}pt, height: {}pt, stroke: {lines}{}, {{ {ring}{num_part}{} }})); ",
                     num(c as f64 * cw),
                     num(r as f64 * ch),
                     num(cw),
@@ -823,8 +848,49 @@ impl Gen<'_> {
                 ));
             }
         }
+        // Heavier lines where one region meets another, and round the grid.
+        if let Some(regions) = &g.regions {
+            let pen = self.cap_pen(g.region_lines.as_ref().or(g.frame.as_ref()), 1.5);
+            let mut segs = String::new();
+            for r in 0..nrows {
+                for c in 0..ncols {
+                    let here = regions.of(r, c);
+                    if c + 1 < ncols && here != regions.of(r, c + 1) {
+                        let x = (c + 1) as f64 * cw;
+                        segs.push_str(&format!("({}, {}, {}, {}), ", num(x), num(r as f64 * ch), num(x), num((r + 1) as f64 * ch)));
+                    }
+                    if r + 1 < nrows && here != regions.of(r + 1, c) {
+                        let y = (r + 1) as f64 * ch;
+                        segs.push_str(&format!("({}, {}, {}, {}), ", num(c as f64 * cw), num(y), num((c + 1) as f64 * cw), num(y)));
+                    }
+                }
+            }
+            out.push_str(&format!(
+                "for (x1, y1, x2, y2) in ({segs}) {{ place(top + left, line(start: (x1 * 1pt, y1 * 1pt), end: (x2 * 1pt, y2 * 1pt), stroke: {pen})) }}; "
+            ));
+            if g.frame.is_none() {
+                out.push_str(&format!(
+                    "place(top + left, rect(width: {}pt, height: {}pt, fill: none, stroke: {pen})); ",
+                    num(cw * ncols as f64),
+                    num(ch * nrows as f64)
+                ));
+            }
+        }
         out.push_str("})");
         out
+    }
+
+    /// A stroke with square caps, so lines that meet leave no notch.
+    fn cap_pen(&self, s: Option<&Stroke>, default_w: f64) -> String {
+        let (w, color) = match s {
+            Some(Stroke::Color(c)) => (default_w, self.pal.color(c)),
+            Some(Stroke::Full(spec)) => (
+                spec.width.map(|w| w.resolve(11.0, 0.0)).unwrap_or(default_w),
+                spec.color.as_ref().map(|c| self.pal.color(c)).unwrap_or_else(|| "black".into()),
+            ),
+            None => (default_w, "black".into()),
+        };
+        format!("(paint: {color}, thickness: {}pt, cap: \"square\")", num(w))
     }
 }
 

@@ -44,7 +44,8 @@ impl Gen<'_> {
                 }
                 Inline::Field(f) => {
                     let wrap = self.run_wrap(f.span.as_deref(), &f.set, false, false);
-                    let expr = format!("context mt-field({})", str_lit(&f.field));
+                    let format = f.format.as_deref().map(|x| format!(", format: {}", str_lit(x))).unwrap_or_default();
+                    let expr = format!("context mt-field({}{format})", str_lit(&f.field));
                     match wrap {
                         Some(w) => self.raw(&format!("#mt-span({w}, {expr})")),
                         None => self.raw(&format!("#{expr}")),

@@ -163,22 +163,28 @@ pub fn build(doc: &Document, paths: &Paths, opts: &Options) -> Result<Vec<u8>, S
                         });
                     }
                     Item::Page(p) => {
-                        let Some((page, _, _)) = session.position(&p.id) else { continue };
-                        let png = session.png(page, opts.dpi, false).ok_or("a page could not be drawn")?;
-                        let (data, _) = jpeg(&png)?;
-                        let href = assets.add(&format!("page:{page}"), "images/page", "jpg", data);
-                        if i == 0 && cover.is_none() {
-                            cover = Some(href.clone());
+                        let Some((first, _, _)) = session.position(&p.id) else { continue };
+                        // A repeated page is laid out once per time, one after another.
+                        let times = p.repeat.as_ref().map_or(1, |r| r.times());
+                        for k in 0..times {
+                            let page = first + k;
+                            let png = session.png(page, opts.dpi, false).ok_or("a page could not be drawn")?;
+                            let (data, _) = jpeg(&png)?;
+                            let href = assets.add(&format!("page:{page}"), "images/page", "jpg", data);
+                            if i == 0 && k == 0 && cover.is_none() {
+                                cover = Some(href.clone());
+                            }
+                            let text = page_text(&session, page);
+                            let stem = file_stem("p", &p.id, i);
+                            chapters.push(Chapter {
+                                file: if k == 0 { format!("{stem}.xhtml") } else { format!("{stem}-{}.xhtml", k + 1) },
+                                title: p.title.clone().unwrap_or_default(),
+                                body: format!("<div class=\"page\"><img src=\"{href}\" alt=\"{}\"/></div>", xhtml::esc(&text)),
+                                headings: Vec::new(),
+                                viewport: None,
+                                spread: None,
+                            });
                         }
-                        let text = page_text(&session, page);
-                        chapters.push(Chapter {
-                            file: format!("{}.xhtml", file_stem("p", &p.id, i)),
-                            title: p.title.clone().unwrap_or_default(),
-                            body: format!("<div class=\"page\"><img src=\"{href}\" alt=\"{}\"/></div>", xhtml::esc(&text)),
-                            headings: Vec::new(),
-                            viewport: None,
-                            spread: None,
-                        });
                     }
                 }
             }

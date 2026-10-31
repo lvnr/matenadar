@@ -640,6 +640,10 @@ pub struct Footnote {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Field {
     pub field: String,
+    /// For a value that is a date (`YYYY-MM-DD`): how to show it, as Typst
+    /// writes dates: `"[weekday], [month repr:long] [day padding:none]"`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub span: Option<String>,
     #[serde(default, flatten)]

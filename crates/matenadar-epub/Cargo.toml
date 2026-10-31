@@ -7,9 +7,15 @@ license.workspace = true
 authors.workspace = true
 publish.workspace = true
 
+[features]
+default = ["embedded-fonts"]
+# Typst's own faces as a fallback; the WebAssembly build leaves them out.
+embedded-fonts = ["matenadar-typst/embedded-fonts"]
+
 [dependencies]
 matenadar-model.workspace = true
-matenadar-typst.workspace = true
+matenadar-typst = { path = "../matenadar-typst", default-features = false }
+ttf-parser = "0.25"
 indexmap.workspace = true
 typst.workspace = true
 serde_json.workspace = true
@@ -19,4 +25,4 @@ crc32fast = "1"
 
 [dev-dependencies]
 serde_json.workspace = true
-image = { version = "0.25", default-features = false, features = ["png"] }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }

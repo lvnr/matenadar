@@ -496,6 +496,51 @@ impl Session {
         }
         Some((w, h, data))
     }
+
+    /// A page as RGB pixels on white paper at `dpi`, drawn once (no
+    /// supersampling), for pictures that are compressed next (an ebook's
+    /// pages); without the text runs `drop` picks, when given.
+    pub fn rgb(&self, page: usize, dpi: f32, drop: Option<&dyn Fn(&typst::text::TextItem) -> bool>) -> Option<(u32, u32, Vec<u8>)> {
+        let p = self.layout.pages().get(page.checked_sub(1)?)?;
+        let stripped;
+        let p = match drop {
+            Some(drop) => {
+                let mut q = p.clone();
+                q.frame = without_text(&q.frame, drop);
+                stripped = q;
+                &stripped
+            }
+            None => p,
+        };
+        let opts = typst_render::RenderOptions { pixel_per_pt: typst::utils::Scalar::new((dpi / 72.0).into()), render_bleed: false };
+        let pixmap = typst_render::render(p, &opts);
+        let (w, h) = (pixmap.width(), pixmap.height());
+        let mut rgb = Vec::with_capacity(w as usize * h as usize * 3);
+        for px in pixmap.data().as_chunks::<4>().0 {
+            // Premultiplied: over white, each channel gains what the alpha leaves.
+            let paper = 255 - px[3];
+            rgb.extend_from_slice(&[px[0].saturating_add(paper), px[1].saturating_add(paper), px[2].saturating_add(paper)]);
+        }
+        Some((w, h, rgb))
+    }
+}
+
+/// A frame with the text runs `drop` picks left out, groups and all else kept.
+fn without_text(frame: &typst::layout::Frame, drop: &dyn Fn(&typst::text::TextItem) -> bool) -> typst::layout::Frame {
+    use typst::layout::FrameItem;
+    let mut out = typst::layout::Frame::new(frame.size(), frame.kind());
+    for (pos, item) in frame.items() {
+        match item {
+            FrameItem::Text(t) if drop(t) => {}
+            FrameItem::Group(g) => {
+                let mut g = g.clone();
+                g.frame = without_text(&g.frame, drop);
+                out.push(*pos, FrameItem::Group(g));
+            }
+            other => out.push(*pos, other.clone()),
+        }
+    }
+    out
 }
 
 /// Halves a pixmap, each pixel the mean of four (premultiplied, so edges blend right).

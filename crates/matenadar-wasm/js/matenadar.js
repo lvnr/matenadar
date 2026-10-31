@@ -5,10 +5,8 @@
 //
 //   import { Matenadar } from "./matenadar.js";
 //   const mt = await Matenadar.load(fetch("matenadar.wasm"));
-//   const { fonts, files } = mt.assets(doc);
-//   for (const font of fontFiles) mt.addFont(font);
-//   for (const path of files) mt.addFile(path, await fetchBytes(path));
-//   const { pages, diagnostics } = mt.open(doc);
+//   const { pages, diagnostics } = await mt.openFrom(doc, { root: "https://…/book/", fonts: ["https://…/Serif.otf"] });
+//   // or by hand: mt.assets(doc) names the font folders and files; addFont, addFile, then open(doc).
 //   const svg = mt.svg(1);
 //   const hit = mt.hit(1, x, y);                    // points from the trim's corner
 //   const done = mt.setFields(hit.id, { space_before: "12pt" }, { style: true });
@@ -62,6 +60,37 @@ export class Matenadar {
   /** Lays a document out. `check`: `{safe: "0.25in", gutter: "0.5in", min_ppi: 300}`. */
   open(doc, check) {
     return this.#call("open", check ? { doc, check } : { doc });
+  }
+
+  /**
+   * Fonts from folders (in Node, read through), font files or URLs, or bytes: every
+   * .otf, .ttf, .otc and .ttc found. Returns how many faces were added.
+   */
+  async addFonts(...sources) {
+    let faces = 0;
+    for (const source of sources.flat()) {
+      for (const data of await fontsAt(source)) faces += this.addFont(data);
+    }
+    return faces;
+  }
+
+  /**
+   * Lays a document out with what it names, read under `root` (a folder in Node, a base
+   * URL in a browser): the fonts in its font folders and its pictures. `fonts` adds more
+   * folders, files or URLs (a browser can't list a folder, so give its fonts there).
+   * Returns open's result and `missing`, the files that couldn't be read.
+   */
+  async openFrom(doc, { root = ".", fonts = [], check } = {}) {
+    const { fonts: dirs, files } = this.assets(doc);
+    if (!isUrl(root)) for (const dir of dirs) await this.addFonts(await under(root, dir));
+    await this.addFonts(...fonts);
+    const missing = [];
+    for (const path of files) {
+      const data = await read(await under(root, path)).catch(() => null);
+      if (data) this.addFile(path, data);
+      else missing.push(path);
+    }
+    return { ...this.open(doc, check), missing };
   }
 
   /** A book kind's whole document from a spec (`picture-book`…); see docs/model.md, Templates. */
@@ -290,6 +319,22 @@ export class Matenadar {
     return this.#call("check", options);
   }
 
+  /**
+   * The open document as an EPUB 3, as bytes. `layout`: "reflowable" (default) or "fixed",
+   * each page a picture with its typeset words over it as live text (`liveText: false`
+   * leaves them in the picture). `dpi` of page pictures (150), `embedFonts` (reflowable),
+   * `identifier`, `cover` (a file given with addFile), `modified` (default now).
+   */
+  epub({ layout = "reflowable", dpi, embedFonts = false, liveText = true, identifier, cover, modified } = {}) {
+    modified ??= new Date().toISOString().replace(/\.\d+Z$/, "Z");
+    return this.#call("epub", { layout, dpi, embed_fonts: embedFonts, live_text: liveText, identifier, cover, modified }, "bytes");
+  }
+
+  /** The module's memory now, in bytes (it only grows, so this is its peak). */
+  memory() {
+    return this.#x.memory.buffer.byteLength;
+  }
+
   /** The edits since the document opened (or the last rebase): `{words, touched, layout}`. */
   patch() {
     return this.#call("patch", {});
@@ -327,4 +372,43 @@ function bytes(data) {
   if (data instanceof Uint8Array) return data;
   if (ArrayBuffer.isView(data)) return new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
   return new Uint8Array(data);
+}
+
+// ---- Reading fonts and files: folders and paths in Node, URLs anywhere ----
+
+const fontFile = /\.(otf|ttf|otc|ttc)$/i;
+const inNode = typeof process !== "undefined" && !!process.versions?.node;
+
+function isUrl(where) {
+  return where instanceof URL || /^(https?|file|data|blob):/i.test(String(where));
+}
+
+async function under(root, path) {
+  if (isUrl(root)) return new URL(path, String(root).endsWith("/") ? root : `${root}/`);
+  const { join } = await import("node:path");
+  return join(String(root), path);
+}
+
+async function read(where) {
+  if (isUrl(where) && !(inNode && String(where).startsWith("file:"))) {
+    const res = await fetch(where);
+    if (!res.ok) throw new Error(`${where}: ${res.status}`);
+    return new Uint8Array(await res.arrayBuffer());
+  }
+  const { readFile } = await import("node:fs/promises");
+  return new Uint8Array(await readFile(where instanceof URL ? where : String(where)));
+}
+
+/** The font files at a source: bytes, a URL, a file, or a folder (Node) read through. */
+async function fontsAt(source) {
+  if (source instanceof Uint8Array || source instanceof ArrayBuffer || ArrayBuffer.isView(source)) return [bytes(source)];
+  if (isUrl(source) && !(inNode && String(source).startsWith("file:"))) return [await read(source)];
+  const { stat, readdir } = await import("node:fs/promises");
+  const { join } = await import("node:path");
+  const path = source instanceof URL ? source.pathname : String(source);
+  const info = await stat(path).catch(() => null);
+  if (!info) return [];
+  if (!info.isDirectory()) return [await read(path)];
+  const names = (await readdir(path, { recursive: true })).filter((n) => fontFile.test(n)).sort();
+  return Promise.all(names.map((n) => read(join(path, n))));
 }

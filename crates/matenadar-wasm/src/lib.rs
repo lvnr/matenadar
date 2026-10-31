@@ -31,7 +31,9 @@
 //!   to}`, `hide_on_page` `{id, hide}`, `nudge` `{id, lines}`; then `undo`,
 //!   `redo`.
 //! - Results: `diagnostics`, `check` `{safe, gutter, min_ppi, ink}`, `patch`,
-//!   `rebase`.
+//!   `rebase`; `epub` `{layout, dpi, embed_fonts, live_text, identifier,
+//!   cover, modified}` (bytes; `cover` is a file given with `mt_file`, and
+//!   `modified` the time, which WebAssembly can't read).
 
 use std::alloc::Layout;
 use std::cell::RefCell;
@@ -297,6 +299,10 @@ impl Engine {
             "redo" => edited(e.redo())?,
             "diagnostics" => Out::Json(json!(e.diagnostics())),
             "check" => Out::Json(json!(check(e.session(), &check_options(p)?))),
+            "epub" => {
+                let fonts = self.built.clone().ok_or("open a document first")?;
+                Out::Bytes(epub(e.session(), fonts, p)?)
+            }
             "patch" => Out::Json(json!(e.patch())),
             "rebase" => {
                 e.rebase();
@@ -305,6 +311,37 @@ impl Engine {
             other => return Err(format!("unknown method \"{other}\"")),
         })
     }
+}
+
+/// The open document as an EPUB: `{"layout": "reflowable" | "fixed", "dpi": 150,
+/// "embed_fonts": false, "live_text": true, "identifier": "urn:isbn:…",
+/// "cover": "images/cover.jpg", "modified": "2026-10-31T09:00:00Z"}`.
+fn epub(session: &Session, fonts: Arc<Fonts>, p: &Value) -> Result<Vec<u8>> {
+    let str_of = |k: &str| p.get(k).and_then(Value::as_str);
+    let cover_data = match str_of("cover") {
+        Some(path) => {
+            let data = session.files().read(path).ok_or_else(|| format!("no file {path}: give it with addFile first"))?;
+            let ext = path.rsplit('.').next().unwrap_or("jpg").to_ascii_lowercase();
+            Some((data.to_vec(), ext))
+        }
+        None => None,
+    };
+    let opts = matenadar_epub::Options {
+        layout: match str_of("layout") {
+            Some("fixed") => matenadar_epub::Layout::Fixed,
+            Some("reflowable") | None => matenadar_epub::Layout::Reflowable,
+            Some(other) => return Err(format!("layout is reflowable or fixed, not {other}")),
+        },
+        dpi: p.get("dpi").and_then(Value::as_f64).unwrap_or(150.0) as f32,
+        embed_fonts: p.get("embed_fonts").and_then(Value::as_bool).unwrap_or(false),
+        cover: None,
+        cover_data,
+        identifier: str_of("identifier").map(str::to_string),
+        live_text: p.get("live_text").and_then(Value::as_bool).unwrap_or(true),
+        modified: str_of("modified").map(str::to_string),
+    };
+    let paths = Paths { root: PathBuf::new(), font_dirs: vec![], system_fonts: false };
+    matenadar_epub::build_from(session, &paths, fonts, &opts)
 }
 
 /// Check settings: `{"safe": "0.25in", "gutter": "0.5in", "min_ppi": 300, "ink": "black"}`.

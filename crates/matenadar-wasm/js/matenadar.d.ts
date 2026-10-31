@@ -169,6 +169,26 @@ export interface Pixels {
 }
 
 type Bytes = ArrayBuffer | ArrayBufferView;
+
+/** A font or file source: bytes, a URL, or (in Node) a file or a folder read through. */
+export type Source = Bytes | URL | string;
+
+export interface EpubOptions {
+  /** "reflowable" (default), or "fixed": each page a picture with its typeset words over it as live text. */
+  layout?: "reflowable" | "fixed";
+  /** Resolution of page pictures (150). */
+  dpi?: number;
+  /** Reflowable: put the faces in the book (only those licensed for it). */
+  embedFonts?: boolean;
+  /** Fixed: the typeset words as live text (default true); false leaves them in the pictures. */
+  liveText?: boolean;
+  /** An ISBN as `urn:isbn:…`; otherwise one made from the title. */
+  identifier?: string;
+  /** A file given with addFile, for the cover. */
+  cover?: string;
+  /** When the book was made, `CCYY-MM-DDThh:mm:ssZ`; default now. */
+  modified?: string;
+}
 type BreakTo = "page" | "recto" | "verso" | null;
 
 /** The engine's methods; client.js gives each as a promise. */
@@ -177,7 +197,7 @@ export interface MatenadarApi {
   addFont(data: Bytes): number;
   addFile(path: string, data: Bytes): void;
   open(doc: MatenadarDocument, check?: CheckOptions): Opened;
-  template(kind: "picture-book" | string, spec: object): MatenadarDocument;
+  template(kind: "picture-book" | "coloring" | string, spec: object): MatenadarDocument;
   fonts(): string[];
   close(): void;
 
@@ -225,6 +245,7 @@ export interface MatenadarApi {
 
   diagnostics(): Issue[];
   check(options?: CheckOptions): Issue[];
+  epub(options?: EpubOptions): Uint8Array;
   patch(): Patch;
   rebase(): void;
 }
@@ -235,7 +256,7 @@ export declare class Matenadar implements MatenadarApi {
   addFont(data: Bytes): number;
   addFile(path: string, data: Bytes): void;
   open(doc: MatenadarDocument, check?: CheckOptions): Opened;
-  template(kind: "picture-book" | string, spec: object): MatenadarDocument;
+  template(kind: "picture-book" | "coloring" | string, spec: object): MatenadarDocument;
   fonts(): string[];
   close(): void;
   pages(): PageInfo[];
@@ -279,8 +300,15 @@ export declare class Matenadar implements MatenadarApi {
   redo(): Edited;
   diagnostics(): Issue[];
   check(options?: CheckOptions): Issue[];
+  epub(options?: EpubOptions): Uint8Array;
   patch(): Patch;
   rebase(): void;
+  /** Fonts from folders (Node), files, URLs or bytes; returns the faces added. */
+  addFonts(...sources: (Source | Source[])[]): Promise<number>;
+  /** Opens a document with its font folders and pictures read under `root` (a folder in Node, a base URL), and more `fonts`. */
+  openFrom(doc: MatenadarDocument, options?: { root?: string | URL; fonts?: Source[]; check?: CheckOptions }): Promise<Opened & { missing: string[] }>;
+  /** The module's memory in bytes (its peak: it only grows). */
+  memory(): number;
 }
 
 /** Every method of MatenadarApi as a promise, run in a worker. */

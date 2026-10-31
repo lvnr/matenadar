@@ -14,10 +14,11 @@ crate-type = ["cdylib"]
 default = []
 # Typst's own faces as a fallback (about 5 MB more). Without them every
 # font the document uses must be given.
-embedded-fonts = ["matenadar-typst/embedded-fonts"]
+embedded-fonts = ["matenadar-typst/embedded-fonts", "matenadar-epub/embedded-fonts"]
 
 [dependencies]
 matenadar-model.workspace = true
 matenadar-typst = { path = "../matenadar-typst", default-features = false }
+matenadar-epub = { path = "../matenadar-epub", default-features = false }
 typst.workspace = true
 serde_json.workspace = true

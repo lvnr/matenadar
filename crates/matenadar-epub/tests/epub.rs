@@ -65,3 +65,52 @@ fn a_fixed_layout_book_is_a_valid_epub() {
     let bytes = build(&doc(), &paths(), &opts).expect("epub");
     check_with_epubcheck(&bytes, "matenadar-fixed.epub");
 }
+
+/// The text of every XHTML file in an EPUB (needs `unzip`; empty without it).
+fn xhtml_text(bytes: &[u8], name: &str) -> String {
+    let path = std::env::temp_dir().join(name);
+    std::fs::write(&path, bytes).unwrap();
+    std::process::Command::new("unzip")
+        .args(["-p", path.to_str().unwrap(), "OEBPS/*.xhtml"])
+        .output()
+        .map(|o| String::from_utf8_lossy(&o.stdout).to_string())
+        .unwrap_or_default()
+}
+
+#[test]
+fn numbered_figures_their_list_and_a_spread_reach_the_ebook() {
+    let dir = std::env::temp_dir().join("matenadar-epub-figures");
+    std::fs::create_dir_all(dir.join("art")).unwrap();
+    let mut png = Vec::new();
+    let img = image::RgbImage::from_fn(60, 40, |x, _| if x < 30 { image::Rgb([200, 40, 40]) } else { image::Rgb([40, 60, 200]) });
+    image::DynamicImage::ImageRgb8(img).write_to(&mut std::io::Cursor::new(&mut png), image::ImageFormat::Png).unwrap();
+    std::fs::write(dir.join("art/pic.png"), &png).unwrap();
+    let v = json!({
+        "matenadar": "1",
+        "meta": {"title": "Figures", "author": "Test", "lang": "en"},
+        "design": {
+            "base": {"font": "Libertinus Serif", "size": 10, "line_height": 1.4},
+            "figures": {"label": "Fig.", "per": "chapter"},
+            "masters": {"m": {"width": "5in", "height": "7in", "bleed": "0.125in", "margins": {"top": 36, "bottom": 36, "inside": 36, "outside": 36}}}
+        },
+        "content": [
+            {"type": "section", "id": "front", "master": "m", "flow": [{"type": "lof"}]},
+            {"type": "spread", "id": "sp", "master": "m", "src": "art/pic.png", "alt": "Red and blue across the fold."},
+            {"type": "section", "id": "two", "master": "m", "title": "Two", "vars": {"chapter": "2"}, "flow": [
+                {"type": "figure", "id": "f1", "src": "art/pic.png", "caption": "A picture.", "alt": "Red beside blue."},
+                {"type": "p", "content": ["As ", {"ref": "f1", "show": "label"}, " shows."]}
+            ]}
+        ]
+    });
+    let doc = Document::from_json(&v.to_string()).expect("document");
+    let paths = Paths { root: dir, font_dirs: vec![], system_fonts: false };
+    let bytes = build(&doc, &paths, &Options { dpi: 72.0, ..Options::default() }).expect("epub");
+    check_with_epubcheck(&bytes, "matenadar-figures.epub");
+    let text = xhtml_text(&bytes, "matenadar-figures.epub");
+    if !text.is_empty() {
+        assert!(text.contains("Fig.\u{a0}2.1"), "the caption carries the number: {text}");
+        assert!(text.contains("2.1 A picture"), "the list of figures: {text}");
+        assert!(text.contains("As <a") && text.contains("Fig.\u{a0}2.1</a> shows"), "the reference: {text}");
+        assert!(text.contains("Red and blue across the fold."), "the spread, with its words for readers who can't see it: {text}");
+    }
+}

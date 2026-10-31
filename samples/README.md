@@ -47,3 +47,13 @@ that are now unnecessary but harmless.
 
 `python3 scripts/sheet.py` writes `samples/index.html` with every compare
 sheet; `--embed out.html` makes one self-contained file.
+
+## Abilities, shown on real books
+
+These samples are not rebuilds: each shows engine abilities on a real book's text and pictures.
+
+| Sample | Shows | Built with |
+|---|---|---|
+| `picture-book` | the picture-book template: 32 pages, lettered full-bleed story pages, a spread with words over art, typeset front and back matter (Whynarium: How Dinosaurs Worked) | `python3 samples/picture-book/make.py` |
+| `nonfiction-figures` | numbered figures, a list of figures, a cross-reference, a full-bleed plate, black ink with the grey filter (The Attention Repair Manual, chapters 1–2) | `python3 samples/nonfiction-figures/make.py` |
+| `black-ink` | the black-ink check reporting a colour picture and coloured type, and the grey filter clearing them | `python3 samples/black-ink/make.py` |

@@ -39,6 +39,8 @@ pub enum Block {
     Margin(MarginNote),
     /// Table of contents from the level 1 (and deeper) headings.
     Toc(Toc),
+    /// The list of figures: every numbered figure, with its page.
+    Lof(Lof),
     /// Blocks that must stay on one page.
     Keep(Keep),
 }
@@ -58,6 +60,7 @@ impl Block {
             Block::Use(b) => b.id.as_deref(),
             Block::Margin(b) => b.id.as_deref(),
             Block::Toc(b) => b.id.as_deref(),
+            Block::Lof(b) => b.id.as_deref(),
             Block::Keep(b) => b.id.as_deref(),
             Block::Columns(b) => b.id.as_deref(),
             Block::PageBreak(b) => b.id.as_deref(),
@@ -83,6 +86,7 @@ impl Block {
             Block::ColumnBreak(_) => "column-break",
             Block::Margin(_) => "margin",
             Block::Toc(_) => "toc",
+            Block::Lof(_) => "lof",
             Block::Keep(_) => "keep",
         }
     }
@@ -180,6 +184,26 @@ pub struct Figure {
     pub space_before: Option<Length>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub space_after: Option<Length>,
+    /// A plate: `"half"` (half the text area, at the top or bottom of a
+    /// page), `"full"` (a page of its own, within the margins) or `"bleed"`
+    /// (a page of its own to the bleed, with the master's furniture hidden).
+    /// The text runs on past it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plate: Option<String>,
+    /// Numbered when the design numbers figures (`design.figures`) and the
+    /// figure has a caption; `false` leaves it out, `true` numbers it even
+    /// without one.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numbered: Option<bool>,
+    /// The caption as the list of figures gives it, when it differs.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub short: Option<String>,
+    /// What the picture shows, for readers who can't see it (ebooks).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alt: Option<String>,
+    /// Change the picture's tones (grey for black ink); raster pictures only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filter: Option<crate::element::Filter>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -518,6 +542,19 @@ pub struct Toc {
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
+pub struct Lof {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Paragraph style of the entries (default `lof`, else `toc-1`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub style: Option<String>,
+    /// Leader between caption and page number (`"."`; default none).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub leader: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
 pub struct Keep {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -609,12 +646,13 @@ pub struct Field {
     pub set: TextStyle,
 }
 
-/// The page number (or title) of the node with id `ref`.
+/// The page number (or title, or figure number) of the node with id `ref`.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PageRef {
     #[serde(rename = "ref")]
     pub target: String,
-    /// `"page"` (default) or `"title"`.
+    /// `"page"` (default), `"title"`, or for a numbered figure `"number"`
+    /// (`3.2`) or `"label"` (`Figure 3.2`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub show: Option<String>,
 }

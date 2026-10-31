@@ -146,6 +146,22 @@ pub fn build(doc: &Document, paths: &Paths, opts: &Options) -> Result<Vec<u8>, S
                         let title = s.title.clone().or_else(|| headings.first().map(|h| h.2.clone())).unwrap_or_else(|| format!("Section {}", i + 1));
                         chapters.push(Chapter { file, title, body, headings, viewport: None, spread: None });
                     }
+                    Item::Spread(sp) => {
+                        // Both pages as one wide picture, as the reader sees them open.
+                        let Some((page, _, _)) = session.position(&sp.id) else { continue };
+                        let (Some(left), Some(right)) = (session.png(page, opts.dpi, false), session.png(page + 1, opts.dpi, false)) else { continue };
+                        let data = side_by_side(&left, &right)?;
+                        let href = assets.add(&format!("spread:{page}"), "images/spread", "jpg", data);
+                        let alt = sp.alt.clone().unwrap_or_else(|| format!("{} {}", page_text(&session, page), page_text(&session, page + 1)).trim().to_string());
+                        chapters.push(Chapter {
+                            file: format!("{}.xhtml", file_stem("p", &sp.id, i)),
+                            title: sp.title.clone().unwrap_or_default(),
+                            body: format!("<div class=\"page spread\"><img src=\"{href}\" alt=\"{}\"/></div>", xhtml::esc(&alt)),
+                            headings: Vec::new(),
+                            viewport: None,
+                            spread: None,
+                        });
+                    }
                     Item::Page(p) => {
                         let Some((page, _, _)) = session.position(&p.id) else { continue };
                         let png = session.png(page, opts.dpi, false).ok_or("a page could not be drawn")?;
@@ -205,6 +221,19 @@ fn page_text(s: &Session, page: usize) -> String {
         short.push('…');
     }
     short
+}
+
+/// Two page pictures (PNG) side by side, as one JPEG.
+fn side_by_side(left: &[u8], right: &[u8]) -> Result<Vec<u8>, String> {
+    let l = image::load_from_memory(left).map_err(|e| e.to_string())?.to_rgb8();
+    let r = image::load_from_memory(right).map_err(|e| e.to_string())?.to_rgb8();
+    let mut both = image::RgbImage::from_pixel(l.width() + r.width(), l.height().max(r.height()), image::Rgb([255, 255, 255]));
+    image::imageops::replace(&mut both, &l, 0, 0);
+    image::imageops::replace(&mut both, &r, l.width() as i64, 0);
+    let mut out = Vec::new();
+    let enc = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut out, 90);
+    both.write_with_encoder(enc).map_err(|e| e.to_string())?;
+    Ok(out)
 }
 
 /// A PNG as JPEG, and its size in pixels.

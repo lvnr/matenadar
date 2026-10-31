@@ -1,0 +1,13 @@
+{
+  "title": "How Dinosaurs Worked, as a picture book",
+  "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/whynarium/book-5-how-dinosaurs-worked",
+  "pdf": "release/how-dinosaurs-worked-interior.pdf",
+  "bleed": true,
+  "pages": [
+    {"original": 1, "rebuilt": 1, "what": "title page: typeset by the template, where the book had its cover art"},
+    {"original": 3, "rebuilt": 3, "what": "a lettered full-bleed story page, kept on its side (recto)"},
+    {"original": 4, "rebuilt": 4, "what": "the dig-site spread's verso, with words typeset over the art in the safe zone"},
+    {"original": 5, "rebuilt": 5, "what": "the spread's recto: the same picture across the fold"},
+    {"original": 12, "rebuilt": 12, "what": "a story page on a verso, its bleed on the left"}
+  ]
+}

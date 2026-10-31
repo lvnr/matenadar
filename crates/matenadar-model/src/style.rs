@@ -454,6 +454,29 @@ pub struct Design {
     /// Words the hyphenation patterns get wrong.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hyphenation: Option<Hyphenation>,
+    /// Numbered figures: set, every figure with a caption gets a number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub figures: Option<Figures>,
+}
+
+/// How figures are numbered and labelled.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Figures {
+    /// The word before the number (default `"Figure"`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+    /// `"book"` (default): 1, 2, 3… through the book. `"chapter"`: the count
+    /// restarts in each section, after the section's `chapter` var when it
+    /// has one (3.1, 3.2).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub per: Option<String>,
+    /// Between the number and the caption's words (default `". "`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub separator: Option<String>,
+    /// A character style for the label and number (`Figure 3.2`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub span: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]

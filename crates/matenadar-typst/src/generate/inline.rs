@@ -51,7 +51,9 @@ impl Gen<'_> {
                     }
                 }
                 Inline::Ref(r) => {
-                    if label_safe(&r.target) {
+                    if let Some(part @ ("number" | "label")) = r.show.as_deref() {
+                        self.raw(&format!("#mt-fig-ref({}, {})", str_lit(&r.target), str_lit(part)));
+                    } else if label_safe(&r.target) {
                         if r.show.as_deref() == Some("title") {
                             self.raw(&format!(
                                 "#context {{ let f = query(<{}>); if f.len() > 0 {{ f.first().value }} else {{ \"??\" }} }}",

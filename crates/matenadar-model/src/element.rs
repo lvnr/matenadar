@@ -214,6 +214,94 @@ pub struct TextFrame {
     pub gutter: Option<Length>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clip: Option<Clip>,
+    /// Words over a picture: a soft panel behind the frame, so its text
+    /// reads on any part of the art.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scrim: Option<Scrim>,
+    /// Keep the frame inside the page's safe zone, moving it (never resizing
+    /// it) when it would cross: `true` for the master's margins, or a length
+    /// in from the trim on every side.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub safe: Option<Safe>,
+}
+
+/// A soft panel behind words set over a picture.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Scrim {
+    /// Default white.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub color: Option<Color>,
+    /// 0–1, at the panel's middle (default 0.8).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub opacity: Option<f64>,
+    /// How far the edge fades out (default none: a hard edge).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub feather: Option<Length>,
+    /// How far the panel reaches past the frame's box (default 6pt).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inset: Option<Insets>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radius: Option<Length>,
+    /// `"rect"` (default) or `"ellipse"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shape: Option<String>,
+}
+
+/// Where a frame must stay: the master's margins (`true`), or this far in
+/// from the trim on every side.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum Safe {
+    Margins(bool),
+    Inset(Length),
+}
+
+/// How a raster picture is changed before it is placed. For a black-ink
+/// interior, `gray` makes it shades of grey (Rec. 709 luma); the curve then
+/// sets its tones, as a printer would want them.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Filter {
+    pub gray: bool,
+    /// An S-curve about the middle grey: 0 keeps the tones, 3 is moderate,
+    /// 8 strong. It never clips the darkest or lightest tones.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub contrast: Option<f64>,
+    /// Input levels: the tone that becomes black, and the one that becomes
+    /// white (0–1; default 0 and 1).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub black: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub white: Option<f64>,
+    /// Midtones: above 1 lightens, below 1 darkens.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gamma: Option<f64>,
+}
+
+impl Filter {
+    pub fn check(&self) -> Result<(), String> {
+        let (b, w) = (self.black.unwrap_or(0.0), self.white.unwrap_or(1.0));
+        if !(0.0..=1.0).contains(&b) || !(0.0..=1.0).contains(&w) || b >= w {
+            return Err("black and white are tones from 0 to 1, black below white".into());
+        }
+        if self.gamma.is_some_and(|g| !(0.1..=10.0).contains(&g)) {
+            return Err("gamma runs from 0.1 to 10".into());
+        }
+        if self.contrast.is_some_and(|c| !(0.0..=20.0).contains(&c)) {
+            return Err("contrast runs from 0 (none) to 20".into());
+        }
+        Ok(())
+    }
+
+    /// Whether the filter changes anything.
+    pub fn is_identity(&self) -> bool {
+        !self.gray
+            && self.contrast.unwrap_or(0.0) == 0.0
+            && self.black.unwrap_or(0.0) == 0.0
+            && self.white.unwrap_or(1.0) == 1.0
+            && self.gamma.unwrap_or(1.0) == 1.0
+    }
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
@@ -241,6 +329,12 @@ pub struct ImageEl {
     /// Show the picture through a shape (see `Clip`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clip: Option<Clip>,
+    /// Change the picture's tones (grey for black ink); raster pictures only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filter: Option<Filter>,
+    /// What the picture shows, for readers who can't see it (ebooks).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alt: Option<String>,
 }
 
 /// A part of a picture, in fractions of its width and height from its

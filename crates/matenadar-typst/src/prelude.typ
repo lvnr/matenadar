@@ -373,3 +373,92 @@
     numbering(fmt, counter(page).at(loc).first())
   }
 }
+
+// One page's part of a picture laid across two facing pages. The picture,
+// cut to `crop`, covers `total` (both pages' width with their outer bleeds,
+// and the height with both bleeds), leaving `focus` in view; this page shows
+// the window `size` wide that starts `from` along it.
+// `draw(w, h)`, written where the spread is, draws the picture at a size.
+#let mt-spread-part(src, crop, focus, total, from, size, draw) = context {
+  let nat = measure(image(src))
+  let (cx, cy, cw, ch) = crop
+  let (pw, ph) = (nat.width * cw, nat.height * ch)
+  let s = calc.max(total.at(0) / pw, total.at(1) / ph)
+  let ox = (pw * s - total.at(0)) * focus.at(0)
+  let oy = (ph * s - total.at(1)) * focus.at(1)
+  box(width: size.at(0), height: size.at(1), clip: true, place(top + left,
+    dx: -nat.width * cx * s - ox - from,
+    dy: -nat.height * cy * s - oy,
+    draw(nat.width * s, nat.height * s)))
+}
+
+// A plate's picture, whole, as large as the space allows, with its
+// caption under it; the two are centred as one on the space.
+// `draw(w, h)` draws the picture (cut to `crop`) at a size.
+#let mt-plate(src, crop, draw, caption, gap) = layout(size => {
+  let gap = gap.to-absolute()
+  let nat = measure(image(src))
+  let aspect = (nat.width * crop.at(2)) / (nat.height * crop.at(3))
+  let cap = if caption == none { none } else { block(width: size.width, caption) }
+  let ch = if cap == none { 0pt } else { measure(cap).height + gap }
+  let w = calc.min(size.width, (size.height - ch) * aspect)
+  let h = w / aspect
+  box(width: size.width, height: size.height, place(center + horizon,
+    stack(spacing: gap, box(width: w, height: h, draw(w, h)), ..if cap != none { (cap,) })))
+})
+
+// A numbered figure's number or label (`3.2`, `Figure 3.2`), found by id.
+#let mt-fig-ref(id, part) = context {
+  let found = query(<mt-fig>).filter(m => m.value.id == id)
+  if found.len() == 0 { "??" } else { found.first().value.at(part) }
+}
+
+// The list of figures, from the figures' markers.
+#let mt-lof(st, leader) = context {
+  for m in query(<mt-fig>) {
+    let loc = m.location()
+    let num = counter(page).at(loc).first()
+    let cur = query(<mt-sec>).filter(s => s.location().page() <= loc.page()).at(-1, default: none)
+    let fmt = if cur == none { "1" } else { cur.value.at("numbering", default: "1") }
+    if fmt == none { fmt = "1" }
+    mt-par(st, first: true, link(loc, {
+      m.value.number
+      h(0.6em)
+      m.value.caption
+      if leader == none { h(1fr) } else { box(width: 1fr, repeat(gap: 0.3em, leader)) }
+      numbering(fmt, num)
+    }))
+  }
+}
+
+// A soft panel for words over a picture: `opacity` at its middle, fading
+// out over `feather` at its edge (layers whose opacities add up to it).
+#let mt-scrim(w, h, paint, opacity, feather, radius, shape) = {
+  let n = if feather > 0pt { 8 } else { 1 }
+  let a = 1 - calc.pow(1 - opacity, 1 / n)
+  let fill = paint.transparentize(100% - a * 100%)
+  box(width: w, height: h, for i in range(n) {
+    let d = feather * i / n
+    let (sw, sh) = (calc.max(w - 2 * d, 0pt), calc.max(h - 2 * d, 0pt))
+    place(top + left, dx: d, dy: d, if shape == "ellipse" {
+      ellipse(width: sw, height: sh, fill: fill, stroke: none)
+    } else {
+      rect(width: sw, height: sh, fill: fill, stroke: none, radius: calc.max(radius - d, 0pt))
+    })
+  })
+}
+
+// `body` placed as `mt-at` places it, then moved (never resized) so it
+// stays inside the safe zone of a `size` page: `zone` is (top, bottom,
+// inside, outside), mirrored on versos, or (top, bottom, left, right).
+#let mt-safe-at(x, y, fx, fy, zone, mirrored, size, body) = context {
+  let s = measure(body)
+  let (pw, ph) = size
+  let (zt, zb, za, zc) = zone
+  let (l, r) = if mirrored and not calc.odd(here().page()) { (zc, za) } else { (za, zc) }
+  let x0 = mt-abs(x, pw) - s.width * fx
+  let y0 = mt-abs(y, ph) - s.height * fy
+  x0 = calc.max(l, calc.min(x0, pw - r - s.width))
+  y0 = calc.max(zt, calc.min(y0, ph - zb - s.height))
+  place(top + left, dx: x0, dy: y0, body)
+}

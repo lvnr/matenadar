@@ -5,6 +5,7 @@ mod blocks;
 mod escape;
 mod elements;
 mod inline;
+mod pictures;
 pub mod typ;
 
 use std::collections::HashMap;
@@ -220,6 +221,40 @@ pub(crate) struct Gen<'a> {
     /// frame's): paragraph id → the node, where in its words they start, and
     /// whether the paragraph is labelled itself.
     pub owners: HashMap<String, (String, usize, bool)>,
+    /// The numbers of the figures the design numbers, by figure.
+    pub fig_numbers: HashMap<usize, (String, String)>,
+    /// The master of the flow being written (plates escape its margins).
+    pub master_now: Option<Master>,
+    /// The page an element is placed on directly, for frames kept in its
+    /// safe zone; taken by the element, so what is inside it doesn't see it.
+    pub page_geom: Option<PageGeom>,
+    /// Some figure is a full-bleed plate, whose page hides the master's elements.
+    pub bleed_plates: bool,
+}
+
+/// A page's trim and safe zone, in points.
+#[derive(Clone, Debug)]
+pub struct PageGeom {
+    pub w: f64,
+    pub h: f64,
+    /// The master's margins: top, bottom, inside, outside (or left, right).
+    pub margins: [f64; 4],
+    pub mirrored: bool,
+}
+
+impl PageGeom {
+    pub fn of(m: &Master) -> Self {
+        let pt = |l: Option<Length>, d: f64| l.and_then(|v| v.pt()).unwrap_or(d);
+        let mg = m.margins.clone().unwrap_or_default();
+        let mirrored = mg.left.is_none() && mg.right.is_none();
+        let (a, b) = if mirrored { (mg.inside, mg.outside) } else { (mg.left, mg.right) };
+        PageGeom {
+            w: pt(m.width, 432.0),
+            h: pt(m.height, 648.0),
+            margins: [pt(mg.top, 36.0), pt(mg.bottom, 36.0), pt(a, 36.0), pt(b, 36.0)],
+            mirrored,
+        }
+    }
 }
 
 /// A position in the source map's lists.
@@ -259,6 +294,13 @@ impl<'a> Gen<'a> {
             resolved: HashMap::new(),
             opacity: 1.0,
             owners: HashMap::new(),
+            fig_numbers: matenadar_model::figures::numbered(doc)
+                .into_iter()
+                .map(|n| (matenadar_model::figures::key(n.figure), (n.number, n.label)))
+                .collect(),
+            master_now: None,
+            page_geom: None,
+            bleed_plates: serde_json::to_string(&doc.content).is_ok_and(|c| c.contains("\"plate\":\"bleed\"")),
         }
     }
 
@@ -360,7 +402,7 @@ impl<'a> Gen<'a> {
         {
             names.push(st.clone());
         }
-        let hidden = self.doc.on_page.values().any(|on| on.hide.iter().any(|h| h == "all" || names.contains(h)));
+        let hidden = self.bleed_plates || self.doc.on_page.values().any(|on| on.hide.iter().any(|h| h == "all" || names.contains(h)));
         hidden.then_some(names)
     }
 
@@ -431,6 +473,7 @@ impl<'a> Gen<'a> {
                         self.notes = m.notes.clone();
                         open_master = Some(s.master.clone());
                     }
+                    self.master_now = doc.design.master(&s.master);
                     let start = self.out.len();
                     self.raw(&format!(
                         "#mt-sec((id: {}, kind: \"section\", title: {}, vars: {}, numbering: {}))",
@@ -489,11 +532,66 @@ impl<'a> Gen<'a> {
                         self.raw(&format!("#counter(page).update({n})"));
                     }
                     self.raw("\n");
+                    let geom = doc.design.master(&master_name).map(|m| PageGeom::of(&m));
                     for e in &p.elements {
+                        self.page_geom = geom.clone();
                         self.element(e, false);
                     }
+                    self.page_geom = None;
                     self.raw(&format!("#mt-end({})]\n", str_lit(&p.id)));
                     self.node(Some(&p.id), "page", start);
+                }
+                Item::Spread(s) => {
+                    if let Some(n) = &s.numbering {
+                        numbering = n.clone();
+                    }
+                    if open_master.take().is_some() {
+                        self.raw("]\n");
+                    }
+                    // A spread opens on a verso, so its pages face each other.
+                    self.raw(if idx == 0 { "#pagebreak(to: \"even\")\n" } else { "#pagebreak(weak: true, to: \"even\")\n" });
+                    let master_name = s.master.clone().or_else(|| masters.first().cloned()).unwrap_or_default();
+                    let mi = masters.iter().position(|m| m == &master_name).unwrap_or(0);
+                    let m = doc.design.master(&master_name).unwrap_or_default();
+                    let mut over = vec!["margin: 0pt".to_string(), "columns: 1".to_string()];
+                    if !s.layers.unwrap_or(false) {
+                        over.push("background: none".into());
+                        over.push("foreground: none".into());
+                    }
+                    if let Some(f) = &s.fill {
+                        over.push(format!("fill: {}", self.pal.fill(f)));
+                    }
+                    let page = format!("#page(..(mt-m-{mi} + ({})))[", over.join(", "));
+                    let geom = PageGeom::of(&m);
+                    let start = self.out.len();
+                    for recto in [false, true] {
+                        self.raw(&page);
+                        if !recto {
+                            self.raw(&format!(
+                                "#mt-sec((id: {}, kind: \"spread\", title: {}, vars: {}, numbering: {}))",
+                                str_lit(&s.id),
+                                str_lit(s.title.as_deref().unwrap_or("")),
+                                vars(&s.vars),
+                                str_lit(&numbering)
+                            ));
+                            self.label(Some(&s.id));
+                            if let Some(n) = s.page_from {
+                                self.raw(&format!("#counter(page).update({n})"));
+                            }
+                            self.raw("\n");
+                        }
+                        self.spread_part(s, &m, recto);
+                        for e in if recto { &s.right.elements } else { &s.left.elements } {
+                            self.page_geom = Some(geom.clone());
+                            self.element(e, false);
+                        }
+                        self.page_geom = None;
+                        if recto {
+                            self.raw(&format!("#mt-end({})", str_lit(&s.id)));
+                        }
+                        self.raw("]\n");
+                    }
+                    self.node(Some(&s.id), "spread", start);
                 }
             }
         }

@@ -1,0 +1,3862 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "The Attention Repair Manual",
+  "author": "Levon Arakelyan",
+  "lang": "en-US"
+ },
+ "fonts": [
+  "build/fonts"
+ ],
+ "print": {
+  "ink": "black",
+  "filter": {
+   "gray": true,
+   "contrast": 2
+  }
+ },
+ "design": {
+  "colors": {
+   "ink": "#1a1a1a",
+   "rule": "#9a9a9a"
+  },
+  "fonts": {
+   "serif": [
+    "Libertinus Serif"
+   ],
+   "sans": [
+    "Source Sans Pro",
+    "Libertinus Serif"
+   ]
+  },
+  "base": {
+   "font": "serif",
+   "size": 10.5,
+   "line_height": "14.5pt",
+   "color": "ink",
+   "lang": "en-US"
+  },
+  "styles": {
+   "body": {
+    "align": "justify",
+    "indent": "1.2em",
+    "hyphenate": true
+   },
+   "kicker": {
+    "font": "sans",
+    "size": 9.5,
+    "weight": "semibold",
+    "case": "upper",
+    "tracking": "0.14em",
+    "space_before": "1.1in",
+    "space_after": "6pt"
+   },
+   "h1": {
+    "font": "sans",
+    "size": 22,
+    "weight": "semibold",
+    "line_height": 1.15,
+    "space_after": "28pt",
+    "keep_with_next": true
+   },
+   "h2": {
+    "font": "sans",
+    "size": 11.5,
+    "weight": "semibold",
+    "line_height": 1.3,
+    "space_before": "16pt",
+    "space_after": "5pt",
+    "keep_with_next": true
+   },
+   "card": {
+    "font": "serif",
+    "size": 10,
+    "line_height": "13.5pt",
+    "space_after": "4pt"
+   },
+   "caption": {
+    "font": "sans",
+    "size": 8.5,
+    "line_height": "11pt",
+    "align": "center",
+    "space_before": "5pt"
+   },
+   "toc-1": {
+    "size": 10.5,
+    "line_height": "17pt"
+   },
+   "lof": {
+    "size": 10,
+    "line_height": "16pt"
+   },
+   "folio": {
+    "font": "sans",
+    "size": 8.5,
+    "align": "center"
+   },
+   "contents-title": {
+    "font": "sans",
+    "size": 16,
+    "weight": "semibold",
+    "space_before": "0.9in",
+    "space_after": "18pt"
+   },
+   "title": {
+    "font": "sans",
+    "size": 28,
+    "weight": "semibold",
+    "line_height": 1.15,
+    "align": "center"
+   },
+   "byline": {
+    "font": "serif",
+    "size": 13,
+    "italic": true,
+    "align": "center"
+   }
+  },
+  "spans": {
+   "figlabel": {
+    "font": "sans",
+    "weight": "semibold"
+   }
+  },
+  "figures": {
+   "label": "Fig.",
+   "per": "book",
+   "span": "figlabel"
+  },
+  "masters": {
+   "body": {
+    "width": "6in",
+    "height": "9in",
+    "bleed": "0.125in",
+    "margins": {
+     "top": "0.75in",
+     "bottom": "0.85in",
+     "inside": "0.85in",
+     "outside": "0.65in"
+    },
+    "style": "body",
+    "foreground": [
+     {
+      "type": "text",
+      "id": "folio",
+      "style": "folio",
+      "x": "0.85in",
+      "y": "8.45in",
+      "w": "4.5in",
+      "content": [
+       {
+        "field": "page"
+       }
+      ],
+      "when": "not-first not-blank"
+     }
+    ]
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "title",
+   "master": "body",
+   "elements": [
+    {
+     "type": "text",
+     "id": "title-words",
+     "x": "0.85in",
+     "y": "2.6in",
+     "w": "4.5in",
+     "style": "title",
+     "text": "The Attention Repair Manual"
+    },
+    {
+     "type": "text",
+     "id": "byline",
+     "x": "0.85in",
+     "y": "4.1in",
+     "w": "4.5in",
+     "style": "byline",
+     "text": "Levon Arakelyan"
+    }
+   ]
+  },
+  {
+   "type": "section",
+   "id": "contents",
+   "master": "body",
+   "start": "recto",
+   "numbering": "i",
+   "page_from": 1,
+   "flow": [
+    {
+     "type": "h",
+     "level": 1,
+     "style": "contents-title",
+     "text": "Contents",
+     "outline": false
+    },
+    {
+     "type": "toc",
+     "leader": "."
+    },
+    {
+     "type": "h",
+     "level": 1,
+     "style": "contents-title",
+     "text": "Figures",
+     "outline": false
+    },
+    {
+     "type": "lof",
+     "leader": "."
+    }
+   ]
+  },
+  {
+   "type": "section",
+   "id": "chapter-1",
+   "master": "body",
+   "start": "recto",
+   "title": "The Page You Were Protecting",
+   "vars": {
+    "chapter": "1"
+   },
+   "flow": [
+    {
+     "type": "p",
+     "style": "kicker",
+     "text": "Chapter 1"
+    },
+    {
+     "type": "h",
+     "level": 1,
+     "id": "ch1",
+     "text": "The Page You Were Protecting"
+    },
+    {
+     "type": "p",
+     "content": [
+      "It's a Tuesday, a little after eight. The dishwasher has reached its long middle cycle, the one that sounds like weather. You've wanted to read this novel since spring. Nobody assigned it. You bought it yourself, in a bookstore, and the receipt is still inside as a bookmark at page four, which is where you got to the last time you tried this."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You take the end of the sofa with the good lamp."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Maybe your version has no sofa and no clear ten minutes. A bus between shifts, a kitchen with somebody calling from the next room, a book opened while the kettle heats."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The first paragraph goes well. So does the second. Somewhere in the third you meet a sentence you like enough to read twice, which is, when you think about it, the entire reason you bought the thing."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "And then you're sitting up straighter, thumb moving, reading a transfer rumor about a soccer player you don't follow, at a club you don't root for, in a league you couldn't name three teams from."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You couldn't say how long that took. Four minutes. Possibly nine."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The book is face-down on the cushion beside you, held open at the place."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Look at that for a second. At some point during the switch, your hands performed a small, competent act of preservation. They kept your page. Whatever left the sofa didn't take your hands with it, and for a moment your hands were the most thoughtful part of the operation."
+     ]
+    },
+    {
+     "type": "figure",
+     "src": "book/visuals/accepted/rf-fig01-sofa-r1.png",
+     "alt": "A technical line drawing titled Fig. 1, The page you were protecting. The end of a sofa with numbered callouts: 1, good lamp; 2, book, face-down, held open at the place; 3, receipt, page four; 4, phone; 5, dishwasher (not shown), long middle cycle.",
+     "id": "fig-1",
+     "w": "79.2%",
+     "align": "center",
+     "caption": "The page you were protecting.",
+     "crop": {
+      "y": 0.072,
+      "h": 0.928
+     }
+    },
+    {
+     "type": "p",
+     "content": [
+      "People stop reading all the time. Books are long, evenings are short, and the sentence you liked had already given you what it had. What's strange is what you find when you go looking for the decision, the moment you weighed the book against the phone and picked the phone. You can't find one. There's the sentence about the harbor, and then there's the soccer player. Between them there's nothing you can inspect."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Nothing is broken. Something happened that you didn't observe, quick enough to get past the part of you that narrates what you do."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "I call that event a ",
+      {
+       "text": "leave",
+       "strong": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "A leave",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "A leave is the moment attention departs something you chose, before you meant it to end."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "It's a plain word for a small thing. A leave is a unit, something small enough to hold up to the light and turn over. Most people arrive at a book like this with a complaint that's much bigger. \"My attention is shot.\" \"I can't concentrate anymore.\" \"I used to read three books a month.\" Those describe a climate, and you can't repair a climate. You can barely argue with one."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "A leave has properties you can write down."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "It has a ",
+      {
+       "text": "location",
+       "strong": true
+      },
+      ": page four, third paragraph, second pass through the sentence about the harbor."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "It has a ",
+      {
+       "text": "direction",
+       "strong": true
+      },
+      ". You went somewhere specific: a soccer headline, the refrigerator, the email you owe your sister, a conversation from Friday you keep replaying."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "And it has a ",
+      {
+       "text": "moment just before it",
+       "strong": true
+      },
+      ". Something was true in that moment about the room, the page, the phone, your body, the day you'd already spent. That half-second is where a repair will eventually go. You didn't see it happen, so anything you write about it is a reconstruction from what's still visible: the preview on the screen, the sentence read three times, the unfinished message you remembered as soon as you stopped. Trust those marks over any finished-sounding story about your motives. Where nothing checkable is left, write ",
+      {
+       "text": "not sure",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Some leaves are correct",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "If the smoke alarm goes off and you keep reading, you don't have excellent attention. You have a problem."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The child on the stairs, the colleague who needs the drug interaction checked now, the call from the hospital, the pot that has started to smell like a decision. Staying with a novel through any of those would be bad judgment."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "A planned stop goes in the same count, though nothing went wrong. You said twenty minutes, twenty minutes passed, you closed the book. It's worth a mention only because people forget they planned to stop and then convict themselves of drifting."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Some leaves are trivial. A bird hit the window and you looked up. You lost the thread for eleven seconds and found it again. Nobody needs a protocol."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "And some leaves, a small share but a stubborn one, take you away again and again from things you wanted your life to contain. Those are the ones this book is for."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "From across the room these all look identical. Hand moves, eyes lift, tab opens. They call for different responses, which is why a general war on distraction tends to leave people either anxious or unreachable. So noticing comes first, and sorting second. After that, sometimes, comes a small change and a return."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "One more thing about that Tuesday. You never went back to the book. You didn't decide against it. After the soccer player there was something else, and then the dishwasher finished, and by the time you noticed the book again it was ten after ten and reading felt like a project."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Somewhere in there was a moment when going back would have cost you almost nothing. It came and went unremarked, the way the leave did."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Going back can be made cheaper. That's a smaller promise than \"you can become undistractible,\" and a more useful one. In controlled studies, people pick up an interrupted task faster and more accurately when something has been left to help them resume, though how much depends on the task and the help.",
+      {
+       "note": [
+        "A review of 33 laboratory experiments found that aids to resuming improved accuracy on the interrupted task and shortened the time to get going again, on average, with wide variation by task and by aid. See Guo et al. (2021). Chapter 11 tells the story of an experiment of this kind."
+       ]
+      },
+      " Your days aren't a laboratory. The idea is still worth testing on them: the person who leaves can put something useful in the path of the person who comes back."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Your hands already do this. They kept the page."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Try it: the ten-minute return",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "This comes before any framework, because you'll follow the next two chapters better with a piece of your own evidence in hand."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You need ten minutes (five works), something you want to do, and a scrap of paper."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "1. Pick one thing you want.",
+       "strong": true
+      },
+      " Skip the most important thing you ",
+      {
+       "text": "should",
+       "em": true
+      },
+      " do. Choose something with some pull in it: a chapter, a letter, an instrument, a recipe, a piece of work you like once you're in it. This first attempt teaches more when the material is on your side."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "2. Name where you'll stop.",
+       "strong": true
+      },
+      " \"To the end of this section.\" \"Ten minutes.\" \"Until the onions are done.\" Say it in a way you could check afterward. Without a visible edge, memory supplies a generous one."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "3. Move one likely cue out of reach.",
+       "strong": true
+      },
+      " One. Pick whatever started your last several leaves. Usually that's a phone; sometimes a browser tab; now and then a person you can ask for ten minutes. Next room, a drawer, face-down across the room."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If somebody may need you, a child, a patient, a parent, a shift lead, stay reachable. Often the phone is both the channel you need and the cue that gets you, and then \"put it in the next room\" is useless advice. Keep it audible for the people who matter and make everything else dull for ten minutes: screen dark, out of sight, previews off if that takes one tap. If your phone can let named contacts through while silencing the rest, use that, but set it up some other day. Tonight, screen dark and face-down will do. The change is to what the phone shows you, so distance doesn't matter."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "4. Put a scrap of paper beside you.",
+       "strong": true
+      },
+      " Its job is to catch anything urgent-feeling that arrives mid-session, so you don't have to choose between forgetting it and chasing it. ",
+      {
+       "text": "Book flights. Ask about Thursday. Did I send the invoice.",
+       "em": true
+      },
+      " Four words, and back."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Now start."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If you get to your stopping point and nothing interesting happened, good. A finished session is the result this whole book is aiming at. Write down one thing about the setup that might have helped. You'll want it again."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If you leave, and you may, the instruction is short. ",
+      {
+       "text": "Notice where you are, and come back once.",
+       "strong": true
+      },
+      " No commentary, no verdict on what it says about you. Put the phone down, find your line, keep going. If you leave a second time, stop the session there and write the note."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If something needs you, go."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "When you stop, write four lines. It takes two minutes."
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "The Leave Note",
+         "strong": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "I meant to:",
+         "strong": true
+        },
+        " what you set out to do, in words you could check. ",
+        {
+         "text": "Read to the end of chapter two.",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "I noticed I'd left when:",
+         "strong": true
+        },
+        " the first thing you caught yourself doing. ",
+        {
+         "text": "I was reading a soccer headline.",
+         "em": true
+        },
+        " ",
+        {
+         "text": "I was three paragraphs down and had taken in none of it.",
+         "em": true
+        },
+        " If there was no leave, write ",
+        {
+         "text": "finished",
+         "em": true
+        },
+        " and the one thing that may have helped."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "My guess at why:",
+         "strong": true
+        },
+        " one line, in your own words."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "Coming back was easy or hard because:",
+         "strong": true
+        },
+        " ",
+        {
+         "text": "The book was still open at the place.",
+         "em": true
+        },
+        " ",
+        {
+         "text": "I had eleven tabs to dig through.",
+         "em": true
+        },
+        " ",
+        {
+         "text": "I didn't try.",
+         "em": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If you couldn't settle at all, write that down; the next chapter can use it. And if watching yourself got in the way of the reading, skip the live noticing next time and write the note afterward, from memory."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Keep this note. Fold it into the back of the book, or photograph it if you're reading on a screen. You'll want it on the last day."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "---"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You have one event now, located and described, with a guess attached."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Look at the guess. If you're like most people it says something close to ",
+      {
+       "text": "the phone",
+       "em": true
+      },
+      ", or something close to ",
+      {
+       "text": "I'm lazy",
+       "em": true
+      },
+      ". One of those is a location, the other is an insult, and neither tells you what to change."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The next chapter is about the second guess."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Chapter 2: One Reach, Six Suspects",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Four people leave a page this evening. From across the room you couldn't tell them apart: a body settles, a body stops settling, a hand reaches, a screen lights."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Sam",
+       "strong": true
+      },
+      " has twenty minutes, a library book, and her phone face-up on the arm of the chair. A preview appears: two lines from the school parents' group, half-readable upside down. Her hand gets there before anything else does. Ask her ten seconds later what she decided and she'd have to make the answer up."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Marcus",
+       "strong": true
+      },
+      " is three chapters into a history of street trees he has wanted to read since winter. He reaches a paragraph that assumes he knows what cambium is. He slept badly last night, and he reads it twice. He taught history for thirty-four years and he isn't used to being the slow one in the room, and on the second pass the not-knowing turns into a small, unpleasant pressure in his chest. The tablet with the news on it is the nearest way out of that feeling, and he takes it, though he couldn't have told you why."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Priya",
+       "strong": true
+      },
+      ", an operations manager, has opened a document in order to \"work on the vendor report.\" The report is fourteen things. She doesn't know which of the fourteen comes first, or what working on it would consist of for the next twenty minutes, or how she'd know when she had done any. Each of those unknowns is a small decision, and she leaves before making the first one. From the outside it looks like distraction. From the inside it's a stall."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Ruth",
+       "strong": true
+      },
+      " is on her fourth late shift in a row, covering for a coworker. The novel isn't hard. Last week she read thirty pages of it and liked them. Tonight the words arrive and pass straight through without leaving anything behind, and after two tries she does the sensible thing and reaches for something that asks nothing of her."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "(I made these four up, out of situations common enough that you'll probably recognize one. You'll see them again.)"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "One behavior, four situations that have almost nothing to do with each other. Now think about the fix an ordinary focus article would hand all four of them. It's the same fix: put the phone in another room."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "For Sam, that's exactly right, and it might work tonight."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "For Marcus, the tablet goes and the feeling stays, and something else becomes the exit: the kitchen, a memory, a sudden urgent need to look up when the city last repaved his street. He'll report that moving the tablet \"didn't work\" and conclude something unflattering about himself. He used a tool built for one kind of trouble on another kind."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "For Priya, the phone goes and she's left in front of a document that still has no first move in it. Moving the phone didn't write the sentence \"check whether the returns figure includes cancellations,\" and that sentence was the missing part."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "For Ruth, the advice is close to an insult. She needs a night off, or a shorter session, or to call tonight a non-reading night and leave it there."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "That explains the odd effect the focus shelf has on people. Much of the advice is correct. It keeps failing them anyway, because it's aimed at the reach, and the reach is the one thing all four of them have in common."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "The six usual suspects",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "The sorting tool has six suspects, each with a one-word name and a tell (",
+      {
+       "ref": "fig-2",
+       "show": "label"
+      },
+      ", page ",
+      {
+       "ref": "fig-2"
+      },
+      ")."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Caught.",
+       "strong": true
+      },
+      " Something appeared and won before you decided anything. A preview, a badge, a tone, your name said in the next room, a coworker in the corner of your eye. The tell is the missing decision: you can't reconstruct choosing because there was very little choosing. You usually end up wherever the cue was pointing."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Escaping.",
+       "strong": true
+      },
+      " Something about staying was uncomfortable, and switching relieved it. The discomfort comes in flavors: boredom, uncertainty, the low dread of work you might do badly, a task that touches something you'd prefer it didn't. The tell is a little wash of relief as you go, often with a flat aftertaste a minute later. People over-apply this one. Plenty of delays have nothing to do with feelings, and spotting this suspect doesn't oblige you to conduct therapy on yourself at the desk. Usually the fix is small: make the first step shorter, or easier to stand."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Unclear.",
+       "strong": true
+      },
+      " The work had no next move in it, no visible edge, no way to tell when a piece was done. You were standing in front of something with no handles. The tell: if someone asked what you were about to do, you'd answer with a category (\"the report\") where a verb should be. In a week-long study that pinged students six times a day, the moments when a task felt ambiguous were the moments a planned study session was more likely to get put off.",
+      {
+       "note": [
+        "Eighty-eight students preparing for exams answered questions six times a day for seven days. Moments of task ambiguity predicted a higher chance that an intended study session would be postponed. The design is observational and the sample narrow. See Wieland et al. (2022)."
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Interrupted.",
+       "strong": true
+      },
+      " Something outside you cut in: a person, a call, a line of customers, a machine, a reasonable request. The tell is that the departure didn't start with you. For a lot of people this suspect is the job. A pharmacy technician can't treat every interruption as a fault in the system, because some of them are the system. So the useful question is \"what do I leave behind when I go, and how do I get back?\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Spent.",
+       "strong": true
+      },
+      " The plan asked for more than the day had in it. Short sleep, a teething baby, illness, the tail end of a hard stretch. The tell is that the same material would have held you last week, and that trying harder makes it worse. Sleep is the best-documented case: pooled across 44 experiments, a single night cut to somewhere between two and six hours slowed people's reactions and produced more lapses on tests of sustained attention.",
+      {
+       "note": [
+        "A meta-analysis of 44 studies restricting one night's sleep to between two and six hours found more sleepiness and, on average, slower reaction times and more lapses in sustained attention, with differences between people and between kinds of thinking. See Wüst et al. (2024)."
+       ]
+      },
+      " That settles something the willpower story hides. What you have in the tank is an input, and technique can't reliably stand in for it."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Due.",
+       "strong": true
+      },
+      " You left because leaving was reasonable. Something unfinished really was running in the background, or someone with power over your schedule expects an answer within minutes, or you're carrying five open loops and don't trust anyone else to be holding them. The tell is that the \"distraction\" is a specific thing, and ignoring it has a cost you could name. If your employer measures how fast you reply, checking is compliance. The repair is usually a conversation, someone to cover for you, or less on your plate, and a stricter timer won't touch it. And when none of those is yours to arrange, which is most of the time when you're on call for someone's care or answer to a strict manager, work on the cost of getting back: before you answer, write one line saying where you are."
+     ]
+    },
+    {
+     "type": "figure",
+     "src": "book/visuals/accepted/rf-fig02-reach-r1.png",
+     "alt": "A technical line drawing titled Fig. 2, One reach, six suspects. A hand reaches toward a phone on a chair arm. Six numbered callouts: 1, Caught: something appeared; 2, Escaping: staying got uncomfortable; 3, Unclear: no next move; 4, Interrupted: the world came in; 5, Spent: the day had less in it; 6, Due: something real was waiting.",
+     "id": "fig-2",
+     "w": "79.2%",
+     "align": "center",
+     "caption": "One reach, six suspects.",
+     "crop": {
+      "y": 0.085,
+      "h": 0.915
+     }
+    },
+    {
+     "type": "p",
+     "content": [
+      "Notice how many of the six begin inside you. That surprises people, because the popular story is all pings and badges. When researchers shadowed fourteen office workers with a stopwatch in the early 2000s, logging every switch, they counted about twenty-five interruptions per person per day, and 49 percent of them had no visible outside trigger. The person just stopped, got up, checked something, turned to another project. A later, larger sample put that share at 44 percent.",
+      {
+       "note": [
+        "The first study observed 14 information workers at one company for about 26 hours each. The later analysis covered 36 workers at two firms, and about 44 percent of the 2,030 interruptions it logged were self-initiated. \"Self-initiated\" was the observer's call whenever no outside trigger was visible. See González and Mark (2004) and Dabbish, Mark, and González (2011)."
+       ]
+      },
+      " (That's a handful of office workers, before smartphones. Even so, roughly half is a long way from none.)"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "I should be plain about what this list is. Nobody has tested these six as a set. Each describes something researchers have studied separately; the sorting is mine, built to be useful at a desk, and it will miss things. It sorts moments. There's a leave, on a Tuesday, best explained by Escaping, and the same person's Wednesday leave may be something else. If you catch yourself saying \"I'm just an Unclear person,\" you've turned a working guess into a small permanent identity."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Look-alikes",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sorting is harder than the list makes it look, because the six can pass for one another."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Caught can happen with no phone in the room. You stand up to deal with the mail because you heard the mail slot, or you answer a question shouted from another room and stay there for eleven minutes."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Spent can show up as sudden fastidiousness about the desk, or as rereading a paragraph with mounting irritation and blaming the writer. Sometimes it looks like being unusually available to other people's small problems, because those are the only tasks that fit what you have left."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Unclear is the best impersonator of the lot. It passes for laziness, and it passes for a phone problem whenever the phone happens to be the nearest exit from a stall."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Name two",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "When you look at a leave, name two suspects. Never one.",
+       "strong": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The first explanation arrives fast, and it's usually the one you're already in the habit of believing about yourself. That's why it tends to be \"the phone\" or \"I'm lazy.\" The second suspect is where the thinking starts."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Two guesses keep you honest, because causes overlap all the time. Marcus was meeting a paragraph that made him feel slow ",
+      {
+       "text": "and",
+       "em": true
+      },
+      " he'd slept badly. Both are true, and the interesting question is which one is cheaper to test."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Two guesses also give you somewhere to go when a fix fails. With one explanation, a failed fix leaves only one conclusion, and it's about you. With two, the failure is information: you've partly ruled something out, and a second suspect is waiting with a different fix attached."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "A failed repair revises the sort. It does not convict the person.",
+       "strong": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The second guess has to be one that could be true. If you write \"one: the phone lit up; two: I suppose I might be tired\" while knowing perfectly well that you slept eight hours, you've made a hedge. Go back to the moment and find a rival you'd bet a little money on."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Try it: two guesses",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "This takes two minutes. Take out your Leave Note from Chapter 1. If you didn't make one, use a leave from the past week that cost you something you minded losing, an evening or a conversation you half-attended, and mark it ",
+      {
+       "text": "from memory",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Under your first guess, add two lines."
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "Suspect one:",
+         "strong": true
+        },
+        " which of the six, plus the detail that makes you say so. ",
+        {
+         "text": "Caught: the phone was face-up and a preview appeared.",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "Suspect two:",
+         "strong": true
+        },
+        " a different one, with its own detail. ",
+        {
+         "text": "Spent: fourth short night, and I reread the same line three times before I left.",
+         "em": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If you can't produce a detail, the guess is a habit. Go back to the moment, or pick a different suspect."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Then one more line:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "I'll test \\_\\_\\_ first, because it's cheaper.",
+         "strong": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Cheaper means safer first: if one suspect is Spent and you've been ill all week, don't test anything by pushing longer. After that it means smaller. A change you can make in two minutes, without a conversation or a purchase, beats one that needs your manager's agreement, even if both are right. And between two small tests, pick the one whose result you'd believe, because a fix that could \"work\" for four different reasons teaches you nothing when it works."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Here's how that goes for Priya and her fourteen-part report. Suspect one is Unclear: she can't name the next action. Suspect two is Escaping: the report may expose a decision she's been putting off. The smaller, safer test is Unclear, so before the next session she writes one line: ",
+      {
+       "text": "Check whether the returns figure includes cancellations.",
+       "em": true
+      },
+      " The line gives the session one clean way to disagree with her."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If two suspects fit equally well, don't force a winner. Pick the cheaper test and see what the session does."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "---"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "There's a fair objection to all this, and it deserves an answer before I ask you for another evening. You've already tried some of these fixes. You turned the notifications off. You bought the timer. The phone spent a week in the hallway."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "For a while, one of them even worked."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Chapter 3: Why the Right Tip Failed",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Here are the four things nearly everyone has already tried."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Turn off notifications. Use a timer. Put the phone in another room. Try harder."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "They're fine tips. Three of the four are useful in the right conditions. The trouble is the order they arrive in: a general answer, handed over before anyone has asked what happened. Set them against the six suspects and you can see exactly where each one works and where it was never going to."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "| The tip | Fits | Does nothing for | Can backfire for | |--------------|------------|------------|----------------| | Notifications off | Caught | Unclear, Spent | Due | | A timer | Unclear, Spent | Caught | Spent, when you've mistaken it for laziness | | Phone in another room | Caught | Unclear, Spent | Escaping, and anyone who has to stay reachable | | Try harder | a good day and a nearly clear task | most of the six | all of them |"
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Notifications off",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "If a preview keeps winning before you decide, removing the preview removes the contest. For Caught, this is the right tool."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "For Unclear and Spent it does nothing: the next action still isn't written, and you're still tired. And for Due, the evidence is more interesting than the advice. In one field experiment, 237 people had their phone notifications rearranged. One group got them in three batches a day. They reported feeling more attentive, more in control, and in a better mood. Another group had notifications switched off entirely. They reported more anxiety and more fear of missing out.",
+      {
+       "note": [
+        "A randomized field experiment with 237 participants. Batching notifications into three deliveries a day improved several self-reported outcomes (attentiveness, sense of control, mood, stress); switching them off entirely increased anxiety and fear of missing out in that sample. See Fitz et al. (2019)."
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "That result points at something \"just turn it all off\" can't accommodate. For a person with obligations flowing through a device, silence creates a new question: what is piling up on the other side? It's why the moves in the coming weeks are narrower than a single off switch: batching, hiding previews, letting named people through."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "There's a related claim worth dropping altogether: that a phone merely sitting nearby drains your thinking. It's a compelling idea and it has been repeated everywhere. In 2024 a team combined 166 results from 53 samples and found no reliable overall effect of a phone's mere presence on cognitive performance.",
+      {
+       "note": [
+        "A four-level meta-analysis of 166 effects from 53 samples found no significant overall effect of a smartphone's mere presence on cognitive performance. That result covers presence alone. It says nothing about notifications, cues, or actual use. See Hartanto et al. (2024)."
+       ]
+      },
+      " A nearby phone can still show you things, and a cue is a specific problem with specific fixes. So stop asking how far away the phone is. Ask what it can show you, and when."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "The timer",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "A timer helps with Unclear in a slightly sneaky way: it supplies an edge to something that had none. It helps with Spent too, where its real function is permission to stop."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "It does little for Caught. Nothing about a running clock prevents a preview from appearing, and there's a well-known small tragedy in which a person watches twenty-five minutes elapse while doing nothing they intended."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "It fails hardest when you're Spent and think you're lazy. Set it for forty-five minutes because that's what you used to manage, on five hours' sleep, and you've built a machine for generating evidence against yourself. A length that fit Sunday can be an expensive promise on Tuesday. Chapter 9 is about that."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "The phone in the other room",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "This is a strong move when reaching has become automatic. Distance adds a step, and a step can add enough of a pause for a decision to happen."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "It does nothing for Unclear or Spent. For Escaping it relocates the exit, and the exits available in a house are numerous, ordinary, and mostly not electronic."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "And it's unavailable to anyone who needs to be reachable: the parent of a small child, someone on call, someone whose relative is unwell. A fix that requires being unreachable only works for people with quiet lives, and everybody else's attention problem is just as pressing."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Try harder",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Briefly, on a good day, when the task is nearly clear and you're nearly rested, trying harder works."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The rest of the time it misses, and it misses in a particular way. It converts a mismatch into a moral event. Underslept becomes weak. Standing in front of an unclear task becomes lazy. Being interrupted by your own job becomes undisciplined. Effort doesn't silence a cue, clarify a next action, create sleep, or change what your manager expects. It's an expensive first move. Save it for after the cheap ones."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "The smallest matched repair",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "The tips can stay, in a different order. The working rule from here on is ",
+      {
+       "text": "the smallest matched repair",
+       "strong": true
+      },
+      ": the least disruptive change that specifically addresses your current best guess about what happened."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Smallest",
+       "em": true
+      },
+      " keeps the cost of a wrong guess near zero. ",
+      {
+       "text": "Matched",
+       "em": true
+      },
+      " aims the change at one suspect, so you can read the result. ",
+      {
+       "text": "Repair",
+       "em": true
+      },
+      " means what it means at a workbench. When a door sticks, you don't repair the wood's character. You look at the hinge, the frame, the swelling in the humidity, the paint that has built up over four summers, and you adjust the smallest thing that gets it closing again. Nothing here depends on your brain having been damaged, rewired, shrunk, or drained. Those stories are no use at the bench. The adjustable part is the fit between what you're trying to do, the conditions you're doing it in, what you have in the tank that day, and what you do when attention leaves."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If the repair changes nothing, go to your second suspect. The failed test has done its job."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "How to tell it's working",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Ask most people whether their attention is improving and they reach for duration: how long could I go without breaking?"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "As an instrument it's terrible. It's dominated by conditions you don't control. It hands a failing score to a session that contained one interruption. It turns a practice into a record attempt. And it rewards the wrong thing: someone who sits for ninety minutes without leaving may have done excellent work, or may have spent an hour and a half staring at a document with no next action in it. Duration can't tell those apart, and it can't tell an interruption you should have refused from one that was your child."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "So keep score another way: ",
+      {
+       "text": "how reliably can you get back?",
+       "strong": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Three things go into it, and all three can improve while leaves keep happening."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Did you notice sooner?",
+       "strong": true
+      },
+      " Three paragraphs of unabsorbed text is later than one sentence."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Did you come back more easily?",
+       "strong": true
+      },
+      " Was there a way back, a page held open, a note saying where you stopped, or did you have to rebuild the whole situation first? This one is mostly a matter of what your earlier self left lying around, which makes it the most improvable of the three."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Did you finish the session you planned?",
+       "strong": true
+      },
+      " The one you set out to do, at the length you chose."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You can record all three in about eight words after a session (",
+      {
+       "text": "noticed early, came back easily, finished",
+       "em": true
+      },
+      "). Add what you'd change next time, and you have the one line I'll ask you to write after a session. Every few sessions, put an early line beside a recent one and ask a single question: is getting back costing me less? Sessions that an emergency took from you go in a separate pile. They can teach you about leaving a way back, and nothing about the fix you were testing. And if quiet sessions never happen in your life, compare the part of your day that does repeat: across three ordinary interruptions, did a note cut down what you had to rebuild?"
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Try it: one matched test",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "This takes no extra time: it's your next ten minutes with the thing you chose, with one change made first. Take the suspect you marked as cheaper to test, and choose one repair for it, small enough to set up in two minutes:"
+     ]
+    },
+    {
+     "type": "list",
+     "ordered": false,
+     "items": [
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Caught:",
+          "strong": true
+         },
+         " hide previews for one app, close the tabs you don't need, or move one object out of reach for the length of the session."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Escaping:",
+          "strong": true
+         },
+         " shrink the first step until it's almost too small to refuse. One paragraph. One sentence. Open the file and read what's there. Or write the feeling down in three words before you start, which for some people lets just enough air out of it."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Unclear:",
+          "strong": true
+         },
+         " write the next action on paper before you begin, a verb and a thing. ",
+         {
+          "text": "Compare the two quotes for the water heater.",
+          "em": true
+         },
+         " Then write where you'll stop."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Interrupted:",
+          "strong": true
+         },
+         " tell one person when you'll be free, or accept the interruption as given and leave yourself a way back."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Spent:",
+          "strong": true
+         },
+         " halve the session. Add nothing else. You're taking weight off."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Due:",
+          "strong": true
+         },
+         " write the open loops on your scrap of paper and pick the one you'll deal with right afterward, or agree on a reply window with whoever expects speed. If neither is possible, write one line saying where you are before every reply you have to send."
+        ]
+       }
+      ]
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Then one line, written before you start, which is what turns an attempt into an experiment:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "If I'm right about \\_\\_\\_, I should see \\_\\_\\_.",
+         "strong": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If you see something else, write down what. That's evidence for your second suspect. Priya's line: ",
+      {
+       "text": "If Unclear is right, the written action gets me into the report and holds me until the check is done.",
+       "em": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Her session produces seven steady minutes and then stops dead at the first unexplained discrepancy. So Unclear was partly right: naming the action got her in. But the discrepancy opened a second undefined decision, and she stalled again. Her next repair is another visible action: ",
+      {
+       "text": "List the two explanations for the discrepancy.",
+       "em": true
+      },
+      " A longer timer would have missed the problem entirely. And if she leaves when that decision gets uncomfortable, Escaping gets its turn."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Ruth's test looks nothing like that, because the thing draining her isn't hers to rearrange: she's still covering those late shifts. Her first suspect is Spent, and the repair has nothing to set up. She cuts tonight's reading to ten minutes and adds nothing. ",
+      {
+       "text": "If I'm right about Spent, ten minutes will hold. If I'm gone inside ten, something took me, and it's probably Caught: look at what the screen showed.",
+       "em": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Run yours. Stop where you said you'd stop. If you leave, come back once and keep going. If something needs you, go, and note it as an interruption, because that's what it was."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Afterward, write one line: what this changes next time."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Phone in the hall and I still left twice, both times when the paragraph got difficult. Testing Unclear next.",
+       "em": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Halved the session and finished it, which I haven't done in two weeks.",
+       "em": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Interrupted at four minutes by an actual person with an actual question. Learned nothing about the phone. The open page made coming back easy.",
+       "em": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "A session that gets taken from you may say nothing about the suspect you meant to test. It can still show whether the way back worked, and in some jobs and some homes that's the only part there is to improve."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If what happened matches neither half of your line, you may have the wrong two suspects. It's better to learn that after one ten-minute session than after three weeks of trying harder. Look again at the six, especially the ones you skipped. Spent and Due are easy to wave away as excuses, which is a reason to check them."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "One limit on all of this. If the plain answer to \"why did I leave?\" is ",
+      {
+       "text": "my mother is ill",
+       "em": true
+      },
+      ", or ",
+      {
+       "text": "I'm working sixty hours",
+       "em": true
+      },
+      ", or ",
+      {
+       "text": "there's a newborn in this house",
+       "em": true
+      },
+      ", then the accurate repair is smaller sessions, lower expectations, and help. A cleverer experiment won't get normal function out of abnormal conditions. It will only give you a more precise record of a problem you can't currently solve."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "---"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "That's the opening. A few pages of housekeeping come next, and then Week 1."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Before Week 1",
+     "outline": false
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Who's talking",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "I'm a software engineer. I build small products and run them on my own, ten of them as I write this, which means a lot of inboxes, a lot of dashboards, and a standing supply of reasons to leave whatever I'm doing. I'm not a psychologist or a researcher, and nothing here is clinical advice."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "When a study appears in these pages I'll tell you who was studied, how big the effect was when the source says, and where the finding stops, because those things change what you should do with it. A result from a small, motivated group of volunteers is a reason to run a cheap experiment on yourself. It is no reason to reorganize your life. When I'm reasoning from common sense and no study, I'll say so. The method as a whole is my own assembly of parts that have each been studied separately. Nobody has tested it as a program, and I'd rather you heard that from me."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "How the weeks run",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "There are four weeks, and they stretch. A week can take you nine days. Two of them can take a month. If you vanish for two weeks and come back, Chapter 19 was written for exactly that, and it won't ask where you've been. A missed session creates no debt, and there's no streak to protect."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The month on one page:"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "| When | What you do | What goes on the card | |------|----------------------------|----------------------| | Week 1 | Catch up to three leaves. Move one cue. Give one session a first move. Choose the thing you want back. | Front: ",
+      {
+       "text": "I'm choosing",
+       "em": true
+      },
+      " and ",
+      {
+       "text": "my first move",
+       "em": true
+      },
+      ". Back: ",
+      {
+       "text": "my cheapest first fix",
+       "em": true
+      },
+      " and ",
+      {
+       "text": "who always gets through",
+       "em": true
+      },
+      ". | | Week 2 | Catch a first pull. Find your slice. Use the four questions once. Leave one return note. Come back from one missed session. | Front: ",
+      {
+       "text": "my way back",
+       "em": true
+      },
+      ". Back: ",
+      {
+       "text": "my slice",
+       "em": true
+      },
+      ". | | Week 3 | Take the card to reading, to work, to a conversation, and to a quarter of an hour that makes nothing. Pick two of the four. | Nothing new. You find out which lines travel. | | Week 4 | Write one tool rule. Set your four levels. Read the restart, for the day you need it. Then cut everything down to the card. | Front: ",
+      {
+       "text": "if today can't hold it",
+       "em": true
+      },
+      ". |"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "After any session, write one line about it: how getting back went, and what you'd change next time. Keep the lines together on one sheet, or down the back of an envelope. That's the only record I'll ask you to keep, and Chapter 3 shows what it's for. Now and then a chapter will suggest what the line should notice."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Everything works on paper, and there's nothing to buy. A few index cards and a pencil will do, and by the end you'll need only one of the cards."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "The card",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "That card is the one thing you build in this book. It has four lines on the front, and you'll fill them in as they come up:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "I'm choosing:",
+         "strong": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "My first move is:",
+         "strong": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "If I leave, my way back is:",
+         "strong": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "If today can't hold it:",
+         "strong": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The back collects what you learn about yourself along the way: your two usual suspects, your cheapest fix, who always gets through, how big a slice you can carry on an ordinary day. The card stands for the one thing you're getting back this month, so you don't rewrite it for every session. The top line can stay for weeks, and the first-move line changes as the work moves."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Every other form in the book is a bench tool. Pick one up when it helps and put it down afterward. The ones worth finding again are in the Field Guide at the back, so you never have to hunt through chapters for them."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You can write your two suspects on the back of the card now, in pencil. One leave is thin evidence, and the end of Week 1 checks them."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "When this book is the wrong tool",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "I'll say this in full twice, here and in Week 4, where it matters most. Anywhere else you'll get a one-line pointer back to this page, and the Field Guide keeps a copy."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "This book is for ordinary, adjustable trouble: the evening that dissolves, the report you can't get into, the conversation you half-attended. It's the wrong tool if your difficulty is severe, has lasted a long time, is getting worse, or shows up across your whole life at once.",
+      {
+       "note": [
+        "An assessment for attention difficulties in adults looks at how long the difficulty has lasted, whether it appears in several settings, how much it interferes with daily life, and other explanations such as sleep problems, anxiety, depression, and physical health conditions, which can look alike. See National Institute of Mental Health (n.d.)."
+       ]
+      },
+      " Trouble with attention can come from ADHD, anxiety, depression, poor sleep, grief, pain, and the side effects of medication, and no index card will fix any of those. If that sounds like you, please talk to a doctor or a mental health professional. You can keep any small practice from this book that's safe and helps while you do. Just don't let a stricter self-help plan stand in for care you need."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Some conditions no practice can absorb: an impossible workload, unsafe staffing, caring for someone around the clock, a manager who treats a four-minute reply as slow. Some levers are yours. Others belong to a negotiation, to other people's help, or to a decision that's somebody else's to make. When the lever isn't yours, I'll say so, and I won't hand you another technique."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "That's all the preamble there is. Week 1 starts at a pharmacy counter."
+     ]
+    }
+   ],
+   "numbering": "1",
+   "page_from": 1
+  },
+  {
+   "type": "section",
+   "id": "chapter-2",
+   "master": "body",
+   "start": "recto",
+   "title": "Stabilize",
+   "vars": {
+    "chapter": "2"
+   },
+   "flow": [
+    {
+     "type": "p",
+     "style": "kicker",
+     "text": "Chapter 2"
+    },
+    {
+     "type": "h",
+     "level": 1,
+     "id": "ch2",
+     "text": "Stabilize"
+    },
+    {
+     "type": "figure",
+     "src": "book/visuals/accepted/rf-plate-week1-r1.png",
+     "alt": "A full-page technical line drawing titled Week 1, Stabilize. A household door that sticks, with numbered callouts: 1, hinge; 2, frame; 3, swollen edge; 4, four summers of paint. Caption: Adjust the smallest thing that restores function.",
+     "id": "plate-1",
+     "plate": "bleed"
+    },
+    {
+     "type": "p",
+     "content": [
+      "The opening showed you how to look at one leave. This week asks for less drama and a little repetition."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "There are four practices this week: catch a few leaves in the wild, move one cue, give one session a handle, and choose something worth protecting. The cue change runs in the background of whatever sessions you have anyway, so the week asks for three or four short sittings."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You're looking for one adjustment good enough to keep. A representative week isn't required."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Chapter 4: Three Notes in a Pocket",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "At 11:18 on a Thursday morning, back on the day shift, Ruth is holding three things in her head."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "One is a phone call she needs to make to a prescriber's office. One is the man waiting at the consultation window with his arms folded. The third is a small red flag beside a drug name on her screen, and the reason the flag is there."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"Ruth? You got a second?\" Bea, the pharmacist, is holding a blister pack up to the light as if it has personally let her down. \"The machine ate another one.\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Ruth turns before the sentence is finished. She's a pharmacy technician, and being interruptible at exactly this scale is the job."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Twenty-six minutes later she's back at the screen. The machine is fixed, the man with the folded arms has gone away happy, and the prescriber's office is on its lunch break. The red flag is still there. The reason for it is gone."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"Okay,\" Ruth says to the screen. \"What were you?\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Nothing should prevent that leave. The most a book can do is help Ruth survive it."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Her counter is a useful place to start the week because it shows the limits so plainly. She can't run a clean observational study of her own attention while answering phones, checking stock and handling work whose urgency isn't hers to invent. A perfect record would mean neglecting the job in order to document the job."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "So she doesn't keep one. On a folded piece of paper in the pocket of her scrubs, she makes three marks across four days."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The first, written at lunch:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "refill query / Bea called / Interrupted, or Unclear: next step wasn't written anywhere / came back late, rebuilt it from the screen"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The second, from home:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "novel / weather alert preview / Caught, or Spent / came back once, then stopped on purpose"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The third, written the next morning from memory:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "talking to Jo / started planning tomorrow's call in my head / Due, or just habit? / asked her to say the last part again"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The notes are incomplete. The second guesses aren't equally good. One was written nearly a day after the event, and none of them says how many minutes were lost."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "They're enough. Across the three, one thing is already more useful than a complete ledger would be: Ruth keeps leaving with no way back. At work, that means rebuilding the state of a problem from scratch. At home, the open page sometimes does the job for her. With her sister there is no page, so getting back took an honest request."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "She could have sorted those notes by device, by time of day, or by how bad each one felt. The way back is the pattern that earns her attention, because it shows up in three different places and it suggests a cheap next test."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Stop at three",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Ruth has a baseline, which sounds more scientific than it is: a few observations taken before you change much. This week might be unusual. You might be traveling, ill, unusually rested, or covering for someone, and three notes can't separate a pattern from a coincidence. They can show you where a small experiment might be worth the trouble."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The temptation is to improve the record before using it. Add the time of day. Add a rating for how bad the leave felt. Separate phone leaves from thought leaves. Make a color key. Soon the little study of your attention is the newest thing taking attention away from your life."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Don't build a museum of leaves. If you catch yourself compiling them instead of living, you've acquired a hobby."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "A useful baseline has a stopping rule: ",
+      {
+       "text": "as soon as one pattern is worth testing, stop collecting.",
+       "strong": true
+      },
+      " The pattern might be a cue (the same preview, tab, sound or person coming into view), a time or condition (after lunch, after a short night, in the gap between tasks), or a kind of work (a page that assumes knowledge you lack, a document without a first move). It might be the way back itself: the place was lost, the next step had vanished. Or it might be that care, safety or the job kept requiring you to go."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If most of your leaves this week were of that last kind, prevention is the wrong target, and the way back (Chapter 11) is where your effort will pay."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Patterns that lie",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "The most memorable leave is rarely the most useful one."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "A forty-minute disappearance into video will dominate your memory of the week, because the cost is so obvious. It may also have happened once, after an unusually hard day, and need a big intervention. Meanwhile one small preview may have pulled you out of the first paragraph of four separate work sessions. The second pattern is duller and probably the better first target."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "So ask what happened most, what cost most, and what offers the cheapest test, and expect three different answers. Then choose according to what next week can realistically hold."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The other classic mistake is naming the destination as the cause. Three leaves ended at the phone, so the pattern looks like ",
+      {
+       "text": "phone",
+       "em": true
+      },
+      ". Look one step earlier. One began with a preview. One began when the report had no next action in it. One began after the fourth short night. The destination repeated and the suspects didn't. It happens the other way around too: three unrelated destinations (messages, washing a cup, checking a date), and in the moment before each one, the same undefined decision. This is why even a one-line note keeps two suspects. It holds off certainty long enough for a different resemblance to show."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "And some patterns belong to your surroundings. If every work note reads ",
+      {
+       "text": "manager messaged, replied right away",
+       "em": true
+      },
+      ", you've found an expectation, and it's probably real. Write it down as one. Whatever you test next shouldn't secretly depend on defying it."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Then there's Marcus, who spends the week with his book about street trees and finds almost no unwanted leaves on the evenings he stays clear of the Latin. His notes show something different: after supper, book already open on the side table, the tablet still face-down."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Try it: three at most",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Carry a scrap of paper this week. When you notice a leave, or remember one later, write one line:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "what I was doing / what I caught myself doing / two suspects / how getting back went",
+         "strong": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "reading an article / opened team chat after a preview / Caught, or Due / easy, the paragraph was still marked",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "making lunch / stood holding the fridge door after my son called / Interrupted, or Spent / fine, everything was still out on the counter",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "drafting the proposal / reorganized my file names / Unclear, or Escaping / never went back",
+         "em": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Catch one to three. They don't have to come on consecutive days or from different parts of your life. Write them on the spot, later that day, or whenever you next find the paper, and put an ",
+      {
+       "text": "M",
+       "em": true
+      },
+      " beside any you wrote from memory. If a note involves someone else, use an initial and leave out what they said."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Then stop, and finish this sentence:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "The pattern worth one test is \\_\\_\\_, because it's frequent / costly / cheap to change.",
+         "strong": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "One note is enough to act on. If it shows a cue, the next chapter is yours. If the work had no way in, Chapter 6 will matter more to you, and if the expensive part was getting back, Chapter 11 will. Read on in order anyway, and spend your effort where your notes point. And if the day had less in it than the plan did, do less now."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "---"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Ruth's counter is as loud as it was, and she'll keep turning around when somebody needs her. She knows what to ask of her next adjustment, though. The red flag should carry enough of the problem that, when she turns back, she doesn't have to become the person she was twenty-six minutes ago."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Chapter 5: One Cue, Moved",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Priya's work messages make no sound. She turned that off years ago. Her phone doesn't vibrate and nothing appears on its lock screen. By the usual standards she has already won."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "But her team is spread across four time zones, so the chat window stays open at the right-hand edge of her monitor, and when a message arrives the sender's name goes bold. That's all. A name, slightly heavier than it was a second ago."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The cue contains almost no information. It says only that information exists, which is exactly why it works so well. Her mind supplies the rest. Is the shipment late? Has the vendor replied? Is Tomas, her boss, asking about the number she hasn't finished checking? She clicks, partly to find out and mostly to make the not-knowing stop."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The whole thing takes under a second:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "a name goes bold → the not-knowing rises → click → the message opens → the decision she was in the middle of is gone"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Call that last click a bad habit and you've missed the useful part. The path has four steps before the damage, and any one of them can be changed."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Put the friction on the path",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "The obvious fixes go straight to the maximum: delete the app, block the internet, lock the phone in a box. Sometimes that's right. As a first test it's expensive, because it changes many paths at once and tends to remove something you needed along with the cue."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "A better first question: ",
+      {
+       "text": "what's the lightest change that alters the path I saw?",
+       "strong": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Here are six, from lightest to heaviest."
+     ]
+    },
+    {
+     "type": "list",
+     "ordered": true,
+     "items": [
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Narrow.",
+          "strong": true
+         },
+         " Let the necessary people and alerts through. Take everything else out of view."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Batch.",
+          "strong": true
+         },
+         " Let the non-urgent arrivals show up together at times you pick."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Hide the preview.",
+          "strong": true
+         },
+         " Keep the signal that something arrived. Lose the content and the count."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Move it.",
+          "strong": true
+         },
+         " Put the object, window or shortcut outside your first reach or first glance."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Add a step.",
+          "strong": true
+         },
+         " Sign out, close the tab, put the phone in a bag, make yourself search for it."
+        ]
+       }
+      ],
+      [
+       {
+        "type": "p",
+        "content": [
+         {
+          "text": "Block for now.",
+          "strong": true
+         },
+         " Shut one route for one bounded stretch of time."
+        ]
+       }
+      ]
+     ]
+    },
+    {
+     "type": "figure",
+     "src": "book/visuals/accepted/rf-fig05-ladder-r1.png",
+     "alt": "A technical line drawing titled Fig. 3, The friction ladder. A stepladder with six labeled rungs, from the bottom: 1, Narrow; 2, Batch; 3, Hide the preview; 4, Move it; 5, Add a step; 6, Block for now. Caption: Start on the lowest rung that changes the path.",
+     "id": "fig-3",
+     "w": "72.0%",
+     "align": "center",
+     "caption": "The friction ladder.",
+     "crop": {
+      "y": 0.066,
+      "h": 0.934
+     }
+    },
+    {
+     "type": "p",
+     "content": [
+      "Higher isn't better. The right rung is the lowest one that interrupts the path you observed while keeping what the tool is for."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "For Priya the cue is the bold name. The work channel can stay. It just has to stop announcing every arrival while she's inside one decision. So her first experiment is to close the chat window for twelve minutes and leave the phone line open, and before she starts she tells Tomas."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"If something's on fire, call me. Otherwise I'm back in chat at ten-thirty.\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"What if it's only smoldering?\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"Then it can smolder till ten-thirty.\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "She writes the arrangement on a sticky note and puts it where the chat window used to be:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "Tomas or the warehouse: they call, I answer."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "Everything else: 10:30."
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Work can still reach her. It reaches her by the route her team already uses when twelve minutes matter."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "When the phone is four things",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sam's phone is the school's channel to her about her son Eli, the line to her father's home care agency, the garden-center shift schedule, and the object that offers her a procession of other people's kitchens while she's trying to read. All four are true at once and none cancels another."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"Put it in another room\" only works where there's another room, and most of Sam's twenty minutes show up on a bus or in a break room. Switching everything off would turn every silence into a question about what she's missing. Her first rung is narrower. Calls from three named contacts stay audible: the care agency, the school office, her shift lead. (On an iPhone that's a Focus with allowed people; on Android it's Do Not Disturb with exceptions.) Message content is hidden on the lock screen. The phone goes face-down, just beyond the turn of her wrist. She checks the school group when her slice of reading ends."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Setting that up takes her longer than the reading session it's meant to protect, so she does it separately, on a Saturday morning with coffee, and writes down what she changed so that she can undo it. During the session itself, setup means putting the phone down."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Those three names go on the back of her card: ",
+      {
+       "text": "who always gets through",
+       "em": true
+      },
+      ". Write yours there too. It's the line that makes every other rule in this book safe to follow."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Cues that aren't screens",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "The ladder works on objects and people as well, though the manners change."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "An open office door tells your colleagues that conversation is welcome. Closing it changes their path as well as yours, so use a signal everyone understands: a sign, a stated ten minutes, a word about when you'll be free. Redesigning other people's behavior without telling them and calling it a repair to your environment is just rudeness with a system."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "At home, another person walking through the room is nothing like a notification, and you can't disable them. Change what's yours: where your things are, how big the session is, what you leave behind when you're called, the sentence that says when you can answer. If you need ten clear minutes, ask for them out loud."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Some cues are supposed to win. The medication alarm, the oven timer, a child's voice, a coworker's safety question. The ladder is only for invitations you could do without."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You can also install a cue. Leave the document open at the next action, the book on the chair, the guitar out of its case, the index card next to your bus pass. That changes which path gets first go. One cue removed and one installed is usually cleaner than five removed: close the chat window and leave the question you're deciding in the middle of the screen."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "What the results look like",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Run a small change for a few sessions and watch which way it goes."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The cue showed up less and so did the leave. Keep the change for now, without concluding that the cue caused every leave you ever had."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The cue showed up less and the leave moved somewhere else. Go back to your suspects. Unclear, Escaping or Spent may have been using the nearest exit, and you've only changed which exit is nearest."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The cue kept coming, because you changed the wrong box. Muting the sound does little when the cue is a bright number at the edge of the screen."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Or the change worked and cost too much. It hid a message you needed, or set you checking anxiously, or needed daily upkeep. Go down a rung."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If the lower rungs keep failing, a temporary block can answer a real question. Keep it specific: one route, one bounded period, one exception, one way to stop. The best evidence here is sobering about how hard it is to live with. In a 2025 trial, 467 people signed up to block mobile internet on their phones for two weeks. Of those, 266 installed the blocker, and 119 kept it running for at least ten of the fourteen days. Across the group, sustained attention improved by a small amount.",
+      {
+       "note": [
+        "A preregistered randomized crossover trial. Of 467 people who committed, 266 installed the blocking app and 119 met the compliance criterion of at least ten of fourteen days. The pooled improvement in sustained attention was small. The volunteers were motivated iPhone owners, many dropped out, and expectations may have played a part. See Castelo et al. (2025)."
+       ]
+      },
+      " Three out of four people who signed up didn't keep the block running, which is worth knowing before you try one. And if two blocked weeks make something feel easier, remember that you changed a dozen conditions at once."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "And if a tool no longer serves anything you care about, delete it."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Try it: one rung",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Take a cue from your Chapter 4 notes, or the last one you remember winning, and draw its path in five boxes. Some can stay blank."
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "what arrived → what I saw or heard → first movement → where I ended up → what it cost to get back",
+         "strong": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sam's looks like this:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "group message → first line on the lock screen → thumb lifts the phone → the thread → book still open, meaning gone",
+         "em": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Keep motives you can't see out of the boxes. ",
+      {
+       "text": "I'm addicted",
+       "em": true
+      },
+      " isn't a box. ",
+      {
+       "text": "Badge showed 4",
+       "em": true
+      },
+      " is."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Mark the earliest box you could change without cutting off anyone who needs you, pick the lowest rung that touches it, and write:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "The change:",
+         "strong": true
+        },
+        " ___"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "Who still gets through:",
+         "strong": true
+        },
+        " ___"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "I'll stop the experiment if:",
+         "strong": true
+        },
+        " ___"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sam's third line reads: ",
+      {
+       "text": "I'll stop if I miss a call from the agency, or catch myself checking the hidden thread on the sly.",
+       "em": true
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Leave the change in place for your next three or four sessions, whatever they're for. It runs in the background, so it needs no slot of its own. After each session, your one line can say whether the cue appeared and whether a leave followed."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Then decide whether to keep it, lighten it, strengthen it, or drop it, and say so in one plain sentence: ",
+      {
+       "text": "When previews were hidden during the twelve-minute decision, I opened chat less and got back faster.",
+       "em": true
+      },
+      " If a cue was your trouble, the short version goes on the back of your card, as ",
+      {
+       "text": "my cheapest first fix",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "---"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Priya keeps the chat window closed during one named decision a day and opens it at the time she promised. Sam keeps her three names and leaves the rest of her settings alone."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Chapter 6: Give It a Handle",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sam's study plan says ",
+      {
+       "text": "study statistics",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "It says so in three places: on the course portal, in a notebook, and in a message she sent herself at 12:14 one morning. Each version is sincere. None of them tells her what to do when twenty-three minutes open up between clearing the table and checking that her father has taken his evening pills."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "She opens the course page. There's a recording, a worksheet, a discussion prompt, two unread announcements, a practice quiz, and a red mark beside an assignment due Friday. ",
+      {
+       "text": "Study statistics",
+       "em": true
+      },
+      " expands to include all of it. Her hand drifts toward the announcements, because they're the only thing on the page offering a clear next action: click me."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"Sam?\" Her father, Ken, from the living room. \"Is it the white ones tonight or the blue?\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"Both, Dad. White first.\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Nineteen minutes."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sam cares about statistics plenty, and has nowhere to take hold of it."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Sizes of the same work",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Ordinary planning language stacks different sizes of work on top of each other, and it helps to pull them apart."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The ",
+      {
+       "text": "project",
+       "strong": true
+      },
+      " is the whole territory: finish the statistics unit."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The ",
+      {
+       "text": "outcome",
+       "strong": true
+      },
+      " is a piece that will exist: the problem set, turned in."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The ",
+      {
+       "text": "session",
+       "strong": true
+      },
+      " is what fits today: from now until the medication alarm."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The ",
+      {
+       "text": "first move",
+       "strong": true
+      },
+      " is what hands can begin: open question three and underline what it gives you."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You can care a great deal about the project and still be unable to get into it, because only its largest size is visible. A first move gives you something to hold."
+     ]
+    },
+    {
+     "type": "figure",
+     "src": "book/visuals/accepted/rf-fig06-handle-r1.png",
+     "alt": "A technical line drawing titled Fig. 4, The same work, with a handle. Two identical crates. The left one is smooth, stenciled Study statistics, with a callout reading 1, no place to grip. The right one has a rope handle and a tag reading Open question three, underline what's given, with a callout reading 2, handle.",
+     "id": "fig-4",
+     "w": "90.0%",
+     "align": "center",
+     "caption": "The same work, with a handle.",
+     "crop": {
+      "y": 0.11,
+      "h": 0.89
+     }
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sam changes ",
+      {
+       "text": "study statistics",
+       "em": true
+      },
+      " to:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "open question three and underline the quantities given"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "It's almost comically small, and that's what recommends it. A first move shouldn't contain a secret second instruction along the lines of ",
+      {
+       "text": "and then keep going until you've been a better person for an hour",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "When the first move is still too big",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"Draft the introduction\" contains a dozen decisions. \"Write the first sentence\" may contain the biggest one of all. Shorter wording doesn't always mean a smaller action. Look for a step that asks for very few decisions:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "copy the current claim to the top of a blank page"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "list the three facts the opening has to establish"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "read the last paragraph and mark the sentence that isn't settled"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "A good first move leaves things in a state where the next move is easier to see. If it only postpones the hard decision behind elaborate preparation, the session will show you that soon enough, and you can go back to your suspects."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sometimes the first move belongs to someone else: ",
+      {
+       "text": "ask the supplier which price list is current.",
+       "em": true
+      },
+      " A project can be waiting. Write down what it's waiting for, so your mind can stop rehearsing it as a private unfinished duty."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "A first move should cut the number of decisions it takes to begin, and it shouldn't disguise how big the work is. If your small first step will certainly open a two-hour obligation and you have twelve minutes, pick a different piece or don't start."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Where you'll stop",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "The other end of a session needs a handle as well. A stopping line can be a time (twelve minutes), a quantity (two paragraphs, four invoices), a piece of content (until the joint is sanded, until the vegetables are cut), or an event: until the bus reaches Oak Street, until the kettle boils, until the next check is due."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Choose whichever makes \"done\" visible without requiring good conditions. If the work is hard to stop once you're in, the line protects whatever comes after it. If the work is hard to start, use the nearest line that still gets you into contact with it."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "And the line can move when the day changes. Ten minutes written down yesterday is not a court order served on today."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "A plan that travels",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Plenty of rituals work beautifully until the right chair is taken, the morning changes, the child doesn't sleep, or the headphones turn out to be in the other bag. A setup is there to reduce decisions. It shouldn't make the thing impossible anywhere else."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sam can't attach study to eight o'clock, because eight o'clock belongs to too many other things. She attaches it to an event she'll recognize when it arrives:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "after the kitchen surface is clear and before the medication alarm"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "On another day:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        "after I sit down on the bus, if I get a seat"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Psychologists call these if-then plans: when a situation you can recognize arrives, you begin a named action. They're among the better-tested ideas in this book. Across 642 tests, they helped people turn intentions into action, and they worked best when the person cared about the goal and had rehearsed the plan.",
+      {
+       "note": [
+        "A meta-analysis of 642 independent tests across cognitive, emotional and behavioral outcomes. Effects varied and were stronger for plans in an if-then format, for goals the person was motivated to reach, and when the plan had been rehearsed. See Sheeran, Listrom, and Gollwitzer (2024)."
+       ]
+      },
+      " A sentence like that removes one decision from a chaotic evening, which is all it has to do."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Onto the card",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "The front of the card starts to fill in here, on its second line."
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "My first move is:",
+         "strong": true
+        },
+        " ",
+        {
+         "text": "open question three; underline the quantities given",
+         "em": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The top line, ",
+      {
+       "text": "I'm choosing",
+       "em": true
+      },
+      ", waits one more chapter, because the next chapter is about picking the thing. (Sam's will say ",
+      {
+       "text": "statistics",
+       "em": true
+      },
+      ".) That top line can stay the same for weeks. The second line is today's way in, and it changes as the work moves. The stopping line changes every session, so it lives on a scrap of paper and stays off the card. If you want the full setup (when, where, the stopping line, your one fix, who gets through), the Field Guide has a bench card for it, called Setup."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Try it: run the smallest card",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Write a first move for one thing you'd like to get into this week, and put a stopping line on a scrap beside it. Check both before you begin."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Does the verb name something hands or a voice can do? ",
+      {
+       "text": "Think about",
+       "em": true
+      },
+      ", ",
+      {
+       "text": "work on",
+       "em": true
+      },
+      " and ",
+      {
+       "text": "deal with",
+       "em": true
+      },
+      " usually hide another decision. Try ",
+      {
+       "text": "open, list, compare, call, read, mark, draft, check, ask",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Does the stopping line fit the window you have? If it doesn't, shrink it now."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Then run it once, and afterward write only what changes next time:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "first move still had two decisions in it; split the data check from the explanation",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "twelve minutes fit; twenty would have turned into a negotiation",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "the bus was too loud for reading, but listening worked",
+         "em": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sometimes the line you write is ",
+      {
+       "text": "this should be declined; next move is to ask what can be dropped",
+       "em": true
+      },
+      ". Some work is unclear because nobody has decided what matters, and clearing it up needs another person's answer. Some work shouldn't be done at all."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If you can't name any first move, make it a question (",
+      {
+       "text": "ask which section matters today; list what's missing; write the decision I'm avoiding in neutral words",
+       "em": true
+      },
+      "). And if the task still has no handle after that, the right move may be to stop and ask someone."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If you find yourself adjusting the light, choosing the music, squaring the notebook and waiting for the right internal weather, the setup has turned into a shrine. Strip it back until it could survive a different room."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "---"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Sam's session ends when the alarm goes. She has underlined the quantities, tried the first calculation, and marked the place where her answer stops making sense. The project is almost exactly the size it was this morning. The way in has shrunk to a single pencil mark."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Chapter 7: The Thing You Want Back",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Marcus has three candidates written on the pad by the telephone, under two phone numbers and a grocery item he can no longer read. It might say ",
+      {
+       "text": "fennel",
+       "em": true
+      },
+      ". It might say ",
+      {
+       "text": "funnel",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The first is ",
+      {
+       "text": "The City's Trees",
+       "em": true
+      },
+      ", a history of street planting he has wanted to read since he heard its author interviewed in winter, and has been starting and leaving for a month. The second is in the garage: a small oak step-stool he started making for his granddaughter. The legs are cut. One joint binds. The third candidate is a phrase: ",
+      {
+       "text": "improve my focus",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The third one sounds like an obligation and doesn't contain an object. It could absorb any amount of effort without ever being finished. He crosses it out."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Choosing between the other two is harder, because both are real. His daughter called on Sunday."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"How's the stool coming along, Dad?\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"It's a very promising pile of oak.\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "\"Nora's asked whether it'll have her name on it.\""
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "He could tell himself a story in which the stool matters more: family, craft, a thing finished. He could tell another in which the book is a promise to an earlier version of himself. He doesn't have to rank them. The question on the pad is smaller. What does he want back ",
+      {
+       "text": "now",
+       "em": true
+      },
+      "? He means this season, the way things are. Forever can wait, and so can proving that retirement is being put to good use."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "He chooses the book."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Wanted, should, and still mine",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Most candidates arrive mixed. You want the experience and you also think it would make you admirable. You resent the obligation and you also care about the people it serves. You wanted the project once and can't tell whether the wish changed or only the conditions did."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "There's no need to purify the motive. A few practical questions help."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "Would I want some contact with this if nobody ever knew?",
+       "strong": true
+      },
+      " That separates the thing from its display value."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "What becomes possible, for me or somebody else, if I give it attention?",
+       "strong": true
+      },
+      " A work decision may be no fun at all and still deserve protecting, because delay hurts people or clogs the week."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      {
+       "text": "What would I choose instead, in the same slice of time?",
+       "strong": true
+      },
+      " The competitor tells you the price. ",
+      {
+       "text": "Rest",
+       "em": true
+      },
+      ", ",
+      {
+       "text": "call my sister",
+       "em": true
+      },
+      ", ",
+      {
+       "text": "finish the required thing",
+       "em": true
+      },
+      ", ",
+      {
+       "text": "watch the show I like",
+       "em": true
+      },
+      " are better answers than ",
+      {
+       "text": "waste time",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If you want it now, protect a small slice you can repeat. If it's required and you agree with it, protect it and skip pretending to love it. If you can't tell, make two small contacts and watch what the doing is like, as opposed to the daydream."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Marcus runs that last test on the stool. He gives the stubborn joint ten minutes. The wood still interests him. The timing doesn't. The stool moves to next month, neither abandoned nor sacred, and he tells his daughter so. (\"Tell Nora it'll have her name on it. Tell her oak takes as long as it takes.\")"
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Some things only become wanted once you're in. Beforehand they feel inert, and ten minutes later the material begins to answer. Others are delicious in anticipation and flat in the hand. That's why a verdict wants two small contacts. One tired evening shouldn't get to decide the whole question, and neither should the mood beforehand or the relief of having dodged it."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "A season is a real boundary",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "The thing you want back may not fit this season. An exam period, an illness, a parent who needs you: any of them can make even the smallest meaningful slice unavailable. When that happens, don't shrink a rich activity until only its symbol is left and then insist you're keeping it alive. Write three lines and set it down."
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "Not now, because:",
+         "strong": true
+        },
+        " ___"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "I'd look again when:",
+         "strong": true
+        },
+        " ___"
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "I'm leaving the way back here:",
+         "strong": true
+        },
+        " ___"
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "That's different from putting it off indefinitely, because the condition for looking again is written down. It's also different from a promise. The condition may arrive and the wanting may not."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Attention is not the highest good",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "A manual about attention can slide into making attention the answer to everything. It isn't."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "You can attend beautifully to work that should have been refused. You can give an hour to a project because you've already given it six months. You can finish a book whose only remaining function is to make the unread stack shorter. Getting better at directing your attention tells you nothing about what deserves it."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "So before the practices get any smoother, choose one thing that carries its own reason to come back. It can be serious or not serious at all. A novel. A language you'd like to hear yourself speak. A difficult problem at work whose answer matters to people. A letter. A garden bed. The instrument you keep moving from room to room. No purpose statement is required. Wanting can be as plain as ",
+      {
+       "text": "I miss this",
+       "em": true
+      },
+      ". It can also sound like ",
+      {
+       "text": "I'd like to find out whether I still want this, once I can get into it.",
+       "em": true
+      }
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "What it costs",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Everything you protect pushes something else out, even if that something is only a low-grade default."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Marcus's pages push out part of the evening news. That's easy to write down and harder to do, because since Helen died the news has been the voice in the house. The stool would have pushed out clearing the garage, since he can't do both in the same hour. A conversation may push out a routine check of work messages. A hard decision at work may push out several smaller tasks that pay off faster."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Writing the price down keeps the practice from pretending that time is empty, and it shows you when the slice you've chosen is asking too much. One rule: never write that it displaces ",
+      {
+       "text": "wasting time",
+       "em": true
+      },
+      ". Name what would have gone there: scrolling, sleep, another responsibility, company, a show you like, the relief of doing nothing."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "Try it: the Worth-Back Note",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Five lines."
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "The thing I want back now:",
+         "strong": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "Why now, in ordinary words:",
+         "strong": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "The smallest slice I could repeat:",
+         "strong": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "What it pushes out:",
+         "strong": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "I'll stop or change it when:",
+         "strong": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Marcus's:"
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "the tree book",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "I keep thinking about the street I grew up on",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "six pages after supper, twice this week",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "part of the evening news",
+         "em": true
+        }
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "it turns into a duty, or my eyes are done",
+         "em": true
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "The last line protects the thing from the method. Without it, anything you love can become one more surface to measure yourself on."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Your smallest repeatable slice is bigger than the smallest contact you can imagine. It's the amount that could plausibly happen again: one song practiced with care, five lines of a letter, ten minutes inside a design problem, a walk to the corner with nothing in your ears. Set two chances for it this week, by the clock if your time is reliable and by an event if it isn't. Then write the thing on the top line of your card, after ",
+      {
+       "text": "I'm choosing",
+       "em": true
+      },
+      ". Marcus's says ",
+      {
+       "text": "the tree book",
+       "em": true
+      },
+      "."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If the thing you wanted doesn't hold you, the setup may be wrong, or the slice. The thing itself may have changed, or you may like the idea of it more than the doing. Name two suspects and change one condition. If contact still feels like upkeep on an identity you no longer want, let it go."
+     ]
+    },
+    {
+     "type": "h",
+     "level": 2,
+     "text": "The end of Week 1",
+     "outline": false
+    },
+    {
+     "type": "p",
+     "content": [
+      "Put the week's paper in front of you: the few notes, the one cue you moved, the two lines on your card, the Worth-Back Note. Don't grade any of it. Write three short lines."
+     ]
+    },
+    {
+     "type": "box",
+     "style": "card",
+     "fill": "#efefef",
+     "inset": "10pt",
+     "space_before": "8pt",
+     "space_after": "8pt",
+     "blocks": [
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "Keep:",
+         "strong": true
+        },
+        " one condition that helped."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "Change:",
+         "strong": true
+        },
+        " one mismatch the week exposed."
+       ]
+      },
+      {
+       "type": "p",
+       "style": "card",
+       "content": [
+        {
+         "text": "Drop:",
+         "strong": true
+        },
+        " one step, rule or activity that cost more than it gave."
+       ]
+      }
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Marcus keeps the book open on the side table. He changes \"six pages\" to \"one section,\" because some pages are maps and some are photographs and six pages turned out to be a silly unit. He drops the idea that the stool has to share a week with the book."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "If the back of your card has no ",
+      {
+       "text": "cheapest first fix",
+       "em": true
+      },
+      " yet, whatever you wrote under ",
+      {
+       "text": "Keep",
+       "em": true
+      },
+      " is it. While the card's turned over, check the two suspects you wrote before Week 1 against this week's notes, and change them if the notes disagree."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "By now the card should have two lines on the front. The back should have your two suspects, the fix you'd keep, and the names that always get through. If a line is blank, the chapter that fills it hasn't gone anywhere."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "Next week goes inside the session itself."
+     ]
+    },
+    {
+     "type": "p",
+     "content": [
+      "For now, the page is open where you left it."
+     ]
+    }
+   ]
+  }
+ ]
+}

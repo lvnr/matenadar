@@ -150,6 +150,8 @@ export interface CheckOptions {
   /** The spine-side margin (default KDP's for the page count). */
   gutter?: string | number;
   min_ppi?: number;
+  /** Hold the pages to a black-ink interior even when the document doesn't say it is one. */
+  ink?: "black" | "color";
 }
 
 export interface RenderOptions {
@@ -175,6 +177,7 @@ export interface MatenadarApi {
   addFont(data: Bytes): number;
   addFile(path: string, data: Bytes): void;
   open(doc: MatenadarDocument, check?: CheckOptions): Opened;
+  template(kind: "picture-book" | string, spec: object): MatenadarDocument;
   fonts(): string[];
   close(): void;
 
@@ -232,6 +235,7 @@ export declare class Matenadar implements MatenadarApi {
   addFont(data: Bytes): number;
   addFile(path: string, data: Bytes): void;
   open(doc: MatenadarDocument, check?: CheckOptions): Opened;
+  template(kind: "picture-book" | string, spec: object): MatenadarDocument;
   fonts(): string[];
   close(): void;
   pages(): PageInfo[];

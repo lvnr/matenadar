@@ -19,3 +19,4 @@ crc32fast = "1"
 
 [dev-dependencies]
 serde_json.workspace = true
+image = { version = "0.25", default-features = false, features = ["png"] }

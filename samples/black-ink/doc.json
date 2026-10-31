@@ -1,0 +1,154 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "The Attention Repair Manual",
+  "author": "Levon Arakelyan",
+  "lang": "en-US"
+ },
+ "print": {
+  "ink": "black"
+ },
+ "design": {
+  "colors": {
+   "ink": "#1a1a1a"
+  },
+  "base": {
+   "font": "Libertinus Serif",
+   "size": 10.5,
+   "line_height": "14.5pt",
+   "color": "ink"
+  },
+  "styles": {
+   "heading": {
+    "size": 16,
+    "weight": "semibold",
+    "align": "center"
+   },
+   "note": {
+    "size": 9.5,
+    "italic": true,
+    "align": "center"
+   },
+   "folio": {
+    "size": 8.5,
+    "align": "center"
+   }
+  },
+  "masters": {
+   "page": {
+    "width": "6in",
+    "height": "9in",
+    "bleed": "0.125in",
+    "margins": {
+     "top": "0.75in",
+     "bottom": "0.85in",
+     "inside": "0.85in",
+     "outside": "0.65in"
+    },
+    "foreground": [
+     {
+      "type": "text",
+      "id": "folio",
+      "style": "folio",
+      "x": "0.85in",
+      "y": "8.45in",
+      "w": "4.5in",
+      "content": [
+       {
+        "field": "page"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "delivered",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "delivered-heading",
+     "x": "0.85in",
+     "y": "0.9in",
+     "w": "4.5in",
+     "style": "heading",
+     "text": "Also in print",
+     "set": {
+      "color": "#1f4fa0"
+     }
+    },
+    {
+     "type": "image",
+     "id": "delivered-cover",
+     "src": "book/visuals/accepted/cover-04b-r1.png",
+     "x": "1.6in",
+     "y": "1.75in",
+     "w": "2.8in",
+     "h": "4.2in",
+     "fit": "contain",
+     "alt": "The cover of The Attention Repair Manual: black type on yellow, with a blue panel."
+    },
+    {
+     "type": "text",
+     "id": "delivered-note",
+     "x": "0.85in",
+     "y": "6.3in",
+     "w": "4.5in",
+     "style": "note",
+     "text": "As delivered: a colour picture and a blue heading on a black-ink page."
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "filtered",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "filtered-heading",
+     "x": "0.85in",
+     "y": "0.9in",
+     "w": "4.5in",
+     "style": "heading",
+     "text": "Also in print",
+     "set": {
+      "color": "ink"
+     }
+    },
+    {
+     "type": "image",
+     "id": "filtered-cover",
+     "src": "book/visuals/accepted/cover-04b-r1.png",
+     "x": "1.6in",
+     "y": "1.75in",
+     "w": "2.8in",
+     "h": "4.2in",
+     "fit": "contain",
+     "alt": "The cover of The Attention Repair Manual: black type on yellow, with a blue panel.",
+     "filter": {
+      "gray": true,
+      "contrast": 3,
+      "black": 0.02,
+      "white": 0.98
+     }
+    },
+    {
+     "type": "text",
+     "id": "filtered-note",
+     "x": "0.85in",
+     "y": "6.3in",
+     "w": "4.5in",
+     "style": "note",
+     "text": "Through the grey filter: luma with a contrast curve, the heading in the ink."
+    }
+   ]
+  }
+ ]
+}

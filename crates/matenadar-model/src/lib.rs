@@ -15,10 +15,12 @@
 pub mod block;
 pub mod component;
 pub mod element;
+pub mod figures;
 pub mod ops;
 pub mod resolve;
 pub mod runs;
 pub mod style;
+pub mod template;
 pub mod units;
 pub mod validate;
 pub mod walk;
@@ -53,6 +55,30 @@ pub struct Document {
     /// nothing.
     #[serde(default, skip_serializing_if = "IndexMap::is_empty")]
     pub on_page: IndexMap<String, OnPage>,
+    /// How the book is printed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub print: Option<Print>,
+}
+
+/// How the book is printed: what the checks hold it to.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Print {
+    /// `"black"` (a black-ink interior: any colour on a page is reported)
+    /// or `"color"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ink: Option<String>,
+    /// A filter for every raster picture that sets none of its own (such as
+    /// `{"gray": true, "contrast": 3}` for black ink).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filter: Option<element::Filter>,
+}
+
+impl Document {
+    /// Whether the interior is printed in black ink only.
+    pub fn black_ink(&self) -> bool {
+        self.print.as_ref().and_then(|p| p.ink.as_deref()) == Some("black")
+    }
 }
 
 /// What changes on the page where a node lands.
@@ -85,6 +111,7 @@ pub struct Meta {
 pub enum Item {
     Section(Section),
     Page(Page),
+    Spread(Box<Spread>),
 }
 
 impl Item {
@@ -92,6 +119,7 @@ impl Item {
         match self {
             Item::Section(s) => &s.id,
             Item::Page(p) => &p.id,
+            Item::Spread(s) => &s.id,
         }
     }
 
@@ -99,8 +127,88 @@ impl Item {
         match self {
             Item::Section(s) => Some(&s.master),
             Item::Page(p) => p.master.as_deref(),
+            Item::Spread(s) => s.master.as_deref(),
         }
     }
+
+    pub fn kind(&self) -> &'static str {
+        match self {
+            Item::Section(_) => "section",
+            Item::Page(_) => "page",
+            Item::Spread(_) => "spread",
+        }
+    }
+}
+
+/// Two facing pages, a verso and the recto after it, under one picture:
+/// the picture covers both trims and their outer bleeds (top, bottom and
+/// outside; there is no bleed at the spine), as one or as a half per side.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Spread {
+    pub id: String,
+    /// The master that gives both pages their size and bleed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub master: Option<String>,
+    /// The picture across both pages (or give each side its own `src`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub src: Option<String>,
+    /// Only this part of the picture (see the image element's `crop`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub crop: Option<element::Crop>,
+    /// Which part stays in view when the picture is cropped to the spread.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub focus: Option<(f64, f64)>,
+    /// How much of each page the binding hides at the spine. That strip is
+    /// repeated on both sides of the fold, so the picture reads across it
+    /// without losing what is there (default 0: a lay-flat binding).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gutter: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filter: Option<element::Filter>,
+    /// What the picture shows, for readers who can't see it (ebooks).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alt: Option<String>,
+    /// The verso (left) page.
+    pub left: SpreadSide,
+    /// The recto (right) page.
+    pub right: SpreadSide,
+    /// Also draw the master's background and foreground (default false).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub layers: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fill: Option<style::Fill>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
+    #[serde(skip_serializing_if = "IndexMap::is_empty")]
+    pub vars: IndexMap<String, String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page_from: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numbering: Option<String>,
+}
+
+/// One page of a spread: its own picture (or its part of the spread's),
+/// how that part is framed, and what is set over it.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct SpreadSide {
+    /// A picture for this page only (half of a spread drawn in two).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub src: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub crop: Option<element::Crop>,
+    /// This page's own focus. With the spread's one picture, it moves only
+    /// this page's half (which breaks the picture at the fold, on purpose).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub focus: Option<(f64, f64)>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filter: Option<element::Filter>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alt: Option<String>,
+    /// Placed over the picture, from this page's trim corner.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub elements: Vec<Element>,
 }
 
 /// A flow of blocks through the pages of a master.

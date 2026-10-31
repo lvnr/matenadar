@@ -151,3 +151,21 @@ fn a_fixed_layout_page_sets_its_words_as_live_text_over_its_picture() {
     let page = String::from_utf8(file_in(&bytes, "matenadar-fixed-pictures.epub", "OEBPS/page-001.xhtml").unwrap()).unwrap();
     assert!(page.contains("<img") && !page.contains("<tspan"));
 }
+
+#[test]
+fn live_text_in_print_colours_is_given_in_screen_colours() {
+    let doc = Document::from_json(
+        &json!({"matenadar": "1", "meta": {"title": "Ink", "lang": "en"},
+            "design": {"base": {"font": "Libertinus Serif", "size": 12}, "styles": {"cyan": {"color": "cmyk(100%, 0%, 0%, 0%)"}},
+                "masters": {"m": {"width": "5in", "height": "7in", "margins": {"top": 36, "bottom": 36, "inside": 36, "outside": 36}}}},
+            "content": [{"type": "page", "id": "p", "master": "m", "elements": [{"type": "text", "x": 36, "y": 100, "w": 288, "style": "cyan", "text": "Cyan words"}]}]})
+        .to_string(),
+    )
+    .unwrap();
+    let opts = Options { layout: Layout::Fixed, dpi: 72.0, ..Options::default() };
+    let bytes = build(&doc, &paths(), &opts).expect("epub");
+    let Some(page) = file_in(&bytes, "matenadar-cmyk.epub", "OEBPS/page-001.xhtml") else { return };
+    let page = String::from_utf8(page).unwrap();
+    let fill = page.split(" fill=\"").nth(1).and_then(|s| s.split('"').next()).expect("a fill");
+    assert!(fill.starts_with("#00") && !page.contains("fill-opacity"), "cyan, opaque: {fill}");
+}

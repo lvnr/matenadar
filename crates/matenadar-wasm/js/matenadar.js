@@ -379,33 +379,49 @@ function bytes(data) {
 const fontFile = /\.(otf|ttf|otc|ttc)$/i;
 const inNode = typeof process !== "undefined" && !!process.versions?.node;
 
+/** Whether a place is read over the network: a URL, or any path outside Node (from the page's address). */
 function isUrl(where) {
-  return where instanceof URL || /^(https?|file|data|blob):/i.test(String(where));
+  const text = where instanceof URL ? where.href : String(where);
+  if (/^file:/i.test(text)) return !inNode;
+  return /^(https?|data|blob):/i.test(text) || !inNode;
+}
+
+function toUrl(where) {
+  return where instanceof URL ? where : new URL(String(where), globalThis.location?.href);
+}
+
+/** A local place as a path (Node): a path, or a file: URL. */
+async function nodePath(where) {
+  if (where instanceof URL || /^file:/i.test(String(where))) {
+    const { fileURLToPath } = await import("node:url");
+    return fileURLToPath(where);
+  }
+  return String(where);
 }
 
 async function under(root, path) {
-  if (isUrl(root)) return new URL(path, String(root).endsWith("/") ? root : `${root}/`);
+  if (isUrl(root)) return new URL(path, toUrl(String(root).endsWith("/") ? root : `${root}/`));
   const { join } = await import("node:path");
-  return join(String(root), path);
+  return join(await nodePath(root), path);
 }
 
 async function read(where) {
-  if (isUrl(where) && !(inNode && String(where).startsWith("file:"))) {
-    const res = await fetch(where);
+  if (isUrl(where)) {
+    const res = await fetch(toUrl(where));
     if (!res.ok) throw new Error(`${where}: ${res.status}`);
     return new Uint8Array(await res.arrayBuffer());
   }
   const { readFile } = await import("node:fs/promises");
-  return new Uint8Array(await readFile(where instanceof URL ? where : String(where)));
+  return new Uint8Array(await readFile(await nodePath(where)));
 }
 
 /** The font files at a source: bytes, a URL, a file, or a folder (Node) read through. */
 async function fontsAt(source) {
   if (source instanceof Uint8Array || source instanceof ArrayBuffer || ArrayBuffer.isView(source)) return [bytes(source)];
-  if (isUrl(source) && !(inNode && String(source).startsWith("file:"))) return [await read(source)];
+  if (isUrl(source)) return [await read(source)];
   const { stat, readdir } = await import("node:fs/promises");
   const { join } = await import("node:path");
-  const path = source instanceof URL ? source.pathname : String(source);
+  const path = await nodePath(source);
   const info = await stat(path).catch(() => null);
   if (!info) return [];
   if (!info.isDirectory()) return [await read(path)];

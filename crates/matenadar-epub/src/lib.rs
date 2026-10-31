@@ -150,6 +150,12 @@ pub fn build_from(session: &Session, paths: &Paths, fonts: Arc<Fonts>, opts: &Op
 
     match opts.layout {
         Layout::Fixed => {
+            // With live text the page pictures have no words, so the cover is
+            // the first page drawn whole.
+            if cover.is_none() && opts.live_text && session.page_count() > 0 {
+                let (data, _) = page_jpeg(session, 1, opts.dpi, None)?;
+                cover = Some(assets.add("cover", "images/cover", "jpg", data));
+            }
             // The pictures' descriptions, page by page, for pages whose words are live.
             let mut alts: HashMap<usize, Vec<String>> = HashMap::new();
             if opts.live_text {

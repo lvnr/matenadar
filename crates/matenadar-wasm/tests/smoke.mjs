@@ -32,6 +32,7 @@ const time = async (name, f) => {
 };
 
 mt = await time("load", async () => Matenadar.load(readFileSync(wasm)));
+memory.load = +(mt.memory() / 2 ** 20).toFixed(1);
 const doc = JSON.parse(readFileSync(join(folder, "doc.json"), "utf8"));
 const opened = await time("open", () => mt.openFrom(doc, { root: folder, fonts }));
 assert.ok(opened.pages > 0, "the document lays out");

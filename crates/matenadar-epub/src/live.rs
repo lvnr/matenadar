@@ -141,8 +141,10 @@ fn paint(p: &Paint) -> (String, f64) {
         Paint::Gradient(g) => g.stops_ref().first().map(|s| s.0.clone()).unwrap_or(typst::visualize::Color::BLACK),
         Paint::Tiling(_) => typst::visualize::Color::BLACK,
     };
-    let [r, g, b, a] = c.to_vec4_u8();
-    (format!("#{r:02x}{g:02x}{b:02x}"), a as f64 / 255.0)
+    // Through RGB: a colour's own components may be CMYK or luma.
+    let rgb = c.to_rgb();
+    let u = |v: f32| (v.clamp(0.0, 1.0) * 255.0).round() as u8;
+    (format!("#{:02x}{:02x}{:02x}", u(rgb.red), u(rgb.green), u(rgb.blue)), rgb.alpha.clamp(0.0, 1.0) as f64)
 }
 
 fn num(v: f64) -> String {

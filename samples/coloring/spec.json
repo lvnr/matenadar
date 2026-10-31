@@ -1,0 +1,50 @@
+{
+ "trim": "8.5x11",
+ "title": "One Pen: Winter Lights",
+ "subtitle": "A Monochrome Coloring Book for Adults",
+ "author": "Nell Bramley",
+ "copyright": "Copyright © 2026 Nell Bramley. All rights reserved.",
+ "back_note": "Use one pen or pencil to fill every small O. Leave unmarked spaces blank and let the scene emerge.",
+ "test_page": "Try your pen here",
+ "pages": [
+  {
+   "id": "p01-the-lamplighter",
+   "src": "book/coloring/p01-the-lamplighter/p01-the-lamplighter.activity.svg",
+   "full": true,
+   "alt": "The Lamplighter"
+  },
+  {
+   "id": "p02-oranges-under-the-awning",
+   "src": "book/coloring/p02-oranges-under-the-awning/p02-oranges-under-the-awning.activity.svg",
+   "full": true,
+   "alt": "Oranges Under the Awning"
+  },
+  {
+   "id": "p03-the-skating-pond",
+   "src": "book/coloring/p03-the-skating-pond/p03-the-skating-pond.activity.svg",
+   "full": true,
+   "alt": "The Skating Pond"
+  },
+  {
+   "id": "p04-tram-number-seven",
+   "src": "book/coloring/p04-tram-number-seven/p04-tram-number-seven.activity.svg",
+   "full": true,
+   "alt": "Tram Number Seven"
+  }
+ ],
+ "fonts": {
+  "display": "Adobe Caslon Pro",
+  "text": "Adobe Caslon Pro"
+ },
+ "design": {
+  "styles": {
+   "title": {
+    "weight": 600,
+    "size": 46
+   },
+   "subtitle": {
+    "italic": true
+   }
+  }
+ }
+}

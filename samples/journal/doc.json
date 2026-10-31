@@ -1,0 +1,361 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "The Leave Note",
+  "author": "The Attention Repair Manual",
+  "lang": "en-US"
+ },
+ "design": {
+  "colors": {
+   "ink": "#1d1d1b",
+   "soft": "#6e6a64",
+   "rule": "#a8a49c"
+  },
+  "fonts": {
+   "serif": [
+    "Minion Pro",
+    "Libertinus Serif"
+   ],
+   "sans": [
+    "Myriad Pro",
+    "Libertinus Serif"
+   ]
+  },
+  "base": {
+   "font": "serif",
+   "size": 10.5,
+   "line_height": 1.35,
+   "color": "ink"
+  },
+  "styles": {
+   "kicker": {
+    "font": "sans",
+    "size": 8.5,
+    "case": "upper",
+    "tracking": "0.14em",
+    "color": "soft"
+   },
+   "date": {
+    "font": "serif",
+    "size": 22,
+    "line_height": 1.15
+   },
+   "intro": {
+    "font": "serif",
+    "size": 10.5,
+    "italic": true,
+    "color": "soft"
+   },
+   "prompt": {
+    "font": "sans",
+    "size": 9.5,
+    "weight": 600
+   },
+   "weekday": {
+    "font": "sans",
+    "size": 8,
+    "case": "upper",
+    "tracking": "0.08em",
+    "color": "soft"
+   },
+   "day-number": {
+    "font": "sans",
+    "size": 9
+   },
+   "folio": {
+    "font": "sans",
+    "size": 8,
+    "align": "center",
+    "color": "soft"
+   }
+  },
+  "masters": {
+   "page": {
+    "width": "432.0pt",
+    "height": "648.0pt",
+    "margins": {
+     "top": "54.0pt",
+     "bottom": "58.0pt",
+     "inside": "63.0pt",
+     "outside": "50.0pt"
+    },
+    "foreground": [
+     {
+      "type": "text",
+      "id": "folio",
+      "style": "folio",
+      "x": 50.0,
+      "y": 612.0,
+      "w": 332.0,
+      "content": [
+       {
+        "field": "page"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "month",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "month-kicker",
+     "x": 63.0,
+     "y": 54.0,
+     "w": 319.0,
+     "style": "kicker",
+     "text": "Four weeks"
+    },
+    {
+     "type": "text",
+     "id": "month-title",
+     "x": 63.0,
+     "y": 70.0,
+     "w": 319.0,
+     "style": "date",
+     "text": "November 2026"
+    },
+    {
+     "type": "text",
+     "id": "month-how",
+     "x": 63.0,
+     "y": 102.0,
+     "w": 319.0,
+     "style": "intro",
+     "text": "Tick each day you wrote a note. Leave the boxes of days without one empty: they count too."
+    },
+    {
+     "type": "calendar",
+     "id": "month-grid",
+     "x": 63.0,
+     "y": 150.0,
+     "w": 319.0,
+     "h": 300,
+     "year": 2026,
+     "month": 11,
+     "style": "day-number",
+     "header_style": "weekday",
+     "outside": true,
+     "lines": {
+      "width": 0.6,
+      "color": "rule"
+     }
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "day",
+   "master": "page",
+   "layers": true,
+   "start": "verso",
+   "repeat": {
+    "count": 7,
+    "dates": {
+     "from": "2026-11-02"
+    }
+   },
+   "elements": [
+    {
+     "type": "text",
+     "id": "day-kicker",
+     "x": 63.0,
+     "y": 54.0,
+     "w": 319.0,
+     "style": "kicker",
+     "content": [
+      "Leave Note · day ",
+      {
+       "field": "section.n"
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "id": "day-date",
+     "x": 63.0,
+     "y": 70.0,
+     "w": 319.0,
+     "style": "date",
+     "content": [
+      {
+       "field": "section.date",
+       "format": "[weekday], [day padding:none] [month repr:long]"
+      }
+     ]
+    },
+    {
+     "type": "text",
+     "id": "day-intro",
+     "x": 63.0,
+     "y": 102.0,
+     "w": 319.0,
+     "style": "intro",
+     "text": "After one ordinary leave, or later from memory. About two minutes."
+    },
+    {
+     "type": "text",
+     "id": "day-prompt-1",
+     "x": 63.0,
+     "y": 140.0,
+     "w": 319.0,
+     "style": "prompt",
+     "text": "I meant to:"
+    },
+    {
+     "type": "ruling",
+     "id": "day-lines-1",
+     "x": 63.0,
+     "y": 154.0,
+     "w": 319.0,
+     "h": 90.5,
+     "pitch": 22,
+     "stroke": {
+      "width": 0.5,
+      "color": "rule"
+     }
+    },
+    {
+     "type": "text",
+     "id": "day-prompt-2",
+     "x": 63.0,
+     "y": 252.5,
+     "w": 319.0,
+     "style": "prompt",
+     "text": "I noticed I'd left when:"
+    },
+    {
+     "type": "ruling",
+     "id": "day-lines-2",
+     "x": 63.0,
+     "y": 266.5,
+     "w": 319.0,
+     "h": 90.5,
+     "pitch": 22,
+     "stroke": {
+      "width": 0.5,
+      "color": "rule"
+     }
+    },
+    {
+     "type": "text",
+     "id": "day-prompt-3",
+     "x": 63.0,
+     "y": 365.0,
+     "w": 319.0,
+     "style": "prompt",
+     "text": "My guess at why:"
+    },
+    {
+     "type": "ruling",
+     "id": "day-lines-3",
+     "x": 63.0,
+     "y": 379.0,
+     "w": 319.0,
+     "h": 90.5,
+     "pitch": 22,
+     "stroke": {
+      "width": 0.5,
+      "color": "rule"
+     }
+    },
+    {
+     "type": "text",
+     "id": "day-prompt-4",
+     "x": 63.0,
+     "y": 477.5,
+     "w": 319.0,
+     "style": "prompt",
+     "text": "Coming back was easy or hard because:"
+    },
+    {
+     "type": "ruling",
+     "id": "day-lines-4",
+     "x": 63.0,
+     "y": 491.5,
+     "w": 319.0,
+     "h": 90.5,
+     "pitch": 22,
+     "stroke": {
+      "width": 0.5,
+      "color": "rule"
+     }
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "notes",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "notes-title",
+     "x": 50.0,
+     "y": 54.0,
+     "w": 319.0,
+     "style": "kicker",
+     "text": "Notes"
+    },
+    {
+     "type": "ruling",
+     "id": "notes-dots",
+     "x": 50.0,
+     "y": 76.0,
+     "w": 319.0,
+     "h": 506.0,
+     "pattern": "dots",
+     "pitch": "5mm",
+     "stroke": {
+      "width": 1.1,
+      "color": "#9a9a9a"
+     }
+    }
+   ]
+  },
+  {
+   "type": "page",
+   "id": "guesses",
+   "master": "page",
+   "layers": true,
+   "elements": [
+    {
+     "type": "text",
+     "id": "guesses-title",
+     "x": 63.0,
+     "y": 54.0,
+     "w": 319.0,
+     "style": "kicker",
+     "text": "Two guesses"
+    },
+    {
+     "type": "ruling",
+     "id": "guesses-grid",
+     "x": 63.0,
+     "y": 76.0,
+     "w": 319.0,
+     "h": 506.0,
+     "pattern": "graph",
+     "pitch": "0.1in",
+     "major": 5,
+     "stroke": {
+      "width": 0.35,
+      "color": "#b4b4b4"
+     },
+     "major_stroke": {
+      "width": 0.7,
+      "color": "#8c8c8c"
+     }
+    }
+   ]
+  }
+ ]
+}

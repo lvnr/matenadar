@@ -1,0 +1,11 @@
+{
+  "title": "One Pen: Winter Lights, from the coloring template",
+  "book": "/Users/levonarakelyan/projects/amazon-kdp/projects/q4-04-one-pen-winter-lights",
+  "pages": [
+    {"rebuilt": 1, "what": "the title page, typeset by the template"},
+    {"rebuilt": 3, "what": "this book belongs to"},
+    {"rebuilt": 5, "what": "the first picture, on a right-hand page"},
+    {"rebuilt": 6, "what": "its back, left blank but for a small note"},
+    {"rebuilt": 13, "what": "a page of squares to try the pen on"}
+  ]
+}

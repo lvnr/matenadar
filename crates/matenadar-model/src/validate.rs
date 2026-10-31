@@ -154,6 +154,16 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
                     {
                         report(&format!("{path}.master"), format!("no master \"{m}\""));
                     }
+                    if let Some(r) = &p.repeat {
+                        if let Some(dates) = &r.dates
+                            && crate::parse_date(&dates.from).is_none()
+                        {
+                            report(&format!("{path}.repeat.dates.from"), format!("\"{}\" is not a day as YYYY-MM-DD", dates.from));
+                        }
+                        if r.count.is_some_and(|c| c == 0 || (!r.vars.is_empty() && c as usize != r.vars.len())) {
+                            report(&format!("{path}.repeat.count"), "a page is made at least once, and once per vars when they are given".into());
+                        }
+                    }
                     check_word(&format!("{path}.start"), &p.start, &STARTS[..3], &mut report);
                     check_word(&format!("{path}.numbering"), &p.numbering, &NUMBERINGS, &mut report);
                     if let Some(f) = &p.fill {
@@ -462,6 +472,122 @@ fn check_element(
             }
         }
         Element::Group(_) => {}
+        Element::Maze(m) => {
+            if m.rows.is_empty() == m.segments.is_empty() {
+                report(path, "a maze needs rows (a grid) or segments, not both".into());
+            }
+            if !m.segments.is_empty() && m.size.is_none() {
+                report(&format!("{path}.size"), "a maze of segments needs its size in cells".into());
+            }
+            if m.cell.is_none() && m.place.w.is_none() {
+                report(path, "a maze needs a cell size or a width".into());
+            }
+            let cols = m.rows.first().map(|r| r.chars().count()).unwrap_or(0);
+            for (i, r) in m.rows.iter().enumerate() {
+                if r.chars().count() != cols {
+                    report(&format!("{path}.rows[{i}]"), format!("every row has {cols} cells"));
+                }
+                if let Some(c) = r.chars().find(|c| !c.is_ascii_hexdigit()) {
+                    report(&format!("{path}.rows[{i}]"), format!("\"{c}\" is not a hexadecimal digit (walls: 1 top, 2 right, 4 bottom, 8 left)"));
+                }
+            }
+            if !m.rows.is_empty() {
+                let inside = |p: &[f64; 2]| p[0] >= 0.0 && p[1] >= 0.0 && (p[0] as usize) < m.rows.len() && (p[1] as usize) < cols;
+                for (field, cell) in [("start", m.start.as_ref()), ("end", m.end.as_ref())] {
+                    if cell.is_some_and(|c| !inside(c)) {
+                        report(&format!("{path}.{field}"), "a cell [row, column] of the maze".into());
+                    }
+                }
+                if m.solution.iter().any(|c| !inside(c)) {
+                    report(&format!("{path}.solution"), "the way through is cells [row, column] of the maze".into());
+                }
+            }
+        }
+        Element::LogicGrid(g) => {
+            let n = g.categories.first().map(|c| c.items.len()).unwrap_or(0);
+            if g.categories.len() < 2 || n < 2 || g.categories.iter().any(|c| c.items.len() != n) {
+                report(&format!("{path}.categories"), "a logic grid needs two or more categories with the same number of items (two or more)".into());
+            }
+            for (i, m) in g.marks.iter().enumerate() {
+                let ok = |a: &[usize; 2]| a[0] < g.categories.len() && a[1] < n;
+                if !ok(&m.a) || !ok(&m.b) || m.a[0] == m.b[0] {
+                    report(&format!("{path}.marks[{i}]"), "a mark joins items of two different categories: [category, item]".into());
+                }
+                if m.mark.trim().is_empty() || m.mark.chars().count() > 3 {
+                    report(&format!("{path}.marks[{i}].mark"), "a mark is \"o\" (a dot), \"x\" (a cross) or up to three letters".into());
+                }
+            }
+        }
+        Element::Dots(d) => {
+            if d.points.len() < 2 {
+                report(&format!("{path}.points"), "a dot-to-dot needs two or more points".into());
+            }
+            if d.breaks.iter().any(|b| *b >= d.points.len()) {
+                report(&format!("{path}.breaks"), "breaks are indices of points".into());
+            }
+            if !d.labels.is_empty() && d.labels.len() != d.points.len() {
+                report(&format!("{path}.labels"), "give a label offset for every point, or none".into());
+            }
+            need(&d.place, true, true, report);
+        }
+        Element::Ruling(r) => {
+            need(&r.place, true, true, report);
+            check_word(&format!("{path}.pattern"), &r.pattern, &["lines", "dots", "grid", "graph", "isodots"], report);
+        }
+        Element::Calendar(c) => {
+            need(&c.place, true, true, report);
+            if !(1..=12).contains(&c.month) {
+                report(&format!("{path}.month"), "a month is 1 to 12".into());
+            }
+            check_word(&format!("{path}.week_start"), &c.week_start, &["monday", "sunday"], report);
+            if !c.days.is_empty() && c.days.len() != 7 {
+                report(&format!("{path}.days"), "seven weekday names, from the week's first day".into());
+            }
+        }
+        Element::Craft(c) => {
+            need(&c.place, true, true, report);
+            for (i, e) in c.edges.iter().enumerate() {
+                check_word(&format!("{path}.edges[{i}].kind"), &e.kind, &["cut", "mountain", "valley", "score"], report);
+                if let Some(t) = &e.tab {
+                    if t.depth <= 0.0 {
+                        report(&format!("{path}.edges[{i}].tab.depth"), "a tab stands off its edge: a depth above 0".into());
+                    }
+                    check_word(&format!("{path}.edges[{i}].tab.side"), &t.side, &["left", "right"], report);
+                }
+            }
+            for (i, f) in c.faces.iter().enumerate() {
+                if f.points.len() < 3 {
+                    report(&format!("{path}.faces[{i}].points"), "a face is a polygon of three or more points".into());
+                }
+                if let Some(Err(e)) = f.crop.map(|c| c.check()) {
+                    report(&format!("{path}.faces[{i}].crop"), e);
+                }
+            }
+        }
+        Element::Panels(p) => {
+            need(&p.place, true, true, report);
+            if p.rows.is_empty() || p.rows.iter().any(|r| r.panels.is_empty()) {
+                report(&format!("{path}.rows"), "panels come in rows, each with one or more panels".into());
+            }
+            for (i, r) in p.rows.iter().enumerate() {
+                for (j, pn) in r.panels.iter().enumerate() {
+                    if let Some(Err(e)) = pn.crop.map(|c| c.check()) {
+                        report(&format!("{path}.rows[{i}].panels[{j}].crop"), e);
+                    }
+                }
+            }
+        }
+        Element::Balloon(b) => {
+            if b.text.is_none() == b.content.is_empty() {
+                report(path, "a balloon has text or content".into());
+            }
+            check_word(&format!("{path}.shape"), &b.shape, &["speech", "thought", "shout", "whisper", "caption"], report);
+            if let Some(st) = &b.style
+                && !d.styles.contains_key(st)
+            {
+                report(&format!("{path}.style"), format!("no style \"{st}\""));
+            }
+        }
     }
 }
 

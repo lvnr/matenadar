@@ -1,0 +1,350 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "I Just Had It: Friday morning",
+  "lang": "en-US"
+ },
+ "fonts": [
+  "book/design/fonts"
+ ],
+ "design": {
+  "colors": {
+   "ink": "#151a2b",
+   "accent": "#e5553f",
+   "paper": "#faf5e8"
+  },
+  "base": {
+   "font": "SIText",
+   "size": 10,
+   "line_height": 1.25,
+   "color": "ink"
+  },
+  "styles": {
+   "balloon": {
+    "font": "SIText",
+    "size": 10.5,
+    "line_height": 1.22,
+    "align": "center"
+   },
+   "caption": {
+    "font": "Courier Prime",
+    "weight": 700,
+    "size": 7.6,
+    "line_height": 1.3,
+    "tracking": "0.06em",
+    "case": "upper"
+   }
+  },
+  "masters": {
+   "sheet": {
+    "width": "504.0pt",
+    "height": "720.0pt",
+    "bleed": "9.0pt",
+    "margins": {
+     "top": "36.0pt",
+     "bottom": "36.0pt",
+     "inside": "36.0pt",
+     "outside": "36.0pt"
+    }
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "friday-morning",
+   "master": "sheet",
+   "fill": "paper",
+   "elements": [
+    {
+     "type": "panels",
+     "id": "friday-panels",
+     "x": 36.0,
+     "y": 36.0,
+     "w": 432.0,
+     "h": 648.0,
+     "gutter": 10.0,
+     "rows": [
+      {
+       "h": "1fr",
+       "panels": [
+        {
+         "id": "phone",
+         "w": "1.25fr",
+         "src": "book/build/scenes/phone.svg",
+         "crop": {
+          "x": 0.4478,
+          "y": 0.6056,
+          "w": 0.42,
+          "h": 0.2607
+         },
+         "alt": "The bed: somewhere in it, my phone.",
+         "elements": [
+          {
+           "type": "balloon",
+           "id": "phone-when",
+           "shape": "caption",
+           "x": 8,
+           "y": 8,
+           "w": 150,
+           "text": "Friday, 6:55 a.m. The bed.",
+           "style": "caption",
+           "fill": "paper",
+           "stroke": {
+            "width": 0.8,
+            "color": "ink"
+           },
+           "inset": "4pt"
+          },
+          {
+           "type": "balloon",
+           "id": "phone-says",
+           "shape": "speech",
+           "x": 140.66666666666666,
+           "y": 92,
+           "w": 130,
+           "text": "In this bed. I can hear it.",
+           "tail": [
+            166.66666666666666,
+            154
+           ],
+           "anchor": "center",
+           "stroke": {
+            "width": 1,
+            "color": "ink"
+           }
+          }
+         ]
+        },
+        {
+         "id": "glasses",
+         "w": "1fr",
+         "src": "book/build/scenes/glasses.svg",
+         "crop": {
+          "x": 0.1158,
+          "y": 0.4622,
+          "w": 0.42,
+          "h": 0.3259
+         },
+         "alt": "The bathroom shelf: somewhere in it, my glasses.",
+         "elements": [
+          {
+           "type": "balloon",
+           "id": "glasses-when",
+           "shape": "caption",
+           "x": 8,
+           "y": 8,
+           "w": 150,
+           "text": "7:02 a.m.",
+           "style": "caption",
+           "fill": "paper",
+           "stroke": {
+            "width": 0.8,
+            "color": "ink"
+           },
+           "inset": "4pt"
+          },
+          {
+           "type": "balloon",
+           "id": "glasses-thinks",
+           "shape": "thought",
+           "x": 103.15555555555555,
+           "y": 88,
+           "w": 100,
+           "text": "The top of my head. Twice.",
+           "tail": [
+            73.15555555555555,
+            158
+           ],
+           "anchor": "center",
+           "stroke": {
+            "width": 1,
+            "color": "ink"
+           }
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "h": "1fr",
+       "panels": [
+        {
+         "id": "keys",
+         "w": "1fr",
+         "src": "book/build/scenes/keys.svg",
+         "crop": {
+          "x": 0.38,
+          "y": 0.0307,
+          "w": 0.62,
+          "h": 0.2088
+         },
+         "alt": "The table by the door: somewhere in it, my keys.",
+         "elements": [
+          {
+           "type": "balloon",
+           "id": "keys-when",
+           "shape": "caption",
+           "x": 8,
+           "y": 8,
+           "w": 150,
+           "text": "7:43 a.m. The table by the door.",
+           "style": "caption",
+           "fill": "paper",
+           "stroke": {
+            "width": 0.8,
+            "color": "ink"
+           },
+           "inset": "4pt"
+          },
+          {
+           "type": "balloon",
+           "id": "keys-says",
+           "shape": "speech",
+           "x": 302.4,
+           "y": 66,
+           "w": 150,
+           "text": "In my hand. Thirty seconds ago.",
+           "tail": [
+            336.4,
+            130
+           ],
+           "anchor": "center",
+           "stroke": {
+            "width": 1,
+            "color": "ink"
+           }
+          },
+          {
+           "type": "balloon",
+           "id": "keys-shouts",
+           "shape": "shout",
+           "x": 129.6,
+           "y": 145.33333333333334,
+           "w": 110,
+           "text": "MY KEYS!",
+           "tail": [
+            99.6,
+            195.33333333333334
+           ],
+           "anchor": "center",
+           "stroke": {
+            "width": 1,
+            "color": "ink"
+           }
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "h": "1fr",
+       "panels": [
+        {
+         "id": "shoe",
+         "w": "1fr",
+         "src": "book/build/scenes/shoe.svg",
+         "crop": {
+          "x": 0.4092,
+          "y": 0.4799,
+          "w": 0.42,
+          "h": 0.2896
+         },
+         "alt": "The front hall: somewhere in it, the other shoe.",
+         "elements": [
+          {
+           "type": "balloon",
+           "id": "shoe-when",
+           "shape": "caption",
+           "x": 8,
+           "y": 8,
+           "w": 150,
+           "text": "7:44 a.m.",
+           "style": "caption",
+           "fill": "paper",
+           "stroke": {
+            "width": 0.8,
+            "color": "ink"
+           },
+           "inset": "4pt"
+          },
+          {
+           "type": "balloon",
+           "id": "shoe-says",
+           "shape": "speech",
+           "x": 116.05000000000001,
+           "y": 84,
+           "w": 120,
+           "text": "One. It’s on my foot.",
+           "tail": [
+            92.05000000000001,
+            154
+           ],
+           "anchor": "center",
+           "stroke": {
+            "width": 1,
+            "color": "ink"
+           }
+          }
+         ]
+        },
+        {
+         "id": "wallet",
+         "w": "1fr",
+         "src": "book/build/scenes/wallet.svg",
+         "crop": {
+          "x": 0.4491,
+          "y": 0.3594,
+          "w": 0.42,
+          "h": 0.2896
+         },
+         "alt": "The bag, at the counter: somewhere in it, my wallet.",
+         "elements": [
+          {
+           "type": "balloon",
+           "id": "wallet-when",
+           "shape": "caption",
+           "x": 8,
+           "y": 8,
+           "w": 150,
+           "text": "8:10 a.m. At the counter.",
+           "style": "caption",
+           "fill": "paper",
+           "stroke": {
+            "width": 0.8,
+            "color": "ink"
+           },
+           "inset": "4pt"
+          },
+          {
+           "type": "balloon",
+           "id": "wallet-whispers",
+           "shape": "whisper",
+           "x": 105.5,
+           "y": 84,
+           "w": 120,
+           "text": "Six people in line behind me.",
+           "tail": [
+            135.5,
+            154
+           ],
+           "anchor": "center",
+           "stroke": {
+            "width": 1,
+            "color": "ink"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "border": {
+      "width": 1.6,
+      "color": "ink"
+     }
+    }
+   ]
+  }
+ ]
+}

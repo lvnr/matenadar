@@ -16,6 +16,7 @@ pub mod block;
 pub mod component;
 pub mod element;
 pub mod figures;
+pub mod kinds;
 pub mod ops;
 pub mod resolve;
 pub mod runs;
@@ -264,6 +265,88 @@ pub struct Page {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fill: Option<style::Fill>,
     pub elements: Vec<Element>,
+    /// The page laid out again and again: dated pages, a page per prompt.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repeat: Option<Repeat>,
+}
+
+/// A page made many times. Each time, the page's vars get `n` (1, 2, 3…),
+/// `date` (`YYYY-MM-DD`, with `dates`) and that time's own `vars`, for
+/// fields (`{"field": "section.date", "format": "[weekday]"}`).
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Repeat {
+    /// How many times (default: as many as `vars`, or 1).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub count: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dates: Option<Dates>,
+    /// Each time's vars, in order (a prompt per page).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub vars: Vec<IndexMap<String, String>>,
+}
+
+impl Repeat {
+    pub fn times(&self) -> usize {
+        self.count.map(|c| c as usize).unwrap_or(self.vars.len().max(1))
+    }
+}
+
+/// Dates for repeated pages: from a day, a step of days apart.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct Dates {
+    /// `YYYY-MM-DD`.
+    pub from: String,
+    /// Days between pages (default 1).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub step: Option<i64>,
+}
+
+/// A day as `(year, month, day)` from `YYYY-MM-DD`.
+pub fn parse_date(s: &str) -> Option<(i64, u32, u32)> {
+    let mut it = s.trim().splitn(3, '-');
+    let y: i64 = it.next()?.parse().ok()?;
+    let m: u32 = it.next()?.parse().ok()?;
+    let d: u32 = it.next()?.parse().ok()?;
+    ((1..=12).contains(&m) && d >= 1 && d <= days_in_month(y, m)).then_some((y, m, d))
+}
+
+pub fn days_in_month(y: i64, m: u32) -> u32 {
+    match m {
+        1 | 3 | 5 | 7 | 8 | 10 | 12 => 31,
+        4 | 6 | 9 | 11 => 30,
+        _ if (y % 4 == 0 && y % 100 != 0) || y % 400 == 0 => 29,
+        _ => 28,
+    }
+}
+
+/// Days since 1970-01-01 (Howard Hinnant's algorithm), and back.
+pub fn days_from_civil(y: i64, m: u32, d: u32) -> i64 {
+    let y = if m <= 2 { y - 1 } else { y };
+    let era = y.div_euclid(400);
+    let yoe = y - era * 400;
+    let mp = (m as i64 + 9) % 12;
+    let doy = (153 * mp + 2) / 5 + d as i64 - 1;
+    let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    era * 146_097 + doe - 719_468
+}
+
+pub fn civil_from_days(z: i64) -> (i64, u32, u32) {
+    let z = z + 719_468;
+    let era = z.div_euclid(146_097);
+    let doe = z - era * 146_097;
+    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let d = (doy - (153 * mp + 2) / 5 + 1) as u32;
+    let m = if mp < 10 { mp + 3 } else { mp - 9 } as u32;
+    (yoe + era * 400 + if m <= 2 { 1 } else { 0 }, m, d)
+}
+
+/// The weekday of a day: 0 Monday … 6 Sunday.
+pub fn weekday(y: i64, m: u32, d: u32) -> u32 {
+    (days_from_civil(y, m, d) + 3).rem_euclid(7) as u32
 }
 
 impl Document {

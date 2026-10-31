@@ -1,0 +1,534 @@
+{
+ "matenadar": "1",
+ "meta": {
+  "title": "I Just Had It: the seek-and-find cube",
+  "lang": "en-US"
+ },
+ "fonts": [
+  "book/design/fonts"
+ ],
+ "design": {
+  "colors": {
+   "ink": "#151a2b",
+   "accent": "#e5553f",
+   "glue": "#e8e2d4"
+  },
+  "base": {
+   "font": "SIText",
+   "size": 11,
+   "line_height": 1.35,
+   "color": "ink"
+  },
+  "styles": {
+   "kicker": {
+    "font": "Courier Prime",
+    "weight": 700,
+    "size": 8,
+    "case": "upper",
+    "tracking": "0.09em",
+    "color": "accent"
+   },
+   "title": {
+    "font": "SILead",
+    "size": 40,
+    "line_height": 1.0,
+    "tracking": "-0.015em"
+   },
+   "how": {
+    "font": "SIText",
+    "size": 11.5,
+    "line_height": 1.4
+   },
+   "find": {
+    "font": "SITextItalic",
+    "size": 11.5,
+    "line_height": 1.4
+   },
+   "craft": {
+    "font": "Courier Prime",
+    "weight": 700,
+    "size": 7,
+    "case": "upper",
+    "tracking": "0.08em"
+   }
+  },
+  "masters": {
+   "sheet": {
+    "width": "504.0pt",
+    "height": "720.0pt",
+    "margins": {
+     "top": "0.6in",
+     "bottom": "0.6in",
+     "inside": "0.6in",
+     "outside": "0.6in"
+    }
+   }
+  }
+ },
+ "content": [
+  {
+   "type": "page",
+   "id": "cube",
+   "master": "sheet",
+   "elements": [
+    {
+     "type": "text",
+     "id": "cube-kicker",
+     "x": 44.0,
+     "y": 48,
+     "w": 416.0,
+     "style": "kicker",
+     "text": "I Just Had It · a sheet to make"
+    },
+    {
+     "type": "text",
+     "id": "cube-title",
+     "x": 44.0,
+     "y": 64,
+     "w": 416.0,
+     "style": "title",
+     "text": "The seek-and-find cube"
+    },
+    {
+     "type": "text",
+     "id": "cube-how",
+     "x": 44.0,
+     "y": 118,
+     "w": 416.0,
+     "style": "how",
+     "text": "Cut along the solid lines. Fold every dashed line away from you, then glue each shaded tab under the face it meets."
+    },
+    {
+     "type": "text",
+     "id": "cube-find",
+     "x": 44.0,
+     "y": 160,
+     "w": 416.0,
+     "style": "find",
+     "text": "On its six faces, find my glasses, my phone, my keys, my wallet, my charger, Bunny."
+    },
+    {
+     "type": "craft",
+     "id": "cube-net",
+     "x": 14.0,
+     "y": 230,
+     "w": 476.0,
+     "h": 372.0,
+     "viewbox": [
+      -30.0,
+      -30.0,
+      476.0,
+      372.0
+     ],
+     "faces": [
+      {
+       "points": [
+        [
+         104.0,
+         0.0
+        ],
+        [
+         208.0,
+         0.0
+        ],
+        [
+         208.0,
+         104.0
+        ],
+        [
+         104.0,
+         104.0
+        ]
+       ],
+       "src": "book/build/scenes/glasses.svg",
+       "crop": {
+        "x": 0.0758,
+        "y": 0.4514,
+        "w": 0.5,
+        "h": 0.3476
+       }
+      },
+      {
+       "points": [
+        [
+         0.0,
+         104.0
+        ],
+        [
+         104.0,
+         104.0
+        ],
+        [
+         104.0,
+         208.0
+        ],
+        [
+         0.0,
+         208.0
+        ]
+       ],
+       "src": "book/build/scenes/phone.svg",
+       "crop": {
+        "x": 0.4078,
+        "y": 0.5621,
+        "w": 0.5,
+        "h": 0.3476
+       }
+      },
+      {
+       "points": [
+        [
+         104.0,
+         104.0
+        ],
+        [
+         208.0,
+         104.0
+        ],
+        [
+         208.0,
+         208.0
+        ],
+        [
+         104.0,
+         208.0
+        ]
+       ],
+       "src": "book/build/scenes/keys.svg",
+       "crop": {
+        "x": 0.5,
+        "y": 0.0,
+        "w": 0.5,
+        "h": 0.3476
+       }
+      },
+      {
+       "points": [
+        [
+         208.0,
+         104.0
+        ],
+        [
+         312.0,
+         104.0
+        ],
+        [
+         312.0,
+         208.0
+        ],
+        [
+         208.0,
+         208.0
+        ]
+       ],
+       "src": "book/build/scenes/wallet.svg",
+       "crop": {
+        "x": 0.4091,
+        "y": 0.3304,
+        "w": 0.5,
+        "h": 0.3476
+       }
+      },
+      {
+       "points": [
+        [
+         312.0,
+         104.0
+        ],
+        [
+         416.0,
+         104.0
+        ],
+        [
+         416.0,
+         208.0
+        ],
+        [
+         312.0,
+         208.0
+        ]
+       ],
+       "src": "book/build/scenes/charger.svg",
+       "crop": {
+        "x": 0.5,
+        "y": 0.579,
+        "w": 0.5,
+        "h": 0.3476
+       }
+      },
+      {
+       "points": [
+        [
+         104.0,
+         208.0
+        ],
+        [
+         208.0,
+         208.0
+        ],
+        [
+         208.0,
+         312.0
+        ],
+        [
+         104.0,
+         312.0
+        ]
+       ],
+       "src": "book/build/scenes/bunny.svg",
+       "crop": {
+        "x": 0.0773,
+        "y": 0.127,
+        "w": 0.5,
+        "h": 0.3476
+       }
+      }
+     ],
+     "edges": [
+      {
+       "from": [
+        104.0,
+        0.0
+       ],
+       "to": [
+        208.0,
+        0.0
+       ]
+      },
+      {
+       "from": [
+        104.0,
+        0.0
+       ],
+       "to": [
+        104.0,
+        104.0
+       ],
+       "tab": {
+        "depth": 22,
+        "angle": 50,
+        "side": "right"
+       }
+      },
+      {
+       "from": [
+        208.0,
+        0.0
+       ],
+       "to": [
+        208.0,
+        104.0
+       ],
+       "tab": {
+        "depth": 22,
+        "angle": 50,
+        "side": "left"
+       }
+      },
+      {
+       "from": [
+        0.0,
+        104.0
+       ],
+       "to": [
+        104.0,
+        104.0
+       ]
+      },
+      {
+       "from": [
+        0.0,
+        104.0
+       ],
+       "to": [
+        0.0,
+        208.0
+       ]
+      },
+      {
+       "from": [
+        0.0,
+        208.0
+       ],
+       "to": [
+        104.0,
+        208.0
+       ]
+      },
+      {
+       "from": [
+        208.0,
+        104.0
+       ],
+       "to": [
+        312.0,
+        104.0
+       ]
+      },
+      {
+       "from": [
+        208.0,
+        208.0
+       ],
+       "to": [
+        312.0,
+        208.0
+       ]
+      },
+      {
+       "from": [
+        312.0,
+        104.0
+       ],
+       "to": [
+        416.0,
+        104.0
+       ],
+       "tab": {
+        "depth": 22,
+        "angle": 50,
+        "side": "left"
+       }
+      },
+      {
+       "from": [
+        416.0,
+        104.0
+       ],
+       "to": [
+        416.0,
+        208.0
+       ],
+       "tab": {
+        "depth": 22,
+        "angle": 50,
+        "side": "left"
+       }
+      },
+      {
+       "from": [
+        312.0,
+        208.0
+       ],
+       "to": [
+        416.0,
+        208.0
+       ]
+      },
+      {
+       "from": [
+        104.0,
+        208.0
+       ],
+       "to": [
+        104.0,
+        312.0
+       ],
+       "tab": {
+        "depth": 22,
+        "angle": 50,
+        "side": "right"
+       }
+      },
+      {
+       "from": [
+        104.0,
+        312.0
+       ],
+       "to": [
+        208.0,
+        312.0
+       ],
+       "tab": {
+        "depth": 22,
+        "angle": 50,
+        "side": "right"
+       }
+      },
+      {
+       "from": [
+        208.0,
+        208.0
+       ],
+       "to": [
+        208.0,
+        312.0
+       ],
+       "tab": {
+        "depth": 22,
+        "angle": 50,
+        "side": "left"
+       }
+      },
+      {
+       "from": [
+        104.0,
+        104.0
+       ],
+       "to": [
+        208.0,
+        104.0
+       ],
+       "kind": "valley"
+      },
+      {
+       "from": [
+        104.0,
+        104.0
+       ],
+       "to": [
+        104.0,
+        208.0
+       ],
+       "kind": "valley"
+      },
+      {
+       "from": [
+        208.0,
+        104.0
+       ],
+       "to": [
+        208.0,
+        208.0
+       ],
+       "kind": "valley"
+      },
+      {
+       "from": [
+        312.0,
+        104.0
+       ],
+       "to": [
+        312.0,
+        208.0
+       ],
+       "kind": "valley"
+      },
+      {
+       "from": [
+        104.0,
+        208.0
+       ],
+       "to": [
+        208.0,
+        208.0
+       ],
+       "kind": "valley"
+      }
+     ],
+     "glue": "glue",
+     "scissors": true,
+     "style": "craft",
+     "cut": {
+      "width": 1,
+      "color": "ink"
+     },
+     "valley": {
+      "width": 0.8,
+      "color": "ink"
+     }
+    }
+   ]
+  }
+ ]
+}

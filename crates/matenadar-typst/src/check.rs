@@ -122,7 +122,9 @@ fn page_issues(s: &Session, opts: &CheckOptions, all: &[Item], keep: Option<&BTr
 
     let pages = s.layout().pages();
     let gutter = opts.gutter_pt.unwrap_or_else(|| kdp_gutter(pages.len()));
-    let design_families: BTreeSet<String> = design_families(s);
+    let mut design_families: BTreeSet<String> = design_families(s);
+    let resolved: Vec<String> = design_families.iter().filter_map(|f| s.fonts().resolve(f)).map(|f| f.to_lowercase()).collect();
+    design_families.extend(resolved);
     let mut fallback: BTreeMap<String, BTreeSet<usize>> = BTreeMap::new();
     let mut margin_hits: BTreeMap<(usize, String), usize> = BTreeMap::new();
     // Lines per paragraph per page, for widows and orphans.

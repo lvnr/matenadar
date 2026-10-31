@@ -55,7 +55,9 @@ layout program from it on every build and never stores that program.
 - `colors` maps names to colours.
 - `fonts` maps names to a family or a list of families, such as `"serif":
   ["IBM Plex Serif", "Noto Serif"]`. A style's `font` may name a stack. Later
-  families supply glyphs the first one lacks.
+  families supply glyphs the first one lacks. A family may be named as font
+  menus and fontconfig name it (its typographic name, "Garamond Premier
+  Pro") where Typst knows it by a shorter legacy name ("Garamond Premr Pro").
 
 ### Styles
 
@@ -332,7 +334,7 @@ The types:
       page itself; it needs a `w`.
     - A halo per glyph: `"set": {"halo": {"width": 2, "color": "#fff"}}`.
 - **`image`.**
-  - `src` is a raster image or an SVG.
+  - `src` is a raster image, an SVG or a PDF (its first page, drawn as vectors: a puzzle or a page of art from another tool).
   - `focus: [fx, fy]` chooses which part of a cropped (`cover`) image stays in
     view, as fractions: `[0.85, 0.5]` keeps the right side. Needs `w` and `h`
     in absolute units.

@@ -270,3 +270,24 @@ fn the_book_wide_filter_greys_every_raster_picture_that_sets_none() {
     let flagged: Vec<String> = check(&s, &CheckOptions::default()).into_iter().filter(|i| i.code == "color-in-black-ink").filter_map(|i| i.node).collect();
     assert_eq!(flagged, vec!["kept".to_string()], "a picture can opt out with an empty filter, and is reported");
 }
+
+#[test]
+fn a_pdf_page_is_placed_as_a_picture_in_its_box() {
+    // A page of art made elsewhere: a black square on a 2 in page.
+    let art = open(
+        json!({"matenadar": "1", "meta": {"title": "Art", "lang": "en"},
+            "design": {"masters": {"a": {"width": "2in", "height": "2in", "margins": {"top": 0, "bottom": 0, "left": 0, "right": 0}}}},
+            "content": [{"type": "page", "id": "a1", "master": "a", "elements": [{"type": "rect", "x": 0, "y": 0, "w": "2in", "h": "2in", "fill": "#000000"}]}]}),
+        &[],
+    )
+    .pdf()
+    .expect("pdf");
+    let s = open(
+        book(json!([{"type": "page", "id": "p1", "master": "body", "elements": [
+            {"type": "image", "id": "art", "src": "art.pdf", "x": "1in", "y": "1in", "w": "2in", "h": "2in", "fit": "contain"}]}]), json!({})),
+        &[("art.pdf", art)],
+    );
+    let png = image::load_from_memory(&s.png(1, 72.0, false).expect("render")).expect("png").to_rgb8();
+    assert_eq!(png.get_pixel(144, 144).0, [0, 0, 0], "inside the box, the art");
+    assert_eq!(png.get_pixel(36, 36).0, [255, 255, 255], "outside it, the page");
+}

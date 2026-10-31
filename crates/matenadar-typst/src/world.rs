@@ -16,6 +16,8 @@ use typst_kit::fonts::FontStore;
 /// is built once and shared.
 pub struct Fonts {
     store: FontStore,
+    /// Families asked for by another of their names, and the name Typst knows them by.
+    aliases: Mutex<HashMap<String, Option<String>>>,
 }
 
 impl Fonts {
@@ -53,7 +55,7 @@ impl Fonts {
     fn finish(#[allow(unused_mut)] mut store: FontStore) -> Self {
         #[cfg(feature = "embedded-fonts")]
         store.extend(typst_kit::fonts::embedded());
-        Self { store }
+        Self { store, aliases: Mutex::default() }
     }
 
     pub fn book(&self) -> &LazyHash<FontBook> {
@@ -92,6 +94,38 @@ impl Fonts {
             let _ = source;
             None
         })
+    }
+
+    /// The family Typst knows by `family` when a font names it otherwise.
+    ///
+    /// Typst names a family by its legacy name (name ID 1), which some
+    /// families shorten (Garamond Premier Pro's is "Garamond Premr Pro"),
+    /// while designers, fontconfig and font menus use the typographic name
+    /// (ID 16) or the WWS one. A family Typst doesn't know is looked for
+    /// among the fonts whose family starts with the same four letters, by
+    /// those names. `None` when Typst knows it already, or no font has it.
+    pub fn resolve(&self, family: &str) -> Option<String> {
+        let wanted = family.trim().to_lowercase();
+        if wanted.is_empty() || self.book().contains_family(&wanted) {
+            return None;
+        }
+        if let Some(known) = self.aliases.lock().expect("font aliases").get(&wanted) {
+            return known.clone();
+        }
+        // Candidates share the name's first four letters, spaces aside.
+        let compact = |s: &str| s.chars().filter(|c| !c.is_whitespace()).flat_map(char::to_lowercase).collect::<String>();
+        let prefix: String = compact(&wanted).chars().take(4).collect();
+        let book = self.book();
+        let found = (0..).map_while(|i| book.info(i).map(|f| (i, f))).filter(|(_, f)| compact(&f.family).starts_with(&prefix)).find_map(|(i, info)| {
+            let font = self.font(i)?;
+            let face = ttf_parser::Face::parse(font.data(), font.index()).ok()?;
+            let named = face.names().into_iter().filter(|n| {
+                matches!(n.name_id, ttf_parser::name_id::TYPOGRAPHIC_FAMILY | ttf_parser::name_id::WWS_FAMILY | ttf_parser::name_id::FAMILY) && n.is_unicode()
+            });
+            named.filter_map(|n| n.to_string()).any(|n| n.to_lowercase() == wanted).then(|| info.family.clone())
+        });
+        self.aliases.lock().expect("font aliases").insert(wanted, found.clone());
+        found
     }
 
     /// Every family name, sorted.

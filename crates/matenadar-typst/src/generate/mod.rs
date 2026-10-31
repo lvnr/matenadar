@@ -765,7 +765,8 @@ impl<'a> Gen<'a> {
                 }
             }
         }
-        out
+        // A family named as designers name it, by the name Typst knows it by.
+        out.into_iter().map(|f| self.fonts.resolve(&f).unwrap_or(f)).collect()
     }
 
     pub fn metrics(&mut self, t: &TextStyle) -> VMetrics {

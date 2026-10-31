@@ -263,8 +263,10 @@ pub fn compose(spec: &APlus) -> Result<Value, String> {
                 if !m.images.is_empty() {
                     let n = m.images.len().min(if wide { 4 } else { 1 });
                     let gap = 16.0;
-                    let w =
-                        ((inner - gap * (n as f64 - 1.0)) / n as f64).min(sw.max(inner / n as f64));
+                    // A picture's share of the width, no wider than its slot on a
+                    // desktop (a phone scales every picture to the screen).
+                    let share = (inner - gap * (n as f64 - 1.0)) / n as f64;
+                    let w = if wide { share.min(sw) } else { share };
                     let figures: Vec<Value> = m
                         .images
                         .iter()
@@ -428,6 +430,9 @@ mod tests {
             !text.contains("module-02-words"),
             "the overlay's words go under its picture on a phone"
         );
+        // One picture in a layout of square slots keeps the slot's size on a desktop.
+        let one = compose(json!({"modules": [{"layout": "three-images-text", "images": [{"src": "a.jpg"}]}]})).to_string();
+        assert!(one.contains("\"w\":225.0"), "300 px is 225 pt: {one}");
         let err = crate::template::compose(
             "a-plus",
             &json!({"width": 90, "modules": [{"layout": "x"}]}),

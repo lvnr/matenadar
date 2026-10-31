@@ -103,7 +103,8 @@ impl Fonts {
     /// while designers, fontconfig and font menus use the typographic name
     /// (ID 16) or the WWS one. A family Typst doesn't know is looked for
     /// among the fonts whose family starts with the same four letters, by
-    /// those names. `None` when Typst knows it already, or no font has it.
+    /// those names; of the families that carry it, the one with a regular
+    /// upright face. `None` when Typst knows it already, or no font has it.
     pub fn resolve(&self, family: &str) -> Option<String> {
         let wanted = family.trim().to_lowercase();
         if wanted.is_empty() || self.book().contains_family(&wanted) {
@@ -116,14 +117,31 @@ impl Fonts {
         let compact = |s: &str| s.chars().filter(|c| !c.is_whitespace()).flat_map(char::to_lowercase).collect::<String>();
         let prefix: String = compact(&wanted).chars().take(4).collect();
         let book = self.book();
-        let found = (0..).map_while(|i| book.info(i).map(|f| (i, f))).filter(|(_, f)| compact(&f.family).starts_with(&prefix)).find_map(|(i, info)| {
-            let font = self.font(i)?;
-            let face = ttf_parser::Face::parse(font.data(), font.index()).ok()?;
+        // Every family whose faces carry the name; one family's faces may be split
+        // over several legacy names (an optical size, a weight: "… Capt", "… Smbd"),
+        // so the one with a regular upright face wins, then the shortest name.
+        let mut families: Vec<String> = Vec::new();
+        for (i, info) in (0..).map_while(|i| book.info(i).map(|f| (i, f))).filter(|(_, f)| compact(&f.family).starts_with(&prefix)) {
+            if families.contains(&info.family) {
+                continue;
+            }
+            let Some(font) = self.font(i) else { continue };
+            let Ok(face) = ttf_parser::Face::parse(font.data(), font.index()) else { continue };
             let named = face.names().into_iter().filter(|n| {
                 matches!(n.name_id, ttf_parser::name_id::TYPOGRAPHIC_FAMILY | ttf_parser::name_id::WWS_FAMILY | ttf_parser::name_id::FAMILY) && n.is_unicode()
             });
-            named.filter_map(|n| n.to_string()).any(|n| n.to_lowercase() == wanted).then(|| info.family.clone())
-        });
+            if named.filter_map(|n| n.to_string()).any(|n| n.to_lowercase() == wanted) {
+                families.push(info.family.clone());
+            }
+        }
+        let regular = |family: &String| {
+            use typst::text::{FontStyle, FontWeight};
+            book.select_family(&family.to_lowercase())
+                .filter_map(|i| book.info(i))
+                .any(|f| f.variant.style == FontStyle::Normal && f.variant.weight == FontWeight::REGULAR)
+        };
+        families.sort_by_key(|f| (!regular(f), f.len()));
+        let found = families.into_iter().next();
         self.aliases.lock().expect("font aliases").insert(wanted, found.clone());
         found
     }

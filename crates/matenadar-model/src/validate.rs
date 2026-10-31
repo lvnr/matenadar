@@ -64,8 +64,8 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
             report(&format!("{path}.inherits"), format!("no master \"{parent}\""));
         }
         let resolved = d.master(name).unwrap_or_default();
-        if resolved.width.is_none() || resolved.height.is_none() {
-            report(&path, "a master needs a width and a height (its own or inherited)".into());
+        if resolved.width.is_none() || (resolved.height.is_none() && resolved.grow != Some(true)) {
+            report(&path, "a master needs a width and a height (its own or inherited), or a width and grow".into());
         }
         if let Some(st) = &m.style
             && !d.styles.contains_key(st)

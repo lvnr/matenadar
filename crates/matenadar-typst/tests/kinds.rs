@@ -369,3 +369,50 @@ fn a_coloring_book_puts_each_picture_on_a_right_hand_page_with_a_blank_back() {
     assert_eq!(images, vec![5, 7], "pictures on rectos");
     assert_eq!(page_text(&s, 6).trim(), "Left blank", "its back carries only the note");
 }
+
+#[test]
+fn an_a_plus_proof_is_one_page_as_wide_as_the_store_that_grows_with_its_modules() {
+    let photo =
+        std::fs::read(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/black.png")).expect("picture");
+    let proof = |modules: Value, width: &str| {
+        let doc = matenadar_model::template::compose(
+            "a-plus",
+            &json!({"title": "Lights", "width": width, "modules": modules}),
+        )
+        .expect("composes");
+        open(
+            serde_json::to_value(&doc).unwrap(),
+            &[("a.png", photo.clone())],
+        )
+    };
+    let one = json!([{"layout": "image-header-with-text", "heading": "A winter of lanterns", "body": "Words under the picture.", "images": [{"src": "a.png"}]}]);
+    let s = proof(one.clone(), "desktop");
+    assert_eq!(s.page_count(), 1);
+    let page = &s.pages()[0];
+    assert!(
+        (page.trim.w - 727.5).abs() < 0.01,
+        "970 px wide: {:?}",
+        page.trim
+    );
+    // The header's 970 × 600 picture alone is 450 pt; the heading and words add to it.
+    assert!(
+        page.trim.h > 450.0 && page.trim.h < 700.0,
+        "as tall as what it holds: {:?}",
+        page.trim
+    );
+    let mut more = one.as_array().unwrap().clone();
+    more.push(json!({"layout": "single-left-image", "heading": "Who it is for", "body": "A beside the picture.", "images": [{"src": "a.png"}]}));
+    more.push(json!({"layout": "comparison-chart", "comparisons": [{"title": "Book one", "asin": "B000000001"}, {"title": "Book two"}],
+        "rows": [{"label": "Pages", "value": "32"}, {"label": "Ages", "value": "4-8"}]}));
+    let taller = proof(Value::Array(more.clone()), "desktop");
+    assert_eq!(taller.page_count(), 1, "still one page");
+    assert!(
+        taller.pages()[0].trim.h > page.trim.h + 200.0,
+        "it grows: {:?}",
+        taller.pages()[0].trim
+    );
+    assert!(page_text(&taller, 1).contains("B000000001"));
+    let phone = proof(Value::Array(more), "mobile");
+    assert!((phone.pages()[0].trim.w - 360.0).abs() < 0.01);
+    assert_eq!(phone.page_count(), 1);
+}

@@ -36,7 +36,7 @@ impl Style {
 impl Master {
     pub fn with(&self, over: &Master) -> Master {
         let mut out = self.clone();
-        overlay!(out, over; width, height, bleed, margins, columns, gutter, fill, notes, style);
+        overlay!(out, over; width, height, grow, bleed, margins, columns, gutter, fill, notes, style);
         if !over.background.is_empty() {
             out.background = over.background.clone();
         }

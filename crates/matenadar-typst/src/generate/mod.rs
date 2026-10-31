@@ -426,8 +426,9 @@ impl<'a> Gen<'a> {
         // the first master's size.
         if let Some(m) = self.first_master() {
             let (w, h) = (m.width.unwrap_or(Length::Pt(432.0)), m.height.unwrap_or(Length::Pt(648.0)));
+            let h = if m.grow == Some(true) { "auto".to_string() } else { h.typst() };
             let bleed = self.bleed(&m);
-            self.raw(&format!("#set page(width: {}, height: {}, bleed: {bleed}, margin: 0pt)\n", w.typst(), h.typst()));
+            self.raw(&format!("#set page(width: {}, height: {h}, bleed: {bleed}, margin: 0pt)\n", w.typst()));
         }
         let base = self.style_dict(&doc.design.style(""), false);
         self.raw(&format!("#let mt-base = {base}\n#set text(..mt-base.text)\n"));
@@ -648,7 +649,7 @@ impl<'a> Gen<'a> {
     fn master_dict(&mut self, m: &Master) -> String {
         let mut parts = Vec::new();
         parts.push(format!("width: {}", m.width.unwrap_or(Length::Pt(432.0)).typst()));
-        parts.push(format!("height: {}", m.height.unwrap_or(Length::Pt(648.0)).typst()));
+        parts.push(if m.grow == Some(true) { "height: auto".into() } else { format!("height: {}", m.height.unwrap_or(Length::Pt(648.0)).typst()) });
         parts.push(format!("bleed: {}", self.bleed(m)));
         let mg = m.margins.clone().unwrap_or_default();
         let z = Length::Pt(36.0);

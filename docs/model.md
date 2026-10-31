@@ -634,9 +634,15 @@ epubcheck in the tests.
   styles as CSS in `rem` and `em` (so readers can still change the size),
   headings as the contents, footnotes as EPUB notes. Placed pages and
   canvases become pictures, drawn by the engine at `--dpi`.
-- **Fixed** (`--layout fixed`): every page a picture, for page-led books
-  (comics, puzzles, picture books), with the page's text kept for search and
-  read-aloud (each page's text is its picture's alt text).
+- **Fixed** (`--layout fixed`): every page as laid out for print, for
+  page-led books (comics, puzzles, picture books). Each page is a picture
+  drawn without its typeset words, and the words are set over it as live
+  SVG text in the book's own faces (embedded), word by word where the engine
+  set them: readers can select, search and read them aloud. Lettering and
+  other type drawn as outlines stays in the picture, as do runs in faces
+  that can't go in a book (a collection, a variable instance, or a face
+  whose licence forbids embedding). `--no-live-text` makes every page one
+  picture, its text kept as the picture's alt text.
 - `--embed-fonts` adds the fonts the book uses (only the faces it needs);
   `--cover` sets the cover image, and `--identifier` the book's ID (an ISBN
   URN). Without one, the ID is derived from the title and author.
@@ -650,6 +656,17 @@ epubcheck in the tests.
 - `worker.js`, which runs it in a worker, and `client.js`, the page's side,
   which gives every method as a promise;
 - `matenadar.d.ts` and `client.d.ts`, the types; `REVISION`, the commit built.
+
+It runs as it is in Node too (for servers and functions: no imports, no
+file system of its own). `openFrom(doc, {root, fonts})` reads what a
+document names under `root`, a folder in Node or a base URL in a browser:
+the fonts in its font folders and its pictures; `fonts` adds more folders,
+files or URLs (a browser can't list a folder, so name its fonts there).
+`addFonts(...sources)` does the same for fonts alone. `epub({layout, dpi,
+embedFonts, liveText, identifier, cover, modified})` gives the EPUB as
+bytes, as `matenadar epub` makes it (`modified` defaults to now, which the
+module can't read itself). `crates/matenadar-wasm/tests/smoke.mjs` runs a
+sample through it all and reports each step's time and the peak memory.
 
 It lays out exactly as the command line does: the same document, fonts and
 pictures give the same pages, and `fingerprint` (a hash per page) shows it.
@@ -680,7 +697,7 @@ diagnostics (checked again only on the pages that changed):
 
 | | |
 |---|---|
-| Loading | `assets(doc)`, `addFont(bytes)`, `addFile(path, bytes)`, `open(doc, check)`, `fonts()`, `close()` |
+| Loading | `assets(doc)`, `addFont(bytes)`, `addFonts(...sources)`, `addFile(path, bytes)`, `open(doc, check)`, `openFrom(doc, {root, fonts, check})`, `fonts()`, `close()` |
 | Pages | `pages()` (trim, bleed per side, recto or verso, master, margins), `spreads()`, `svg(page, {bleed})`, `png(page, {scale, bleed})`, `rgba(page, {scale, bleed})` (for a canvas), `pdf()`, `fingerprint()`, `fontsUsed()` |
 | Finding | `hit(page, x, y)` (the innermost node, its extent on the page, the byte offset in its words, the element around it and every ancestor), `rects(id)`, `node(id)`, `lines(id)`, `locate`, `position`, `layout`, `document()` |
 | Words | `setWords(id, runs)`, `insertText(id, offset, text)` and `deleteText(id, start, end)` (marks kept), `insertBlock({after}, block)`, `removeBlock(id)`; `splitBlock(id, offset, newId, end)` (the words after the offset go to a new block after it, with its style and overrides but not those of a paragraph's start; a heading split at its end is followed by a paragraph; with `end`, the words `offset..end` go first, as Enter over a selection does, in the same step), `joinBlock(id)` (to the paragraph or heading before it: `{into, offset}`), `markText(id, start, end, field, value)` (`em`, `strong`, `span`, `color`, `size`, `tracking`, `case`… on a range of a paragraph's, heading's or text frame's words; null takes the mark off) |
@@ -691,7 +708,7 @@ diagnostics (checked again only on the pages that changed):
 | Pages | `moveFrame(id, {x, y, w, h, rotate})` for placed elements; `breakBefore(id, "page" \| "recto" \| "verso" \| null)` forces or takes back a break (a weak `page-break` with the id `<id>--break`, or the style's `page_break_before` turned off); `hideOnPage(id, ["folio"])`; `nudge(id, -1 \| 1)` sets a paragraph a line shorter or longer by the least tracking that does it (at most 0.02 em) |
 | Any | `apply(ops)` |
 | History | `undo()`, `redo()`, `rebase()` (after saving the patch) |
-| Results | `diagnostics()`, `check(options)`, `patch()` |
+| Results | `diagnostics()`, `check(options)`, `patch()`, `epub(options)`, `memory()` |
 
 `patch()` gives the edits since the document opened, every one addressed by
 id: `words` (changes to paragraphs', headings', figures' and lists' words,
@@ -708,7 +725,7 @@ then `http://localhost:5199/demo/editor/`.
 
 ```
 matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check] [--json]
-matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--cover image.jpg] [--identifier urn:isbn:…]
+matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--no-live-text] [--cover image.jpg] [--identifier urn:isbn:…]
 matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black] [--json]
 matenadar validate <doc.json>
 matenadar template <kind> <spec.json> [-o doc.json]   # picture-book, coloring

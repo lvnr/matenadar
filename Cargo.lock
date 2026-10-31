@@ -1224,6 +1224,7 @@ dependencies = [
  "matenadar-model",
  "matenadar-typst",
  "serde_json",
+ "ttf-parser",
  "typst",
 ]
 
@@ -1265,6 +1266,7 @@ dependencies = [
 name = "matenadar-wasm"
 version = "0.1.0"
 dependencies = [
+ "matenadar-epub",
  "matenadar-model",
  "matenadar-typst",
  "serde_json",

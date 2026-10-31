@@ -2,7 +2,7 @@
 # Builds Matenadar for WebAssembly into dist/: matenadar.wasm, the engine
 # wrapper (matenadar.js), the worker (worker.js), the page's client
 # (client.js), their types, and REVISION (the commit built). With --test,
-# also runs it in Node.
+# also runs it in Node: the API test, and a sample through PDF and EPUB.
 #
 #   scripts/wasm.sh [--test] [--embedded-fonts]
 set -eu
@@ -37,4 +37,6 @@ if [ "$test" = 1 ]; then
   if [ -z "${MATENADAR_BIN:-}" ] && [ -x target/debug/matenadar ]; then MATENADAR_BIN=target/debug/matenadar; export MATENADAR_BIN; fi
   # shellcheck disable=SC2086
   node crates/matenadar-wasm/tests/node.mjs dist/matenadar.wasm $fonts
+  # A sample from its folder through layout, PDF and both EPUBs, with times and peak memory.
+  node crates/matenadar-wasm/tests/smoke.mjs dist/matenadar.wasm samples/puzzles --fonts "$(dirname "$(echo "$fonts" | head -1)")"
 fi

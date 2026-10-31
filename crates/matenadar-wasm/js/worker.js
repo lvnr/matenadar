@@ -16,7 +16,7 @@ self.onmessage = async (event) => {
     }
     if (!mt) throw new Error("the engine is still loading");
     if (method.startsWith("#") || typeof mt[method] !== "function") throw new Error(`no method "${method}"`);
-    const result = mt[method](...args);
+    const result = await mt[method](...args);
     self.postMessage({ id, result }, transferables(result));
   } catch (error) {
     self.postMessage({ id, error: String(error?.message ?? error) });

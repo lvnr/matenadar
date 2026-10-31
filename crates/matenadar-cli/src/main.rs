@@ -16,7 +16,7 @@ const HELP: &str = "matenadar — lays out Matenadar documents
 
 Usage:
   matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check]
-  matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts]
+  matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--no-live-text]
                  [--cover image.jpg] [--identifier urn:isbn:…]
   matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black]
   matenadar validate <doc.json>
@@ -48,7 +48,7 @@ impl Args {
         let cmd = it.next().unwrap_or_else(|| "help".into());
         let mut pos = Vec::new();
         let mut opts = Vec::new();
-        let flags = ["--bleed", "--check", "--json", "--no-system-fonts", "--embed-fonts", "--used"];
+        let flags = ["--bleed", "--check", "--json", "--no-system-fonts", "--embed-fonts", "--no-live-text", "--used"];
         let mut rest: Vec<String> = it.collect();
         rest.reverse();
         while let Some(a) = rest.pop() {
@@ -327,6 +327,8 @@ fn run() -> Result<ExitCode> {
                 embed_fonts: args.flag("--embed-fonts"),
                 cover: args.get("--cover").map(PathBuf::from),
                 identifier: args.get("--identifier").map(str::to_string),
+                live_text: !args.flag("--no-live-text"),
+                ..Default::default()
             };
             let epub = matenadar_epub::build(&doc, &paths, &opts).map_err(|e| anyhow!("EPUB failed: {e}"))?;
             fs::write(&out, &epub)?;

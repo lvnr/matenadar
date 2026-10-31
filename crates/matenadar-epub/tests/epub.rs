@@ -114,3 +114,58 @@ fn numbered_figures_their_list_and_a_spread_reach_the_ebook() {
         assert!(text.contains("Red and blue across the fold."), "the spread, with its words for readers who can't see it: {text}");
     }
 }
+
+/// A file of an EPUB (needs `unzip`; none without it).
+fn file_in(bytes: &[u8], name: &str, inner: &str) -> Option<Vec<u8>> {
+    let path = std::env::temp_dir().join(name);
+    std::fs::write(&path, bytes).unwrap();
+    let out = std::process::Command::new("unzip").args(["-p", path.to_str().unwrap(), inner]).output().ok()?;
+    (out.status.success() && !out.stdout.is_empty()).then_some(out.stdout)
+}
+
+#[test]
+fn a_fixed_layout_page_sets_its_words_as_live_text_over_its_picture() {
+    let opts = Options { layout: Layout::Fixed, dpi: 72.0, modified: Some("2026-10-31T09:00:00Z".into()), ..Options::default() };
+    let bytes = build(&doc(), &paths(), &opts).expect("epub");
+    check_with_epubcheck(&bytes, "matenadar-fixed-live.epub");
+    let Some(page) = file_in(&bytes, "matenadar-fixed-live.epub", "OEBPS/page-001.xhtml") else { return };
+    let page = String::from_utf8(page).unwrap();
+    // The cover's words, as SVG text in an embedded face, over the page's picture.
+    assert!(page.contains("<svg") && page.contains("<image"), "{page}");
+    assert!(page.contains(">Small</tspan>"), "each word a span: {page}");
+    let face = page.split("font-family=\"").nth(1).and_then(|s| s.split('"').next()).expect("a face");
+    let css = String::from_utf8(file_in(&bytes, "matenadar-fixed-live.epub", "OEBPS/style.css").unwrap()).unwrap();
+    assert!(css.contains(&format!("font-family: \"{face}\"")), "the face is in the book: {css}");
+    let opf = String::from_utf8(file_in(&bytes, "matenadar-fixed-live.epub", "OEBPS/package.opf").unwrap()).unwrap();
+    assert!(opf.contains("2026-10-31T09:00:00Z") && opf.contains("properties=\"svg\""));
+    // The picture leaves the words out: where the cover's title sits, it is paper.
+    let href = page.split("xlink:href=\"").nth(1).and_then(|s| s.split('"').next()).expect("the picture");
+    let jpg = file_in(&bytes, "matenadar-fixed-live.epub", &format!("OEBPS/{href}")).expect("the picture's file");
+    let img = image::load_from_memory(&jpg).unwrap().to_luma8();
+    let darkest = (36..120).flat_map(|x| (200..214).map(move |y| (x, y))).map(|(x, y)| img.get_pixel(x, y).0[0]).min().unwrap();
+    assert!(darkest > 200, "no words drawn in the picture (darkest {darkest})");
+
+    // Without live text the page is one picture, its words in it.
+    let opts = Options { live_text: false, ..opts };
+    let bytes = build(&doc(), &paths(), &opts).expect("epub");
+    let page = String::from_utf8(file_in(&bytes, "matenadar-fixed-pictures.epub", "OEBPS/page-001.xhtml").unwrap()).unwrap();
+    assert!(page.contains("<img") && !page.contains("<tspan"));
+}
+
+#[test]
+fn live_text_in_print_colours_is_given_in_screen_colours() {
+    let doc = Document::from_json(
+        &json!({"matenadar": "1", "meta": {"title": "Ink", "lang": "en"},
+            "design": {"base": {"font": "Libertinus Serif", "size": 12}, "styles": {"cyan": {"color": "cmyk(100%, 0%, 0%, 0%)"}},
+                "masters": {"m": {"width": "5in", "height": "7in", "margins": {"top": 36, "bottom": 36, "inside": 36, "outside": 36}}}},
+            "content": [{"type": "page", "id": "p", "master": "m", "elements": [{"type": "text", "x": 36, "y": 100, "w": 288, "style": "cyan", "text": "Cyan words"}]}]})
+        .to_string(),
+    )
+    .unwrap();
+    let opts = Options { layout: Layout::Fixed, dpi: 72.0, ..Options::default() };
+    let bytes = build(&doc, &paths(), &opts).expect("epub");
+    let Some(page) = file_in(&bytes, "matenadar-cmyk.epub", "OEBPS/page-001.xhtml") else { return };
+    let page = String::from_utf8(page).unwrap();
+    let fill = page.split(" fill=\"").nth(1).and_then(|s| s.split('"').next()).expect("a fill");
+    assert!(fill.starts_with("#00") && !page.contains("fill-opacity"), "cyan, opaque: {fill}");
+}

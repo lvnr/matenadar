@@ -4,10 +4,15 @@
 //!   its blocks as HTML and the design's styles as CSS, so readers can
 //!   reflow and resize the text. Hand-laid pages and drawings (canvases,
 //!   components made of elements) become images, rendered by the engine.
-//! - **Fixed layout**: every page as laid out for print, one image per page,
-//!   for picture books and other page-led books.
+//! - **Fixed layout**: every page as laid out for print, for picture books
+//!   and other page-led books: each page a picture with its typeset words
+//!   over it as live text (`live_text`, the default), or one picture per page.
+//!
+//! `build` reads the document's files from disk; `build_from` takes a laid-out
+//! session, for hosts without a file system (the WebAssembly build).
 
 mod css;
+mod live;
 mod xhtml;
 mod zip;
 
@@ -35,13 +40,30 @@ pub struct Options {
     pub embed_fonts: bool,
     /// A cover image; otherwise the first hand-laid page, if the book opens with one.
     pub cover: Option<PathBuf>,
+    /// The cover as bytes and their extension (`jpg`, `png`), for hosts without files.
+    pub cover_data: Option<(Vec<u8>, String)>,
     /// The book's identifier (an ISBN as `urn:isbn:…`); otherwise one made from the title.
     pub identifier: Option<String>,
+    /// Fixed layout: the typeset words as live text over each page's picture
+    /// (their faces go in the book), rather than in the picture.
+    pub live_text: bool,
+    /// When the book was made, `CCYY-MM-DDThh:mm:ssZ`; otherwise now. Hosts
+    /// without a clock (WebAssembly) give it.
+    pub modified: Option<String>,
 }
 
 impl Default for Options {
     fn default() -> Self {
-        Options { layout: Layout::Reflowable, dpi: 200.0, embed_fonts: false, cover: None, identifier: None }
+        Options {
+            layout: Layout::Reflowable,
+            dpi: 200.0,
+            embed_fonts: false,
+            cover: None,
+            cover_data: None,
+            identifier: None,
+            live_text: true,
+            modified: None,
+        }
     }
 }
 
@@ -99,37 +121,72 @@ pub(crate) struct Chapter {
     pub spread: Option<&'static str>,
 }
 
-/// The EPUB file for `doc`.
+/// The EPUB file for `doc`, its files read from disk.
 pub fn build(doc: &Document, paths: &Paths, opts: &Options) -> Result<Vec<u8>, String> {
     let fonts = Arc::new(paths.fonts_for(doc));
     let session = Session::with_fonts(doc.clone(), paths.clone(), fonts.clone()).map_err(|e| e.to_string())?;
+    let mut opts = opts.clone();
+    if let Some(c) = &opts.cover {
+        let data = std::fs::read(c).map_err(|e| format!("cover {}: {e}", c.display()))?;
+        let ext = c.extension().and_then(|e| e.to_str()).unwrap_or("jpg").to_string();
+        opts.cover_data = Some((data, ext));
+    }
+    build_from(&session, paths, fonts, &opts)
+}
+
+/// The EPUB file for a laid-out session, its pictures read from the
+/// session's files and its faces from `fonts`.
+pub fn build_from(session: &Session, paths: &Paths, fonts: Arc<Fonts>, opts: &Options) -> Result<Vec<u8>, String> {
+    let doc = session.document();
     let mut assets = Assets::default();
     let css = css::Css::new(doc);
     let mut chapters = Vec::new();
     let mut cover: Option<String> = None;
-    if let Some(c) = &opts.cover {
-        let data = std::fs::read(c).map_err(|e| format!("cover {}: {e}", c.display()))?;
-        let ext = c.extension().and_then(|e| e.to_str()).unwrap_or("jpg").to_string();
-        cover = Some(assets.add("cover", "images/cover", &ext, data));
+    if let Some((data, ext)) = &opts.cover_data {
+        cover = Some(assets.add("cover", "images/cover", ext, data.clone()));
     }
+    let mut faces = live::Faces::default();
+    let page_texts = PageTexts::new(session);
 
     match opts.layout {
         Layout::Fixed => {
+            // With live text the page pictures have no words, so the cover is
+            // the first page drawn whole.
+            if cover.is_none() && opts.live_text && session.page_count() > 0 {
+                let (data, _) = page_jpeg(session, 1, opts.dpi, None)?;
+                cover = Some(assets.add("cover", "images/cover", "jpg", data));
+            }
+            // The pictures' descriptions, page by page, for pages whose words are live.
+            let mut alts: HashMap<usize, Vec<String>> = HashMap::new();
+            if opts.live_text {
+                for item in matenadar_typst::inspect::items(session) {
+                    if let matenadar_typst::inspect::Kind::Image { image, .. } = &item.kind
+                        && let Some(a) = image.alt().filter(|a| !a.trim().is_empty())
+                    {
+                        alts.entry(item.page).or_default().push(a.to_string());
+                    }
+                }
+            }
             for page in 1..=session.page_count() {
-                let png = session.png(page, opts.dpi, false).ok_or("a page could not be drawn")?;
-                let (data, (w, h)) = jpeg(&png)?;
+                let drop: Option<&dyn Fn(&typst::text::TextItem) -> bool> = if opts.live_text { Some(&live::live) } else { None };
+                let (data, (w, h)) = page_jpeg(session, page, opts.dpi, drop)?;
                 let href = assets.add(&format!("page:{page}"), "images/page", "jpg", data);
-                if cover.is_none() {
+                if cover.is_none() && !opts.live_text {
                     cover = Some(href.clone());
                 }
-                let text = page_text(&session, page);
+                let body = if opts.live_text {
+                    let alt = alts.get(&page).map(|a| a.join(" ")).unwrap_or_default();
+                    live::page(session, page, &href, (w, h), &alt, &mut faces, &mut assets)
+                } else {
+                    format!(
+                        "<div class=\"page\"><img src=\"{href}\" alt=\"{}\" style=\"width: {w}px; height: {h}px\"/></div>",
+                        xhtml::esc(&page_texts.get(page))
+                    )
+                };
                 chapters.push(Chapter {
                     file: format!("page-{page:03}.xhtml"),
                     title: format!("Page {page}"),
-                    body: format!(
-                        "<div class=\"page\"><img src=\"{href}\" alt=\"{}\" style=\"width: {w}px; height: {h}px\"/></div>",
-                        xhtml::esc(&text)
-                    ),
+                    body,
                     headings: Vec::new(),
                     viewport: Some((w, h)),
                     spread: Some(if page % 2 == 1 { "page-spread-right" } else { "page-spread-left" }),
@@ -137,7 +194,7 @@ pub fn build(doc: &Document, paths: &Paths, opts: &Options) -> Result<Vec<u8>, S
             }
         }
         Layout::Reflowable => {
-            let mut w = xhtml::Writer::new(doc, &css, &session, paths, fonts.clone(), opts.dpi);
+            let mut w = xhtml::Writer::new(doc, &css, session, paths, fonts.clone(), opts.dpi);
             for (i, item) in doc.content.iter().enumerate() {
                 match item {
                     Item::Section(s) => {
@@ -149,10 +206,10 @@ pub fn build(doc: &Document, paths: &Paths, opts: &Options) -> Result<Vec<u8>, S
                     Item::Spread(sp) => {
                         // Both pages as one wide picture, as the reader sees them open.
                         let Some((page, _, _)) = session.position(&sp.id) else { continue };
-                        let (Some(left), Some(right)) = (session.png(page, opts.dpi, false), session.png(page + 1, opts.dpi, false)) else { continue };
-                        let data = side_by_side(&left, &right)?;
+                        let (Some(left), Some(right)) = (session.rgb(page, opts.dpi, None), session.rgb(page + 1, opts.dpi, None)) else { continue };
+                        let data = side_by_side(left, right)?;
                         let href = assets.add(&format!("spread:{page}"), "images/spread", "jpg", data);
-                        let alt = sp.alt.clone().unwrap_or_else(|| format!("{} {}", page_text(&session, page), page_text(&session, page + 1)).trim().to_string());
+                        let alt = sp.alt.clone().unwrap_or_else(|| format!("{} {}", page_texts.get(page), page_texts.get(page + 1)).trim().to_string());
                         chapters.push(Chapter {
                             file: format!("{}.xhtml", file_stem("p", &sp.id, i)),
                             title: sp.title.clone().unwrap_or_default(),
@@ -168,13 +225,12 @@ pub fn build(doc: &Document, paths: &Paths, opts: &Options) -> Result<Vec<u8>, S
                         let times = p.repeat.as_ref().map_or(1, |r| r.times());
                         for k in 0..times {
                             let page = first + k;
-                            let png = session.png(page, opts.dpi, false).ok_or("a page could not be drawn")?;
-                            let (data, _) = jpeg(&png)?;
+                            let (data, _) = page_jpeg(session, page, opts.dpi, None)?;
                             let href = assets.add(&format!("page:{page}"), "images/page", "jpg", data);
                             if i == 0 && k == 0 && cover.is_none() {
                                 cover = Some(href.clone());
                             }
-                            let text = page_text(&session, page);
+                            let text = page_texts.get(page);
                             let stem = file_stem("p", &p.id, i);
                             chapters.push(Chapter {
                                 file: if k == 0 { format!("{stem}.xhtml") } else { format!("{stem}-{}.xhtml", k + 1) },
@@ -196,6 +252,7 @@ pub fn build(doc: &Document, paths: &Paths, opts: &Options) -> Result<Vec<u8>, S
     if opts.embed_fonts {
         font_css = embed_fonts(doc, &fonts, &mut assets);
     }
+    font_css.push_str(&faces.css);
     let stylesheet = format!(
         "@charset \"utf-8\";\n@namespace epub \"http://www.idpf.org/2007/ops\";\n{font_css}{}",
         css.sheet(&xhtml::drop_cap_rules(doc, &css))
@@ -208,31 +265,54 @@ pub fn build(doc: &Document, paths: &Paths, opts: &Options) -> Result<Vec<u8>, S
     Ok(package(doc, opts, &chapters, &assets, &stylesheet, cover.as_deref()))
 }
 
-/// A page's text, for an image's description.
-fn page_text(s: &Session, page: usize) -> String {
-    let mut text = String::new();
-    for item in matenadar_typst::inspect::items(s) {
-        if item.page == page
-            && let matenadar_typst::inspect::Kind::Text { text: t, .. } = &item.kind
-        {
-            if !text.is_empty() && !text.ends_with(' ') {
-                text.push(' ');
-            }
-            text.push_str(t.trim());
-        }
-    }
-    let text: String = text.split_whitespace().collect::<Vec<_>>().join(" ");
-    let mut short: String = text.chars().take(600).collect();
-    if short.len() < text.len() {
-        short.push('…');
-    }
-    short
+/// Each page's text, for its picture's description, read in one pass.
+struct PageTexts<'a> {
+    session: &'a Session,
+    texts: std::cell::OnceCell<HashMap<usize, String>>,
 }
 
-/// Two page pictures (PNG) side by side, as one JPEG.
-fn side_by_side(left: &[u8], right: &[u8]) -> Result<Vec<u8>, String> {
-    let l = image::load_from_memory(left).map_err(|e| e.to_string())?.to_rgb8();
-    let r = image::load_from_memory(right).map_err(|e| e.to_string())?.to_rgb8();
+impl<'a> PageTexts<'a> {
+    fn new(session: &'a Session) -> Self {
+        PageTexts { session, texts: std::cell::OnceCell::new() }
+    }
+
+    fn get(&self, page: usize) -> String {
+        let texts = self.texts.get_or_init(|| {
+            let mut texts: HashMap<usize, String> = HashMap::new();
+            for item in matenadar_typst::inspect::items(self.session) {
+                if let matenadar_typst::inspect::Kind::Text { text: t, .. } = &item.kind {
+                    let text = texts.entry(item.page).or_default();
+                    if !text.is_empty() && !text.ends_with(' ') {
+                        text.push(' ');
+                    }
+                    text.push_str(t.trim());
+                }
+            }
+            texts
+        });
+        let text: String = texts.get(&page).map(|t| t.split_whitespace().collect::<Vec<_>>().join(" ")).unwrap_or_default();
+        let mut short: String = text.chars().take(600).collect();
+        if short.len() < text.len() {
+            short.push('…');
+        }
+        short
+    }
+}
+
+/// A page drawn on white as a JPEG, and its size in pixels.
+fn page_jpeg(session: &Session, page: usize, dpi: f32, drop: Option<&dyn Fn(&typst::text::TextItem) -> bool>) -> Result<(Vec<u8>, (u32, u32)), String> {
+    let (w, h, rgb) = session.rgb(page, dpi, drop).ok_or("a page could not be drawn")?;
+    let img = image::RgbImage::from_raw(w, h, rgb).ok_or("a page's pixels")?;
+    let mut out = Vec::new();
+    let enc = image::codecs::jpeg::JpegEncoder::new_with_quality(&mut out, 90);
+    img.write_with_encoder(enc).map_err(|e| e.to_string())?;
+    Ok((out, (w, h)))
+}
+
+/// Two pages' pixels (RGB) side by side, as one JPEG.
+fn side_by_side(left: (u32, u32, Vec<u8>), right: (u32, u32, Vec<u8>)) -> Result<Vec<u8>, String> {
+    let l = image::RgbImage::from_raw(left.0, left.1, left.2).ok_or("a page's pixels")?;
+    let r = image::RgbImage::from_raw(right.0, right.1, right.2).ok_or("a page's pixels")?;
     let mut both = image::RgbImage::from_pixel(l.width() + r.width(), l.height().max(r.height()), image::Rgb([255, 255, 255]));
     image::imageops::replace(&mut both, &l, 0, 0);
     image::imageops::replace(&mut both, &r, l.width() as i64, 0);
@@ -415,7 +495,7 @@ fn package(doc: &Document, opts: &Options, chapters: &[Chapter], assets: &Assets
         prefix = if fixed { " prefix=\"rendition: http://www.idpf.org/vocab/rendition/#\"" } else { "" },
         id = xhtml::esc(&identifier),
         title = xhtml::esc(&title),
-        modified = now_utc(),
+        modified = opts.modified.clone().unwrap_or_else(now_utc),
     );
     zip.deflated("OEBPS/package.opf", opf.as_bytes());
     zip.finish()
@@ -433,7 +513,15 @@ fn uuid_from(text: &str) -> String {
     format!("urn:uuid:{}-{}-5{}-a{}-{}", &hex[0..8], &hex[8..12], &hex[13..16], &hex[17..20], &hex[20..32])
 }
 
+/// The time now as `CCYY-MM-DDThh:mm:ssZ` (WebAssembly has no clock: its host
+/// gives the time as `modified`).
+#[cfg(target_arch = "wasm32")]
+fn now_utc() -> String {
+    "1970-01-01T00:00:00Z".into()
+}
+
 /// The time now as `CCYY-MM-DDThh:mm:ssZ`.
+#[cfg(not(target_arch = "wasm32"))]
 fn now_utc() -> String {
     let secs = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0) as i64;
     let (days, rem) = (secs.div_euclid(86_400), secs.rem_euclid(86_400));

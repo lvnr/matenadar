@@ -67,6 +67,9 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
         if resolved.width.is_none() || (resolved.height.is_none() && resolved.grow != Some(true)) {
             report(&path, "a master needs a width and a height (its own or inherited), or a width and grow".into());
         }
+        if resolved.grow == Some(true) && resolved.bleed.and_then(|b| b.pt()).unwrap_or(0.0) > 0.0 {
+            report(&format!("{path}.grow"), "a page that grows is read on a screen: it has no bleed".into());
+        }
         if let Some(st) = &m.style
             && !d.styles.contains_key(st)
         {
@@ -175,6 +178,10 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
                         && !d.masters.contains_key(m)
                     {
                         report(&format!("{path}.master"), format!("no master \"{m}\""));
+                    }
+                    let spread_master = s.master.clone().or_else(|| d.masters.keys().next().cloned()).and_then(|m| d.master(&m));
+                    if spread_master.is_some_and(|m| m.grow == Some(true)) {
+                        report(&format!("{path}.master"), "a spread needs pages of a fixed height, not a master that grows".into());
                     }
                     check_word(&format!("{path}.numbering"), &s.numbering, &NUMBERINGS, &mut report);
                     if let Some(f) = &s.fill {
@@ -708,5 +715,19 @@ mod tests {
         assert!(msgs.contains(&"content[0].flow[1].content[0].span: no character style \"caps\"".to_string()), "{msgs:?}");
         assert!(msgs.iter().any(|m| m.contains("unknown colour \"paper\"")), "{msgs:?}");
         assert!(msgs.iter().any(|m| m.contains("needs a height")), "{msgs:?}");
+    }
+
+    #[test]
+    fn a_page_that_grows_has_no_bleed_and_carries_no_spread() {
+        let doc = Document::from_json(
+            &serde_json::json!({"matenadar": "1", "meta": {"title": "t"},
+                "design": {"masters": {"screen": {"width": "970px", "grow": true, "bleed": "0.125in"}}},
+                "content": [{"type": "spread", "id": "s1", "master": "screen", "src": "a.jpg"}]})
+            .to_string(),
+        )
+        .expect("parses");
+        let paths: Vec<String> = validate(&doc).into_iter().map(|p| p.path).collect();
+        assert!(paths.iter().any(|p| p.ends_with(".grow")), "{paths:?}");
+        assert!(paths.iter().any(|p| p.ends_with(".master") && p.contains("content")), "{paths:?}");
     }
 }

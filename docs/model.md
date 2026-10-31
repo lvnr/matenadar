@@ -55,7 +55,9 @@ layout program from it on every build and never stores that program.
 - `colors` maps names to colours.
 - `fonts` maps names to a family or a list of families, such as `"serif":
   ["IBM Plex Serif", "Noto Serif"]`. A style's `font` may name a stack. Later
-  families supply glyphs the first one lacks.
+  families supply glyphs the first one lacks. A family may be named as font
+  menus and fontconfig name it (its typographic name, "Garamond Premier
+  Pro") where Typst knows it by a shorter legacy name ("Garamond Premr Pro").
 
 ### Styles
 
@@ -164,7 +166,11 @@ A master is a page size, a flow area and what is drawn on every page:
 ```
 
 Margins mirror (`inside` is the spine side) unless `left` or `right` is
-given. A note column's `side` is `outside` (default), `inside`, `left` or
+given.
+
+`"grow": true` makes the page as tall as what it holds: a section on it is one
+page, however long its flow (its `height` is not used). It is for pages read on
+a screen: a store's module proofs, long strips. A note column's `side` is `outside` (default), `inside`, `left` or
 `right`.
 
 Elements in `background` and `foreground` can carry `"when"`. The conditions
@@ -328,7 +334,7 @@ The types:
       page itself; it needs a `w`.
     - A halo per glyph: `"set": {"halo": {"width": 2, "color": "#fff"}}`.
 - **`image`.**
-  - `src` is a raster image or an SVG.
+  - `src` is a raster image, an SVG or a PDF (its first page, drawn as vectors: a puzzle or a page of art from another tool).
   - `focus: [fx, fy]` chooses which part of a cropped (`cover`) image stays in
     view, as fractions: `[0.85, 0.5]` keeps the right side. Needs `w` and `h`
     in absolute units.
@@ -599,6 +605,36 @@ Story pages are pictures to the bleed with their words lettered in the art
   are blank.
 - `title_art` puts a picture behind the title page, with the title on soft
   panels over it.
+
+### `a-plus`
+
+A book's A+ modules as the store shows them, for a proof before upload: one
+page as wide as the store's module area that grows with the modules
+(`"grow": true`), each module's pictures in their upload slots, cropped as the
+store crops them.
+
+```json
+{"width": "desktop", "title": "…", "marketplace": "Amazon.com",
+ "modules": [
+   {"layout": "image-header-with-text", "label": "…", "heading": "…", "body": "…",
+    "images": [{"src": "a-plus/01.jpg", "alt": "…"}]},
+   {"layout": "comparison-chart", "comparisons": [{"title": "…", "asin": "…", "src": "…"}],
+    "rows": [{"label": "Pages", "value": "32"}]}
+ ]}
+```
+
+- `width`: `desktop` (970 px, the default), `mobile` (480 px), or pixels.
+  Render at 96 dpi for one pixel per CSS pixel.
+- Slots, in pixels: `image-header-with-text` 970×600, `image-text-overlay`
+  970×300 (its words on a panel over the picture; under it on a phone),
+  `single-left-image`, `single-right-image`, `single-image-highlights`,
+  `three-images-text` and `multiple-images` 300×300, `single-image-sidebar`
+  300×400, `four-images-text` 220×220, `comparison-chart` 150×300,
+  `company-logo` 600×180; another layout 970×300. A picture's `w` and `h`
+  give its upload's own size where the store has changed the slot, and
+  `focus` where the crop keeps it.
+- Up to seven modules. `heading: false` leaves out the proof's own heading;
+  `font` sets the text's family (the store's sans by default).
 
 ### `coloring`
 

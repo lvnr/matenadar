@@ -378,3 +378,21 @@ fn content_clips_to_an_ellipse_or_a_path() {
     assert!(at(252, 130) < 20, "the triangle's base shows the rect");
     assert!(at(220, 76) > 235, "beside its apex is clipped away");
 }
+
+#[test]
+fn a_family_typst_knows_needs_no_other_name_and_an_unknown_one_finds_none() {
+    let f = fonts();
+    assert_eq!(f.resolve("Libertinus Serif"), None, "known by this name already");
+    assert_eq!(f.resolve("libertinus serif"), None, "in any case");
+    assert_eq!(f.resolve("Libertinus Nowhere Sans"), None, "no font has it");
+    // Every family a font names itself by is reached under Typst's own name.
+    let book = f.book();
+    for (i, info) in (0..).map_while(|i| book.info(i).map(|x| (i, x.clone()))) {
+        let font = f.font(i).expect("font");
+        let face = ttf_parser::Face::parse(font.data(), font.index()).expect("face");
+        for name in face.names().into_iter().filter(|n| n.name_id == ttf_parser::name_id::TYPOGRAPHIC_FAMILY && n.is_unicode()).filter_map(|n| n.to_string()) {
+            let reached = f.resolve(&name).unwrap_or(name.clone());
+            assert!(book.contains_family(&reached.to_lowercase()), "{name} reaches {reached}, which {} is part of", info.family);
+        }
+    }
+}

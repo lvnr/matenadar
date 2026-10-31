@@ -387,6 +387,11 @@ pub struct Master {
     pub width: Option<Length>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<Length>,
+    /// The page grows with what it holds: as tall as its flow, on one page
+    /// (`height` is then not used). For proofs of a store's modules, long
+    /// strips and other pages read on a screen.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grow: Option<bool>,
     /// Bleed on the three outside edges (none at the spine).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bleed: Option<Length>,

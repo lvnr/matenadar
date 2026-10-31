@@ -6,7 +6,10 @@
 //! - `picture-book`: lettered full-bleed story pages and spreads, typeset
 //!   front and back matter, 24, 32 or 40 pages, self or separate ends.
 //! - `coloring`: one picture per recto with its back left blank.
+//! - `a-plus`: a book's A+ modules as the store shows them, on a page that
+//!   grows with them, for a proof before upload.
 
+mod a_plus;
 mod coloring;
 mod picture_book;
 
@@ -16,17 +19,19 @@ use serde_json::{Value, json};
 use crate::Document;
 use crate::units::{Length, PT_PER_IN};
 
+pub use a_plus::APlus;
 pub use coloring::Coloring;
 pub use picture_book::PictureBook;
 
 /// The templates there are.
-pub const KINDS: [&str; 2] = ["picture-book", "coloring"];
+pub const KINDS: [&str; 3] = ["picture-book", "coloring", "a-plus"];
 
 /// The document `kind`'s template makes from `spec`.
 pub fn compose(kind: &str, spec: &Value) -> Result<Document, String> {
     let value = match kind {
         "picture-book" => picture_book::compose(&parse(spec)?)?,
         "coloring" => coloring::compose(&parse(spec)?)?,
+        "a-plus" => a_plus::compose(&parse(spec)?)?,
         other => return Err(format!("no template \"{other}\" (there are {})", KINDS.join(", "))),
     };
     let doc = Document::from_json(&value.to_string())?;

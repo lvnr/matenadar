@@ -130,6 +130,22 @@ impl Document {
         }
         let text = serde_json::to_string(&root).map_err(|e| OpError(e.to_string()))?;
         let doc = Document::from_json(&text).map_err(|e| OpError(format!("the change would leave the document malformed: {e}")))?;
+        // A field the node doesn't have is dropped when the document is read: the setting would change
+        // nothing, and its inverse would find nothing to undo. Refused, naming it.
+        let kept = serde_json::to_value(&doc).map_err(|e| OpError(e.to_string()))?;
+        for (i, (op, inverse)) in ops.iter().zip(&inverses).enumerate() {
+            let (Op::Set { path, value, .. }, Op::Set { node, .. } | Op::Unset { node, .. }) = (op, inverse) else { continue };
+            // What the model leaves out when written (none, empty, false) is not missing.
+            if matches!(value, Value::Null | Value::Bool(false)) || value.as_array().is_some_and(Vec::is_empty) || value.as_object().is_some_and(|o| o.is_empty()) || value.as_str() == Some("") {
+                continue;
+            }
+            if let Ok(base) = resolve(&kept, node)
+                && kept.pointer(&format!("{base}{path}")).is_none()
+            {
+                let at = if ops.len() > 1 { format!("operation {}: ", i + 1) } else { String::new() };
+                return err(format!("{at}{path} is not a field this node keeps (a paragraph's or heading's own settings go under /set)"));
+            }
+        }
         Ok((doc, inverses))
     }
 }
@@ -144,9 +160,10 @@ pub fn apply_value(root: &mut Value, op: &Op) -> Result<Op, OpError> {
             // Objects the setting makes on the way go again on undo.
             let made = if old.is_none() { first_missing(root, &base, path) } else { path.clone() };
             set_pointer(root, &full, value.clone())?;
+            let node = if path == "/id" || path.starts_with("/id/") { Target::at(base) } else { target_of(root, base) };
             Ok(match old {
-                Some(v) => Op::Set { node: Target::at(base), path: path.clone(), value: v },
-                None => Op::Unset { node: Target::at(base), path: made },
+                Some(v) => Op::Set { node, path: path.clone(), value: v },
+                None => Op::Unset { node, path: made },
             })
         }
         Op::Unset { node, path } => {
@@ -155,7 +172,8 @@ pub fn apply_value(root: &mut Value, op: &Op) -> Result<Op, OpError> {
             let (parent, key) = split(&full)?;
             let obj = root.pointer_mut(&parent).and_then(Value::as_object_mut).ok_or_else(|| OpError(format!("nothing at {full}")))?;
             let old = obj.shift_remove(&key).ok_or_else(|| OpError(format!("nothing at {full}")))?;
-            Ok(Op::Set { node: Target::at(base), path: path.clone(), value: old })
+            let node = if path == "/id" { Target::at(base) } else { target_of(root, base) };
+            Ok(Op::Set { node, path: path.clone(), value: old })
         }
         Op::Insert { before, after, value, .. } if before.is_some() || after.is_some() => {
             let sibling = before.as_deref().or(after.as_deref()).expect("checked");
@@ -228,9 +246,9 @@ pub fn apply_value(root: &mut Value, op: &Op) -> Result<Op, OpError> {
             if let Some(old) = old_content
                 && touched == 0
             {
-                return Ok(Op::Set { node: Target::at(ptr), path: "/content".into(), value: old });
+                return Ok(Op::Set { node: target_of(root, ptr), path: "/content".into(), value: old });
             }
-            Ok(Op::DeleteText { node: Target::at(ptr), start: *offset, end: offset + text.len() })
+            Ok(Op::DeleteText { node: target_of(root, ptr), start: *offset, end: offset + text.len() })
         }
         Op::DeleteText { node, start, end } => {
             let ptr = resolve(root, node)?;
@@ -240,8 +258,8 @@ pub fn apply_value(root: &mut Value, op: &Op) -> Result<Op, OpError> {
             // Across runs, putting the text back can't restore each run's
             // marks, so the inverse restores the runs themselves.
             match old_content {
-                Some(old) if touched > 1 => Ok(Op::Set { node: Target::at(ptr), path: "/content".into(), value: old }),
-                _ => Ok(Op::InsertText { node: Target::at(ptr), offset: *start, text: removed }),
+                Some(old) if touched > 1 => Ok(Op::Set { node: target_of(root, ptr), path: "/content".into(), value: old }),
+                _ => Ok(Op::InsertText { node: target_of(root, ptr), offset: *start, text: removed }),
             }
         }
     }
@@ -271,6 +289,15 @@ fn resolve(root: &Value, t: &Target) -> Result<String, OpError> {
             }
         }
         _ => err("address a node with either id or at"),
+    }
+}
+
+/// How an inverse names the node at `ptr`: by its id when it has one (it
+/// keeps naming the node when the lists around it change), else by place.
+fn target_of(root: &Value, ptr: String) -> Target {
+    match root.pointer(&ptr).and_then(|v| v.get("id")).and_then(Value::as_str) {
+        Some(id) if find_id(root, id).as_deref() == Some(ptr.as_str()) => Target::id(id),
+        _ => Target::at(ptr),
     }
 }
 
@@ -490,9 +517,30 @@ mod tests {
         let mut d = doc();
         let before = d.clone();
         let inv = d.apply(&Op::Set { node: Target::id("p2"), path: "/set/space_before".into(), value: json!("6pt") }).unwrap();
-        assert_eq!(inv, Op::Unset { node: Target::at("/content/0/flow/1"), path: "/set".into() });
+        assert_eq!(inv, Op::Unset { node: Target::id("p2"), path: "/set".into() });
         d.apply(&inv).unwrap();
         assert_eq!(d, before);
+    }
+
+    #[test]
+    fn an_inverse_names_its_node_by_id_when_the_list_moves() {
+        let mut d = doc();
+        let before = d.clone();
+        let set = d.apply(&Op::Set { node: Target::id("p2"), path: "/set/space_before".into(), value: json!("14pt") }).unwrap();
+        let insert: Op = serde_json::from_value(json!({"op": "insert", "before": "p2", "value": {"type": "space", "h": "14pt"}})).unwrap();
+        let remove = d.apply(&insert).unwrap();
+        // Undone last first; the setting's inverse names p2, wherever the list has put it.
+        assert_eq!(set, Op::Unset { node: Target::id("p2"), path: "/set".into() });
+        d.apply(&remove).unwrap();
+        d.apply(&set).unwrap();
+        assert_eq!(d, before);
+    }
+
+    #[test]
+    fn a_field_the_node_does_not_keep_is_refused() {
+        let mut d = doc();
+        let e = d.apply(&Op::Set { node: Target::id("p2"), path: "/no_such_field".into(), value: json!(1) }).unwrap_err();
+        assert!(e.0.contains("/no_such_field is not a field this node keeps"), "{e}");
     }
 
     #[test]

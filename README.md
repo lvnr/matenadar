@@ -154,6 +154,10 @@ page editor on the samples, built on it.
 - Also: opacity on photographs, clipping to ellipses and paths, and
   hyphenation exceptions.
 
+## License
+
+Matenadar is open source under the Apache License, Version 2.0: see [LICENSE](LICENSE).
+
 <p align="center">
   <img src="docs/brand/logo.svg" width="56" alt="">
   <br>

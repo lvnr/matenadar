@@ -82,6 +82,32 @@ fn fields(v: Value) -> serde_json::Map<String, Value> {
 }
 
 #[test]
+fn composition_moves_remain_in_the_layout_patch_and_replay_after_undo_redo() {
+    let mut e = editor();
+    let ops: Vec<Op> = serde_json::from_value(json!([
+        {"op":"insert","id":"s1","field":"flow","index":0,"value":{"type":"canvas","id":"card","h":140,"elements":[{"type":"text","id":"card-words","x":12,"y":12,"w":220,"blocks":[]}]}},
+        {"op":"move","id":"p1","to":{"id":"card-words"},"field":"blocks"}
+    ])).unwrap();
+    let before = e.session().fingerprints();
+    e.edit_layout(ops).unwrap();
+    let designed = e.session().fingerprints();
+    assert_ne!(before, designed);
+    let patch = e.patch();
+    assert!(patch.words.is_empty());
+    assert_eq!(patch.layout.len(), 2);
+    let mut replay = editor();
+    replay.edit(patch.layout).unwrap();
+    assert_eq!(replay.session().fingerprints(), designed);
+    e.undo().unwrap();
+    assert_eq!(e.session().fingerprints(), before);
+    assert!(e.patch().layout.is_empty());
+    e.redo().unwrap();
+    assert_eq!(e.session().fingerprints(), designed);
+    assert!(e.patch().words.is_empty());
+    assert_eq!(e.patch().layout.len(), 2);
+}
+
+#[test]
 fn hits_find_words_and_pictures() {
     let e = editor();
     let (page, x, y) = e.session().position("p2").unwrap();

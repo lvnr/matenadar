@@ -224,7 +224,7 @@ export interface MatenadarApi {
   textLines(id: string): TextLine[];
   source(): SourceExport;
 
-  apply(ops: Op | Op[]): Edited;
+  apply(ops: Op | Op[], options?: { part?: "layout" }): Edited;
   setWords(id: string, content: Json[]): Edited;
   insertText(id: string, offset: number, text: string): Edited;
   deleteText(id: string, start: number, end: number): Edited;
@@ -280,7 +280,7 @@ export declare class Matenadar implements MatenadarApi {
   selectionRects(id: string, start: number, end: number): { page: number; rect: Rect }[];
   textLines(id: string): TextLine[];
   source(): SourceExport;
-  apply(ops: Op | Op[]): Edited;
+  apply(ops: Op | Op[], options?: { part?: "layout" }): Edited;
   setWords(id: string, content: Json[]): Edited;
   insertText(id: string, offset: number, text: string): Edited;
   deleteText(id: string, start: number, end: number): Edited;

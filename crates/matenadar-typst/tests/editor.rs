@@ -151,6 +151,35 @@ fn edits_undo_and_redo() {
 }
 
 #[test]
+fn a_step_that_puts_room_before_a_block_and_sets_it_undoes() {
+    // Ask Aldus on the pages: room in before a block and the block's spacing set, as one step, then another.
+    let mut e = editor();
+    let original = e.document().clone();
+    let ops = |v: Value| -> Vec<Op> { serde_json::from_value(v).unwrap() };
+    e.edit(ops(json!([
+        {"op": "insert", "before": "p2", "value": {"type": "space", "h": "14pt"}},
+        {"op": "set", "id": "p2", "path": "/set/space_before", "value": "14pt"}
+    ])))
+    .unwrap();
+    e.edit(ops(json!([{"op": "insert", "id": "s1", "field": "flow", "index": 0, "value": {"type": "space", "h": "24pt"}}]))).unwrap();
+    e.undo().unwrap();
+    e.undo().unwrap();
+    assert_eq!(e.document(), &original);
+}
+
+#[test]
+fn the_authors_undo_reaches_past_room_put_in_before() {
+    let mut e = editor();
+    let original = e.document().clone();
+    let ops = |v: Value| -> Vec<Op> { serde_json::from_value(v).unwrap() };
+    e.edit(ops(json!([{"op": "insert", "before": "p2", "value": {"type": "space", "h": "14pt"}}]))).unwrap();
+    e.set_fields("p2", &fields(json!({"space_before": "24pt"})), true).unwrap();
+    e.undo().unwrap();
+    e.undo().unwrap();
+    assert_eq!(e.document(), &original);
+}
+
+#[test]
 fn breaks_go_in_before_a_block_and_come_out() {
     let mut e = editor();
     let (page, _, _) = e.session().position("p5").unwrap();

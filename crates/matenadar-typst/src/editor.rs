@@ -180,10 +180,21 @@ impl Editor {
 
     /// Applies operations as one step.
     pub fn edit(&mut self, ops: Vec<Op>) -> Result<Edited, EngineError> {
+        self.edit_part(ops, None)
+    }
+
+    /// A composition-only step. Moving existing text into a frame changes
+    /// its presentation, not the manuscript; keep the entire batch in the
+    /// layout patch. The caller owns preserving the source words.
+    pub fn edit_layout(&mut self, ops: Vec<Op>) -> Result<Edited, EngineError> {
+        self.edit_part(ops, Some(Part::Layout))
+    }
+
+    fn edit_part(&mut self, ops: Vec<Op>, part: Option<Part>) -> Result<Edited, EngineError> {
         if ops.is_empty() {
             return Err(engine("no operations"));
         }
-        let parts = ops.iter().map(|op| self.part_of(op)).collect();
+        let parts = ops.iter().map(|op| part.unwrap_or_else(|| self.part_of(op))).collect();
         let changes = self.session.apply_all(&ops)?;
         self.undo.push(Step { ops, inverses: changes.inverses, parts });
         self.redo.clear();

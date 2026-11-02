@@ -222,9 +222,9 @@ export class Matenadar {
 
   // ---- Editing: each call is one step to undo ----
 
-  /** Matenadar operations, applied together. */
-  apply(ops) {
-    return this.#call("apply", { ops: Array.isArray(ops) ? ops : [ops] });
+  /** Matenadar operations, applied together. part: "layout" keeps a composition batch entirely in the layout patch. */
+  apply(ops, { part } = {}) {
+    return this.#call("apply", { ops: Array.isArray(ops) ? ops : [ops], ...(part ? { part } : {}) });
   }
 
   /** A paragraph's or heading's words, as runs (marks are run fields). */

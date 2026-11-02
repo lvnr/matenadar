@@ -261,7 +261,11 @@ impl Engine {
             "document" => Out::Json(json!(e.document())),
             "apply" => {
                 let ops: Vec<Op> = serde_json::from_value(p.get("ops").cloned().unwrap_or(json!([]))).map_err(|e| e.to_string())?;
-                edited(e.edit(ops))?
+                match p.get("part").and_then(Value::as_str) {
+                    Some("layout") => edited(e.edit_layout(ops))?,
+                    None => edited(e.edit(ops))?,
+                    Some(_) => return Err("apply part must be layout, or omitted for automatic classification".into()),
+                }
             }
             "set_words" => edited(e.set_words(id_of()?, p.get("content").cloned().ok_or("set_words needs content")?))?,
             "set_fields" => {

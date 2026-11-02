@@ -727,6 +727,13 @@ await mt.undo();
 const { words, layout } = await mt.patch();
 ```
 
+For a design-only composition, `apply(ops, {part: "layout"})` keeps the entire
+batch in `patch.layout`, including existing paragraphs moved into new frames.
+The default classifies manuscript moves and text edits into `patch.words`.
+The caller of the design-only form must preserve the source words; this
+option controls persistence classification, not content permission. Undo
+and redo retain the batch's classification.
+
 The engine keeps the document and an undo history. Each edit is one step,
 laid out once, and returns the pages to draw again, the page count and the
 diagnostics (checked again only on the pages that changed):
@@ -742,7 +749,7 @@ diagnostics (checked again only on the pages that changed):
 | Pictures | `setPicture(id, {src, crop, fit, focus, w, h, x, y, opacity})` |
 | Blocks | `setBlock(id, {space_before, space_after, align, keep_with_next, keep_together, …})`: a paragraph's or heading's style overrides |
 | Pages | `moveFrame(id, {x, y, w, h, rotate})` for placed elements; `breakBefore(id, "page" \| "recto" \| "verso" \| null)` forces or takes back a break (a weak `page-break` with the id `<id>--break`, or the style's `page_break_before` turned off); `hideOnPage(id, ["folio"])`; `nudge(id, -1 \| 1)` sets a paragraph a line shorter or longer by the least tracking that does it (at most 0.02 em) |
-| Any | `apply(ops)` |
+| Any | `apply(ops)`; `apply(ops, {part: "layout"})` for a composition-only batch |
 | History | `undo()`, `redo()`, `rebase()` (after saving the patch) |
 | Results | `diagnostics()`, `check(options)`, `patch()`, `epub(options)`, `memory()` |
 

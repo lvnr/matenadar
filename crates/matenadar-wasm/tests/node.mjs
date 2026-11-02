@@ -87,6 +87,24 @@ assert.ok(issues.some((i) => JSON.stringify(i).includes("ph")), "an 8-pixel pict
 assert.throws(() => mt.apply([{ op: "insert-text", id: "nope", offset: 0, text: "x" }]));
 assert.equal(mt.open(doc).pages, 2, "a failed operation leaves the engine usable");
 
+// Composition moves keep their words, but belong in the saved layout patch.
+mt.apply([
+  { op: "insert", id: "s1", field: "flow", index: 0, value: { type: "canvas", id: "card", h: 140, elements: [{ type: "text", id: "card-words", x: 12, y: 12, w: 220, blocks: [] }] } },
+  { op: "move", id: "p1", to: { id: "card-words" }, field: "blocks" },
+], { part: "layout" });
+const composed = mt.fingerprint();
+const composedPatch = mt.patch();
+assert.equal(composedPatch.words.length, 0);
+assert.equal(composedPatch.layout.length, 2);
+mt.undo();
+assert.equal(mt.patch().layout.length, 0);
+mt.redo();
+assert.deepEqual(mt.fingerprint(), composed);
+mt.open(doc);
+mt.apply(composedPatch.layout);
+assert.deepEqual(mt.fingerprint(), composed);
+mt.open(doc);
+
 // ---- The page editor ----
 
 const pages = mt.pages();

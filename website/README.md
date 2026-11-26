@@ -42,6 +42,9 @@ npm run deploy    # build, the 3D desk into dist/fancy/, then `wrangler deploy`
   into `dist/fancy/`. `npm run deploy` stops if the checkout is missing.
 - **The old docs host:** `matenadar-docs.levships.com` redirects every path to
   the same path here: `redirect/` (`npm run deploy:redirect`).
+- **Account:** when the Cloudflare login sees more than one account, set
+  `CLOUDFLARE_ACCOUNT_ID` to the one that holds `levships.com` for both
+  deploys.
 - **Cache:** `prebuild` clears Astro's content cache, which otherwise keeps
   rendered pages pointing at an earlier code-block stylesheet after
   `ec.config.mjs` changes. `public/_headers` sets the caching.

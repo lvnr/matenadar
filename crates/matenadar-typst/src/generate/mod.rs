@@ -5,9 +5,9 @@ mod blocks;
 mod escape;
 mod elements;
 mod inline;
-mod kinds;
 mod pictures;
 pub mod typ;
+mod widgets;
 
 use std::collections::HashMap;
 use std::ops::Range;

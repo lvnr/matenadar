@@ -1,16 +1,13 @@
 # How Dinosaurs Worked, as a 32-page picture book
 
-The picture-book template (`matenadar template picture-book spec.json`) composing a 32-page,
-separately ended, 8.5 x 11 in book from Whynarium: How Dinosaurs Worked. The story pages are the book's
-own lettered, full-bleed pages; the title, copyright and back matter are typeset by the template from the
+A 32-page, separately ended, 8.5 x 11 in picture book from Whynarium: How Dinosaurs Worked,
+committed as a standalone Matenadar document (`doc.json`). The story pages are the book's
+own lettered, full-bleed pages; the title, copyright and back matter are typeset directly from the
 book's own words.
 
 ```
-python3 make.py && python3 ../../scripts/review.py . --dpi 100
+matenadar build samples/picture-book/doc.json -o samples/picture-book/build/picture-book.pdf
 ```
-
-`make.py` writes `spec.json` (the template's input), draws `art/dig-site.svg` and runs the template into
-`doc.json`. The spec is the interesting file: everything below comes from it.
 
 ## The plan
 

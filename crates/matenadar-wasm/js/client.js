@@ -10,7 +10,7 @@
 //   const svg = await mt.svg(1);
 
 const METHODS = [
-  "assets", "addFont", "addFile", "open", "template", "fonts", "close",
+  "assets", "addFont", "addFile", "open", "fonts", "close",
   "pages", "spreads", "svg", "png", "rgba", "pdf", "fingerprint", "fontsUsed",
   "hit", "rects", "node", "lines", "locate", "position", "layout", "document",
   "caret", "offsetAt", "selectionRects", "textLines", "source",

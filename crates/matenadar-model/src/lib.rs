@@ -16,15 +16,14 @@ pub mod block;
 pub mod component;
 pub mod element;
 pub mod figures;
-pub mod kinds;
 pub mod ops;
 pub mod resolve;
 pub mod runs;
 pub mod style;
-pub mod template;
 pub mod units;
 pub mod validate;
 pub mod walk;
+pub mod widgets;
 
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};

@@ -32,7 +32,7 @@ import { MatenadarClient } from "@matenadar/wasm/client";
 const mt = await MatenadarClient.start();
 // Or serve matenadar.wasm from jsDelivr while keeping the worker same-origin:
 // const mt = await MatenadarClient.start({
-//   wasm: "https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.1.0/dist/matenadar.wasm",
+//   wasm: "https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.2.0/dist/matenadar.wasm",
 // });
 
 await mt.addFont(await (await fetch("/fonts/LibertinusSerif-Regular.otf")).arrayBuffer());
@@ -40,7 +40,7 @@ const { pages } = await mt.open(doc);
 const svg = await mt.svg(1);
 ```
 
-See the [main repository](https://github.com/lvnr/matenadar) and [`docs/model.md`](https://github.com/lvnr/matenadar/blob/main/docs/model.md) for the full document model and editing API.
+See the [documentation](https://matenadar-docs.levships.com/docs/reference/wasm/) and [main repository](https://github.com/lvnr/matenadar) for the full document model and editing API.
 
 ## License
 

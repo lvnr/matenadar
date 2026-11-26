@@ -54,11 +54,9 @@ These samples are not rebuilds: each shows engine abilities on a real book's tex
 
 | Sample | Shows | Built with |
 |---|---|---|
-| `picture-book` | the picture-book template: 32 pages, lettered full-bleed story pages, a spread with words over art, typeset front and back matter (Whynarium: How Dinosaurs Worked) | `python3 samples/picture-book/make.py` |
+| `picture-book` | 32-page full-bleed picture book: lettered story pages, a two-page spread with words over art on feathered scrims, typeset front and back matter (Whynarium: How Dinosaurs Worked) | committed `doc.json` |
 | `nonfiction-figures` | numbered figures, a list of figures, a cross-reference, a full-bleed plate, black ink with the grey filter (The Attention Repair Manual, chapters 1–2) | `python3 samples/nonfiction-figures/make.py` |
 | `black-ink` | the black-ink check reporting a colour picture and coloured type, and the grey filter clearing them | `python3 samples/black-ink/make.py` |
-| `puzzles` | a maze, a crossword, a Sudoku, a logic grid and a dot-to-dot drawn from data, with their solutions and folios (Christmas Word Search's page) | `python3 samples/puzzles/make.py` |
 | `journal` | a month calendar, seven dated pages from one repeated page, dot-grid and graph-paper rulings (The Attention Repair Manual's Leave Note) | `python3 samples/journal/make.py` |
-| `paper-craft` | a cube's net with picture faces, cut and fold lines, glue tabs and scissors (I Just Had It) | `python3 samples/paper-craft/make.py` |
 | `comic` | comic panels with speech, thought, whisper, shout and caption balloons (I Just Had It) | `python3 samples/comic/make.py` |
-| `coloring` | the coloring template: pictures on right-hand pages with blank backs (One Pen: Winter Lights) | `python3 samples/coloring/make.py` |
+| `coloring` | single-sided full-page illustrations on right-hand pages with blank backs and a pen-test grid (One Pen: Winter Lights) | committed `doc.json` |

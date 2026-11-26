@@ -52,5 +52,5 @@ if [ "$test" = 1 ]; then
   # Verify zero-arg Matenadar.load() from staged npm package.
   node -e 'import("./packages/wasm/dist/matenadar.js").then(async ({ Matenadar }) => { const mt = await Matenadar.load(); if (!Array.isArray(mt.fonts())) throw new Error("fonts() failed"); console.log("zero-arg @matenadar/wasm load ok"); })'
   # A sample from its folder through layout, PDF and both EPUBs, with times and peak memory.
-  node crates/matenadar-wasm/tests/smoke.mjs dist/matenadar.wasm samples/puzzles --fonts "$(dirname "$(echo "$fonts" | head -1)")"
+  node crates/matenadar-wasm/tests/smoke.mjs dist/matenadar.wasm samples/nonfiction-figures --fonts "$(dirname "$(echo "$fonts" | head -1)")"
 fi

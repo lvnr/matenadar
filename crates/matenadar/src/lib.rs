@@ -4,7 +4,7 @@
 //! provides the `matenadar` CLI binary (`cargo install matenadar`):
 //!
 //! - [`model`] (`matenadar-model`): JSON document model, validation,
-//!   templates, and reversible edit operations (no Typst dependency).
+//!   and reversible edit operations (no Typst dependency).
 //! - [`typst`] (`matenadar-typst`, feature `typst`): Typst layout engine,
 //!   PDF/PNG/SVG rendering, hit-testing, layout inspection, and preflight
 //!   checks.

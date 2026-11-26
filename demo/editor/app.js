@@ -48,8 +48,8 @@ async function run(label, fn) {
 // ---- Opening a book ----
 
 /**
- * Gives every block and element of the content an id, as Aldus's composed
- * documents have (the samples were written by hand and leave many out).
+ * Gives every block and element of the content an id, as generated documents
+ * typically have (hand-written samples omit many of them).
  */
 function withIds(doc) {
   const used = new Set();

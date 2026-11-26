@@ -279,12 +279,8 @@ impl Gen<'_> {
             }
             Element::Lettering(l) => self.lettering(l, &place),
             Element::LetterGrid(g) => self.letter_grid(g, &place, scaled),
-            Element::Maze(m) => self.maze(m, &place),
-            Element::LogicGrid(g) => self.logic_grid(g),
-            Element::Dots(d) => self.dots(d, &place),
             Element::Ruling(r) => self.ruling(r, &place),
             Element::Calendar(c) => self.calendar(c, &place),
-            Element::Craft(c) => self.craft(c, &place),
             Element::Panels(p) => self.panels(p, &place),
             Element::Balloon(b) => self.balloon(b, &place),
             Element::Line(_) => unreachable!(),

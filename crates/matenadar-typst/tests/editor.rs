@@ -152,7 +152,7 @@ fn edits_undo_and_redo() {
 
 #[test]
 fn a_step_that_puts_room_before_a_block_and_sets_it_undoes() {
-    // Ask Aldus on the pages: room in before a block and the block's spacing set, as one step, then another.
+    // Interactive layout edits: space before a block and block spacing set, as one step, then another.
     let mut e = editor();
     let original = e.document().clone();
     let ops = |v: Value| -> Vec<Op> { serde_json::from_value(v).unwrap() };
@@ -327,7 +327,7 @@ fn the_patch_replays_to_the_same_pages() {
         .collect();
     assert_eq!(paths, vec!["set /set/align", "set /crop", "set /x", "insert ", "set /on_page/p6"], "{layout}");
 
-    // As Aldus replays it: the words through the manuscript, then the layout edits.
+    // Replay patch: the words through the manuscript, then the layout edits.
     let mut replayed = doc();
     for op in patch.words.iter().chain(&patch.layout) {
         replayed.apply(op).unwrap();

@@ -89,11 +89,6 @@ export function createMatenadar(io, defaultWasmUrl) {
       return { ...this.open(doc, check), missing };
     }
 
-    /** A book kind's whole document from a spec (`picture-book`…); see docs/model.md, Templates. */
-    template(kind, spec) {
-      return this.#call("template", { kind, spec });
-    }
-
     /** The font families given. */
     fonts() {
       return this.#call("fonts", {});

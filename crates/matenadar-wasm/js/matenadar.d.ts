@@ -87,11 +87,11 @@ export interface Nudged extends Edited {
 
 /** The edits since the document opened (or the last rebase). */
 export interface Patch {
-  /** Changes to the words, for the manuscript (in Aldus, the chapter's document). */
+  /** Changes to the words, for syncing back to a source manuscript. */
   words: Op[];
   /** The nodes whose words changed; `node(id)` gives their words now (null: removed). */
   touched: string[];
-  /** Changes to the layout, each field folded to its last setting: what `aldus-engine layout apply` keeps. */
+  /** Changes to the layout, each field folded to its last setting, replayable via `matenadar apply`. */
   layout: Op[];
 }
 
@@ -145,9 +145,9 @@ export interface Opened {
 }
 
 export interface CheckOptions {
-  /** Live text this far inside the trim (default 0.25in). */
+  /** Live text this far inside the outer trim (default 0.25in). */
   safe?: string | number;
-  /** The spine-side margin (default KDP's for the page count). */
+  /** The spine-side inside margin (defaults to a page-count-scaled spine gutter). */
   gutter?: string | number;
   min_ppi?: number;
   /** Hold the pages to a black-ink interior even when the document doesn't say it is one. */
@@ -197,7 +197,6 @@ export interface MatenadarApi {
   addFont(data: Bytes): number;
   addFile(path: string, data: Bytes): void;
   open(doc: MatenadarDocument, check?: CheckOptions): Opened;
-  template(kind: "picture-book" | "coloring" | string, spec: object): MatenadarDocument;
   fonts(): string[];
   close(): void;
 
@@ -257,7 +256,6 @@ export declare class Matenadar implements MatenadarApi {
   addFont(data: Bytes): number;
   addFile(path: string, data: Bytes): void;
   open(doc: MatenadarDocument, check?: CheckOptions): Opened;
-  template(kind: "picture-book" | "coloring" | string, spec: object): MatenadarDocument;
   fonts(): string[];
   close(): void;
   pages(): PageInfo[];

@@ -1,14 +1,13 @@
-# One Pen: Winter Lights, from the coloring template
+# One Pen: Winter Lights, single-sided coloring interior
 
-`matenadar template coloring spec.json`: four of the book's activity pages (`coloring/pNN-*/pNN-*.activity.svg`),
-each on a right-hand page with its back left blank but for the book's instruction line, after a typeset title page,
-copyright page and "this book belongs to" page, and a page of squares to try the pen on at the end. The pictures are
-whole 8.5 x 11 in pages with their own white edge, so they go in as `full` pages at the trim. Adobe Caslon Pro, as
-the book.
+Four activity pages (`coloring/pNN-*/pNN-*.activity.svg`), each on a right-hand page with its back
+left blank but for the book's instruction line, after a typeset title page, copyright page and
+"this book belongs to" page, and a page of squares to try the pen on at the end. Committed as a
+standalone Matenadar document (`doc.json`). The pictures are whole 8.5 x 11 in pages with their own
+white edge, so they go in as full pages at the trim. Adobe Caslon Pro, as the book.
 
 ```
-python3 samples/coloring/make.py      # spec.json, then doc.json through the template
-bin/matenadar build samples/coloring/doc.json -o samples/coloring/build/coloring.pdf --png samples/coloring/build/png
+matenadar build samples/coloring/doc.json -o samples/coloring/build/coloring.pdf --png samples/coloring/build/png
 ```
 
 | page | shows |

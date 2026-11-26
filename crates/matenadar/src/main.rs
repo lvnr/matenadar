@@ -18,9 +18,8 @@ Usage:
   matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check]
   matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--no-live-text]
                  [--cover image.jpg] [--identifier urn:isbn:…]
-  matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black]
+  matenadar check <doc.json> [--preset kdp] [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black]
   matenadar validate <doc.json>
-  matenadar template <kind> <spec.json> [-o doc.json]   (a book kind's document: picture-book, coloring)
   matenadar layout <doc.json> [--pages 1-3]
   matenadar locate <doc.json> --page N --x PT --y PT
   matenadar fingerprint <doc.json>      (a hash per page, the same as the WebAssembly build's)
@@ -212,22 +211,6 @@ fn run() -> Result<ExitCode> {
             }
             Ok(if issues.iter().any(|i| i.severity == Severity::Error) { ExitCode::from(1) } else { ExitCode::SUCCESS })
         }
-        "template" => {
-            let kind = args.pos.first().ok_or_else(|| anyhow!("template needs a kind ({})", matenadar_model::template::KINDS.join(", ")))?;
-            let path = args.pos.get(1).ok_or_else(|| anyhow!("template needs a spec (JSON)"))?;
-            let text = fs::read_to_string(path).with_context(|| format!("reading {path}"))?;
-            let spec: serde_json::Value = serde_json::from_str(&text).with_context(|| format!("{path} is not JSON"))?;
-            let doc = matenadar_model::template::compose(kind, &spec).map_err(|e| anyhow!("{path}: {e}"))?;
-            match args.get("-o") {
-                Some(out) => {
-                    fs::write(out, doc.to_json() + "\n").with_context(|| format!("writing {out}"))?;
-                    let pages: usize = doc.content.len();
-                    println!("{kind} → {out} ({pages} items)");
-                }
-                None => println!("{}", doc.to_json()),
-            }
-            Ok(ExitCode::SUCCESS)
-        }
         "validate" => {
             let (doc, _) = load(&args)?;
             let problems = validate(&doc);
@@ -359,7 +342,10 @@ fn run() -> Result<ExitCode> {
 }
 
 fn check_options(args: &Args) -> Result<CheckOptions> {
-    let mut o = CheckOptions::default();
+    let mut o = match args.get("--preset") {
+        Some("kdp") | None => CheckOptions::default(),
+        Some(other) => bail!("--preset must be \"kdp\", not \"{other}\""),
+    };
     if let Some(s) = args.get("--safe") {
         o.safe_pt = matenadar_model::Length::parse(s).map_err(|e| anyhow!(e))?.resolve(11.0, 0.0);
     }

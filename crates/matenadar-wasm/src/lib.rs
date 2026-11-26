@@ -19,7 +19,7 @@
 //! Methods (`js/matenadar.js` names them in camelCase):
 //!
 //! - Loading: `assets` `{doc}` (the files to fetch), `open` `{doc, check}`,
-//!   `close`, `fonts`; `template` `{kind, spec}` (a book kind's document).
+//!   `close`, `fonts`.
 //! - Pages: `pages`, `spreads`, `svg` `{page, bleed}`, `png` `{page, scale
 //!   | dpi, bleed}`, `rgba` `{page, scale, bleed}` (8 bytes of width and
 //!   height, little-endian, then the pixels), `pdf`, `fingerprint`,
@@ -173,11 +173,6 @@ impl Engine {
             "assets" => {
                 let doc = Document::from_json(&p.get("doc").ok_or("assets needs doc")?.to_string())?;
                 return Ok(Out::Json(json!({"fonts": doc.fonts, "files": doc.assets()})));
-            }
-            "template" => {
-                let kind = str_of("kind").ok_or("template needs a kind")?;
-                let doc = matenadar_model::template::compose(kind, p.get("spec").ok_or("template needs a spec")?)?;
-                return Ok(Out::Json(json!(doc)));
             }
             "open" => {
                 let doc = Document::from_json(&p.get("doc").ok_or("open needs doc")?.to_string())?;

@@ -405,34 +405,12 @@ The types:
     "thickness"}`. These are capsules over found words, drawn under the
     letters; `"shape": "cells"` fills each cell instead.
 
-### Book kinds' elements
+### Structured vector elements
 
-Each is drawn from its data, as vector, so an edit to the data redraws it; a
-solution page is the same element with `solved: true`. Lines are SVG; words
-are live text in the element's `style`.
+Each is drawn from its data as vector, so editing the data redraws it cleanly.
+Lines are SVG; words are live text in the element's `style`.
 
-- **`maze`**: `rows`, one string per row of cells, a hexadecimal digit per
-  cell giving its walls (1 top, 2 right, 4 bottom, 8 left, added up: `f` is
-  closed); or `segments` (`[x1, y1, x2, y2]` in cells) with `size`
-  (`[columns, rows]`) for mazes that aren't a grid. `cell` (default the
-  width over the columns), `start` and `end` (a cell `[row, column]`, or a
-  point in cells: a dot and a ring), `solution` (cells or points in order),
-  `solved`, `walls`, `path` (strokes), `marks` (the start's and end's
-  colour). Walls along one line are drawn as one stroke.
-- **`logic-grid`**: `categories` (`[{"name", "items": [...]}]`, two or more,
-  all the same length), set in the usual staircase: the first category down
-  the side with the others across the top, the last ones down the side under
-  it. `marks`: `{"a": [category, item], "b": [category, item], "mark": "o"}`
-  (`"o"` a dot, `"x"` a cross, or up to three letters). `cell` (default
-  14 pt), `style`, `lines`, `frame`.
-- **`dots`** (dot-to-dot): `points` in the `viewbox`'s units (default
-  points), numbered from `start` (default 1) beside each dot, outside the
-  turn the line makes there (`labels` gives `[dx, dy]` per point instead).
-  `breaks` (point indices) start new strokes; a stroke that ends on its first
-  point is closed, and that point isn't numbered again. `solved` draws the
-  line (`line`); `dot` and `size` (the dot's and the number's size), `color`,
-  `style`.
-- **`ruling`**: journal and planner rulings over `w` × `h`: `pattern`
+- **`ruling`**: ruled areas over `w` × `h`: `pattern`
   (`lines`, `dots`, `grid`, `graph`, `isodots`), `pitch` (default 0.3 in for
   lines, 0.2 in otherwise), `stroke`; `graph` makes every `major`-th line
   (default 5) `major_stroke`; `lines` take `first` (the first line's depth)
@@ -443,27 +421,18 @@ are live text in the element's `style`.
   `style` (day numbers), `header_style` and `header` (the weekday row's
   height), `lines`, `outside: true` (the next and last months' days, in
   `outside_color`).
-- **`craft`** (paper-craft sheets): `faces` (polygons, `points`, with
-  `fill`, or a picture `src` with `crop`, `focus` and `filter`, cut to the
-  face; `label`), `edges` (`from`, `to`, `kind`: `cut` (default),
-  `mountain`, `valley` or `score`; `tab: {"depth", "angle", "side",
-  "label"}` adds a glue tab and makes the edge a fold), `marks` (`at`,
-  `kind`: a registration target or `dot`, `label`), `viewbox`, the line
-  kinds' strokes (`cut` solid, `mountain` dash-dot, `valley` dashed, `score`
-  dotted), `glue` (the tabs' colour), `scissors: true` (on the first cut
-  line).
-- **`panels`** (comic pages): `rows` of `panels` (`{"h": "1fr", "panels":
+- **`panels`**: framed panel grids (`rows` of `panels`: `{"h": "1fr", "panels":
   [...]}`; heights and widths are lengths or shares, `"2fr"`), `gutter`,
   `border`, `radius`, `fill`. A panel has `id`, `w`, a picture (`src`,
   `crop`, `focus`, `filter`, `alt`) cut to it, `fill`, `border`, and
-  `elements` placed from its corner (balloons, captions) and free to break
-  its border.
-- **`balloon`**: `text` or `content` in `style` (default the design's
-  `balloon` style) with `set`, wrapped at `w` in lines of even length.
-  `shape`: `speech` (default) and `whisper` (dashed) ellipses, a `thought`
-  cloud, a `shout` burst, a `caption` box. `tail` is the point the tail runs
-  to (in the same coordinates as `x`, `y`); the balloon and its tail are one
-  outline. `fill`, `stroke`, `inset`.
+  `elements` placed from its corner (callouts, captions, balloons) and free
+  to cross its border.
+- **`balloon`**: callouts and speech balloons—`text` or `content` in `style`
+  (default the design's `balloon` style) with `set`, wrapped at `w` in lines
+  of even length. `shape`: `speech` (default) and `whisper` (dashed) ellipses,
+  a `thought` cloud, a `shout` burst, a `caption` box. `tail` is the point the
+  tail runs to (in the same coordinates as `x`, `y`); the balloon and its tail
+  are one outline. `fill`, `stroke`, `inset`.
 
 ## Blocks (in flows and frames)
 
@@ -540,12 +509,11 @@ changed manuscript still lands where it was made. Prefer ids to `index` and
 
 ## Checks
 
-`matenadar check` reports:
+`matenadar check` runs print-readiness and typographic preflight (with an optional `--preset kdp` preset for Amazon KDP defaults) and reports:
 
 - `overflow`: a frame's text doesn't fit.
-- `text-in-margin`: live text closer to the trim than KDP allows. That is
-  0.25 in outside, and at the spine, KDP's minimum for the page count.
-- `low-resolution`: a raster image under 300 ppi at its printed size.
+- `text-in-margin`: live text closer to the trim than `--safe` (default 0.25 in) or closer to the spine than `--gutter` (defaults to a page-count-scaled spine margin).
+- `low-resolution`: a raster image under `--min-ppi` (default 300 ppi) at its printed size.
 - `color-in-black-ink`: on a black-ink interior (`print.ink`, or `--ink
   black`), a picture with colour in it (more than a few clearly coloured
   pixels, or an overall cast), or text or a shape in a colour that isn't a
@@ -555,111 +523,6 @@ changed manuscript still lands where it was made. Prefer ids to `index` and
 - `widow`, `orphan`.
 - `missing-file`.
 - `compiler`: notices from the layout engine.
-
-## Templates
-
-A template makes a book kind's whole document from a short description (a
-spec). The document is then edited like any other. Items keep the ids their
-spec gives them (`id`; otherwise their place, as `story-03`), so edits kept as
-operations land where they were made when the spec changes and the document
-is composed again. `matenadar template <kind> <spec.json> -o doc.json`; in
-WebAssembly, `template({kind, spec})`. Every spec takes `design`: changes to
-the template's design, merged into it object by object (`{"styles": {"title":
-{"size": 48}}}`).
-
-### `picture-book`
-
-Story pages are pictures to the bleed with their words lettered in the art
-(the default); front and back matter is typeset.
-
-```json
-{"trim": "8.5x11", "pages": 32, "ends": "separate", "title": "…", "subtitle": "…",
- "author": "…", "illustrator": "…", "publisher": "…", "copyright": "…", "dedication": "…",
- "fonts": {"display": "…", "text": "…"}, "font_dirs": ["fonts"],
- "story": [
-   {"src": "art/p03.jpg", "alt": "…"},
-   {"spread": true, "src": "art/p04-05.jpg", "gutter": "0.125in",
-    "left": {"text": "Words set over the art, on request."}},
-   {"spread": true, "left": {"src": "art/p06.jpg"}, "right": {"src": "art/p07.jpg"}}
- ],
- "back": [{"heading": "About the author", "text": "…"}]}
-```
-
-- `trim`: `8.5x8.5`, `8x10` or `8.5x11` (inches), with a 0.125 in bleed
-  (`bleed` changes it). `pages`: 24, 32 or 40.
-- `ends: "separate"` (default; the endpapers are their own sheets): page 1 is
-  the title page (or with `half_title`, the half title, and the title page on
-  page 3), its back the copyright and dedication, and the story runs from
-  there.
-- `ends: "self"` (the first and last leaves are the endpapers): pages 1 and N
-  are pasted to the boards, 2–3 and N−2–N−1 are the endpapers (`endpapers`:
-  `{"src"}`, or `front` and `back`), 4 the copyright and dedication, 5 the
-  title page, and the story runs from 6 to N−3.
-- A story item is a page (`src`, with `crop`, `focus` and `alt`) or a spread
-  (`spread: true`, as the spread item). `text` sets words over the art in a
-  frame at the top of the page, kept in the safe zone on a soft panel;
-  `words` places any elements over it.
-- A spread must open on a left-hand (even) page, and the story and back
-  matter must fit: the template says which item breaks the plan rather than
-  leaving a page blank in the middle of a story. Pages left over at the end
-  are blank.
-- `title_art` puts a picture behind the title page, with the title on soft
-  panels over it.
-
-### `a-plus`
-
-A book's A+ modules as the store shows them, for a proof before upload: one
-page as wide as the store's module area that grows with the modules
-(`"grow": true`), each module's pictures in their upload slots, cropped as the
-store crops them.
-
-```json
-{"width": "desktop", "title": "…", "marketplace": "Amazon.com",
- "modules": [
-   {"layout": "image-header-with-text", "label": "…", "heading": "…", "body": "…",
-    "images": [{"src": "a-plus/01.jpg", "alt": "…"}]},
-   {"layout": "comparison-chart", "comparisons": [{"title": "…", "asin": "…", "src": "…"}],
-    "rows": [{"label": "Pages", "value": "32"}]}
- ]}
-```
-
-- `width`: `desktop` (970 px, the default), `mobile` (480 px), or pixels.
-  Render at 96 dpi for one pixel per CSS pixel.
-- Slots, in pixels: `image-header-with-text` 970×600, `image-text-overlay`
-  970×300 (its words on a panel over the picture; under it on a phone),
-  `single-left-image`, `single-right-image`, `single-image-highlights`,
-  `three-images-text` and `multiple-images` 300×300, `single-image-sidebar`
-  300×400, `four-images-text` 220×220, `comparison-chart` 150×300,
-  `company-logo` 600×180; another layout 970×300. A picture's `w` and `h`
-  give its upload's own size where the store has changed the slot, and
-  `focus` where the crop keeps it.
-- Up to seven modules. `heading: false` leaves out the proof's own heading;
-  `font` sets the text's family (the store's sans by default).
-
-### `coloring`
-
-Each picture has a right-hand page to itself and its back is left blank, so
-markers that bleed through spoil nothing; the front matter is typeset.
-
-```json
-{"trim": "8.5x11", "title": "…", "subtitle": "…", "author": "…", "copyright": "…",
- "belongs_to": true, "back_note": "…", "test_page": "Try your pen here",
- "pages": [{"src": "art/p01.svg", "title": "The Lamplighter", "alt": "…"},
-           {"src": "art/p02.svg", "full": true}]}
-```
-
-- `trim`: `8.5x11` (default), `8x10`, `8.5x8.5`, `7x10` or `6x9`; `margin`
-  (default 0.5 in) and `inside` (0.75 in) keep pictures clear of the edges.
-- The plan: the title page, the copyright page, "this book belongs to"
-  (`belongs_to`: true, false or its words), a blank page if needed so the
-  pictures open on a right-hand page, then each picture and its back.
-- A picture fits inside the margins, under its `title` if it has one;
-  `full: true` gives it the whole page: to the bleed with `bleed: true`, to
-  the trim otherwise (art drawn with its own white edge).
-- `single_sided: false` runs pictures on both sides; `back_note` sets small
-  words at the foot of each blank back; `folios` numbers the pictures'
-  pages; `test_page` (true or its heading) closes the book with squares to
-  try colors on.
 
 ## EPUB
 
@@ -769,9 +632,8 @@ then `http://localhost:5199/demo/editor/`.
 ```
 matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check] [--json]
 matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--no-live-text] [--cover image.jpg] [--identifier urn:isbn:…]
-matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black] [--json]
+matenadar check <doc.json> [--preset kdp] [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black] [--json]
 matenadar validate <doc.json>
-matenadar template <kind> <spec.json> [-o doc.json]   # picture-book, coloring
 matenadar layout <doc.json> [--pages 1-3]        # every node on every page, with its extent
 matenadar locate <doc.json> --page N --x PT --y PT
 matenadar fingerprint <doc.json>                  # a hash per page, as the WebAssembly build gives

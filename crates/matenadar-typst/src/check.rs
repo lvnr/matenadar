@@ -1,5 +1,6 @@
-//! Preflight: what a printer or KDP's previewer would refuse, and what a
-//! careful typesetter would fix.
+//! Preflight: print-readiness checks and typographic warnings (overflow,
+//! safe-area margins, spine gutter, image resolution, black-ink colour checks,
+//! missing glyphs, fallback fonts, widows and orphans).
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -35,9 +36,9 @@ pub struct Issue {
 
 #[derive(Clone, Debug)]
 pub struct CheckOptions {
-    /// Live text must stay this far inside the trim (KDP: 0.25 in).
+    /// Live text must stay this far inside the outer/top/bottom trim (default 0.25 in / 18 pt).
     pub safe_pt: f64,
-    /// The spine-side margin; `None` takes KDP's minimum for the page count.
+    /// The spine-side inside margin; `None` scales by page count via [`spine_gutter`].
     pub gutter_pt: Option<f64>,
     /// Raster images must reach this resolution at their printed size.
     pub min_ppi: f64,
@@ -52,8 +53,17 @@ impl Default for CheckOptions {
     }
 }
 
-/// KDP's minimum inside margin for a page count, in points.
-pub fn kdp_gutter(pages: usize) -> f64 {
+impl CheckOptions {
+    /// Print-on-demand preset matching Amazon KDP's safe area (0.25 in),
+    /// page-count-scaled inside gutter, and 300 PPI image minimum.
+    pub fn kdp(pages: usize) -> Self {
+        Self { safe_pt: 18.0, gutter_pt: Some(spine_gutter(pages)), min_ppi: 300.0, black_ink: false }
+    }
+}
+
+/// Recommended minimum inside (spine) margin for a perfect-bound book by page
+/// count, in points (0.375 in up to 150 pages, scaling up to 0.875 in).
+pub fn spine_gutter(pages: usize) -> f64 {
     let inches = match pages {
         0..=150 => 0.375,
         151..=300 => 0.5,
@@ -121,7 +131,7 @@ fn page_issues(s: &Session, opts: &CheckOptions, all: &[Item], keep: Option<&BTr
     }
 
     let pages = s.layout().pages();
-    let gutter = opts.gutter_pt.unwrap_or_else(|| kdp_gutter(pages.len()));
+    let gutter = opts.gutter_pt.unwrap_or_else(|| spine_gutter(pages.len()));
     let mut design_families: BTreeSet<String> = design_families(s);
     let resolved: Vec<String> = design_families.iter().filter_map(|f| s.fonts().resolve(f)).map(|f| f.to_lowercase()).collect();
     design_families.extend(resolved);

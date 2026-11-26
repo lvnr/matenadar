@@ -1,0 +1,72 @@
+---
+/**
+ * The landing page's document: head, faces, theme, and nothing else. The
+ * theme follows Starlight's `localStorage['starlight-theme']` so the front
+ * page and the docs stay in step.
+ */
+import '@fontsource-variable/geist';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '../styles/tokens.css';
+import '../styles/landing.css';
+import geist from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+
+interface Props {
+	title: string;
+	description: string;
+}
+const { title, description } = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		{canonical && <link rel="canonical" href={canonical} />}
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		{canonical && <meta property="og:url" content={canonical} />}
+		<meta name="twitter:card" content="summary" />
+		<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="preload" href={geist} as="font" type="font/woff2" crossorigin />
+		<script is:inline>
+			// Before paint: the theme Starlight stored, or the system's.
+			(() => {
+				let stored = '';
+				try {
+					stored = localStorage.getItem('starlight-theme') || '';
+				} catch {}
+				const theme =
+					stored === 'light' || stored === 'dark'
+						? stored
+						: matchMedia('(prefers-color-scheme: dark)').matches
+							? 'dark'
+							: 'light';
+				document.documentElement.dataset.theme = theme;
+			})();
+		</script>
+		<script type="application/ld+json" set:html={JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'SoftwareApplication',
+			name: 'Matenadar',
+			applicationCategory: 'DeveloperApplication',
+			operatingSystem: 'macOS, Linux, Windows, WebAssembly',
+			description,
+			license: 'https://www.apache.org/licenses/LICENSE-2.0',
+			softwareVersion: '0.1.0',
+			codeRepository: 'https://github.com/lvnr/matenadar',
+			offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+		})} />
+	</head>
+	<body>
+		<a class="skip" href="#main">Skip to the content</a>
+		<slot />
+	</body>
+</html>

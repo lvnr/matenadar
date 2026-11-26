@@ -1,0 +1,177 @@
+---
+title: Quick start
+description: Your first Matenadar book, from a JSON model to PDF, PNG and EPUB, with a layout report, a located point, a preflight check and an edit you can undo.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+This page takes one small document through everything the command line does. It uses Libertinus Serif, one of the faces built into the command, so it sets the same pages on any machine. [Install `matenadar`](/docs/getting-started/install/) first, or put `npx` in front of each command.
+
+## Write the model
+
+Save this as `book.json`. It is a title page laid out by hand, then a chapter that flows through a master.
+
+```json title="book.json"
+{
+  "matenadar": "1",
+  "meta": {"title": "The Colophon", "author": "A. Scribe", "lang": "en-US"},
+  "design": {
+    "colors": {"ink": "#1d1914", "rubric": "#b5321f", "paper": "#f4ede1"},
+    "base": {"font": "Libertinus Serif", "size": 10.5, "line_height": 1.4, "color": "ink"},
+    "styles": {
+      "body": {"align": "justify", "indent": "1.2em", "hyphenate": true},
+      "h1": {"size": 20, "space_before": "2.4em", "space_after": "1.2em", "align": "center", "keep_with_next": true},
+      "folio": {"size": 8, "align": "center", "color": "rubric"}
+    },
+    "masters": {
+      "body": {
+        "width": "5.5in", "height": "8.5in", "bleed": "0.125in",
+        "margins": {"top": "0.75in", "bottom": "0.85in", "inside": "0.8in", "outside": "0.65in"},
+        "style": "body",
+        "foreground": [
+          {"type": "text", "x": 0, "y": "7.95in", "w": "5.5in", "style": "folio",
+           "content": [{"field": "page"}], "when": "not-first not-blank"}
+        ]
+      }
+    }
+  },
+  "content": [
+    {"type": "page", "id": "title", "master": "body", "fill": "paper", "elements": [
+      {"type": "lettering", "id": "initial", "text": "C", "size": 160, "color": "rubric",
+       "x": "0.6in", "y": "1in", "decorative": true},
+      {"type": "text", "id": "title-words", "x": "0.8in", "y": "4.6in", "w": "3.9in",
+       "style": "h1", "text": "The Colophon", "set": {"space_before": 0}}
+    ]},
+    {"type": "section", "id": "ch1", "master": "body", "start": "recto", "title": "One", "flow": [
+      {"type": "h", "id": "h-1", "level": 1, "text": "One"},
+      {"type": "p", "id": "p-1", "content": [
+        "At the end of a manuscript the scribe wrote a ", {"text": "colophon", "em": true},
+        ": who copied it, where, and when."
+      ]},
+      {"type": "p", "id": "p-2", "text": "Matenadar keeps the same habit. Every page it sets can say what it holds, and every change to it can be taken back."}
+    ]}
+  ]
+}
+```
+
+A few things to notice:
+
+- Lengths are points unless they say otherwise (`"0.8in"`, `"3mm"`, `"1.2em"`). Placed elements are measured from the top-left corner of the trim.
+- The master’s margins say `inside` and `outside`, so they mirror on facing pages.
+- The folio is a text frame in the master’s `foreground`, drawn on every page `when` it isn’t the section’s first or a blank page; `{"field": "page"}` fills in the page number.
+- The big initial is `lettering` marked `decorative`: it is drawn as outlines, so it may cross the margins without failing a print check.
+- The chapter starts `recto`, so the engine leaves page 2 blank and sets the chapter on page 3.
+
+## Build it
+
+<Steps>
+
+1. **Validate the model.** Problems come back with the JSON path of what is wrong.
+
+   ```console
+   $ matenadar validate book.json
+   valid
+   ```
+
+2. **Lay it out to PDF, with PNG proofs and a preflight check.**
+
+   ```console
+   $ matenadar build book.json -o book.pdf --png proofs --check
+   3 pages → book.pdf (layout 38 ms, total 61 ms)
+   ```
+
+   `--png proofs` writes `proofs/p-001.png`, `p-002.png`… at 100 dpi (`--dpi` changes it, `--bleed` includes the bleed). `--svg DIR` does the same as SVG, and `--pages 1-3,7` limits either to some pages. Your timings will differ.
+
+3. **Ask what landed where.** `layout` reports every node on every page with its box, in points from the trim’s corner.
+
+   ```console
+   $ matenadar layout book.json --pages 3
+   ```
+
+   ```json
+   [
+     {
+       "page": 3,
+       "label": "1",
+       "width": 396.0,
+       "height": 612.0,
+       "nodes": [
+         {"id": "ch1", "kind": "section", "rect": {"x0": 57.6, "y0": 79.3, "x1": 349.2, "y1": 214.8}},
+         {"id": "h-1", "kind": "h", "rect": {"x0": 57.6, "y0": 79.3, "x1": 349.2, "y1": 99.4}},
+         {"id": "p-1", "kind": "p", "rect": {"x0": 57.6, "y0": 128.2, "x1": 349.2, "y1": 157.6}}
+       ]
+     }
+   ]
+   ```
+
+   (Abridged; the numbers are illustrative.)
+
+4. **Map a point back to the model.** `locate` gives the node under a point and the byte offset in its words, or `null`.
+
+   ```console
+   $ matenadar locate book.json --page 3 --x 120 --y 140
+   {"node":"p-1","offset":21}
+   ```
+
+5. **Check it the way a printer would.**
+
+   ```console
+   $ matenadar check book.json --safe 0.25in
+   no issues on 3 pages
+   ```
+
+   An issue prints its severity, code, page and node, such as `warning widow [p4 p-9]: p-9 carries one line to the top of page 4`. With `--json` the list is JSON, and the command exits with status 1 when any issue is an error. See [preflight checks](/docs/guides/checks/).
+
+</Steps>
+
+## Change it
+
+Every change is an operation, and applying one returns its inverse. Save this as `ops.json`:
+
+```json title="ops.json"
+[
+  {"op": "insert-text", "id": "p-2", "offset": 0, "text": "Today, "},
+  {"op": "set", "id": "h-1", "path": "/set/color", "value": "rubric"},
+  {"op": "insert", "after": "p-2", "value": {"type": "p", "id": "p-3", "text": "A third paragraph, added by an operation."}}
+]
+```
+
+```console
+$ matenadar apply book.json ops.json -o book-2.json
+```
+
+`apply` writes the changed document (to the input file itself when there is no `-o`) and prints, for each operation, its `inverse`, the `changed_pages`, the `page_count` and the `compile` time in milliseconds. The first one looks like this:
+
+```json
+{"inverse": {"op": "delete-text", "id": "p-2", "start": 0, "end": 7}, "changed_pages": [3], "page_count": 3, "compile": 8.1}
+```
+
+To undo, apply the inverses in reverse order. [Operations](/docs/guides/operations/) has the whole list.
+
+## Make an EPUB
+
+```console
+$ matenadar epub book.json -o book.epub
+book.epub (0.1 MB, 140 ms)
+
+$ matenadar epub book.json -o book-fixed.epub --layout fixed
+```
+
+The first is reflowable: one XHTML file per section, the design’s styles as CSS, and hand-laid pages as pictures. The second keeps every page as laid out for print, with the typeset words set over each page as live, selectable text. See [EPUB 3](/docs/guides/epub/).
+
+## Start from a template
+
+For whole book kinds, a template makes the document from a short spec:
+
+```console
+$ matenadar template picture-book spec.json -o picture-book.json
+picture-book → picture-book.json (21 items)
+```
+
+The kinds are `picture-book`, `coloring` and `a-plus`. See [templates](/docs/model/templates/).
+
+## Next
+
+- Read [the document model](/docs/model/overview/) for every field.
+- Keep a book open and drive it from a program or an agent with [`serve`](/docs/guides/agents/).
+- Lay out in the browser with [`@matenadar/wasm`](/docs/reference/wasm/).

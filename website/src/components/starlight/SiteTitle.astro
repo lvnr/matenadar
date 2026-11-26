@@ -1,0 +1,45 @@
+---
+/**
+ * Starlight's site title, as the landing page's header sets it: the Մ tile,
+ * the wordmark, and a quiet "Docs". It links back to the landing page.
+ */
+import Mark from '../Mark.astro';
+const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<a href={siteTitleHref} class="mt-site-title" aria-label={`${siteTitle}, home`}>
+	<Mark size={26} />
+	<span class="mt-site-title__name" translate="no">{siteTitle}</span>
+	<span class="mt-site-title__label">Docs</span>
+</a>
+
+<style>
+	.mt-site-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-width: 0;
+		color: var(--mt-fg);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+	.mt-site-title__name {
+		font-size: 1rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+	}
+	.mt-site-title__label {
+		padding: 0.1rem 0.5rem;
+		border: 1px solid var(--mt-border-strong);
+		border-radius: 999px;
+		font-size: 0.75rem;
+		font-weight: 500;
+		line-height: 1.4;
+		color: var(--mt-fg-muted);
+	}
+	@media (max-width: 30rem) {
+		.mt-site-title__label {
+			display: none;
+		}
+	}
+</style>

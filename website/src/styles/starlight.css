@@ -1,0 +1,495 @@
+/*
+ * Starlight in Matenadar's system: crisp white or deep obsidian, cobalt
+ * accents, Geist for everything but code, JetBrains Mono for code.
+ * Unlayered, so it sits over Starlight's cascade layers.
+ */
+
+:root {
+	/* Starlight's scale, from the shared tokens (they swap with data-theme). */
+	--sl-color-white: var(--mt-fg);
+	--sl-color-gray-1: var(--mt-fg-2);
+	--sl-color-gray-2: var(--mt-fg-muted);
+	--sl-color-gray-3: var(--mt-fg-subtle);
+	--sl-color-gray-4: var(--mt-fg-faint);
+	--sl-color-gray-5: var(--mt-border-solid);
+	--sl-color-gray-6: var(--mt-bg-muted);
+	--sl-color-gray-7: var(--mt-bg-subtle);
+	--sl-color-black: var(--mt-bg);
+
+	--sl-color-accent-low: var(--mt-accent-wash);
+	--sl-color-accent: var(--mt-accent);
+	--sl-color-accent-high: var(--mt-accent-text);
+
+	--sl-color-text: var(--mt-fg-2);
+	--sl-color-text-accent: var(--mt-accent-text);
+	--sl-color-text-invert: #ffffff;
+	--sl-color-bg: var(--mt-bg);
+	--sl-color-bg-nav: var(--mt-bg);
+	--sl-color-bg-sidebar: var(--mt-bg);
+	--sl-color-bg-inline-code: var(--mt-bg-muted);
+	--sl-color-bg-accent: var(--mt-accent);
+	--sl-color-hairline-light: var(--mt-border);
+	--sl-color-hairline: var(--mt-border);
+	--sl-color-hairline-shade: var(--mt-border);
+	--sl-color-backdrop-overlay: rgba(9, 9, 11, 0.5);
+
+	--sl-color-blue-low: rgba(37, 99, 235, 0.08);
+	--sl-color-blue: #2563eb;
+	--sl-color-blue-high: var(--mt-accent-text);
+	--sl-color-purple-low: rgba(124, 58, 237, 0.08);
+	--sl-color-purple: #7c3aed;
+	--sl-color-purple-high: #6d28d9;
+	--sl-color-green-low: var(--mt-ok-soft);
+	--sl-color-green: var(--mt-ok);
+	--sl-color-green-high: var(--mt-ok);
+	--sl-color-orange-low: var(--mt-warn-soft);
+	--sl-color-orange: #d97706;
+	--sl-color-orange-high: var(--mt-warn);
+	--sl-color-red-low: var(--mt-err-soft);
+	--sl-color-red: var(--mt-err);
+	--sl-color-red-high: var(--mt-err);
+
+	--sl-shadow-sm: var(--mt-shadow-sm);
+	--sl-shadow-md: var(--mt-shadow);
+	--sl-shadow-lg: var(--mt-shadow-lg);
+
+	--sl-font: var(--mt-sans);
+	--sl-font-mono: var(--mt-mono);
+
+	--sl-content-width: 46rem;
+	--sl-text-body: 1rem;
+	--sl-text-code: 0.8125rem;
+	--sl-line-height: 1.7;
+	--sl-line-height-headings: 1.15;
+	--sl-text-h1: 2.25rem;
+	--sl-text-h2: 1.6rem;
+	--sl-text-h3: 1.25rem;
+	--sl-text-h4: 1.05rem;
+	--sl-text-h5: 1rem;
+}
+
+:root[data-theme='dark'] {
+	--sl-color-purple-low: rgba(167, 139, 250, 0.12);
+	--sl-color-purple: #a78bfa;
+	--sl-color-purple-high: #c4b5fd;
+	--sl-color-orange: #fbbf24;
+	--sl-color-blue: #60a5fa;
+	--sl-color-blue-low: rgba(96, 165, 250, 0.1);
+	--sl-color-backdrop-overlay: rgba(0, 0, 0, 0.6);
+}
+
+@media (min-width: 50em) {
+	:root {
+		--sl-text-h1: 2.75rem;
+		--sl-text-h2: 1.75rem;
+		--sl-text-h3: 1.3rem;
+	}
+}
+
+body {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-feature-settings: 'ss01', 'cv11';
+}
+
+/* ---------------------------------------------------------------- header */
+
+header.header {
+	border-bottom: 1px solid var(--mt-border);
+	background: color-mix(in srgb, var(--mt-bg) 84%, transparent);
+	backdrop-filter: saturate(1.6) blur(14px);
+	-webkit-backdrop-filter: saturate(1.6) blur(14px);
+}
+
+site-search button[data-open-modal] {
+	border-radius: 8px;
+	border-color: var(--mt-border-strong);
+	background: var(--mt-bg-subtle);
+	color: var(--mt-fg-subtle);
+}
+
+site-search button[data-open-modal]:hover {
+	border-color: var(--mt-fg-faint);
+	color: var(--mt-fg-muted);
+}
+
+site-search button[data-open-modal] kbd {
+	font-family: var(--mt-sans);
+	background: var(--mt-surface);
+	border: 1px solid var(--mt-border);
+	border-radius: 5px;
+}
+
+starlight-theme-select select {
+	font-weight: 500;
+}
+
+/* ---------------------------------------------------------------- sidebar */
+
+.sidebar-pane {
+	border-inline-end: 1px solid var(--mt-border);
+}
+
+.sidebar-content .large {
+	font-size: 0.8125rem;
+	font-weight: 600;
+	letter-spacing: -0.005em;
+	color: var(--mt-fg);
+}
+
+.sidebar-content a {
+	border-radius: 7px;
+	color: var(--mt-fg-muted);
+	font-size: 0.875rem;
+	transition:
+		color 0.12s,
+		background-color 0.12s;
+}
+
+.sidebar-content a:hover,
+.sidebar-content a:focus-visible {
+	color: var(--mt-fg);
+	background: var(--mt-bg-muted);
+}
+
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover,
+.sidebar-content a[aria-current='page']:focus {
+	background: var(--mt-accent-soft);
+	color: var(--mt-accent-text);
+	font-weight: 600;
+}
+
+.sidebar-content ul ul li {
+	border-inline-start-color: var(--mt-border);
+}
+
+/* ---------------------------------------------------------------- page title */
+
+h1#_top {
+	font-weight: 650;
+	letter-spacing: -0.04em;
+	color: var(--mt-fg);
+	text-wrap: balance;
+}
+
+[data-has-hero] h1#_top,
+.hero h1 {
+	font-size: clamp(2.5rem, 6vw, 3.75rem);
+	letter-spacing: -0.045em;
+}
+
+.content-panel + .content-panel {
+	border-top-color: var(--mt-border);
+}
+
+/* ---------------------------------------------------------------- prose */
+
+.sl-markdown-content {
+	color: var(--mt-fg-2);
+}
+
+.sl-markdown-content p,
+.sl-markdown-content li {
+	text-wrap: pretty;
+}
+
+.sl-markdown-content > p:first-child {
+	font-size: 1.125rem;
+	line-height: 1.65;
+	color: var(--mt-fg-muted);
+}
+
+.sl-markdown-content :is(h2, h3, h4, h5, h6) {
+	color: var(--mt-fg);
+	text-wrap: balance;
+}
+
+.sl-markdown-content h2 {
+	font-weight: 640;
+	letter-spacing: -0.035em;
+}
+
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+	padding-top: 1.75rem;
+	border-top: 1px solid var(--mt-border);
+}
+
+.sl-markdown-content h3 {
+	font-weight: 620;
+	letter-spacing: -0.025em;
+}
+
+.sl-markdown-content :is(h4, h5, h6) {
+	font-weight: 600;
+	letter-spacing: -0.015em;
+}
+
+.sl-markdown-content .sl-heading-wrapper:has(> h2) {
+	margin-top: 2.75rem;
+}
+
+.sl-markdown-content a:not(.sl-anchor-link, .card, .sl-link-button, .sl-link-card *) {
+	color: var(--mt-accent-text);
+	text-decoration: underline;
+	text-decoration-color: color-mix(in srgb, var(--mt-accent-text) 35%, transparent);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+	transition: text-decoration-color 0.15s;
+}
+
+.sl-markdown-content a:not(.sl-anchor-link, .card, .sl-link-button, .sl-link-card *):hover {
+	text-decoration-color: currentColor;
+}
+
+.sl-markdown-content strong {
+	font-weight: 600;
+	color: var(--mt-fg);
+}
+
+.sl-markdown-content hr {
+	border: 0;
+	border-top: 1px solid var(--mt-border);
+}
+
+.sl-markdown-content blockquote {
+	border-inline-start: 2px solid var(--mt-accent);
+	color: var(--mt-fg-muted);
+}
+
+.sl-markdown-content ul:not(:where(.not-content *)) > li::marker {
+	color: var(--mt-fg-faint);
+}
+
+.sl-markdown-content ol:not(:where(.not-content *)) > li::marker {
+	color: var(--mt-fg-subtle);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Inline code */
+.sl-markdown-content :not(pre) > code:not(:where(.not-content *)) {
+	font-size: 0.85em;
+	padding: 0.15em 0.4em;
+	border-radius: 6px;
+	background: var(--mt-bg-muted);
+	color: var(--mt-fg);
+	border: 1px solid var(--mt-border);
+	overflow-wrap: anywhere;
+	white-space: break-spaces;
+}
+
+.sl-markdown-content kbd {
+	font-family: var(--mt-sans);
+	font-size: 0.8em;
+	border: 1px solid var(--mt-border-strong);
+	border-bottom-width: 2px;
+	border-radius: 6px;
+	padding: 0.05em 0.4em;
+	background: var(--mt-surface);
+}
+
+/* Tables: quiet and ruled. */
+.sl-markdown-content table {
+	display: table;
+	width: 100%;
+	font-size: 0.9375rem;
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid var(--mt-border);
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+.sl-markdown-content :is(th, td) {
+	padding: 0.6rem 0.85rem;
+	border: 0;
+	border-bottom: 1px solid var(--mt-border);
+	vertical-align: top;
+	text-align: start;
+	background: none;
+}
+
+.sl-markdown-content tr:last-child td {
+	border-bottom: 0;
+}
+
+.sl-markdown-content th {
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: var(--mt-fg);
+	background: var(--mt-bg-subtle);
+}
+
+.sl-markdown-content tr:nth-child(2n) {
+	background: none;
+}
+
+.sl-markdown-content td:first-child code {
+	white-space: nowrap;
+}
+
+@media (max-width: 40rem) {
+	.sl-markdown-content table {
+		display: block;
+		overflow-x: auto;
+	}
+}
+
+/* ---------------------------------------------------------------- code */
+
+.sl-markdown-content .expressive-code {
+	margin-block: 1.25rem;
+}
+
+.expressive-code .frame .header .title {
+	font-family: var(--mt-mono);
+}
+
+/* ---------------------------------------------------------------- asides */
+
+.starlight-aside {
+	border-radius: 10px;
+	border: 1px solid var(--mt-border);
+	border-inline-start-width: 3px;
+}
+
+.starlight-aside--note {
+	border-inline-start-color: var(--sl-color-blue);
+}
+.starlight-aside--tip {
+	border-inline-start-color: var(--sl-color-purple);
+}
+.starlight-aside--caution {
+	border-inline-start-color: var(--sl-color-orange);
+}
+.starlight-aside--danger {
+	border-inline-start-color: var(--sl-color-red);
+}
+
+.starlight-aside__title {
+	font-size: 0.9375rem;
+	font-weight: 600;
+}
+
+/* ---------------------------------------------------------------- TOC & pager */
+
+starlight-toc h2,
+.right-sidebar-panel h2 {
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: var(--mt-fg);
+}
+
+starlight-toc a {
+	color: var(--mt-fg-subtle);
+}
+
+starlight-toc a:hover {
+	color: var(--mt-fg);
+}
+
+starlight-toc a[aria-current='true'],
+starlight-toc a[aria-current='true']:hover,
+starlight-toc a[aria-current='true']:focus {
+	color: var(--mt-accent-text);
+	font-weight: 500;
+}
+
+.pagination-links a {
+	border-radius: 12px;
+	border-color: var(--mt-border);
+	box-shadow: var(--mt-shadow-sm);
+	background: var(--mt-surface);
+	transition: border-color 0.15s;
+}
+
+.pagination-links a:hover {
+	border-color: var(--mt-accent-ring);
+}
+
+.pagination-links .link-title {
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	color: var(--mt-fg);
+}
+
+/* ---------------------------------------------------------------- cards, tabs, steps */
+
+.card {
+	border-radius: 14px;
+	border-color: var(--mt-border);
+	background: var(--mt-surface);
+}
+
+.sl-link-card {
+	border-radius: 14px !important;
+	border-color: var(--mt-border) !important;
+	box-shadow: var(--mt-shadow-sm) !important;
+	background: var(--mt-surface);
+	transition: border-color 0.15s;
+}
+
+.sl-link-card:hover {
+	border-color: var(--mt-accent-ring) !important;
+}
+
+.sl-link-card .title {
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	color: var(--mt-fg);
+}
+
+.sl-link-card .description {
+	color: var(--mt-fg-muted);
+}
+
+starlight-tabs .tab > [role='tab'] {
+	font-size: 0.875rem;
+	font-weight: 500;
+}
+
+starlight-tabs .tab [aria-selected='true'] {
+	color: var(--mt-accent-text);
+	border-color: var(--mt-accent);
+}
+
+.sl-badge {
+	border-radius: 999px;
+}
+
+.sl-steps > li::before {
+	font-weight: 600;
+	background: var(--mt-surface) !important;
+	color: var(--mt-accent-text) !important;
+	box-shadow: inset 0 0 0 1px var(--mt-accent-ring) !important;
+}
+
+.sl-steps > li::after {
+	background: var(--mt-border-strong) !important;
+}
+
+/* Splash pages (the 404). */
+.hero {
+	padding-block: 4rem;
+}
+
+.hero .tagline {
+	color: var(--mt-fg-muted);
+}
+
+.sl-link-button.primary {
+	background: #2563eb;
+	border-color: #2563eb;
+	color: #ffffff;
+	border-radius: 9px;
+}
+
+.sl-link-button.minimal,
+.sl-link-button.secondary {
+	border-radius: 9px;
+}
+
+:focus-visible {
+	outline-color: var(--mt-accent);
+}

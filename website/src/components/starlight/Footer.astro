@@ -1,0 +1,39 @@
+---
+/** Starlight's footer, with a quiet line about the project under it. */
+import Default from '@astrojs/starlight/components/Footer.astro';
+import Mark from '../Mark.astro';
+---
+
+<Default><slot /></Default>
+<p class="mt-doc-foot">
+	<Mark size={16} />
+	<span>
+		<a href="/">Matenadar</a> 0.1.0 · <a href="https://github.com/lvnr/matenadar/blob/main/LICENSE">Apache-2.0</a> · Named after
+		the Matenadaran (<span lang="hy" class="hy">Մատենադարան</span>), Yerevan’s house of manuscripts.
+	</span>
+</p>
+
+<style>
+	.mt-doc-foot {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		margin-top: 2.5rem;
+		padding-top: 1.1rem;
+		border-top: 1px solid var(--mt-border);
+		font-size: 0.8125rem;
+		color: var(--mt-fg-subtle);
+	}
+	.mt-doc-foot a {
+		color: inherit;
+		text-decoration: underline;
+		text-decoration-color: var(--mt-border-strong);
+		text-underline-offset: 0.2em;
+	}
+	.mt-doc-foot a:hover {
+		color: var(--mt-fg);
+	}
+	.hy {
+		font-family: var(--mt-armenian);
+	}
+</style>

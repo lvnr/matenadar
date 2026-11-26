@@ -1,0 +1,669 @@
+---
+/**
+ * Matenadar's front page. Plain HTML, CSS and inline SVG, with one small
+ * script for the theme, the tabs, copying and the specimens' pointing.
+ */
+import Landing from '../layouts/Landing.astro';
+import Mark from '../components/Mark.astro';
+import Specimens from '../components/landing/Specimens.astro';
+import { render, type Line } from '../lib/highlight';
+
+const GITHUB = 'https://github.com/lvnr/matenadar';
+const DESK = 'https://matenadar.levships.com';
+
+const installs = [
+	{
+		id: 'npx',
+		label: 'npx',
+		cmd: 'npx matenadar build book.json -o book.pdf --check',
+		note: 'The prebuilt native binary through npm. No Rust, no postinstall script.',
+	},
+	{ id: 'brew', label: 'Homebrew', cmd: 'brew install lvnr/tap/matenadar', note: 'macOS and Linux.' },
+	{ id: 'cargo', label: 'Cargo', cmd: 'cargo install matenadar', note: 'From source, or cargo binstall matenadar for a prebuilt binary.' },
+	{
+		id: 'shell',
+		label: 'Shell',
+		cmd: 'curl -fsSL https://github.com/lvnr/matenadar/releases/latest/download/install.sh | sh',
+		note: 'macOS and Linux; verifies the release’s SHA-256 sums. On Windows, use install.ps1.',
+	},
+	{ id: 'wasm', label: 'WASM', cmd: 'npm install @matenadar/wasm', note: 'Browsers, workers, Node, Bun and Deno. About 7 MB with brotli.' },
+];
+
+// The hero's editor: a short model, and the page it sets.
+const heroCode: Line[] = [
+	{ t: '{' },
+	{ t: '  "matenadar": "1",' },
+	{ t: '  "design": {' },
+	{ t: '    "base": {"font": "Libertinus Serif"},' },
+	{ t: '    "masters": {"body": {', ref: 'margins' },
+	{ t: '      "width": "6in", "height": "9in",', ref: 'margins' },
+	{ t: '      "margins": {"top": "0.8in",', ref: 'margins' },
+	{ t: '        "bottom": "0.9in",', ref: 'margins' },
+	{ t: '        "inside": "0.8in",', ref: 'margins' },
+	{ t: '        "outside": "1.6in"}}}', ref: 'margins' },
+	{ t: '  },' },
+	{ t: '  "content": [{' },
+	{ t: '    "type": "section", "id": "ch3",', ref: 'ch3' },
+	{ t: '    "master": "body", "flow": [', ref: 'ch3' },
+	{ t: '      {"type": "h", "id": "h-3",', ref: 'h-3' },
+	{ t: '       "text": "The Colophon"},', ref: 'h-3' },
+	{ t: '      {"type": "p", "id": "p-1",', ref: 'p-1' },
+	{ t: '       "style": "lede",', ref: 'p-1' },
+	{ t: '       "text": "At the end of…"},', ref: 'p-1' },
+	{ t: '      {"type": "figure", "id": "fig-1",', ref: 'fig-1' },
+	{ t: '       "src": "art/leaf.jpg"},', ref: 'fig-1' },
+	{ t: '      {"type": "p", "id": "p-2",', ref: 'p-2' },
+	{ t: '       "text": "The book itself…"}', ref: 'p-2' },
+	{ t: '    ]' },
+	{ t: '  }]' },
+	{ t: '}' },
+];
+const heroNodes = [
+	{ ref: 'ch3', x: 57.6, y: 57.6, w: 259.2, h: 525.6 },
+	{ ref: 'h-3', x: 57.6, y: 98, w: 259.2, h: 34 },
+	{ ref: 'p-1', x: 57.6, y: 150, w: 259.2, h: 82 },
+	{ ref: 'p-2', x: 57.6, y: 240, w: 259.2, h: 74 },
+	{ ref: 'fig-1', x: 57.6, y: 330, w: 259.2, h: 146 },
+	{ ref: 'p-3', x: 57.6, y: 492, w: 259.2, h: 84 },
+];
+const heroBars = (() => {
+	const out: { x: number; w: number; y: number }[] = [];
+	[158, 171, 184].forEach((y) => out.push({ x: 99, w: 218, y }));
+	[197, 210].forEach((y) => out.push({ x: 57.6, w: 259, y }));
+	out.push({ x: 57.6, w: 150, y: 223 });
+	[248, 261, 274, 287].forEach((y, i) => out.push({ x: i === 0 ? 70 : 57.6, w: i === 0 ? 247 : 259, y }));
+	out.push({ x: 57.6, w: 196, y: 300 });
+	[500, 513, 526, 539, 552, 565].forEach((y, i) => out.push({ x: i === 0 ? 70 : 57.6, w: i === 0 ? 247 : 259, y }));
+	return out;
+})();
+
+const why = [
+	{
+		icon: 'M4 6h16M4 10h16M4 14h16M4 18h9',
+		lead: 'No Puppeteer. No CSS print hacks.',
+		text: 'Real Knuth–Plass line breaking, hyphenation, widow and orphan control, footnotes, split tables, variable fonts, RTL, and CJK—compiled deterministically in milliseconds.',
+	},
+	{
+		icon: 'M8.5 4C6.5 4 5.5 5 5.5 7v2.2c0 1.4-.8 2.3-2 2.8 1.2.5 2 1.4 2 2.8V17c0 2 1 3 3 3M15.5 4c2 0 3 1 3 3v2.2c0 1.4.8 2.3 2 2.8-1.2.5-2 1.4-2 2.8V17c0 2-1 3-3 3',
+		lead: 'No fragile template strings.',
+		text: 'The Typst program is generated fresh on every build and never stored. People, visual editors, and AI agents all change books through the same JSON model and reversible operations.',
+	},
+	{
+		icon: 'M12 3l7 3v5.5c0 4.3-2.9 7.6-7 9.5-4.1-1.9-7-5.2-7-9.5V6zM9 12l2.2 2.2L15.5 10',
+		lead: 'No surprise printer rejections.',
+		text: 'Built-in preflight catches overflow, text in the margin, low-PPI images, widows, orphans, missing glyphs, and stray colour on black-ink interiors before you ever upload a file.',
+	},
+];
+
+const caps = [
+	{
+		name: 'layout',
+		lead: 'Ask where everything landed.',
+		text: 'Every node’s exact bounding box on every page, in points from the trim corner.',
+		eg: 'matenadar layout book.json --pages 42',
+		href: '/docs/guides/agents/#the-layout-report',
+	},
+	{
+		name: 'locate & hit',
+		lead: 'Point at the page, get the node.',
+		text: 'Map any (page, x, y) coordinate straight to the node ID and UTF-8 byte offset.',
+		eg: 'matenadar locate book.json --page 42 --x 212 --y 148',
+		href: '/docs/guides/agents/#locate',
+	},
+	{
+		name: 'apply, undo & patch',
+		lead: 'Edit without rewriting the book.',
+		text: 'Atomic, reversible operations return only the changed pages plus a minimal patch the CLI replays identically.',
+		eg: 'matenadar apply book.json ops.json -o next.json',
+		href: '/docs/guides/operations/',
+	},
+	{
+		name: 'serve',
+		lead: 'Millisecond feedback loops.',
+		text: 'Keep a book hot in memory over stdin/stdout JSON lines so an agent can inspect, nudge a paragraph by a line, and re-check in milliseconds.',
+		eg: 'matenadar serve',
+		href: '/docs/guides/agents/#serve',
+	},
+];
+
+const transcript: Line[] = [
+	{ t: '→ {"id":1,"method":"open","params":{"path":"book.json"}}' },
+	{ t: '← {"id":1,"result":{"pages":48,"layout_ms":412.3,"problems":[],"warnings":[]}}' },
+	{ t: '→ {"id":2,"method":"check","params":{"safe":"0.25in"}}' },
+	{ t: '← {"id":2,"result":[{"severity":"warning","code":"widow","page":44,"node":"p-188","message":"…"}]}' },
+	{ t: '→ {"id":3,"method":"apply","params":{"ops":[{"op":"set","id":"p-188","path":"/style","value":"tight"}]}}' },
+	{ t: '← {"id":3,"result":[{"inverse":{"op":"set","id":"p-188","path":"/style","value":"body"},"changed_pages":[43,44],…}]}' },
+	{ t: '→ {"id":4,"method":"check","params":{}}' },
+	{ t: '← {"id":4,"result":[]}' },
+];
+
+const bindings = [
+	{
+		title: 'Native CLI',
+		desc: 'One static binary for macOS, Linux and Windows.',
+		href: '/docs/reference/cli/',
+		more: 'Command-line reference',
+		rows: [
+			{ name: 'npx', note: 'No Rust needed', code: 'npx matenadar' },
+			{ name: 'Homebrew', note: 'macOS and Linux', code: 'brew install lvnr/tap/matenadar' },
+			{ name: 'Cargo', note: 'From source', code: 'cargo install matenadar' },
+			{ name: 'GitHub Releases', note: 'Five targets, checksummed', link: `${GITHUB}/releases`, code: 'github.com/lvnr/matenadar/releases' },
+		],
+	},
+	{
+		title: 'WebAssembly',
+		desc: 'The same engine in a browser worker, Node, Bun or Deno.',
+		href: '/docs/reference/wasm/',
+		more: 'WebAssembly API',
+		rows: [
+			{ name: 'npm', note: 'Browsers and runtimes', code: 'npm install @matenadar/wasm' },
+			{ name: 'Browser worker', note: 'Off the main thread', code: 'import { MatenadarClient } from "@matenadar/wasm/client"' },
+			{ name: 'jsDelivr CDN', note: '7 MB with brotli', code: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.1.0/dist/matenadar.wasm' },
+		],
+	},
+	{
+		title: 'Rust Crates',
+		desc: 'The umbrella crate, or only the parts you need.',
+		href: '/docs/reference/rust/',
+		more: 'Rust crates',
+		rows: [
+			{ name: 'matenadar', note: 'Umbrella and CLI', code: 'cargo add matenadar' },
+			{ name: 'matenadar-model', note: 'The model, no Typst', code: 'cargo add matenadar-model' },
+			{ name: 'matenadar-typst', note: 'Layout and checks', code: 'cargo add matenadar-typst' },
+			{ name: 'matenadar-epub', note: 'EPUB 3', code: 'cargo add matenadar-epub' },
+		],
+	},
+];
+
+const madeBy = [
+	{ label: 'levships.com', href: 'https://levships.com' },
+	{ label: 'GitHub (@lvnr)', href: 'https://github.com/lvnr' },
+	{ label: '3D WebGPU Edition', href: DESK },
+	{ label: 'crates.io', href: 'https://crates.io/crates/matenadar' },
+	{ label: 'npm', href: 'https://www.npmjs.com/package/matenadar' },
+	{ label: 'Apache-2.0', href: `${GITHUB}/blob/main/LICENSE` },
+];
+
+const copyIcon = 'M9 9h10v10H9zM5 15V5h10';
+---
+
+<Landing
+	title="Matenadar: print-grade books from JSON"
+	description="Matenadar turns a JSON document into press-ready PDF, SVG, PNG and EPUB 3 with Typst. It knows where every word landed, preflights pages the way a printer would, and runs identically in the browser as WebAssembly."
+>
+	<header class="header">
+		<div class="wrap header__bar">
+			<a class="brand" href="/" aria-label="Matenadar, home">
+				<Mark size={28} />
+				<span class="brand__name">Matenadar</span>
+			</a>
+			<nav class="nav" aria-label="Site">
+				<ul>
+					<li><a href="/docs/">Docs</a></li>
+					<li><a href="/docs/getting-started/install/">Install</a></li>
+					<li><a href="/docs/model/overview/">Model</a></li>
+					<li><a href={DESK} rel="external">3D Desk <span aria-hidden="true">↗</span></a></li>
+					<li><a href={GITHUB} rel="external">GitHub</a></li>
+				</ul>
+			</nav>
+			<div class="header__end">
+				<button class="iconbtn" type="button" data-theme-toggle aria-label="Switch to dark theme">
+					<svg class="iconbtn__moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
+					<svg class="iconbtn__sun" viewBox="0 0 24 24" aria-hidden="true">
+						<circle cx="12" cy="12" r="4"></circle>
+						<path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+					</svg>
+				</button>
+				<a class="btn btn--primary btn--sm" href="/docs/getting-started/quick-start/">Get started</a>
+			</div>
+		</div>
+	</header>
+
+	<main id="main">
+		<!-- hero -->
+		<section class="hero" aria-labelledby="hero-title">
+			<div class="hero__backdrop" aria-hidden="true"></div>
+			<div class="wrap hero__grid">
+				<div class="hero__text">
+					<h1 class="hero__title" id="hero-title">Print-grade books <span class="hero__accent">from&nbsp;JSON.</span></h1>
+					<p class="hero__deck">
+						Matenadar turns a clean JSON document into press-ready PDF, SVG, PNG, and EPUB&nbsp;3—in milliseconds. It knows where
+						every word landed, flags print mistakes before the printer does, and runs identically in the browser as WebAssembly.
+					</p>
+					<div class="actions">
+						<a class="btn btn--primary" href="/docs/getting-started/quick-start/">Get started <span class="btn__arrow" aria-hidden="true">→</span></a>
+						<a class="btn btn--secondary" href="/docs/">Read the docs</a>
+					</div>
+
+					<div class="install">
+						<div class="seg" role="tablist" aria-label="Install with">
+							{
+								installs.map((it, i) => (
+									<button
+										class="seg__btn"
+										role="tab"
+										type="button"
+										id={`install-tab-${it.id}`}
+										aria-controls={`install-${it.id}`}
+										aria-selected={i === 0 ? 'true' : 'false'}
+										tabindex={i === 0 ? 0 : -1}
+									>
+										{it.label}
+									</button>
+								))
+							}
+						</div>
+						{
+							installs.map((it, i) => (
+								<div role="tabpanel" id={`install-${it.id}`} aria-labelledby={`install-tab-${it.id}`} hidden={i !== 0}>
+									<div class="cmd">
+										<pre tabindex="0"><code><span class="pr" aria-hidden="true">$</span>{it.cmd}</code></pre>
+										<button class="copy" type="button" data-copy={it.cmd} aria-label={`Copy: ${it.cmd}`}>
+											<svg viewBox="0 0 24 24" aria-hidden="true"><path d={copyIcon}></path></svg>
+											<span class="copy__label">Copy</span>
+										</button>
+									</div>
+									<p class="install__note">{it.note}</p>
+								</div>
+							))
+						}
+					</div>
+					<p class="hero__meta">
+						<span>v0.1.0</span><span>Apache-2.0</span><span>Rust, Typst and WebAssembly</span>
+					</p>
+					<p class="companion">
+						Prefer the interactive WebGPU 3D desk? <a href={DESK} rel="external">Visit matenadar.levships.com&nbsp;↗</a>
+					</p>
+				</div>
+
+				<div class="hero__visual">
+					<div class="app app--hero" data-specimen>
+						<div class="app__bar">
+							<span class="app__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+							<span class="app__tab">book.json</span>
+							<span class="app__meta">Preview · page 1 of 3</span>
+						</div>
+						<div class="app__split app__split--hero">
+							<pre class="app__code app__code--numbered" tabindex="0" aria-label="A Matenadar document"><code set:html={render(heroCode, 'json')} /></pre>
+							<div class="app__canvas">
+								<svg class="sp sp--hero" viewBox="-24 -24 480 696" role="img" aria-labelledby="hero-page-title">
+									<title id="hero-page-title">
+										The first page of the chapter, with the layout report's boxes drawn over it and paragraph p-1 selected.
+									</title>
+									<rect class="shade" x="4" y="6" width="432" height="648"></rect>
+									<rect class="sheet" x="0" y="0" width="432" height="648"></rect>
+									<rect class="margin margin--soft" data-ref="margins" x="57.6" y="57.6" width="259.2" height="525.6"></rect>
+									<text class="txt" x="187.2" y="124" text-anchor="middle" font-size="25">The Colophon</text>
+									<text class="txt txt--accent" x="56" y="191" font-size="46">A</text>
+									{heroBars.map((b) => <rect class="bar" x={b.x} y={b.y} width={b.w} height="5" rx="1" />)}
+									<rect class="art-1" x="57.6" y="334" width="259.2" height="118" rx="2"></rect>
+									<rect class="art-2" x="57.6" y="414" width="259.2" height="38"></rect>
+									<g transform="translate(152 342) rotate(-4 34 46)">
+										<rect class="leaf" width="68" height="92"></rect>
+										<rect x="7" y="8" width="13" height="13" fill="#c2410c"></rect>
+										<rect class="bar" x="23" y="9" width="38" height="3"></rect>
+										<rect class="bar" x="7" y="27" width="54" height="3"></rect>
+										<rect class="bar" x="7" y="34" width="50" height="3"></rect>
+										<rect x="7" y="47" width="44" height="3" fill="#c2410c" opacity="0.7"></rect>
+										<rect x="7" y="54" width="30" height="3" fill="#c2410c" opacity="0.7"></rect>
+										<rect class="bar" x="7" y="68" width="54" height="3"></rect>
+									</g>
+									<rect class="bar" x="57.6" y="462" width="120" height="4"></rect>
+									<text class="txt txt--muted" x="187.2" y="616" text-anchor="middle" font-size="9">1</text>
+
+									{heroNodes.map((n) => <rect class:list={['node', 'node--on', { 'is-sel': n.ref === 'p-1' }]} data-ref={n.ref} x={n.x} y={n.y} width={n.w} height={n.h} rx="2" />)}
+									<g class="tag tag--on tag--hero" transform="translate(57.6 266)">
+										<rect y="-29" width="232" height="28" rx="5"></rect>
+										<text x="10" y="-9.5">p-1 · p · 259 × 82 pt</text>
+									</g>
+									<path d="M236 198l0 21 5.3-4.8 3.7 8.4 3.4-1.5-3.6-8 7.1-.6z" fill="#09090b" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"></path>
+								</svg>
+							</div>
+						</div>
+						<div class="app__status">
+							<span class="status status--ok"><i aria-hidden="true"></i>0 issues</span>
+							<span class="status">14 ms</span>
+							<span class="status">3 pages</span>
+							<span class="status status--end">PDF · SVG · PNG · EPUB 3</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- why -->
+		<section class="section wrap" id="why" aria-labelledby="why-title">
+			<header class="section__head">
+				<h2 class="section__title" id="why-title">HTML was built for scrolling. <span class="muted">Books aren’t.</span></h2>
+				<p class="section__lede">
+					Headless Chrome breaks widows, fakes margins, and chokes on 300-page bleed layouts. Raw LaTeX and Typst templates shatter
+					the moment a visual editor or AI agent tries to touch them. Matenadar puts one strict JSON model in the middle—and lets
+					Typst handle the hard typography underneath.
+				</p>
+			</header>
+			<ul class="cards cards--3">
+				{
+					why.map((w) => (
+						<li class="card">
+							<span class="card__icon" aria-hidden="true">
+								<svg viewBox="0 0 24 24">
+									<path d={w.icon} />
+								</svg>
+							</span>
+							<h3 class="card__title">{w.lead}</h3>
+							<p class="card__text">{w.text}</p>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<!-- specimens -->
+		<section class="section wrap" id="specimens" aria-labelledby="specimens-title">
+			<header class="section__head">
+				<h2 class="section__title" id="specimens-title">One JSON model. <span class="muted">Every output you actually ship.</span></h2>
+				<p class="section__lede">
+					Switch between real Matenadar workflows—each panel pairs exact v1 JSON, CLI commands, or API code with what the engine
+					produces.
+				</p>
+			</header>
+			<Specimens />
+		</section>
+
+		<!-- agents -->
+		<section class="section wrap" id="agents" aria-labelledby="agents-title">
+			<header class="section__head">
+				<h2 class="section__title" id="agents-title">The engine talks back.</h2>
+				<p class="section__lede">
+					Most layout tools are black boxes: markup goes in, a PDF comes out, and nobody knows why chapter four spilled onto an extra
+					blank page. Matenadar is inspectable down to the character.
+				</p>
+			</header>
+			<ul class="cards cards--4">
+				{
+					caps.map((c) => (
+						<li class="card card--cap">
+							<h3 class="card__chip">
+								<code>{c.name}</code>
+							</h3>
+							<p class="card__text">
+								<strong>{c.lead}</strong> {c.text}
+							</p>
+							<a class="card__eg" href={c.href}>
+								<code>
+									<span class="pr" aria-hidden="true">$</span>
+									{c.eg}
+								</code>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<div class="app app--terminal">
+				<div class="app__bar">
+					<span class="app__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+					<span class="app__tab">matenadar serve</span>
+					<span class="app__meta">JSON lines over stdin and stdout</span>
+				</div>
+				<pre class="app__code app__code--terminal" tabindex="0" aria-label="A serve session"><code set:html={render(transcript, 'sh')} /></pre>
+			</div>
+		</section>
+
+		<!-- run anywhere -->
+		<section class="section wrap" id="install" aria-labelledby="run-title">
+			<header class="section__head">
+				<h2 class="section__title" id="run-title">Same pixels on your laptop, in CI, <span class="muted">and in the browser.</span></h2>
+				<p class="section__lede">
+					Every laid-out page carries a deterministic fingerprint. What someone edits live in WebAssembly compiles to the exact same
+					print PDF on the command line.
+				</p>
+			</header>
+			<div class="cards cards--3">
+				{
+					bindings.map((b) => (
+						<section class="card card--binding" aria-labelledby={`binding-${b.title.replace(/\s+/g, '-').toLowerCase()}`}>
+							<h3 class="card__title" id={`binding-${b.title.replace(/\s+/g, '-').toLowerCase()}`}>
+								{b.title}
+							</h3>
+							<p class="card__text">{b.desc}</p>
+							<dl class="rows">
+								{b.rows.map((r) => (
+									<div class="row">
+										<dt>
+											<span class="row__name">{r.name}</span>
+											<span class="row__note">{r.note}</span>
+										</dt>
+										<dd>
+											{r.link ? (
+												<a class="row__code row__code--link" href={r.link} rel="external">
+													<code>{r.code}</code>
+												</a>
+											) : (
+												<span class="row__code">
+													<code>{r.code}</code>
+													<button class="copy copy--icon" type="button" data-copy={r.code} aria-label={`Copy: ${r.code}`}>
+														<svg viewBox="0 0 24 24" aria-hidden="true">
+															<path d={copyIcon} />
+														</svg>
+													</button>
+												</span>
+											)}
+										</dd>
+									</div>
+								))}
+							</dl>
+							<a class="arrowlink card__more" href={b.href}>
+								{b.more} <span aria-hidden="true">→</span>
+							</a>
+						</section>
+					))
+				}
+			</div>
+			<p class="footnote">
+				Prebuilt for macOS (Apple silicon and Intel), Linux (x86-64 and ARM64, glibc) and Windows (x86-64). In PowerShell:
+				<code>irm https://github.com/lvnr/matenadar/releases/latest/download/install.ps1 | iex</code>
+			</p>
+		</section>
+
+		<!-- closing -->
+		<section class="wrap" aria-labelledby="band-title">
+			<div class="band">
+				<div class="band__glow" aria-hidden="true"></div>
+				<h2 class="band__title" id="band-title">Typeset your first page in thirty seconds.</h2>
+				<p class="band__lede">One command. No browser binary, no LaTeX install, no account.</p>
+				<div class="cmd band__cmd">
+					<pre tabindex="0"><code><span class="pr" aria-hidden="true">$</span>npx matenadar build book.json -o book.pdf --check</code></pre>
+					<button class="copy" type="button" data-copy="npx matenadar build book.json -o book.pdf --check" aria-label="Copy: npx matenadar build book.json -o book.pdf --check">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d={copyIcon}></path></svg>
+						<span class="copy__label">Copy</span>
+					</button>
+				</div>
+				<div class="actions actions--center">
+					<a class="btn btn--primary" href="/docs/getting-started/quick-start/">Start the quick start <span class="btn__arrow" aria-hidden="true">→</span></a>
+					<a class="btn btn--secondary" href="/docs/model/overview/">Explore the document model</a>
+					<a class="arrowlink" href={GITHUB} rel="external">Star on GitHub&nbsp;↗</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- maker -->
+		<section class="section wrap maker" aria-labelledby="maker-title">
+			<div class="maker__card">
+				<Mark size={52} class="maker__mark" />
+				<div class="maker__body">
+					<h2 class="maker__title" id="maker-title">Made by Levon Arakelyan, in the open.</h2>
+					<p class="maker__text">
+						Matenadar started out of stubbornness—wanting a single, honest layout engine good enough to typeset real print books
+						without dragging in headless Chrome or locking manuscripts inside a proprietary editor. Named after the Matenadaran (<span
+							class="hy"
+							lang="hy">Մատենադարան</span
+						>), Yerevan’s house of manuscripts. Free forever under Apache-2.0.
+					</p>
+					<ul class="linkrow">
+						{
+							madeBy.map((l) => (
+								<li>
+									<a href={l.href} rel="external">
+										{l.label}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="footer">
+		<div class="wrap footer__grid">
+			<div class="footer__brand">
+				<a class="brand" href="/" aria-label="Matenadar, home">
+					<Mark size={24} />
+					<span class="brand__name">Matenadar</span>
+				</a>
+				<p>A book and page layout engine for people and agents.</p>
+				<p class="footer__meta">v0.1.0 · Apache-2.0 · Rust, Typst and WebAssembly</p>
+			</div>
+			<nav class="footer__cols" aria-label="Footer">
+				<div>
+					<p class="footer__head">Docs</p>
+					<ul>
+						<li><a href="/docs/">Introduction</a></li>
+						<li><a href="/docs/getting-started/install/">Install</a></li>
+						<li><a href="/docs/getting-started/quick-start/">Quick start</a></li>
+						<li><a href="/docs/model/overview/">Document model</a></li>
+					</ul>
+				</div>
+				<div>
+					<p class="footer__head">Reference</p>
+					<ul>
+						<li><a href="/docs/reference/cli/">Command line</a></li>
+						<li><a href="/docs/reference/wasm/">WebAssembly</a></li>
+						<li><a href="/docs/reference/rust/">Rust crates</a></li>
+						<li><a href="/docs/guides/agents/">Agents</a></li>
+					</ul>
+				</div>
+				<div>
+					<p class="footer__head">Elsewhere</p>
+					<ul>
+						<li><a href={GITHUB} rel="external">GitHub</a></li>
+						<li><a href="https://crates.io/crates/matenadar" rel="external">crates.io</a></li>
+						<li><a href="https://www.npmjs.com/package/@matenadar/wasm" rel="external">npm</a></li>
+						<li><a href={DESK} rel="external">3D Desk ↗</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</footer>
+
+	<p class="sr-only" aria-live="polite" data-announce></p>
+</Landing>
+
+<script>
+	// ---------------------------------------------------------------- theme
+	// Shared with the docs: Starlight reads the same key.
+	const root = document.documentElement;
+	const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+	const stored = () => {
+		try {
+			return localStorage.getItem('starlight-theme') || '';
+		} catch {
+			return '';
+		}
+	};
+	const setTheme = (theme: 'light' | 'dark', keep: boolean) => {
+		root.dataset.theme = theme;
+		toggle?.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+		if (keep) {
+			try {
+				localStorage.setItem('starlight-theme', theme);
+			} catch {}
+		}
+	};
+	setTheme(root.dataset.theme === 'dark' ? 'dark' : 'light', false);
+	toggle?.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true));
+	matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+		if (!stored()) setTheme(e.matches ? 'dark' : 'light', false);
+	});
+
+	// ---------------------------------------------------------------- tabs
+	for (const list of document.querySelectorAll<HTMLElement>('[role="tablist"]')) {
+		const tabs = [...list.querySelectorAll<HTMLElement>('[role="tab"]')];
+		const select = (tab: HTMLElement, focus: boolean) => {
+			for (const t of tabs) {
+				const on = t === tab;
+				t.setAttribute('aria-selected', String(on));
+				t.tabIndex = on ? 0 : -1;
+				const panel = document.getElementById(t.getAttribute('aria-controls') || '');
+				if (panel) panel.hidden = !on;
+			}
+			if (focus) tab.focus();
+		};
+		list.addEventListener('click', (e) => {
+			const tab = (e.target as Element).closest<HTMLElement>('[role="tab"]');
+			if (tab) select(tab, false);
+		});
+		list.addEventListener('keydown', (e) => {
+			const i = tabs.indexOf(document.activeElement as HTMLElement);
+			if (i < 0) return;
+			const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+			if (next === undefined) return;
+			e.preventDefault();
+			select(tabs[(next + tabs.length) % tabs.length], true);
+		});
+	}
+
+	// ---------------------------------------------------------------- copy
+	const announce = document.querySelector<HTMLElement>('[data-announce]');
+	document.addEventListener('click', async (e) => {
+		const button = (e.target as Element).closest<HTMLButtonElement>('[data-copy]');
+		if (!button) return;
+		const text = button.dataset.copy || '';
+		try {
+			await navigator.clipboard.writeText(text);
+		} catch {
+			const area = Object.assign(document.createElement('textarea'), { value: text });
+			area.style.cssText = 'position:fixed;opacity:0';
+			document.body.append(area);
+			area.select();
+			document.execCommand('copy');
+			area.remove();
+		}
+		button.dataset.copied = '';
+		const label = button.querySelector('.copy__label');
+		if (label) label.textContent = 'Copied';
+		if (announce) announce.textContent = 'Copied to the clipboard';
+		setTimeout(() => {
+			delete button.dataset.copied;
+			if (label) label.textContent = 'Copy';
+		}, 1600);
+	});
+
+	// ---------------------------------------------------------------- specimens
+	// A line of the model and the part of the page it made share a data-ref.
+	for (const panel of document.querySelectorAll<HTMLElement>('[data-specimen]')) {
+		let lit = '';
+		const light = (ref: string) => {
+			if (ref === lit) return;
+			lit = ref;
+			for (const el of panel.querySelectorAll('.is-lit')) el.classList.remove('is-lit');
+			panel.classList.toggle('is-pointing', ref !== '');
+			for (const r of ref.split(' ').filter(Boolean)) {
+				for (const el of panel.querySelectorAll(`[data-ref~="${CSS.escape(r)}"]`)) el.classList.add('is-lit');
+			}
+		};
+		panel.addEventListener('pointerover', (e) => {
+			const hit = (e.target as Element).closest<HTMLElement | SVGElement>('[data-ref]');
+			light(hit?.dataset.ref ?? '');
+		});
+		panel.addEventListener('pointerleave', () => light(''));
+	}
+
+	const guides = document.querySelector<HTMLButtonElement>('[data-guides]');
+	guides?.addEventListener('click', () => {
+		const on = guides.getAttribute('aria-pressed') !== 'true';
+		guides.setAttribute('aria-pressed', String(on));
+		document.querySelector('[data-spec]')?.classList.toggle('show-guides', on);
+	});
+</script>

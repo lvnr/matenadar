@@ -1,0 +1,53 @@
+---
+/**
+ * The mark: Men (Մ), Matenadar's initial in Armenian, on a cobalt tile.
+ * The glyph is the outline from docs/brand/logo.svg (which the engine
+ * typesets), so it needs no font.
+ */
+interface Props {
+	size?: number | string;
+	class?: string;
+	/** Accessible name; leave empty when the mark sits beside the wordmark. */
+	label?: string;
+}
+const { size = 32, class: className, label } = Astro.props;
+const dim = typeof size === 'number' ? `${size}px` : size;
+---
+
+<svg
+	class:list={['mt-mark', className]}
+	viewBox="0 0 256 256"
+	width={dim}
+	height={dim}
+	role={label ? 'img' : undefined}
+	aria-label={label || undefined}
+	aria-hidden={label ? undefined : 'true'}
+	focusable="false"
+>
+	<rect class="mt-mark__tile" width="256" height="256" rx="58"></rect>
+	<rect class="mt-mark__edge" x="4" y="4" width="248" height="248" rx="54"></rect>
+	<path
+		class="mt-mark__glyph"
+		transform="translate(19.78 1.9) scale(0.8)"
+		d="M119.964 237.332Q99.049 237.332 85.179 229.737Q71.309 222.141 64.374 209.152Q57.439 196.163 57.439 179.651L57.439 77.937L88.481 77.937L88.481 174.367Q88.481 187.136 91.784 195.282Q95.086 203.428 101.801 207.391Q108.516 211.354 119.084 211.354Q134.495 211.354 142.42 203.098Q150.346 194.842 150.346 174.807L150.346 77.937L213.092 77.937L213.092 103.916L181.389 103.916L181.389 179.21Q181.389 196.823 174.234 209.923Q167.078 223.022 153.428 230.177Q139.779 237.332 119.964 237.332Z"
+	></path>
+</svg>
+
+<style>
+	.mt-mark {
+		display: block;
+		flex: none;
+	}
+	.mt-mark__tile {
+		fill: #2563eb;
+	}
+	.mt-mark__edge {
+		fill: none;
+		stroke: #ffffff;
+		stroke-opacity: 0.16;
+		stroke-width: 6;
+	}
+	.mt-mark__glyph {
+		fill: #ffffff;
+	}
+</style>

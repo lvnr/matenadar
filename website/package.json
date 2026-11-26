@@ -1,0 +1,26 @@
+{
+  "name": "matenadar-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Matenadar's landing page and documentation (Astro + Starlight), deployed as Cloudflare Workers static assets.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "prebuild": "node -e \"require('node:fs').rmSync('node_modules/.astro',{recursive:true,force:true})\"",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "deploy": "npm run build && npx wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.43.2",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "astro": "^7.4.13"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  }
+}

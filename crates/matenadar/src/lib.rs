@@ -1,4 +1,4 @@
-//! Matenadar: a book and page layout engine for people and agents.
+//! Matenadar: a typesetting engine for anything that prints, for people and agents.
 //!
 //! This crate is a thin facade over the Matenadar workspace crates—and also
 //! provides the `matenadar` CLI binary (`cargo install matenadar`):

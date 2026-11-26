@@ -1,0 +1,9 @@
+# Fetched by fonts/fetch.sh (open-licence faces, too large to keep here).
+fonts/*.ttf
+fonts/OFL-*.txt
+# Scratch: raw generated art, test renders.
+_generated/
+_out/
+_test/
+# The social card's art, cut from the renders by scripts/render-examples.py.
+og/art/

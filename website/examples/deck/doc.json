@@ -1,0 +1,398 @@
+{
+  "matenadar": "1",
+  "meta": {
+    "title": "Lucent — Series A", "author": "Lucent",
+    "lang": "en-US"
+  },
+  "fonts": ["../fonts"],
+  "design": {
+    "colors": {
+      "ink": "#0b0b12", "muted": "#6e6e7a", "line": "#e6e6ee",
+      "paper": "#ffffff", "mist": "#f4f5f9", "cobalt": "#2b4bff",
+      "coral": "#ff6a3d"
+    },
+    "base": {
+      "font": "Geist", "size": 14, "line_height": 1.4,
+      "color": "ink"
+    },
+    "styles": {
+      "kicker": {"size": 12, "weight": 500, "color": "cobalt"},
+      "title": {
+        "size": 64, "weight": 600, "tracking": "-0.045em",
+        "line_height": 1.0
+      },
+      "h": {
+        "size": 36, "weight": 600, "tracking": "-0.035em",
+        "line_height": 1.05
+      },
+      "big": {
+        "size": 76, "weight": 600, "tracking": "-0.05em",
+        "line_height": 1, "features": ["tnum"]
+      },
+      "cap": {"size": 13, "color": "muted", "line_height": 1.35},
+      "foot": {"size": 10, "color": "muted"},
+      "axis": {
+        "size": 10, "color": "muted", "align": "center",
+        "features": ["tnum"]
+      },
+      "val": {
+        "size": 12, "weight": 600, "align": "center",
+        "features": ["tnum"]
+      },
+      "quote": {
+        "font": "Instrument Serif", "size": 50, "line_height": 1.08,
+        "tracking": "-0.015em"
+      }
+    },
+    "masters": {
+      "slide": {
+        "width": 960, "height": 540,
+        "margins": {"top": 0, "bottom": 0, "left": 0, "right": 0},
+        "foreground": [
+          {
+            "type": "text", "x": 56, "y": 504, "w": 300,
+            "style": "foot",
+            "content": [
+              {"text": "Lucent", "weight": 600, "color": "ink"},
+              "  ·  Series A, March 2027"
+            ]
+          },
+          {
+            "type": "text", "x": 604, "y": 504, "w": 300,
+            "style": "foot", "set": {"align": "right"},
+            "content": [
+              {"field": "page"},
+              " / ",
+              {"field": "pages"}
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "content": [
+    {
+      "type": "page", "id": "cover", "master": "slide",
+      "fill": "paper", "layers": true,
+      "elements": [
+        {
+          "type": "image", "id": "hero", "src": "art/deck-hero.jpg",
+          "x": 400, "y": 0, "w": 560, "h": 540, "fit": "cover",
+          "focus": [0.62, 0.5]
+        },
+        {
+          "type": "rect", "x": 396, "y": 0, "w": 120, "h": 540,
+          "fill": {
+            "gradient": "linear", "angle": 0,
+            "stops": [["#ffffff", 0], ["#ffffff00", 1]]
+          }
+        },
+        {
+          "type": "group", "id": "logo", "x": 56, "y": 52, "w": 140,
+          "h": 28,
+          "children": [
+            {
+              "type": "ellipse", "x": 0, "y": 2, "w": 24, "h": 24,
+              "fill": "cobalt"
+            },
+            {
+              "type": "ellipse", "x": 9, "y": 2, "w": 24, "h": 24,
+              "fill": "coral", "opacity": 0.85
+            },
+            {
+              "type": "text", "x": 42, "y": 3, "w": 100,
+              "content": [
+                {
+                  "text": "Lucent", "size": 19, "weight": 600,
+                  "tracking": "-0.03em"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "kicker", "x": 56, "y": 186,
+          "w": 400, "style": "kicker",
+          "text": "Series A  ·  March 2027"
+        },
+        {
+          "type": "text", "id": "title", "x": 56, "y": 212,
+          "w": 430, "style": "title",
+          "text": "The print stack, rebuilt."
+        },
+        {
+          "type": "text", "id": "sub", "x": 56, "y": 360, "w": 330,
+          "style": "cap",
+          "text": "Every invoice, label, catalogue and book your company sends, generated from data and checked before it ships."
+        }
+      ]
+    },
+    {
+      "type": "page", "id": "traction", "master": "slide",
+      "fill": "paper", "layers": true,
+      "elements": [
+        {
+          "type": "text", "x": 56, "y": 56, "w": 400,
+          "style": "kicker", "text": "Traction"
+        },
+        {
+          "type": "text", "x": 56, "y": 80, "w": 620, "style": "h",
+          "text": "Momentum since launch"
+        },
+        {
+          "type": "line", "x1": 56, "y1": 156, "x2": 904, "y2": 156,
+          "stroke": {"width": 1, "color": "ink"}
+        },
+        {
+          "type": "text", "id": "pages", "x": 56, "y": 178,
+          "w": 270,
+          "blocks": [
+            {
+              "type": "p", "style": "big",
+              "content": ["3.4", {"text": "M", "color": "cobalt"}]
+            },
+            {
+              "type": "p", "style": "cap",
+              "text": "pages laid out every month, up from 0.4 M a year ago"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "latency", "x": 345, "y": 178,
+          "w": 270,
+          "blocks": [
+            {
+              "type": "p", "style": "big",
+              "content": [
+                "48",
+                {"text": "ms", "color": "cobalt", "size": 40}
+              ]
+            },
+            {
+              "type": "p", "style": "cap",
+              "text": "median time to lay out a 32-page catalogue"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "customers", "x": 634, "y": 178,
+          "w": 270,
+          "blocks": [
+            {"type": "p", "style": "big", "content": ["212"]},
+            {
+              "type": "p", "style": "cap",
+              "text": "paying customers in 19 countries, 97% net revenue retention"
+            }
+          ]
+        },
+        {
+          "type": "path", "id": "spark", "x": 56, "y": 330,
+          "w": 848, "h": 120,
+          "d": "M 0 108 C 67.84 105 101.76 102 152.64 96 S 237.44 93 288.32 81 S 390.08 72 440.96 60 S 542.72 57 593.6 42 S 712.32 27 763.2 18 S 822.56 7.2 848 3.6",
+          "stroke": {
+            "width": 2.5, "color": "cobalt", "cap": "round",
+            "join": "round"
+          }
+        },
+        {
+          "type": "ellipse", "x": 899, "y": 328.6, "w": 10, "h": 10,
+          "fill": "coral"
+        },
+        {
+          "type": "line", "x1": 56, "y1": 456, "x2": 904, "y2": 456,
+          "stroke": {"width": 0.75, "color": "line"}
+        }
+      ]
+    },
+    {
+      "type": "page", "id": "revenue", "master": "slide",
+      "fill": "mist", "layers": true,
+      "elements": [
+        {
+          "type": "text", "x": 56, "y": 56, "w": 400,
+          "style": "kicker", "text": "Revenue"
+        },
+        {
+          "type": "text", "x": 56, "y": 80, "w": 420, "style": "h",
+          "text": "Annual run-rate grew 4.1× in a year"
+        },
+        {
+          "type": "text", "x": 600, "y": 92, "w": 304,
+          "style": "cap", "set": {"align": "right"},
+          "text": "ARR in millions of dollars, at the end of each quarter"
+        },
+        {
+          "type": "line", "x1": 56, "y1": 440, "x2": 904, "y2": 440,
+          "stroke": {"width": 1, "color": "ink"}
+        },
+        {
+          "type": "rect", "x": 80, "y": 412, "w": 64, "h": 28,
+          "fill": "#c9d0f0",
+          "radius": {"top_left": 4, "top_right": 4}
+        },
+        {
+          "type": "rect", "x": 182, "y": 398, "w": 64, "h": 42,
+          "fill": "#c9d0f0",
+          "radius": {"top_left": 4, "top_right": 4}
+        },
+        {
+          "type": "rect", "x": 284, "y": 380, "w": 64, "h": 60,
+          "fill": "#c9d0f0",
+          "radius": {"top_left": 4, "top_right": 4}
+        },
+        {
+          "type": "rect", "x": 386, "y": 350, "w": 64, "h": 90,
+          "fill": "#aeb9ec",
+          "radius": {"top_left": 4, "top_right": 4}
+        },
+        {
+          "type": "rect", "x": 488, "y": 316, "w": 64, "h": 124,
+          "fill": "#93a3ea",
+          "radius": {"top_left": 4, "top_right": 4}
+        },
+        {
+          "type": "rect", "x": 590, "y": 272, "w": 64, "h": 168,
+          "fill": "#7186ef",
+          "radius": {"top_left": 4, "top_right": 4}
+        },
+        {
+          "type": "rect", "x": 692, "y": 228, "w": 64, "h": 212,
+          "fill": "#4a63f5",
+          "radius": {"top_left": 4, "top_right": 4}
+        },
+        {
+          "type": "rect", "x": 794, "y": 170, "w": 64, "h": 270,
+          "fill": "cobalt",
+          "radius": {"top_left": 4, "top_right": 4}
+        },
+        {
+          "type": "text", "x": 72, "y": 392, "w": 80,
+          "style": "val", "text": "0.9"
+        },
+        {
+          "type": "text", "x": 174, "y": 378, "w": 80,
+          "style": "val", "text": "1.4"
+        },
+        {
+          "type": "text", "x": 276, "y": 360, "w": 80,
+          "style": "val", "text": "2.0"
+        },
+        {
+          "type": "text", "x": 378, "y": 330, "w": 80,
+          "style": "val", "text": "3.0"
+        },
+        {
+          "type": "text", "x": 480, "y": 296, "w": 80,
+          "style": "val", "text": "4.1"
+        },
+        {
+          "type": "text", "x": 582, "y": 252, "w": 80,
+          "style": "val", "text": "5.6"
+        },
+        {
+          "type": "text", "x": 684, "y": 208, "w": 80,
+          "style": "val", "text": "7.1"
+        },
+        {
+          "type": "group", "x": 770, "y": 132, "w": 112, "h": 30,
+          "children": [
+            {
+              "type": "rect", "x": 0, "y": 0, "w": 112, "h": 30,
+              "radius": 15, "fill": "coral"
+            },
+            {
+              "type": "text", "x": 0, "y": 7, "w": 112,
+              "content": [
+                {
+                  "text": "$9.0M ARR", "size": 12, "weight": 600,
+                  "color": "#ffffff"
+                }
+              ],
+              "set": {"align": "center"}
+            }
+          ]
+        },
+        {
+          "type": "text", "x": 72, "y": 450, "w": 80,
+          "style": "axis", "text": "Q2 ’25"
+        },
+        {
+          "type": "text", "x": 174, "y": 450, "w": 80,
+          "style": "axis", "text": "Q3 ’25"
+        },
+        {
+          "type": "text", "x": 276, "y": 450, "w": 80,
+          "style": "axis", "text": "Q4 ’25"
+        },
+        {
+          "type": "text", "x": 378, "y": 450, "w": 80,
+          "style": "axis", "text": "Q1 ’26"
+        },
+        {
+          "type": "text", "x": 480, "y": 450, "w": 80,
+          "style": "axis", "text": "Q2 ’26"
+        },
+        {
+          "type": "text", "x": 582, "y": 450, "w": 80,
+          "style": "axis", "text": "Q3 ’26"
+        },
+        {
+          "type": "text", "x": 684, "y": 450, "w": 80,
+          "style": "axis", "text": "Q4 ’26"
+        },
+        {
+          "type": "text", "x": 786, "y": 450, "w": 80,
+          "style": "axis", "text": "Q1 ’27"
+        }
+      ]
+    },
+    {
+      "type": "page", "id": "quote", "master": "slide",
+      "fill": "ink",
+      "elements": [
+        {
+          "type": "text", "x": 56, "y": 56, "w": 400,
+          "style": "kicker", "set": {"color": "#8ea0ff"},
+          "text": "From a customer"
+        },
+        {
+          "type": "text", "id": "quote-text", "x": 56, "y": 118,
+          "w": 760, "style": "quote", "set": {"color": "#ffffff"},
+          "text": "“We replaced three tools and a week of manual layout with one JSON file and a build step.”"
+        },
+        {
+          "type": "line", "x1": 56, "y1": 380, "x2": 104, "y2": 380,
+          "stroke": {"width": 2, "color": "coral"}
+        },
+        {
+          "type": "text", "x": 56, "y": 396, "w": 500,
+          "content": [
+            {
+              "text": "Head of Operations", "size": 14,
+              "weight": 600, "color": "#ffffff"
+            },
+            {"br": true},
+            {
+              "text": "Nordquist Print, Gothenburg", "size": 13,
+              "color": "#a3a3b3"
+            }
+          ]
+        },
+        {
+          "type": "text", "x": 56, "y": 504, "w": 300,
+          "style": "foot", "set": {"color": "#8b8b99"},
+          "content": [
+            {"text": "Lucent", "weight": 600, "color": "#ffffff"},
+            "  ·  Series A, March 2027"
+          ]
+        },
+        {
+          "type": "text", "x": 604, "y": 504, "w": 300,
+          "style": "foot",
+          "set": {"align": "right", "color": "#8b8b99"},
+          "text": "4 / 4"
+        }
+      ]
+    }
+  ]
+}

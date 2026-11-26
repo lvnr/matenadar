@@ -1,0 +1,408 @@
+{
+  "matenadar": "1",
+  "meta": {
+    "title": "Invoice HV-2027-014", "author": "Halden & Vey",
+    "lang": "en-GB"
+  },
+  "fonts": ["../fonts"],
+  "design": {
+    "colors": {
+      "ink": "#0d0d12", "muted": "#6b6b78", "line": "#e3e3ea",
+      "wash": "#f4f5fb", "accent": "#2b4bff"
+    },
+    "base": {
+      "font": "Instrument Sans", "size": 9.5, "line_height": 1.45,
+      "color": "ink", "features": ["tnum"]
+    },
+    "styles": {
+      "display": {
+        "size": 58, "weight": 600, "tracking": "-0.045em",
+        "line_height": 1, "align": "right"
+      },
+      "label": {"size": 7.5, "color": "muted", "space_after": "3pt"},
+      "value": {"size": 10, "weight": 500},
+      "name": {"size": 10, "weight": 600},
+      "addr": {"size": 9, "color": "muted", "line_height": 1.5},
+      "th": {"size": 7.5, "color": "muted"},
+      "item": {"size": 10, "weight": 600, "space_after": "1pt"},
+      "detail": {"size": 8.5, "color": "muted"},
+      "num": {"size": 10, "align": "right"},
+      "fine": {"size": 7, "color": "muted", "line_height": 1.5},
+      "thanks": {
+        "font": "Instrument Serif", "italic": true, "size": 34,
+        "line_height": 1, "tracking": "-0.01em"
+      }
+    },
+    "spans": {"mono": {"font": "JetBrains Mono", "size": 8}},
+    "masters": {
+      "a4": {
+        "width": "210mm", "height": "297mm",
+        "margins": {
+          "top": 48, "bottom": 48, "left": 48, "right": 48
+        }
+      }
+    }
+  },
+  "content": [
+    {
+      "type": "page", "id": "invoice", "master": "a4",
+      "fill": "#ffffff",
+      "elements": [
+        {
+          "type": "rect", "id": "band", "x": 0, "y": 0,
+          "w": "210mm", "h": 6, "fill": "accent"
+        },
+        {
+          "type": "group", "id": "logo", "x": 48, "y": 48, "w": 34,
+          "h": 34,
+          "children": [
+            {
+              "type": "rect", "x": 0, "y": 0, "w": 34, "h": 34,
+              "radius": 9, "fill": "ink"
+            },
+            {
+              "type": "path", "x": 0, "y": 0, "w": 34, "h": 34,
+              "d": "M9.5 9.5 V24.5 M9.5 17 H17 M17 9.5 L21 24.5 L25 9.5",
+              "stroke": {
+                "width": 2.6, "color": "#ffffff", "cap": "round",
+                "join": "round"
+              }
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "studio", "x": 92, "y": 49,
+          "w": 200,
+          "content": [
+            {
+              "text": "Halden & Vey", "size": 15, "weight": 600,
+              "tracking": "-0.02em"
+            },
+            {"br": true},
+            {
+              "text": "Type & print studio, Edinburgh", "size": 8.5,
+              "color": "muted"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "title", "x": 247, "y": 34,
+          "w": 300, "style": "display", "text": "Invoice"
+        },
+        {
+          "type": "text", "id": "number", "x": 247, "y": 96,
+          "w": 300, "set": {"align": "right"},
+          "content": [
+            {
+              "text": "No. HV-2027-014", "span": "mono",
+              "color": "muted"
+            }
+          ]
+        },
+        {
+          "type": "line", "x1": 48, "y1": 128, "x2": 547.28,
+          "y2": 128, "stroke": {"width": 0.75, "color": "ink"}
+        },
+        {
+          "type": "text", "id": "issued", "x": 48, "y": 142,
+          "w": 118,
+          "blocks": [
+            {"type": "p", "style": "label", "text": "Issued"},
+            {"type": "p", "style": "value", "text": "12 March 2027"}
+          ]
+        },
+        {
+          "type": "text", "id": "due", "x": 172.8, "y": 142,
+          "w": 118,
+          "blocks": [
+            {"type": "p", "style": "label", "text": "Due"},
+            {"type": "p", "style": "value", "text": "11 April 2027"}
+          ]
+        },
+        {
+          "type": "text", "id": "project", "x": 297.6, "y": 142,
+          "w": 130,
+          "blocks": [
+            {"type": "p", "style": "label", "text": "Project"},
+            {
+              "type": "p", "style": "value",
+              "text": "Solstice festival identity"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "terms", "x": 447, "y": 142,
+          "w": 100.28,
+          "blocks": [
+            {"type": "p", "style": "label", "text": "Terms"},
+            {"type": "p", "style": "value", "text": "Net 30 days"}
+          ]
+        },
+        {
+          "type": "text", "id": "billed-to", "x": 48, "y": 204,
+          "w": 170,
+          "blocks": [
+            {"type": "p", "style": "label", "text": "Billed to"},
+            {
+              "type": "p", "style": "name",
+              "text": "Lake Sevan Arts Foundation"
+            },
+            {
+              "type": "p", "style": "addr",
+              "text": "Attn. Ani Petrosyan\n14 Abovyan Street\n0010 Yerevan, Armenia"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "from", "x": 226, "y": 204,
+          "w": 150,
+          "blocks": [
+            {"type": "p", "style": "label", "text": "From"},
+            {
+              "type": "p", "style": "name",
+              "text": "Halden & Vey Ltd."
+            },
+            {
+              "type": "p", "style": "addr",
+              "text": "27 Saint Andrew Street\nEdinburgh EH2 1AH\nhello@haldenvey.example"
+            }
+          ]
+        },
+        {
+          "type": "group", "id": "amount-due", "x": 392, "y": 200,
+          "w": 155.28, "h": 86,
+          "children": [
+            {
+              "type": "rect", "x": 0, "y": 0, "w": 155.28, "h": 86,
+              "radius": 10, "fill": "accent"
+            },
+            {
+              "type": "text", "x": 14, "y": 12, "w": 127,
+              "content": [
+                {
+                  "text": "Amount due", "size": 8,
+                  "color": "#ffffff", "opacity": 0.8
+                }
+              ]
+            },
+            {
+              "type": "text", "x": 14, "y": 28, "w": 127,
+              "content": [
+                {
+                  "text": "€16,960.00", "size": 24, "weight": 600,
+                  "tracking": "-0.03em", "color": "#ffffff"
+                }
+              ]
+            },
+            {
+              "type": "text", "x": 14, "y": 62, "w": 127,
+              "content": [
+                {
+                  "text": "by 11 April 2027", "size": 8,
+                  "color": "#ffffff"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "items", "x": 48, "y": 320,
+          "w": 499.28,
+          "blocks": [
+            {
+              "type": "table", "id": "lines",
+              "columns": ["1fr", 40, 76, 84],
+              "align": ["left", "right", "right", "right"],
+              "inset": {"x": 0, "y": 9}, "header_style": "th",
+              "valign": "top",
+              "rules": {
+                "header": {"width": 0.75, "color": "ink"},
+                "rows": {"width": 0.5, "color": "line"},
+                "bottom": {"width": 0.75, "color": "ink"}
+              },
+              "header": [["Description", "Qty", "Rate", "Amount"]],
+              "rows": [
+                [
+                  {
+                    "blocks": [
+                      {
+                        "type": "p", "style": "item",
+                        "text": "Festival identity system"
+                      },
+                      {
+                        "type": "p", "style": "detail",
+                        "text": "Mark, colour, type scale and grid; three rounds of revisions"
+                      }
+                    ]
+                  },
+                  "1",
+                  "6,800.00",
+                  "6,800.00"
+                ],
+                [
+                  {
+                    "blocks": [
+                      {
+                        "type": "p", "style": "item",
+                        "text": "Poster series, 18 × 24 in"
+                      },
+                      {
+                        "type": "p", "style": "detail",
+                        "text": "Six designs; print-ready PDFs with bleed and crop marks"
+                      }
+                    ]
+                  },
+                  "6",
+                  "650.00",
+                  "3,900.00"
+                ],
+                [
+                  {
+                    "blocks": [
+                      {
+                        "type": "p", "style": "item",
+                        "text": "Programme booklet, 48 pages"
+                      },
+                      {
+                        "type": "p", "style": "detail",
+                        "text": "Laid out from the festival’s JSON schedule"
+                      }
+                    ]
+                  },
+                  "1",
+                  "3,200.00",
+                  "3,200.00"
+                ],
+                [
+                  {
+                    "blocks": [
+                      {
+                        "type": "p", "style": "item",
+                        "text": "Signage and wayfinding"
+                      },
+                      {
+                        "type": "p", "style": "detail",
+                        "text": "Twelve templates, A1 to A5"
+                      }
+                    ]
+                  },
+                  "12",
+                  "180.00",
+                  "2,160.00"
+                ],
+                [
+                  {
+                    "blocks": [
+                      {
+                        "type": "p", "style": "item",
+                        "text": "Press check and proofs"
+                      },
+                      {
+                        "type": "p", "style": "detail",
+                        "text": "Two days on press, colour sign-off"
+                      }
+                    ]
+                  },
+                  "2",
+                  "450.00",
+                  "900.00"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "totals", "x": 327, "y": 600,
+          "w": 220.28,
+          "blocks": [
+            {
+              "type": "table", "columns": ["1fr", 96],
+              "align": ["left", "right"], "inset": {"x": 0, "y": 5},
+              "rules": {"rows": {"width": 0.5, "color": "line"}},
+              "rows": [
+                ["Subtotal", "16,960.00"],
+                ["VAT (reverse charge)", "0.00"],
+                [
+                  {
+                    "content": [
+                      {
+                        "text": "Total due", "weight": 600,
+                        "size": 12
+                      }
+                    ]
+                  },
+                  {
+                    "content": [
+                      {
+                        "text": "€16,960.00", "weight": 600,
+                        "size": 12
+                      }
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "payment", "x": 48, "y": 600,
+          "w": 210,
+          "blocks": [
+            {"type": "p", "style": "label", "text": "Payment"},
+            {
+              "type": "p", "style": "addr",
+              "content": [
+                "Bank transfer to Halden & Vey Ltd.",
+                {"br": true},
+                {
+                  "text": "IBAN GB00 HALV 0000 0000 0000 00",
+                  "span": "mono"
+                },
+                {"br": true},
+                {"text": "Reference HV-2027-014", "span": "mono"}
+              ]
+            }
+          ]
+        },
+        {
+          "type": "qr", "id": "pay", "x": 48, "y": 676, "w": 64,
+          "data": "https://haldenvey.example/pay/HV-2027-014",
+          "color": "ink", "quiet": 0
+        },
+        {
+          "type": "text", "x": 122, "y": 684, "w": 120,
+          "content": [
+            {
+              "text": "Scan to pay by card", "size": 8,
+              "weight": 500
+            },
+            {"br": true},
+            {
+              "text": "or with Apple Pay", "size": 8,
+              "color": "muted"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "thanks", "x": 327, "y": 700,
+          "w": 220.28, "style": "thanks", "set": {"align": "right"},
+          "text": "Thank you."
+        },
+        {
+          "type": "line", "x1": 48, "y1": 768, "x2": 547.28,
+          "y2": 768, "stroke": {"width": 0.5, "color": "line"}
+        },
+        {
+          "type": "text", "id": "footer", "x": 48, "y": 776,
+          "w": 400, "style": "fine",
+          "text": "Halden & Vey Ltd. · Registered in Scotland · 27 Saint Andrew Street, Edinburgh EH2 1AH"
+        },
+        {
+          "type": "text", "x": 447, "y": 776, "w": 100.28,
+          "style": "fine", "set": {"align": "right"},
+          "text": "Page 1 of 1"
+        }
+      ]
+    }
+  ]
+}

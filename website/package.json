@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "Matenadar's landing page and documentation (Astro + Starlight), deployed as Cloudflare Workers static assets.",
+  "description": "Matenadar's landing page, examples and documentation (Astro + Starlight), deployed as Cloudflare Workers static assets.",
   "license": "Apache-2.0",
   "scripts": {
     "dev": "astro dev",
@@ -12,13 +12,17 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "npm run build && npx wrangler deploy"
+    "fancy": "sh scripts/fancy.sh",
+    "deploy": "npm run build && npm run fancy && npx wrangler deploy",
+    "deploy:redirect": "npx wrangler deploy --config redirect/wrangler.jsonc"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.43.2",
-    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
-    "astro": "^7.4.13"
+    "astro": "^7.4.13",
+    "motion": "^14.14.0"
   },
   "engines": {
     "node": ">=22.23.4"

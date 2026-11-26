@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/brand/banner-dark.svg">
-  <img alt="Matenadar: a book and page layout engine for people and agents" src="docs/brand/banner-light.svg" width="100%">
+  <img alt="Matenadar. Every page, programmable: a typesetting engine for anything that prints, for people and agents" src="docs/brand/banner-light.svg" width="100%">
 </picture>
 
 <p align="center">
@@ -13,9 +13,8 @@
 </p>
 
 <p align="center">
-  <a href="https://matenadar-docs.levships.com/docs/">Docs</a> ·
-  <a href="https://matenadar-docs.levships.com">Overview</a> ·
-  <a href="https://matenadar.levships.com">3D Demo</a> ·
+  <a href="https://matenadar.levships.com">Website</a> ·
+  <a href="https://matenadar.levships.com/docs/">Docs</a> ·
   <a href="#install">Install</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="docs/model.md">The model</a> ·
@@ -23,11 +22,12 @@
   <a href="#rust">Rust</a>
 </p>
 
-A document is a JSON model of sections, pages, styles, masters and
-components. Matenadar lays it out with [Typst](https://typst.app) and renders
-it to PDF, PNG or SVG. It can say what landed where, check pages the way a
-print-on-demand preflighter would, and apply edits as operations that can be
-undone.
+Matenadar typesets anything that prints: books and magazines, invoices and
+menus, slide decks, posters, covers and calendars. A document is a JSON model
+of sections, pages, styles, masters and components. Matenadar lays it out with
+[Typst](https://typst.app) and renders it to PDF, PNG or SVG. It can say what
+landed where, check pages the way a print-on-demand preflighter would, and
+apply edits as operations that can be undone.
 
 It makes EPUB 3 from the same model, and runs in the browser as WebAssembly
 with a page editor's API: find what is under the pointer, change words,

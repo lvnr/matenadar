@@ -52,7 +52,7 @@ const linuxArm = entry("aarch64-unknown-linux-gnu");
 const linuxIntel = entry("x86_64-unknown-linux-gnu");
 
 const formula = `class Matenadar < Formula
-  desc "Book and page layout engine for people and agents"
+  desc "Typesetting engine for anything that prints, for people and agents"
   homepage "https://github.com/lvnr/matenadar"
   version "${version}"
   license "Apache-2.0"

@@ -34,9 +34,9 @@ A Matenadar document is JSON. It is the only source of truth: the engine generat
 | `meta` | `title`, `author` and `lang` (BCP 47). Fields such as `{"field": "doc.title"}` read them, and EPUB uses them. |
 | `fonts` | font folders, relative to the asset root, searched before the system’s fonts |
 | `design` | colours, font stacks, text styles, masters, components, hyphenation exceptions and figure numbering: [the design](/docs/model/design/) |
-| `content` | the book, in order: flowing sections, hand-laid pages and two-page spreads: [content](/docs/model/content/) |
+| `content` | the document, in order: flowing sections, hand-laid pages and two-page spreads: [content](/docs/model/content/) |
 | `on_page` | changes to the page where a node lands, keyed by the node’s id: [on the page of a node](/docs/model/content/#on-the-page-of-a-node) |
-| `print` | how the book is printed, which the checks hold it to |
+| `print` | how the document is printed, which the checks hold it to |
 
 ### The asset root
 

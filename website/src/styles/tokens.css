@@ -1,6 +1,7 @@
 /*
  * Matenadar's colours and faces, shared by the landing page and the docs.
- * Light is crisp white; dark is deep obsidian. The accent is cobalt.
+ * Paper white and obsidian, ultramarine for links and actions, and the
+ * four process inks (cyan, magenta, yellow, key) for print marks only.
  * The theme follows `data-theme`, which Starlight sets from
  * `localStorage['starlight-theme']`.
  */
@@ -9,138 +10,160 @@
 :root[data-theme='light'] {
 	color-scheme: light;
 
-	/* Canvas and surfaces */
+	/* Paper and surfaces */
 	--mt-bg: #ffffff;
-	--mt-bg-subtle: #f7f8fa;
-	--mt-bg-muted: #f1f3f6;
+	--mt-bg-subtle: #f7f7f8;
+	--mt-bg-muted: #f0f1f3;
 	--mt-surface: #ffffff;
-	--mt-surface-2: #f7f8fa;
-	--mt-surface-3: #eef0f4;
+	--mt-surface-2: #f7f7f8;
+	--mt-surface-3: #eeeff2;
+	--mt-glass: rgba(255, 255, 255, 0.62);
+	--mt-glass-edge: rgba(255, 255, 255, 0.9);
 
-	/* Text */
-	--mt-fg: #09090b;
-	--mt-fg-2: #27272a;
-	--mt-fg-muted: #52525b;
-	--mt-fg-subtle: #71717a;
-	--mt-fg-faint: #a1a1aa;
+	/* Ink */
+	--mt-fg: #0b0b0d;
+	--mt-fg-2: #26262b;
+	--mt-fg-muted: #55555e;
+	--mt-fg-subtle: #74747d;
+	--mt-fg-faint: #a3a3ab;
 
-	/* Lines */
-	--mt-border: rgba(9, 9, 11, 0.08);
-	--mt-border-strong: rgba(9, 9, 11, 0.14);
-	--mt-border-solid: #e4e4e7;
+	/* Rules */
+	--mt-border: rgba(11, 11, 13, 0.085);
+	--mt-border-strong: rgba(11, 11, 13, 0.15);
+	--mt-border-solid: #e5e5e8;
+	--mt-hair: rgba(11, 11, 13, 0.11);
 
-	/* Accent: cobalt */
-	--mt-accent: #2563eb;
-	--mt-accent-strong: #1d4ed8;
-	--mt-accent-text: #1d4ed8;
+	/* Accent: ultramarine */
+	--mt-accent: #2f45ff;
+	--mt-accent-strong: #1f33e6;
+	--mt-accent-text: #2338f0;
 	--mt-accent-fg: #ffffff;
-	--mt-accent-soft: rgba(37, 99, 235, 0.08);
-	--mt-accent-soft-2: rgba(37, 99, 235, 0.14);
-	--mt-accent-ring: rgba(37, 99, 235, 0.38);
-	--mt-accent-wash: #eff4ff;
+	--mt-accent-soft: rgba(47, 69, 255, 0.07);
+	--mt-accent-soft-2: rgba(47, 69, 255, 0.13);
+	--mt-accent-ring: rgba(47, 69, 255, 0.36);
+	--mt-accent-wash: #eef0ff;
+
+	/* Process inks, for marks and separations */
+	--mt-cyan: #00a3e0;
+	--mt-magenta: #e5007d;
+	--mt-yellow: #ffd200;
+	--mt-key: #0b0b0d;
 
 	/* States */
-	--mt-ok: #16a34a;
-	--mt-ok-soft: rgba(22, 163, 74, 0.1);
-	--mt-warn: #b45309;
+	--mt-ok: #12804a;
+	--mt-ok-soft: rgba(18, 128, 74, 0.1);
+	--mt-warn: #a35a06;
 	--mt-warn-soft: rgba(217, 119, 6, 0.12);
-	--mt-err: #dc2626;
-	--mt-err-soft: rgba(220, 38, 38, 0.1);
+	--mt-err: #d4114f;
+	--mt-err-soft: rgba(212, 17, 79, 0.09);
 
 	/* Code */
 	--mt-code-bg: #fafafa;
-	--mt-code-fg: #18181b;
-	--mt-code-key: #09090b;
-	--mt-code-string: #15803d;
-	--mt-code-number: #b45309;
-	--mt-code-keyword: #7c3aed;
-	--mt-code-function: #2563eb;
-	--mt-code-punct: #71717a;
-	--mt-code-comment: #a1a1aa;
+	--mt-code-bar: #f3f3f5;
+	--mt-code-fg: #1b1b20;
+	--mt-code-key: #0b0b0d;
+	--mt-code-string: #0f7a45;
+	--mt-code-number: #b3470f;
+	--mt-code-keyword: #8a2be2;
+	--mt-code-function: #2338f0;
+	--mt-code-punct: #8a8a93;
+	--mt-code-comment: #a3a3ab;
 
-	/* Rendered pages inside previews: always paper-white documents */
+	/* Documents shown on the page are always paper. */
 	--mt-page: #ffffff;
 	--mt-page-ink: #18181b;
 	--mt-page-muted: #71717a;
 	--mt-page-bar: rgba(9, 9, 11, 0.13);
-	--mt-canvas: #f4f5f7;
-	--mt-canvas-dot: rgba(9, 9, 11, 0.09);
+	--mt-canvas: #f4f4f5;
+	--mt-canvas-dot: rgba(11, 11, 13, 0.1);
 
 	/* Elevation */
-	--mt-shadow-sm: 0 1px 2px rgba(9, 9, 11, 0.06);
-	--mt-shadow: 0 1px 2px rgba(9, 9, 11, 0.04), 0 8px 24px -8px rgba(9, 9, 11, 0.12);
-	--mt-shadow-lg: 0 2px 4px rgba(9, 9, 11, 0.04), 0 24px 64px -16px rgba(9, 9, 11, 0.18);
-	--mt-selection: rgba(37, 99, 235, 0.16);
+	--mt-shadow-sm: 0 1px 2px rgba(11, 11, 13, 0.06);
+	--mt-shadow: 0 1px 2px rgba(11, 11, 13, 0.04), 0 8px 24px -8px rgba(11, 11, 13, 0.14);
+	--mt-shadow-lg: 0 2px 4px rgba(11, 11, 13, 0.04), 0 24px 64px -16px rgba(11, 11, 13, 0.2);
+	--mt-shadow-paper: 0 1px 1px rgba(11, 11, 13, 0.05), 0 6px 12px -4px rgba(11, 11, 13, 0.08), 0 32px 64px -24px rgba(11, 11, 13, 0.28);
+	--mt-selection: rgba(47, 69, 255, 0.16);
 }
 
 :root[data-theme='dark'] {
 	color-scheme: dark;
 
 	--mt-bg: #09090b;
-	--mt-bg-subtle: #0c0d10;
-	--mt-bg-muted: #111318;
-	--mt-surface: #111318;
-	--mt-surface-2: #161922;
-	--mt-surface-3: #1c2029;
+	--mt-bg-subtle: #0d0d10;
+	--mt-bg-muted: #131317;
+	--mt-surface: #111114;
+	--mt-surface-2: #16161b;
+	--mt-surface-3: #1c1c22;
+	--mt-glass: rgba(17, 17, 21, 0.58);
+	--mt-glass-edge: rgba(255, 255, 255, 0.1);
 
-	--mt-fg: #fafafa;
-	--mt-fg-2: #e4e4e7;
-	--mt-fg-muted: #a1a1aa;
-	--mt-fg-subtle: #8b8b94;
-	--mt-fg-faint: #52525b;
+	--mt-fg: #f5f5f6;
+	--mt-fg-2: #e2e2e6;
+	--mt-fg-muted: #a5a5ae;
+	--mt-fg-subtle: #8a8a94;
+	--mt-fg-faint: #55555e;
 
 	--mt-border: rgba(255, 255, 255, 0.08);
 	--mt-border-strong: rgba(255, 255, 255, 0.14);
-	--mt-border-solid: #23262f;
+	--mt-border-solid: #24242a;
+	--mt-hair: rgba(255, 255, 255, 0.11);
 
-	--mt-accent: #3b82f6;
-	--mt-accent-strong: #2563eb;
-	--mt-accent-text: #60a5fa;
+	--mt-accent: #5b6cff;
+	--mt-accent-strong: #4455ff;
+	--mt-accent-text: #95a1ff;
 	--mt-accent-fg: #ffffff;
-	--mt-accent-soft: rgba(96, 165, 250, 0.1);
-	--mt-accent-soft-2: rgba(96, 165, 250, 0.18);
-	--mt-accent-ring: rgba(96, 165, 250, 0.45);
-	--mt-accent-wash: #0f1a33;
+	--mt-accent-soft: rgba(120, 136, 255, 0.1);
+	--mt-accent-soft-2: rgba(120, 136, 255, 0.18);
+	--mt-accent-ring: rgba(120, 136, 255, 0.45);
+	--mt-accent-wash: #12163a;
+
+	/* On a dark screen the separations are light: red, green, blue. */
+	--mt-cyan: #2fd0ff;
+	--mt-magenta: #ff3ea5;
+	--mt-yellow: #ffe14a;
+	--mt-key: #f5f5f6;
 
 	--mt-ok: #4ade80;
 	--mt-ok-soft: rgba(74, 222, 128, 0.12);
 	--mt-warn: #fbbf24;
 	--mt-warn-soft: rgba(251, 191, 36, 0.14);
-	--mt-err: #f87171;
-	--mt-err-soft: rgba(248, 113, 113, 0.14);
+	--mt-err: #ff5c8a;
+	--mt-err-soft: rgba(255, 92, 138, 0.14);
 
-	--mt-code-bg: #0c0d10;
-	--mt-code-fg: #e4e4e7;
-	--mt-code-key: #f4f4f5;
-	--mt-code-string: #86efac;
-	--mt-code-number: #fcd34d;
-	--mt-code-keyword: #c4b5fd;
-	--mt-code-function: #93c5fd;
-	--mt-code-punct: #71717a;
-	--mt-code-comment: #6b6b75;
+	--mt-code-bg: #0d0d10;
+	--mt-code-bar: #141418;
+	--mt-code-fg: #e2e2e6;
+	--mt-code-key: #f5f5f6;
+	--mt-code-string: #7ee2a8;
+	--mt-code-number: #ffc46b;
+	--mt-code-keyword: #c9a8ff;
+	--mt-code-function: #95a1ff;
+	--mt-code-punct: #6b6b75;
+	--mt-code-comment: #5e5e68;
 
-	--mt-page: #f7f7f8;
+	--mt-page: #ffffff;
 	--mt-page-ink: #18181b;
 	--mt-page-muted: #71717a;
 	--mt-page-bar: rgba(9, 9, 11, 0.14);
-	--mt-canvas: #0e1014;
-	--mt-canvas-dot: rgba(255, 255, 255, 0.07);
+	--mt-canvas: #0e0e11;
+	--mt-canvas-dot: rgba(255, 255, 255, 0.075);
 
 	--mt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
 	--mt-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -8px rgba(0, 0, 0, 0.6);
 	--mt-shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 24px 64px -16px rgba(0, 0, 0, 0.7);
-	--mt-selection: rgba(96, 165, 250, 0.28);
+	--mt-shadow-paper: 0 1px 1px rgba(0, 0, 0, 0.3), 0 8px 16px -6px rgba(0, 0, 0, 0.5), 0 40px 80px -28px rgba(0, 0, 0, 0.85);
+	--mt-selection: rgba(120, 136, 255, 0.3);
 }
 
 :root {
-	--mt-sans: 'Geist Variable', 'Geist', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	--mt-mono: 'JetBrains Mono', 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
-	/* Only for book pages drawn inside previews: the documents' own face. */
-	--mt-book: 'Libertinus Serif', 'Iowan Old Style', 'Charter', Georgia, serif;
+	--mt-sans: 'Instrument Sans Variable', 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--mt-serif: 'Instrument Serif', 'Iowan Old Style', 'Times New Roman', serif;
+	--mt-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 	--mt-armenian: 'Noto Sans Armenian', 'Mshtakan', 'Sylfaen', 'Arial Unicode MS', sans-serif;
 	--mt-radius: 10px;
 	--mt-radius-sm: 6px;
 	--mt-radius-lg: 16px;
+	--mt-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 ::selection {

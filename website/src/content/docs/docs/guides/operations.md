@@ -3,7 +3,7 @@ title: Operations
 description: Every change to a Matenadar document is an operation with an inverse. The seven operations, how they address nodes, and how to apply, undo and replay them.
 ---
 
-Every change to a document is an **operation**, and applying one returns its **inverse**: the operation that takes it back. The command line, the `serve` loop, the WebAssembly editor and AI agents all change books this way, so any edit can be undone, kept, sent to someone else and replayed.
+Every change to a document is an **operation**, and applying one returns its **inverse**: the operation that takes it back. The command line, the `serve` loop, the WebAssembly editor and AI agents all change documents this way, so any edit can be undone, kept, sent to someone else and replayed.
 
 ## The operations
 

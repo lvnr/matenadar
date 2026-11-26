@@ -1,0 +1,11 @@
+// The old docs host, matenadar-docs.levships.com, as a permanent redirect to
+// the same path on matenadar.levships.com.
+//   npx wrangler deploy --config redirect/wrangler.jsonc
+{
+	"name": "matenadar-docs",
+	"main": "./worker.js",
+	"compatibility_date": "2026-11-26",
+	"routes": [
+		{ "pattern": "matenadar-docs.levships.com", "custom_domain": true }
+	]
+}

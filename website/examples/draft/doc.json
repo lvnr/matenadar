@@ -1,0 +1,64 @@
+{
+  "matenadar": "1",
+  "meta": {
+    "title": "The Lighthouse of Lost Pages — chapter one, draft",
+    "author": "Isla Varen", "lang": "en-GB"
+  },
+  "fonts": ["../fonts"],
+  "design": {
+    "colors": {
+      "ink": "#1b1a17", "muted": "#7b756b", "coral": "#d9673f"
+    },
+    "base": {
+      "font": "Newsreader", "size": 11, "line_height": 1.42,
+      "color": "ink"
+    },
+    "styles": {
+      "number": {
+        "font": "Fraunces", "size": 12, "italic": true,
+        "color": "coral", "variations": {"SOFT": 100}
+      },
+      "chapter": {
+        "font": "Fraunces", "size": 30, "weight": 500,
+        "line_height": 1, "tracking": "-0.02em",
+        "variations": {"SOFT": 100}
+      },
+      "body": {"align": "justify", "hyphenate": true}
+    },
+    "masters": {
+      "page": {
+        "width": "6in", "height": "9in", "bleed": "0.125in",
+        "fill": "#fbf8f2",
+        "margins": {
+          "top": 54, "bottom": 54, "inside": 63, "outside": 45
+        }
+      }
+    }
+  },
+  "content": [
+    {
+      "type": "page", "id": "opener", "master": "page",
+      "elements": [
+        {
+          "type": "text", "id": "number", "x": 63, "y": 58,
+          "w": 300, "style": "number", "text": "Chapter one"
+        },
+        {
+          "type": "text", "id": "title", "x": 10, "y": 78, "w": 360,
+          "style": "chapter", "text": "The keeper’s instruction"
+        },
+        {
+          "type": "image", "id": "plate", "src": "art/keeper.jpg",
+          "x": 63, "y": 128, "w": 324, "h": 230,
+          "focus": [0.5, 0.55],
+          "alt": "The lighthouse of books at dusk."
+        },
+        {
+          "type": "text", "id": "opening", "x": 63, "y": 378,
+          "w": 324, "h": 96, "style": "body",
+          "text": "On the island of Corrach the lighthouse is built from books: every story the sea has ever taken, stacked stone-tight and lit from within. When its keeper vanishes on the longest night of the year, her apprentice, Wren, inherits the light and a single instruction. Never let a page go dark.\n\nBut the pages are leaving. Each night more of them lift from the tower and fly out over the water, and with every one that goes, someone on the mainland forgets a little of who they were."
+        }
+      ]
+    }
+  ]
+}

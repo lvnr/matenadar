@@ -1,0 +1,177 @@
+{
+  "matenadar": "1",
+  "meta": {
+    "title": "Solstice 2027 — festival poster",
+    "author": "Lake Sevan Arts Foundation", "lang": "en-GB"
+  },
+  "fonts": ["../fonts"],
+  "design": {
+    "colors": {
+      "paper": "#fbedd8", "cobalt": "#2c46d8", "pink": "#fa4fa0",
+      "sun": "#ffd84a", "night": "#141a52", "white": "#ffffff"
+    },
+    "base": {
+      "font": "Instrument Sans", "size": 24, "line_height": 1.3,
+      "color": "cobalt", "features": ["tnum"]
+    },
+    "styles": {
+      "top": {"size": 25, "weight": 600, "tracking": "-0.005em"},
+      "title": {
+        "font": "Bricolage Grotesque", "size": 352, "weight": 800,
+        "tracking": "-0.03em", "line_height": 0.8
+      },
+      "day": {"size": 22, "weight": 600, "space_after": "6pt"},
+      "headliner": {
+        "font": "Bricolage Grotesque", "weight": 800, "stretch": 75,
+        "size": 54, "line_height": 0.98, "tracking": "-0.01em",
+        "space_after": "10pt"
+      },
+      "act": {"size": 24, "weight": 500, "line_height": 1.34},
+      "dek": {
+        "font": "Instrument Serif", "italic": true, "size": 104,
+        "line_height": 0.98, "tracking": "-0.02em",
+        "color": "white"
+      },
+      "foot": {
+        "size": 22, "weight": 600, "color": "white",
+        "line_height": 1.38
+      },
+      "edge": {
+        "font": "JetBrains Mono", "size": 13, "tracking": "0.02em"
+      }
+    },
+    "masters": {
+      "sheet": {
+        "width": "18.25in", "height": "24.25in",
+        "margins": {
+          "top": 63, "bottom": 63, "left": 63, "right": 63
+        }
+      }
+    }
+  },
+  "content": [
+    {
+      "type": "page", "id": "poster", "master": "sheet",
+      "elements": [
+        {
+          "type": "image", "id": "art", "src": "art/solstice.jpg",
+          "x": 0, "y": 0, "w": "18.25in", "h": "24.25in",
+          "focus": [0.5, 0.04],
+          "alt": "A risograph sun of concentric halftone rings rising behind pink and blue paper-cut hills, one small figure on the nearest ridge."
+        },
+        {
+          "type": "text", "id": "presents", "x": 63, "y": 56,
+          "w": 700, "style": "top",
+          "text": "Lake Sevan Arts Foundation presents"
+        },
+        {
+          "type": "text", "id": "dates", "x": 851, "y": 56,
+          "w": 400, "style": "top", "set": {"align": "right"},
+          "text": "21–23 June 2027"
+        },
+        {
+          "type": "line", "id": "rule", "x1": 63, "y1": 98,
+          "x2": 1251, "y2": 98,
+          "stroke": {"width": 2, "color": "cobalt"}
+        },
+        {
+          "type": "lettering", "id": "title", "x": 50, "y": 58,
+          "w": 1214, "text": "Solstice",
+          "font": "Bricolage Grotesque", "size": 352, "weight": 800,
+          "tracking": "-0.03em", "color": "cobalt"
+        },
+        {
+          "type": "text", "id": "lineup-fri", "x": 63, "y": 432,
+          "w": 370,
+          "blocks": [
+            {"type": "p", "style": "day", "text": "Friday 21 June"},
+            {
+              "type": "p", "style": "headliner",
+              "text": "Glass Orchard"
+            },
+            {
+              "type": "p", "style": "act",
+              "text": "Copper Kites\nMoth & Meadow\nThe Sevan Strings"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "lineup-sat", "x": 472, "y": 432,
+          "w": 370,
+          "blocks": [
+            {
+              "type": "p", "style": "day",
+              "text": "Saturday 22 June"
+            },
+            {
+              "type": "p", "style": "headliner",
+              "text": "North of Noon"
+            },
+            {
+              "type": "p", "style": "act",
+              "text": "Quiet Engines\nApricot Static\nHollow Bell"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "lineup-sun", "x": 881, "y": 432,
+          "w": 370,
+          "blocks": [
+            {"type": "p", "style": "day", "text": "Sunday 23 June"},
+            {
+              "type": "p", "style": "headliner",
+              "text": "The Long Light"
+            },
+            {
+              "type": "p", "style": "act",
+              "text": "Salt & Cedar\nTin Planets\nLowland Choir"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "dek", "x": 63, "y": 1262, "w": 900,
+          "style": "dek",
+          "text": "Three nights of music\nat the edge of the lake"
+        },
+        {
+          "type": "line", "x1": 63, "y1": 1598, "x2": 1251,
+          "y2": 1598,
+          "stroke": {"width": 1.5, "color": "#ffffffb3"}
+        },
+        {
+          "type": "text", "id": "practical", "x": 63, "y": 1616,
+          "w": 900, "style": "foot",
+          "content": [
+            "Fifth edition · Sevan Peninsula · Gates 18:00 · All ages",
+            {"br": true},
+            {
+              "text": "Three-day pass AMD 45,000 at sevan-solstice.example",
+              "weight": 600
+            }
+          ]
+        },
+        {
+          "type": "group", "id": "tickets", "x": 1141, "y": 1612,
+          "w": 110, "h": 110,
+          "children": [
+            {
+              "type": "rect", "x": 0, "y": 0, "w": 110, "h": 110,
+              "radius": 10, "fill": "white"
+            },
+            {
+              "type": "qr", "x": 10, "y": 10, "w": 90,
+              "data": "https://sevan-solstice.example/tickets",
+              "color": "night", "quiet": 0
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "colophon", "x": 1266, "y": 560,
+          "w": 440, "style": "edge", "rotate": -90,
+          "origin": "top-left",
+          "text": "No. 05 · Four-colour offset · Set in Matenadar"
+        }
+      ]
+    }
+  ]
+}

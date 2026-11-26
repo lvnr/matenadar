@@ -1,6 +1,6 @@
 [package]
 name = "matenadar"
-description = "A book and page layout engine for people and agents: document model, Typst layout, EPUB 3 export, and CLI"
+description = "A typesetting engine for anything that prints, for people and agents: document model, Typst layout, EPUB 3 export, and CLI"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

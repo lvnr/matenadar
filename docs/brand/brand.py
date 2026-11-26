@@ -19,30 +19,33 @@ HERE = Path(__file__).resolve().parent
 
 THEMES = {
     "light": {
-        "ground": "#f4ede1", "ink": "#1d1914", "rubric": "#b5321f", "muted": "#7a6e5f",
-        "page": "#fffaf2", "shade": "#1d191414", "guide": "#b5321f66", "line": "#1d19142e", "tile_ink": "#fbf3e6",
+        "ground": "#ffffff", "ink": "#0b0b0d", "rubric": "#2f45ff", "muted": "#6b6b75",
+        "page": "#ffffff", "shade": "#0b0b0d12", "guide": "#2f45ff73", "line": "#0b0b0d1c", "tile_ink": "#ffffff",
+        "edge": "#0b0b0d24",
     },
     "dark": {
-        "ground": "#15120e", "ink": "#efe6d6", "rubric": "#e0593b", "muted": "#958a7a",
-        "page": "#231e18", "shade": "#00000059", "guide": "#e0593b80", "line": "#efe6d633", "tile_ink": "#fbf3e6",
+        "ground": "#09090b", "ink": "#f5f5f6", "rubric": "#7b89ff", "muted": "#8a8a93",
+        "page": "#141418", "shade": "#00000080", "guide": "#7b89ff80", "line": "#f5f5f629", "tile_ink": "#09090b",
+        "edge": "#f5f5f624",
     },
 }
+
+# The site's faces (website/examples/fonts/fetch.sh downloads them).
+FONTS = HERE.parent.parent / "website" / "examples" / "fonts"
 
 W, H = 960, 300  # points: 1280 × 400 px
 
 
 def tile(x, y, size, c):
-    """The mark: Men (Մ), Matenadar's initial in Armenian, on a rubricated leaf."""
-    inset = size * 0.055
-    return [
-        {"type": "rect", "x": x, "y": y, "w": size, "h": size, "fill": c["rubric"], "radius": size * 0.04},
-        {"type": "rect", "x": x + inset, "y": y + inset, "w": size - 2 * inset, "h": size - 2 * inset,
-         "stroke": {"width": size * 0.006, "color": c["tile_ink"]}, "radius": size * 0.02, "opacity": 0.55},
-        {"type": "line", "x1": x + inset, "y1": y + size * 0.815, "x2": x + size - inset, "y2": y + size * 0.815,
-         "stroke": {"width": size * 0.004, "color": c["tile_ink"], "dash": [2, 2]}, "opacity": 0.5},
-        {"type": "lettering", "text": "Մ", "font": "Noto Sans Armenian", "weight": "bold", "size": size * 0.86,
-         "color": c["tile_ink"], "x": x, "w": size, "align": "center", "y": y - size * 0.105, "decorative": True},
-    ]
+    """The mark: Men (Մ), Matenadar's initial in Armenian, drawn on a 100-unit
+    grid with a 14-unit stroke, on a rounded tile (as website/public/favicon.svg)."""
+    markup = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+        f'<rect width="100" height="100" rx="24" fill="{c["ink"]}"/>'
+        '<path d="M22.5 14V58A21 21 0 0 0 64.5 58V21H84.5" transform="translate(50 51) scale(0.6) translate(-50 -50)" '
+        f'fill="none" stroke="{c["tile_ink"]}" stroke-width="14" stroke-linejoin="miter"/></svg>'
+    )
+    return [{"type": "svg", "x": x, "y": y, "w": size, "h": size, "markup": markup}]
 
 
 def bars(x, y, w, rows, step, c, short=None):
@@ -68,19 +71,20 @@ def spread(x, y, c):
         inner_r = m["inside"] if side == 0 else m["outside"]
         fx, fy, fw, fh = px + inner_l, y + m["top"], pw - inner_l - inner_r, ph - m["top"] - m["bottom"]
         out += [
-            {"type": "rect", "x": px, "y": y, "w": pw, "h": ph, "fill": c["page"], "radius": 1.5},
+            {"type": "rect", "x": px, "y": y, "w": pw, "h": ph, "fill": c["page"], "radius": 1.5,
+             "stroke": {"width": 0.5, "color": c["edge"]}},
             {"type": "rect", "x": fx, "y": fy, "w": fw, "h": fh, "stroke": guide},
             {"type": "text", "x": px, "y": y + ph - 12, "w": pw, "text": str(2 * 21 + side),
              "set": {"font": "JetBrains Mono", "size": 4.6, "color": c["muted"], "align": "center"}},
         ]
         if side == 0:
             out += [
-                {"type": "text", "x": fx, "y": fy + 4, "w": fw, "text": "CHAPTER THREE",
-                 "set": {"font": "JetBrains Mono", "size": 4.2, "tracking": "0.2em", "color": c["rubric"], "align": "center"}},
-                {"type": "lettering", "text": "The Colophon", "font": "Libertinus Serif", "size": 11, "color": c["ink"],
-                 "x": fx, "w": fw, "align": "center", "y": fy + 12, "decorative": True},
-                {"type": "lettering", "text": "T", "font": "Libertinus Serif", "size": 27, "color": c["rubric"],
-                 "x": fx - 1, "y": fy + 31, "decorative": True},
+                {"type": "text", "x": fx, "y": fy + 4, "w": fw, "text": "Chapter three",
+                 "set": {"font": "JetBrains Mono", "size": 4.4, "color": c["rubric"], "align": "center"}},
+                {"type": "lettering", "text": "The Colophon", "font": "Instrument Serif", "size": 12.5, "color": c["ink"],
+                 "x": fx, "w": fw, "align": "center", "y": fy + 11, "decorative": True},
+                {"type": "lettering", "text": "T", "font": "Instrument Serif", "size": 29, "color": c["rubric"],
+                 "x": fx - 1, "y": fy + 30, "decorative": True},
             ]
             out += bars(fx + 17, fy + 39, fw - 17, 3, 7, c)
             out += bars(fx, fy + 60, fw, 10, 7, c, short=0.55)
@@ -110,21 +114,23 @@ def spread(x, y, c):
 
 def banner(c):
     mono = {"font": "JetBrains Mono", "color": c["muted"]}
-    left = 236
+    left = 214
     elements = [
-        *tile(48, 66, 168, c),
-        {"type": "lettering", "text": "Matenadar", "font": "Libertinus Serif", "size": 82, "color": c["ink"],
-         "tracking": "-0.01em", "x": left - 4, "y": 74, "decorative": True},
-        {"type": "line", "x1": left, "y1": 172, "x2": left + 40, "y2": 172, "stroke": {"width": 1.6, "color": c["rubric"]}},
-        {"type": "text", "x": left, "y": 184, "w": 380, "text": "A book and page layout engine\nfor people and agents",
-         "set": {"font": "Libertinus Serif", "italic": True, "size": 17, "line_height": 1.25, "color": c["ink"]}},
-        {"type": "text", "x": left, "y": 232, "w": 400, "text": "JSON MODEL  →  TYPST  →  PDF · SVG · PNG · EPUB · WASM",
-         "set": {**mono, "size": 7.2, "tracking": "0.14em"}},
+        *tile(56, 82, 136, c),
+        {"type": "lettering", "text": "Matenadar", "font": "Instrument Sans", "weight": 600, "size": 72, "color": c["ink"],
+         "tracking": "-0.045em", "x": left - 3, "y": 70, "decorative": True},
+        {"type": "lettering", "text": "Every page, programmable.", "font": "Instrument Serif", "italic": True, "size": 30,
+         "color": c["ink"], "x": left, "y": 160, "decorative": True},
+        {"type": "text", "x": left, "y": 206, "w": 420, "text": "Books, invoices, decks, posters and everything between,\ntypeset from JSON for people and agents.",
+         "set": {"font": "Instrument Sans", "size": 11.5, "line_height": 1.4, "color": c["muted"]}},
+        {"type": "text", "x": left, "y": 250, "w": 420, "text": "JSON model  →  Typst  →  PDF · SVG · PNG · EPUB 3 · WebAssembly",
+         "set": {**mono, "size": 7.4}},
         *spread(660, 52, c),
     ]
     return {
         "matenadar": "1",
         "meta": {"title": "Matenadar", "author": "Matenadar", "lang": "en-US"},
+        "fonts": [str(FONTS)],
         "design": {"masters": {"art": {"width": W, "height": H, "margins": {"top": 0, "bottom": 0, "left": 0, "right": 0}}}},
         "content": [{"type": "page", "id": "banner", "master": "art", "fill": c["ground"], "elements": elements}],
     }

@@ -1,0 +1,200 @@
+{
+  "matenadar": "1",
+  "meta": {
+    "title": "Margin, issue 12 — The weight of a letter",
+    "author": "Margin", "lang": "en-GB"
+  },
+  "fonts": ["../fonts"],
+  "design": {
+    "colors": {
+      "paper": "#fdfcf9", "ink": "#16130f", "muted": "#6f675d",
+      "rule": "#d9d3c9", "red": "#c9432a", "white": "#ffffff"
+    },
+    "base": {
+      "font": "Newsreader", "size": 9.6, "line_height": 1.4,
+      "color": "ink"
+    },
+    "styles": {
+      "running": {
+        "font": "Instrument Sans", "size": 7.5, "weight": 500,
+        "color": "muted"
+      },
+      "kicker": {
+        "font": "Instrument Sans", "size": 9, "weight": 600,
+        "color": "red", "space_after": "10pt"
+      },
+      "head": {
+        "font": "Instrument Serif", "size": 64, "line_height": 0.92,
+        "tracking": "-0.025em", "space_after": "14pt"
+      },
+      "standfirst": {
+        "italic": true, "size": 14, "line_height": 1.34,
+        "space_after": "12pt", "variations": {"opsz": 16}
+      },
+      "byline": {
+        "font": "Instrument Sans", "size": 7.5, "weight": 500,
+        "color": "muted"
+      },
+      "body": {
+        "align": "justify", "hyphenate": true, "indent": "1em",
+        "variations": {"opsz": 9}
+      },
+      "first": {
+        "inherits": "body",
+        "drop_cap": {
+          "lines": 3, "font": "Instrument Serif", "color": "red",
+          "gap": "3pt"
+        }
+      },
+      "pull": {
+        "font": "Instrument Serif", "italic": true, "size": 21,
+        "line_height": 1.08, "tracking": "-0.01em", "color": "red",
+        "space_before": "4pt", "space_after": "12pt",
+        "rule_above": {
+          "stroke": {"width": 0.75, "color": "red"}, "gap": "9pt"
+        }
+      },
+      "caption": {
+        "font": "Instrument Sans", "size": 7.2, "line_height": 1.38,
+        "color": "muted"
+      },
+      "caption-light": {
+        "font": "Instrument Sans", "size": 7.2, "line_height": 1.38,
+        "color": "white"
+      },
+      "folio": {
+        "font": "Instrument Sans", "size": 7.5, "weight": 600
+      }
+    },
+    "masters": {
+      "mag": {
+        "width": "8.5in", "height": "11in", "bleed": "0.125in",
+        "margins": {
+          "top": 54, "bottom": 54, "inside": 54, "outside": 48
+        },
+        "fill": "paper"
+      }
+    }
+  },
+  "content": [
+    {
+      "type": "page", "id": "feature-photo", "master": "mag",
+      "start": "verso", "page_from": 48,
+      "elements": [
+        {
+          "type": "image", "id": "photo",
+          "src": "art/compositor.jpg", "x": -9, "y": -9, "w": 621,
+          "h": 810, "focus": [0.58, 0.5],
+          "alt": "A compositor's hands setting metal type into a composing stick above an open wooden type case, in warm window light."
+        },
+        {
+          "type": "text", "id": "photo-caption", "x": 48, "y": 708,
+          "w": 220, "style": "caption-light",
+          "scrim": {
+            "color": "#120d08", "opacity": 0.5, "feather": "18pt",
+            "inset": "10pt", "radius": "6pt"
+          },
+          "text": "Tam Rennie sets a line of 12-point Caslon. A good line takes him about a minute; a page, most of a morning."
+        },
+        {
+          "type": "text", "id": "folio-left", "x": 48, "y": 760,
+          "w": 200, "style": "folio", "set": {"color": "white"},
+          "content": [
+            "48",
+            {"space": "8pt"},
+            {"text": "Margin", "weight": 500}
+          ]
+        }
+      ]
+    },
+    {
+      "type": "page", "id": "feature-story", "master": "mag",
+      "elements": [
+        {
+          "type": "text", "id": "running", "x": 54, "y": 30,
+          "w": 510, "style": "running", "set": {"align": "right"},
+          "text": "Craft · The weight of a letter"
+        },
+        {
+          "type": "text", "id": "opener", "x": 54, "y": 58,
+          "w": 470,
+          "blocks": [
+            {"type": "p", "style": "kicker", "text": "Craft"},
+            {
+              "type": "p", "style": "head",
+              "text": "The weight\nof a letter"
+            },
+            {
+              "type": "p", "style": "standfirst",
+              "text": "In a basement print shop in Leith, Tam Rennie still sets type the way it was set for five hundred years: one letter at a time, upside down and back to front. We spent a week beside his case."
+            },
+            {
+              "type": "p", "style": "byline",
+              "text": "Words by Ines Morrow · Photographs by the Margin studio"
+            }
+          ]
+        },
+        {
+          "type": "line", "x1": 54, "y1": 290, "x2": 564, "y2": 290,
+          "stroke": {"width": 0.6, "color": "rule"}
+        },
+        {
+          "type": "text", "id": "story", "x": 54, "y": 304,
+          "w": 510, "h": 434, "columns": 2, "gutter": 20,
+          "blocks": [
+            {
+              "type": "p", "id": "story-1", "style": "first",
+              "text": "The first thing you learn is to read backwards. A line of metal type is a mirror of the page it will print, and Rennie reads it the way other people read a newspaper, quickly and without moving his lips. He picks each letter from the case without looking, by feel and by the nick cut into its shank, and drops it into the composing stick in his left hand. Thirty letters a minute, on a good day."
+            },
+            {
+              "type": "p", "id": "story-2", "style": "body",
+              "text": "The case itself is a map of the language. The lowercase e lives in the biggest box, near the middle, because it is used the most; the j and the q sit out at the edges, small and seldom touched. The capitals live above it, in the upper case, which is how they got their name."
+            },
+            {
+              "type": "p", "id": "story-3", "style": "body",
+              "text": "Spacing is where the craft lives. Between words Rennie drops thin slivers of lead, adding and taking away until the line is exactly the width of the stick, which printers call justifying. Too loose and the page fills with rivers of white; too tight and the words bump shoulders. “The eye forgives a lot,” he says. “It never forgives bad spacing.”"
+            },
+            {
+              "type": "p", "id": "story-3b", "style": "body",
+              "text": "He was apprenticed at fifteen to a jobbing printer on Constitution Street, setting wedding invitations and auction catalogues and, once, the menu for a royal visit. Sixty years on the shop is his, and so is the case, which has outlived three presses, two floods and the man who taught him."
+            },
+            {"type": "column-break"},
+            {
+              "type": "p", "id": "pull", "style": "pull",
+              "text": "“The eye forgives a lot. It never forgives bad spacing.”"
+            },
+            {
+              "type": "p", "id": "story-4", "style": "body",
+              "set": {"indent": 0},
+              "text": "None of this has gone away. It has only moved. Every paragraph on every screen is still broken into lines and still justified, argued over a hair at a time by software that inherited the problems Rennie solves with his thumbs. The rules he learned at fifteen, about widows and orphans and the colour of a page, are the rules that decide where this sentence ends."
+            },
+            {
+              "type": "p", "id": "story-5", "style": "body",
+              "text": "At five o’clock he locks up the forme, inks the press and pulls a proof. He reads it twice, once for the words and once for the shapes, and finds a single turned letter in the third line. It takes him eleven seconds to fix."
+            }
+          ]
+        },
+        {
+          "type": "image", "id": "loupe", "src": "art/loupe.jpg",
+          "x": 319, "y": 552, "w": 134, "h": 134, "clip": "ellipse",
+          "focus": [0.62, 0.52],
+          "alt": "A brass loupe over a printed colour page, magnifying cyan, magenta, yellow and black halftone rosettes."
+        },
+        {
+          "type": "text", "id": "loupe-caption", "x": 464, "y": 590,
+          "w": 100, "style": "caption",
+          "text": "Under the loupe, colour is four inks in rosettes, each screened at its own angle."
+        },
+        {
+          "type": "text", "id": "folio-right", "x": 364, "y": 760,
+          "w": 200, "style": "folio", "set": {"align": "right"},
+          "content": [
+            {"text": "Spring 2027", "weight": 500, "color": "muted"},
+            {"space": "8pt"},
+            "49"
+          ]
+        }
+      ]
+    }
+  ]
+}

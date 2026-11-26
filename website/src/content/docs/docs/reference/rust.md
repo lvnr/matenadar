@@ -44,7 +44,7 @@ matenadar = { version = "0.2", default-features = false, features = ["typst", "e
 
 With `default-features = false` and no features, you get the model alone.
 
-## Laying a book out
+## Laying a document out
 
 ```rust
 use std::path::PathBuf;

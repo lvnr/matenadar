@@ -1,0 +1,148 @@
+/*
+ * Matenadar's colours and faces, shared by the landing page and the docs.
+ * Light is crisp white; dark is deep obsidian. The accent is cobalt.
+ * The theme follows `data-theme`, which Starlight sets from
+ * `localStorage['starlight-theme']`.
+ */
+
+:root,
+:root[data-theme='light'] {
+	color-scheme: light;
+
+	/* Canvas and surfaces */
+	--mt-bg: #ffffff;
+	--mt-bg-subtle: #f7f8fa;
+	--mt-bg-muted: #f1f3f6;
+	--mt-surface: #ffffff;
+	--mt-surface-2: #f7f8fa;
+	--mt-surface-3: #eef0f4;
+
+	/* Text */
+	--mt-fg: #09090b;
+	--mt-fg-2: #27272a;
+	--mt-fg-muted: #52525b;
+	--mt-fg-subtle: #71717a;
+	--mt-fg-faint: #a1a1aa;
+
+	/* Lines */
+	--mt-border: rgba(9, 9, 11, 0.08);
+	--mt-border-strong: rgba(9, 9, 11, 0.14);
+	--mt-border-solid: #e4e4e7;
+
+	/* Accent: cobalt */
+	--mt-accent: #2563eb;
+	--mt-accent-strong: #1d4ed8;
+	--mt-accent-text: #1d4ed8;
+	--mt-accent-fg: #ffffff;
+	--mt-accent-soft: rgba(37, 99, 235, 0.08);
+	--mt-accent-soft-2: rgba(37, 99, 235, 0.14);
+	--mt-accent-ring: rgba(37, 99, 235, 0.38);
+	--mt-accent-wash: #eff4ff;
+
+	/* States */
+	--mt-ok: #16a34a;
+	--mt-ok-soft: rgba(22, 163, 74, 0.1);
+	--mt-warn: #b45309;
+	--mt-warn-soft: rgba(217, 119, 6, 0.12);
+	--mt-err: #dc2626;
+	--mt-err-soft: rgba(220, 38, 38, 0.1);
+
+	/* Code */
+	--mt-code-bg: #fafafa;
+	--mt-code-fg: #18181b;
+	--mt-code-key: #09090b;
+	--mt-code-string: #15803d;
+	--mt-code-number: #b45309;
+	--mt-code-keyword: #7c3aed;
+	--mt-code-function: #2563eb;
+	--mt-code-punct: #71717a;
+	--mt-code-comment: #a1a1aa;
+
+	/* Rendered pages inside previews: always paper-white documents */
+	--mt-page: #ffffff;
+	--mt-page-ink: #18181b;
+	--mt-page-muted: #71717a;
+	--mt-page-bar: rgba(9, 9, 11, 0.13);
+	--mt-canvas: #f4f5f7;
+	--mt-canvas-dot: rgba(9, 9, 11, 0.09);
+
+	/* Elevation */
+	--mt-shadow-sm: 0 1px 2px rgba(9, 9, 11, 0.06);
+	--mt-shadow: 0 1px 2px rgba(9, 9, 11, 0.04), 0 8px 24px -8px rgba(9, 9, 11, 0.12);
+	--mt-shadow-lg: 0 2px 4px rgba(9, 9, 11, 0.04), 0 24px 64px -16px rgba(9, 9, 11, 0.18);
+	--mt-selection: rgba(37, 99, 235, 0.16);
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+
+	--mt-bg: #09090b;
+	--mt-bg-subtle: #0c0d10;
+	--mt-bg-muted: #111318;
+	--mt-surface: #111318;
+	--mt-surface-2: #161922;
+	--mt-surface-3: #1c2029;
+
+	--mt-fg: #fafafa;
+	--mt-fg-2: #e4e4e7;
+	--mt-fg-muted: #a1a1aa;
+	--mt-fg-subtle: #8b8b94;
+	--mt-fg-faint: #52525b;
+
+	--mt-border: rgba(255, 255, 255, 0.08);
+	--mt-border-strong: rgba(255, 255, 255, 0.14);
+	--mt-border-solid: #23262f;
+
+	--mt-accent: #3b82f6;
+	--mt-accent-strong: #2563eb;
+	--mt-accent-text: #60a5fa;
+	--mt-accent-fg: #ffffff;
+	--mt-accent-soft: rgba(96, 165, 250, 0.1);
+	--mt-accent-soft-2: rgba(96, 165, 250, 0.18);
+	--mt-accent-ring: rgba(96, 165, 250, 0.45);
+	--mt-accent-wash: #0f1a33;
+
+	--mt-ok: #4ade80;
+	--mt-ok-soft: rgba(74, 222, 128, 0.12);
+	--mt-warn: #fbbf24;
+	--mt-warn-soft: rgba(251, 191, 36, 0.14);
+	--mt-err: #f87171;
+	--mt-err-soft: rgba(248, 113, 113, 0.14);
+
+	--mt-code-bg: #0c0d10;
+	--mt-code-fg: #e4e4e7;
+	--mt-code-key: #f4f4f5;
+	--mt-code-string: #86efac;
+	--mt-code-number: #fcd34d;
+	--mt-code-keyword: #c4b5fd;
+	--mt-code-function: #93c5fd;
+	--mt-code-punct: #71717a;
+	--mt-code-comment: #6b6b75;
+
+	--mt-page: #f7f7f8;
+	--mt-page-ink: #18181b;
+	--mt-page-muted: #71717a;
+	--mt-page-bar: rgba(9, 9, 11, 0.14);
+	--mt-canvas: #0e1014;
+	--mt-canvas-dot: rgba(255, 255, 255, 0.07);
+
+	--mt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+	--mt-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+	--mt-shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 24px 64px -16px rgba(0, 0, 0, 0.7);
+	--mt-selection: rgba(96, 165, 250, 0.28);
+}
+
+:root {
+	--mt-sans: 'Geist Variable', 'Geist', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--mt-mono: 'JetBrains Mono', 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+	/* Only for book pages drawn inside previews: the documents' own face. */
+	--mt-book: 'Libertinus Serif', 'Iowan Old Style', 'Charter', Georgia, serif;
+	--mt-armenian: 'Noto Sans Armenian', 'Mshtakan', 'Sylfaen', 'Arial Unicode MS', sans-serif;
+	--mt-radius: 10px;
+	--mt-radius-sm: 6px;
+	--mt-radius-lg: 16px;
+}
+
+::selection {
+	background: var(--mt-selection);
+}

@@ -1,0 +1,148 @@
+---
+title: Installing Matenadar
+description: Install the matenadar command with Homebrew, npm, the shell or PowerShell installer, or Cargo; add the WebAssembly package or the Rust crates to a project.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Matenadar comes three ways: the **`matenadar` command** (a native binary for macOS, Linux and Windows), the **WebAssembly package** [`@matenadar/wasm`](/docs/reference/wasm/) for browsers and JavaScript runtimes, and the **Rust crates** for your own programs. All three are version 0.1.0 and lay out the same pages.
+
+## The command line
+
+<Tabs syncKey="install">
+<TabItem label="Homebrew">
+
+On macOS and Linux:
+
+```sh
+brew install lvnr/tap/matenadar
+```
+
+</TabItem>
+<TabItem label="npm">
+
+The `matenadar` npm package installs the prebuilt native binary for your platform. No Rust is needed.
+
+```sh
+# run it once
+npx matenadar --version
+
+# or install it globally
+npm install -g matenadar
+```
+
+</TabItem>
+<TabItem label="Shell">
+
+On macOS and Linux, the installer downloads the release archive for your machine from GitHub Releases, checks it against the release’s `SHA256SUMS.txt`, and puts `matenadar` in `~/.local/bin`:
+
+```sh
+curl -fsSL https://github.com/lvnr/matenadar/releases/latest/download/install.sh | sh
+```
+
+</TabItem>
+<TabItem label="PowerShell">
+
+On Windows:
+
+```powershell
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/lvnr/matenadar/releases/latest/download/install.ps1 | iex"
+```
+
+</TabItem>
+<TabItem label="Cargo">
+
+From source, or a prebuilt binary through [cargo-binstall](https://github.com/cargo-bins/cargo-binstall):
+
+```sh
+cargo install matenadar
+cargo binstall matenadar
+```
+
+</TabItem>
+</Tabs>
+
+Then check it:
+
+```console
+$ matenadar --version
+matenadar 0.1.0
+```
+
+`matenadar help` lists the commands: `build`, `epub`, `check`, `validate`, `template`, `layout`, `locate`, `fingerprint`, `apply`, `fonts`, `bench` and `serve`. The [command-line reference](/docs/reference/cli/) covers each of them.
+
+### Installer settings
+
+Both installers read two environment variables:
+
+| Variable | Meaning | Default |
+|---|---|---|
+| `MATENADAR_VERSION` | the tag or version to install, with or without the `v` (`0.1.0`, `v0.1.0`) | the latest release |
+| `MATENADAR_INSTALL_DIR` | where to put the binary | `$HOME/.local/bin` (Windows: `$HOME\.local\bin`) |
+
+```sh
+curl -fsSL https://github.com/lvnr/matenadar/releases/latest/download/install.sh \
+  | MATENADAR_VERSION=0.1.0 MATENADAR_INSTALL_DIR="$HOME/bin" sh
+```
+
+If the folder isn’t on your `PATH`, the installer says so and prints the line to add.
+
+### Platforms
+
+The npm package carries the binary through `optionalDependencies` (`@matenadar/cli-*`), so it needs no `postinstall` download script and works with `--ignore-scripts`, pnpm and `bunx`. GitHub Releases has the same builds as archives named `matenadar-v<version>-<target>.tar.gz` (`.zip` on Windows).
+
+| Platform | npm package | Release target |
+|---|---|---|
+| macOS, Apple silicon | `@matenadar/cli-darwin-arm64` | `aarch64-apple-darwin` |
+| macOS, Intel | `@matenadar/cli-darwin-x64` | `x86_64-apple-darwin` |
+| Linux x86-64 (glibc) | `@matenadar/cli-linux-x64-gnu` | `x86_64-unknown-linux-gnu` |
+| Linux ARM64 (glibc) | `@matenadar/cli-linux-arm64-gnu` | `aarch64-unknown-linux-gnu` |
+| Windows x86-64 | `@matenadar/cli-win32-x64-msvc` | `x86_64-pc-windows-msvc` |
+
+### From a checkout
+
+```sh
+git clone https://github.com/lvnr/matenadar
+cd matenadar
+cargo build            # target/debug/matenadar
+```
+
+## Fonts
+
+The command line uses the system’s fonts, Typst’s own faces (built in), and any folders you name. A document can list its own font folders in `fonts`, relative to its asset root.
+
+```sh
+matenadar fonts                         # the families it can find
+matenadar fonts --fonts ./design/fonts  # with another folder
+matenadar build book.json --fonts ./design/fonts --no-system-fonts
+```
+
+`--no-system-fonts` leaves the system’s fonts out, which makes a build depend only on files you ship with the book.
+
+## WebAssembly
+
+```sh
+npm install @matenadar/wasm
+```
+
+`@matenadar/wasm` runs in browsers (in a worker), Node 18 and later, Bun and Deno. The module is about 24 MB (7 MB with brotli) and has no imports. In a browser you can load it from jsDelivr while keeping the worker on your own origin:
+
+```js
+import { MatenadarClient } from '@matenadar/wasm/client';
+
+const mt = await MatenadarClient.start({
+	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.1.0/dist/matenadar.wasm',
+});
+```
+
+See the [WebAssembly reference](/docs/reference/wasm/) for the whole API.
+
+## Rust
+
+The `matenadar` crate is the umbrella over the workspace, and the source of the command:
+
+```sh
+cargo add matenadar
+```
+
+Or depend on the parts you need: `matenadar-model` (the model, validation, templates and operations, with no Typst dependency), `matenadar-typst` (layout, rendering, inspection, checks) or `matenadar-epub`. See [the Rust crates](/docs/reference/rust/).

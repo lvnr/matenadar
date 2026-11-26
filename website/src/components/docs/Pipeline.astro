@@ -1,0 +1,129 @@
+---
+/** The architecture, as a figure: the model, the crates, and what comes out. */
+---
+
+<figure class="mt-pipeline not-content" aria-labelledby="mt-pipeline-caption">
+	<ol class="mt-pipeline__row">
+		<li class="mt-pipeline__stage mt-pipeline__stage--source">
+			<span class="mt-pipeline__kicker">The model</span>
+			<span class="mt-pipeline__name">doc.json</span>
+			<span class="mt-pipeline__note">sections, pages, spreads, styles, masters, components</span>
+		</li>
+		<li class="mt-pipeline__stage">
+			<span class="mt-pipeline__kicker">matenadar-model</span>
+			<span class="mt-pipeline__name">Validate &amp; change</span>
+			<span class="mt-pipeline__note">JSON paths in errors, templates, reversible operations. No Typst.</span>
+		</li>
+		<li class="mt-pipeline__stage">
+			<span class="mt-pipeline__kicker">matenadar-typst</span>
+			<span class="mt-pipeline__name">Generate &amp; lay out</span>
+			<span class="mt-pipeline__note">a Typst program on every build, never stored; inspection and checks</span>
+		</li>
+		<li class="mt-pipeline__stage mt-pipeline__stage--out">
+			<span class="mt-pipeline__kicker">Out</span>
+			<span class="mt-pipeline__name">PDF · SVG · PNG</span>
+			<span class="mt-pipeline__note">and, through <code>matenadar-epub</code>, EPUB&nbsp;3</span>
+		</li>
+	</ol>
+	<p class="mt-pipeline__wasm">
+		<span class="mt-pipeline__kicker">matenadar-wasm · @matenadar/wasm</span>
+		The same engine as WebAssembly, in browsers, workers, Node, Bun and Deno, with the same pages (<code>fingerprint</code>).
+	</p>
+	<figcaption id="mt-pipeline-caption">
+		The model is the only source of truth: the command line, the page editor and agents all change books through it.
+	</figcaption>
+</figure>
+
+<style>
+	.mt-pipeline {
+		margin: 2rem 0 2.5rem;
+	}
+	.mt-pipeline__row {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0.75rem;
+	}
+	.mt-pipeline__stage {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		margin: 0;
+		padding: 0.9rem 1rem 1rem;
+		border: 1px solid var(--mt-border);
+		border-radius: 12px;
+		background: var(--mt-surface);
+		box-shadow: var(--mt-shadow-sm);
+	}
+	.mt-pipeline__stage + .mt-pipeline__stage::before {
+		content: '→';
+		position: absolute;
+		left: -0.72rem;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 0.7rem;
+		text-align: center;
+		color: var(--mt-fg-faint);
+		font-size: 0.85rem;
+	}
+	.mt-pipeline__stage--out {
+		border-color: var(--mt-accent-ring);
+		background: var(--mt-accent-soft);
+	}
+	.mt-pipeline__kicker {
+		font-family: var(--mt-mono);
+		font-size: 0.72rem;
+		color: var(--mt-accent-text);
+	}
+	.mt-pipeline__name {
+		font-size: 1rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		line-height: 1.25;
+		color: var(--mt-fg);
+	}
+	.mt-pipeline__stage--source .mt-pipeline__name {
+		font-family: var(--mt-mono);
+		font-size: 0.92rem;
+	}
+	.mt-pipeline__note {
+		font-size: 0.8125rem;
+		line-height: 1.45;
+		color: var(--mt-fg-muted);
+	}
+	.mt-pipeline__wasm {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.2rem 0.75rem;
+		align-items: baseline;
+		margin: 0.75rem 0 0;
+		padding: 0.8rem 1rem;
+		border: 1px dashed var(--mt-border-strong);
+		border-radius: 12px;
+		font-size: 0.875rem;
+		color: var(--mt-fg-muted);
+	}
+	.mt-pipeline code {
+		font-family: var(--mt-mono);
+		font-size: 0.85em;
+	}
+	.mt-pipeline figcaption {
+		margin-top: 0.7rem;
+		font-size: 0.875rem;
+		color: var(--mt-fg-subtle);
+	}
+	@media (max-width: 44rem) {
+		.mt-pipeline__row {
+			grid-template-columns: 1fr;
+		}
+		.mt-pipeline__stage + .mt-pipeline__stage::before {
+			content: '↓';
+			left: 50%;
+			top: -0.78rem;
+			transform: translateX(-50%);
+		}
+	}
+</style>

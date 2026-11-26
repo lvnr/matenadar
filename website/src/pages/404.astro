@@ -1,0 +1,25 @@
+---
+/**
+ * The not-found page, in the docs' frame. Cloudflare serves dist/404.html for
+ * any path without an asset (wrangler.jsonc: not_found_handling "404-page").
+ */
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<StarlightPage
+	frontmatter={{
+		title: 'A leaf is missing',
+		description: 'This page isn’t in the manuscript.',
+		template: 'splash',
+		editUrl: false,
+		pagefind: false,
+		hero: {
+			title: 'A leaf is missing',
+			tagline: 'This page isn’t in the manuscript. It may have moved when the docs were rebound.',
+			actions: [
+				{ text: 'Read the docs', link: '/docs/', icon: 'right-arrow' },
+				{ text: 'Back to the front', link: '/', variant: 'minimal' },
+			],
+		},
+	}}
+/>

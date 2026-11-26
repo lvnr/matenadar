@@ -1,0 +1,10 @@
+# Section roots that have no page of their own (Astro writes the same as
+# meta-refresh pages, for hosts that don't read this file).
+/docs/getting-started  /docs/getting-started/install/  301
+/docs/getting-started/ /docs/getting-started/install/  301
+/docs/model            /docs/model/overview/           301
+/docs/model/           /docs/model/overview/           301
+/docs/guides           /docs/guides/operations/        301
+/docs/guides/          /docs/guides/operations/        301
+/docs/reference        /docs/reference/cli/            301
+/docs/reference/       /docs/reference/cli/            301

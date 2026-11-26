@@ -28,6 +28,7 @@ Usage:
   matenadar fonts [--used <doc.json>]   (the families found; with --used, the faces a layout drew with and their files)
   matenadar bench <doc.json> [--edits 50]
   matenadar serve                       (JSON lines on stdin; see serve.rs)
+  matenadar --version                   (print the matenadar version)
 
 Common options:
   --root DIR          asset root (default: the document's folder)
@@ -347,6 +348,10 @@ fn run() -> Result<ExitCode> {
         }
         "help" | "--help" | "-h" => {
             print!("{HELP}");
+            Ok(ExitCode::SUCCESS)
+        }
+        "version" | "--version" | "-V" => {
+            println!("matenadar {}", env!("CARGO_PKG_VERSION"));
             Ok(ExitCode::SUCCESS)
         }
         other => bail!("unknown command \"{other}\"\n\n{HELP}"),

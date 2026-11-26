@@ -2,19 +2,22 @@
 resolver = "3"
 members = ["crates/*"]
 # The WebAssembly crate is built on its own: scripts/wasm.sh.
-default-members = ["crates/matenadar-model", "crates/matenadar-typst", "crates/matenadar-epub", "crates/matenadar-cli"]
+default-members = ["crates/matenadar-model", "crates/matenadar-typst", "crates/matenadar-epub", "crates/matenadar"]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0"
 authors = ["Levon Arakelyan"]
-publish = false
+repository = "https://github.com/lvnr/matenadar"
+homepage = "https://github.com/lvnr/matenadar"
+readme = "README.md"
+keywords = ["typesetting", "typst", "pdf", "epub", "books"]
 
 [workspace.dependencies]
-matenadar-model = { path = "crates/matenadar-model" }
-matenadar-typst = { path = "crates/matenadar-typst" }
-matenadar-epub = { path = "crates/matenadar-epub" }
+matenadar-model = { version = "0.1.0", path = "crates/matenadar-model" }
+matenadar-typst = { version = "0.1.0", path = "crates/matenadar-typst", default-features = false }
+matenadar-epub = { version = "0.1.0", path = "crates/matenadar-epub", default-features = false }
 matenadar-wasm = { path = "crates/matenadar-wasm" }
 anyhow = "1"
 serde = { version = "1", features = ["derive"] }
@@ -40,6 +43,13 @@ opt-level = 2
 
 [profile.release]
 debug = 0
+
+# Release binaries distributed via GitHub Releases, Homebrew, and npm.
+[profile.dist]
+inherits = "release"
+lto = "thin"
+strip = true
+codegen-units = 1
 
 # The WebAssembly build: small rather than fast to build.
 [profile.wasm]

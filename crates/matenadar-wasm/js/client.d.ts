@@ -1,2 +1,2 @@
-export { MatenadarClient } from "./matenadar";
-export type * from "./matenadar";
+export { MatenadarClient } from "./matenadar.js";
+export type * from "./matenadar.js";

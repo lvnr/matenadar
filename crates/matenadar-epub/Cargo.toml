@@ -5,7 +5,11 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
-publish.workspace = true
+repository.workspace = true
+homepage.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories = ["encoding", "text-processing"]
 
 [features]
 default = ["embedded-fonts"]
@@ -14,7 +18,7 @@ embedded-fonts = ["matenadar-typst/embedded-fonts"]
 
 [dependencies]
 matenadar-model.workspace = true
-matenadar-typst = { path = "../matenadar-typst", default-features = false }
+matenadar-typst.workspace = true
 ttf-parser = "0.25"
 indexmap.workspace = true
 typst.workspace = true

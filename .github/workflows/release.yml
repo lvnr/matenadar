@@ -1,0 +1,416 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v0.1.0); defaults to current ref"
+        required: false
+        type: string
+      publish_registries:
+        description: "Also publish to npm, crates.io, and Homebrew tap"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: Validate release version
+    runs-on: ubuntu-24.04
+    outputs:
+      tag: ${{ steps.ver.outputs.tag }}
+      version: ${{ steps.ver.outputs.version }}
+      publish: ${{ steps.ver.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check version parity across Cargo.toml and npm packages
+        id: ver
+        shell: bash
+        run: |
+          TAG="${{ inputs.tag || github.ref_name }}"
+          if [[ "$TAG" != v* ]]; then
+            echo "error: release tag must start with 'v' (got '$TAG')" >&2
+            exit 1
+          fi
+          VERSION="${TAG#v}"
+          CARGO_VER="$(awk '/^\[workspace\.package\]/{f=1;next}/^\[/{f=0}f && /^version\s*=/{gsub(/"/,"",$3);print $3;exit}' Cargo.toml)"
+          WASM_VER="$(node -p 'JSON.parse(require("fs").readFileSync("packages/wasm/package.json","utf8")).version')"
+          CLI_VER="$(node -p 'JSON.parse(require("fs").readFileSync("packages/cli/package.json","utf8")).version')"
+          echo "Tag: $TAG | Cargo: $CARGO_VER | @matenadar/wasm: $WASM_VER | matenadar CLI: $CLI_VER"
+          if [[ "$VERSION" != "$CARGO_VER" || "$VERSION" != "$WASM_VER" || "$VERSION" != "$CLI_VER" ]]; then
+            echo "error: versions do not match tag $TAG (run: node scripts/bump-version.mjs $VERSION)" >&2
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.publish_registries }}" == "false" ]]; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-cli:
+    name: Build CLI (${{ matrix.target }})
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: aarch64-apple-darwin
+            os: macos-15
+            ext: tar.gz
+            bin: matenadar
+            native_test: true
+          - target: x86_64-apple-darwin
+            os: macos-15
+            ext: tar.gz
+            bin: matenadar
+            native_test: false
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-24.04
+            ext: tar.gz
+            bin: matenadar
+            native_test: true
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-24.04-arm
+            ext: tar.gz
+            bin: matenadar
+            native_test: true
+          - target: x86_64-pc-windows-msvc
+            os: windows-2022
+            ext: zip
+            bin: matenadar.exe
+            native_test: true
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: dist-${{ matrix.target }}
+
+      - name: Build release binary
+        run: cargo build --profile dist --locked --target ${{ matrix.target }} -p matenadar --bin matenadar
+
+      - name: Smoke test binary
+        if: matrix.native_test
+        shell: bash
+        run: ./target/${{ matrix.target }}/dist/${{ matrix.bin }} --version
+
+      - name: Package tar.gz
+        if: matrix.ext == 'tar.gz'
+        shell: bash
+        run: |
+          mkdir -p staging
+          cp "target/${{ matrix.target }}/dist/${{ matrix.bin }}" staging/
+          cp LICENSE README.md staging/
+          tar -czf "matenadar-${{ needs.plan.outputs.tag }}-${{ matrix.target }}.tar.gz" -C staging .
+
+      - name: Package zip
+        if: matrix.ext == 'zip'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path staging | Out-Null
+          Copy-Item "target\${{ matrix.target }}\dist\${{ matrix.bin }}" staging\
+          Copy-Item LICENSE, README.md staging\
+          Compress-Archive -Path staging\* -DestinationPath "matenadar-${{ needs.plan.outputs.tag }}-${{ matrix.target }}.zip"
+
+      - name: Upload archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: cli-${{ matrix.target }}
+          path: matenadar-${{ needs.plan.outputs.tag }}-${{ matrix.target }}.${{ matrix.ext }}
+          if-no-files-found: error
+
+  build-wasm:
+    name: Build & test @matenadar/wasm
+    needs: plan
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: wasm
+
+      - name: Install binaryen (wasm-opt)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binaryen
+
+      - name: Build & test WebAssembly bundle
+        run: scripts/wasm.sh --test
+
+      - name: Upload @matenadar/wasm staged files
+        uses: actions/upload-artifact@v4
+        with:
+          name: wasm-package
+          path: |
+            packages/wasm/dist/**
+            packages/wasm/LICENSE
+          if-no-files-found: error
+
+  github-release:
+    name: Publish GitHub Release
+    needs: [plan, build-cli]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download CLI archives
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cli-*
+          path: release-assets
+          merge-multiple: true
+
+      - name: Generate SHA256SUMS.txt and add installers
+        run: |
+          cd release-assets
+          sha256sum matenadar-* > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+          cp ../scripts/install.sh ../scripts/install.ps1 .
+
+      - name: Upload checksums artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: checksums
+          path: release-assets/SHA256SUMS.txt
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.plan.outputs.tag }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" release-assets/* --clobber
+          else
+            gh release create "$TAG" release-assets/* \
+              --title "Matenadar $TAG" \
+              --generate-notes
+          fi
+
+  publish-homebrew:
+    name: Update Homebrew tap (lvnr/homebrew-tap)
+    needs: [plan, github-release]
+    if: needs.plan.outputs.publish == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Download checksums
+        uses: actions/download-artifact@v4
+        with:
+          name: checksums
+          path: .
+
+      - name: Check HOMEBREW_TAP_TOKEN
+        id: check
+        env:
+          TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          if [ -z "$TAP_TOKEN" ]; then
+            echo "::warning::HOMEBREW_TAP_TOKEN secret is not set; skipping Homebrew tap update."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout lvnr/homebrew-tap
+        if: steps.check.outputs.enabled == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: lvnr/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: tap
+
+      - name: Render and push Formula/matenadar.rb
+        if: steps.check.outputs.enabled == 'true'
+        run: |
+          node scripts/render-homebrew-formula.mjs \
+            --version "${{ needs.plan.outputs.version }}" \
+            --checksums SHA256SUMS.txt \
+            --out tap/Formula/matenadar.rb
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/matenadar.rb
+          if git diff --cached --quiet; then
+            echo "Formula/matenadar.rb is already up to date."
+          else
+            git commit -m "matenadar ${{ needs.plan.outputs.version }}"
+            git push
+          fi
+
+  publish-npm:
+    name: Publish npm packages (matenadar & @matenadar/*)
+    needs: [plan, build-cli, build-wasm, github-release]
+    if: needs.plan.outputs.publish == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Download CLI archives
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cli-*
+          path: archives
+          merge-multiple: true
+
+      - name: Download @matenadar/wasm staged files
+        uses: actions/download-artifact@v4
+        with:
+          name: wasm-package
+          path: packages/wasm
+
+      - name: Extract binaries and stage npm CLI packages
+        run: |
+          TAG="${{ needs.plan.outputs.tag }}"
+          VER="${{ needs.plan.outputs.version }}"
+          mkdir -p extracted
+          for target in aarch64-apple-darwin x86_64-apple-darwin x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu; do
+            mkdir -p "extracted/$target"
+            tar -xzf "archives/matenadar-${TAG}-${target}.tar.gz" -C "extracted/$target"
+          done
+          mkdir -p extracted/x86_64-pc-windows-msvc
+          unzip -q "archives/matenadar-${TAG}-x86_64-pc-windows-msvc.zip" -d extracted/x86_64-pc-windows-msvc
+
+          node scripts/stage-npm-cli.mjs \
+            --version "$VER" \
+            --out out/npm \
+            --bin "aarch64-apple-darwin=extracted/aarch64-apple-darwin/matenadar" \
+            --bin "x86_64-apple-darwin=extracted/x86_64-apple-darwin/matenadar" \
+            --bin "x86_64-unknown-linux-gnu=extracted/x86_64-unknown-linux-gnu/matenadar" \
+            --bin "aarch64-unknown-linux-gnu=extracted/aarch64-unknown-linux-gnu/matenadar" \
+            --bin "x86_64-pc-windows-msvc=extracted/x86_64-pc-windows-msvc/matenadar.exe"
+
+      - name: Publish npm packages
+        env:
+          OPTIONAL_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "$OPTIONAL_NPM_TOKEN" ]; then
+            export NODE_AUTH_TOKEN="$OPTIONAL_NPM_TOKEN"
+          fi
+
+          publish_if_new() {
+            local dir="$1"
+            local name ver
+            name="$(node -p "JSON.parse(require('fs').readFileSync('$dir/package.json','utf8')).name")"
+            ver="$(node -p "JSON.parse(require('fs').readFileSync('$dir/package.json','utf8')).version")"
+            if npm view "${name}@${ver}" version >/dev/null 2>&1; then
+              echo "Skipping ${name}@${ver} (already published)"
+              return 0
+            fi
+            echo "Publishing ${name}@${ver}..."
+            (cd "$dir" && npm publish --access public --provenance)
+          }
+
+          for dir in \
+            out/npm/cli-darwin-arm64 \
+            out/npm/cli-darwin-x64 \
+            out/npm/cli-linux-x64-gnu \
+            out/npm/cli-linux-arm64-gnu \
+            out/npm/cli-win32-x64-msvc \
+            out/npm/matenadar \
+            packages/wasm
+          do
+            publish_if_new "$dir"
+          done
+
+  publish-crates:
+    name: Publish Rust crates to crates.io
+    needs: [plan, github-release]
+    if: needs.plan.outputs.publish == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Check CARGO_REGISTRY_TOKEN
+        id: check
+        env:
+          SECRET_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          if [ -n "$SECRET_TOKEN" ]; then
+            echo "has_secret=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_secret=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Authenticate with crates.io via OIDC Trusted Publishing
+        id: crates_auth
+        if: steps.check.outputs.has_secret != 'true'
+        uses: rust-lang/crates-io-auth-action@v1
+        continue-on-error: true
+
+      - name: Publish workspace crates in dependency order
+        env:
+          OIDC_TOKEN: ${{ steps.crates_auth.outputs.token }}
+          SECRET_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          VERSION: ${{ needs.plan.outputs.version }}
+        run: |
+          set -euo pipefail
+          TOKEN="${SECRET_TOKEN:-$OIDC_TOKEN}"
+          if [ -z "$TOKEN" ]; then
+            echo "::warning::No crates.io OIDC token or CARGO_REGISTRY_TOKEN available; skipping crates.io publish."
+            exit 0
+          fi
+          export CARGO_REGISTRY_TOKEN="$TOKEN"
+
+          for crate in matenadar-model matenadar-typst matenadar-epub matenadar; do
+            status="$(curl -s -A "matenadar-release-ci" -o /dev/null -w '%{http_code}' "https://crates.io/api/v1/crates/${crate}/${VERSION}")"
+            if [ "$status" = "200" ]; then
+              echo "Skipping ${crate}@${VERSION} (already published)"
+              continue
+            fi
+            echo "Publishing ${crate}@${VERSION}..."
+            for attempt in 1 2 3; do
+              if cargo publish --locked -p "$crate"; then
+                break
+              fi
+              if [ "$attempt" -eq 3 ]; then exit 1; fi
+              echo "Waiting for crates.io index propagation (attempt $attempt/3)..."
+              sleep 20
+            done
+            sleep 15
+          done

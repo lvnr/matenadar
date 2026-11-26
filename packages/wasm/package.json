@@ -1,0 +1,62 @@
+{
+  "name": "@matenadar/wasm",
+  "version": "0.1.0",
+  "description": "Matenadar layout engine in WebAssembly: lay out, edit, inspect, and render books to SVG, PNG, PDF, and EPUB 3 in browsers and Node",
+  "license": "Apache-2.0",
+  "author": "Levon Arakelyan",
+  "type": "module",
+  "sideEffects": false,
+  "homepage": "https://github.com/lvnr/matenadar",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lvnr/matenadar.git",
+    "directory": "packages/wasm"
+  },
+  "bugs": {
+    "url": "https://github.com/lvnr/matenadar/issues"
+  },
+  "keywords": [
+    "matenadar",
+    "typst",
+    "wasm",
+    "webassembly",
+    "typesetting",
+    "pdf",
+    "epub",
+    "book",
+    "layout"
+  ],
+  "main": "./dist/matenadar.js",
+  "types": "./dist/matenadar.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/matenadar.d.ts",
+      "browser": "./dist/matenadar.browser.js",
+      "worker": "./dist/matenadar.browser.js",
+      "node": "./dist/matenadar.js",
+      "default": "./dist/matenadar.js"
+    },
+    "./browser": {
+      "types": "./dist/matenadar.d.ts",
+      "default": "./dist/matenadar.browser.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
+    },
+    "./worker": "./dist/worker.js",
+    "./wasm": "./dist/matenadar.wasm",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

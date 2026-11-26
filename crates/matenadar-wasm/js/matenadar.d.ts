@@ -251,7 +251,8 @@ export interface MatenadarApi {
 }
 
 export declare class Matenadar implements MatenadarApi {
-  static load(source: Response | Promise<Response> | BufferSource | WebAssembly.Module): Promise<Matenadar>;
+  /** Loads the module; defaults to the bundled `matenadar.wasm` when omitted. */
+  static load(source?: Response | Promise<Response> | BufferSource | WebAssembly.Module | URL | string): Promise<Matenadar>;
   assets(doc: MatenadarDocument): { fonts: string[]; files: string[] };
   addFont(data: Bytes): number;
   addFile(path: string, data: Bytes): void;
@@ -315,8 +316,13 @@ export declare class Matenadar implements MatenadarApi {
 export type Async<T> = { [K in keyof T]: T[K] extends (...args: infer A) => infer R ? (...args: A) => Promise<R> : never };
 
 export declare class MatenadarClient {
-  /** `base`: the folder with worker.js, matenadar.js and matenadar.wasm. */
-  static start(options?: { base?: string | URL; worker?: Worker }): Promise<MatenadarClient & Async<MatenadarApi>>;
-  call(method: keyof MatenadarApi, args?: unknown[]): Promise<unknown>;
+  /**
+   * Starts the worker and loads the engine.
+   * - `base`: folder with `worker.js` and `matenadar.wasm` (defaults to this module's folder).
+   * - `wasm`: override URL for `matenadar.wasm` (e.g. jsDelivr CDN) while keeping `worker.js` same-origin.
+   * - `worker`: pre-constructed Worker instance.
+   */
+  static start(options?: { base?: string | URL; wasm?: string | URL; worker?: Worker }): Promise<MatenadarClient & Async<MatenadarApi & { memory(): number }>>;
+  call(method: keyof MatenadarApi | "memory", args?: unknown[]): Promise<unknown>;
   terminate(): void;
 }

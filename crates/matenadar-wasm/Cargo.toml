@@ -5,7 +5,9 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
-publish.workspace = true
+repository.workspace = true
+homepage.workspace = true
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
@@ -18,7 +20,7 @@ embedded-fonts = ["matenadar-typst/embedded-fonts", "matenadar-epub/embedded-fon
 
 [dependencies]
 matenadar-model.workspace = true
-matenadar-typst = { path = "../matenadar-typst", default-features = false }
-matenadar-epub = { path = "../matenadar-epub", default-features = false }
+matenadar-typst.workspace = true
+matenadar-epub.workspace = true
 typst.workspace = true
 serde_json.workspace = true

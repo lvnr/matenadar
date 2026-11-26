@@ -4,5 +4,8 @@ out/
 .DS_Store
 samples/*/book
 samples/*/build/
-bin/
-dist/
+/bin/
+/dist/
+packages/wasm/dist/
+packages/wasm/LICENSE
+packages/cli/LICENSE

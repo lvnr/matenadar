@@ -6,18 +6,16 @@ description: A book and page layout engine for people and agents. How the JSON m
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 import Pipeline from '../../../components/docs/Pipeline.astro';
 
-A document is a JSON model of sections, pages, styles, masters and components. Matenadar lays it out with [Typst](https://typst.app) and renders it to PDF, PNG or SVG. It can say what landed where, check pages the way a printer or KDP’s previewer would, and apply edits as operations that can be undone.
+A document is a JSON model of sections, pages, styles, masters and components. Matenadar lays it out with [Typst](https://typst.app) and renders it to PDF, PNG or SVG. It can say what landed where, check pages the way a print-on-demand preflighter would, and apply edits as operations that can be undone.
 
 It makes EPUB 3 from the same model, and runs in the browser as WebAssembly with a page editor’s API: find what is under the pointer, change words, pictures, spacing and breaks, undo, and keep the edits as a patch that the command line replays to the same pages.
-
-Matenadar is the engine behind Aldus’s typesetting, and Imprimo’s successor.
 
 ## How it fits together
 
 <Pipeline />
 
 1. **You write the model.** A document is JSON (`"matenadar": "1"`): a `design` (colours, fonts, styles, masters, components) and `content` (flowing sections, hand-laid pages and two-page spreads). See [the document model](/docs/model/overview/).
-2. **Matenadar generates a Typst program from it, every time.** That program is never stored or shown as a source of truth. People, the Aldus engine and AI agents change books only through the model and its [operations](/docs/guides/operations/).
+2. **Matenadar generates a Typst program from it, every time.** That program is never stored or shown as a source of truth. People, visual editors and AI agents change books only through the model and its [operations](/docs/guides/operations/).
 3. **Typst lays it out.** Knuth–Plass line breaking, hyphenation, widow and orphan control, footnotes, tables that split, variable fonts, right-to-left and CJK text. Builds are fast and deterministic.
 4. **You get pages, and a report on them.** PDF, SVG and PNG; a [layout report](/docs/guides/agents/) with every node’s box on every page; `locate` from a point back to a node and character; [preflight checks](/docs/guides/checks/) with stable codes; [EPUB 3](/docs/guides/epub/), reflowable or fixed layout.
 
@@ -52,7 +50,7 @@ The same engine is built to WebAssembly as [`@matenadar/wasm`](/docs/reference/w
 
 - The model, generator, checks, operations, `serve` and `bench` work.
 - Eight books are partly rebuilt under `samples/` (39 pages), each with notes on how close it gets and which engine gaps remain.
-- Print: decorative elements are drawn as outlines, so display type can cross the margins and the bleed and still pass KDP’s text checks.
+- Print: decorative elements are drawn as outlines, so display type can cross the margins and the bleed and still pass print-margin text checks.
 - EPUB 3, reflowable or fixed layout, passes epubcheck.
 - The WebAssembly build lays out, edits and renders in the browser, and its pages match the command line’s.
 

@@ -77,7 +77,7 @@ A number is **points** (1/72 in). A string can carry a unit:
 
 Placed elements are measured from the **top-left corner of the page’s trim**: x to the right, y down, in points unless a unit says otherwise.
 
-The bleed lies at negative coordinates and beyond the trim’s width and height. A master’s `bleed` is on the top, bottom and outside edges, as KDP wants: the right edge of a recto (odd) page and the left edge of a verso. A full-bleed rectangle on a 6 × 9 in page with a 0.125 in bleed is therefore:
+The bleed lies at negative coordinates and beyond the trim’s width and height. A master’s `bleed` is on the top, bottom and outside edges, as standard perfect-bound printers expect: the right edge of a recto (odd) page and the left edge of a verso. A full-bleed rectangle on a 6 × 9 in page with a 0.125 in bleed is therefore:
 
 ```json
 {"type": "rect", "x": "-0.125in", "y": "-0.125in", "w": "6.25in", "h": "9.25in", "fill": "accent"}
@@ -111,4 +111,3 @@ One length, or per side: `{"top", "right", "bottom", "left", "x", "y"}` for inse
 
 - [The design](/docs/model/design/): colours, fonts, styles, masters and components.
 - [Content](/docs/model/content/): sections, pages, spreads, elements, blocks and inline runs.
-- [Templates](/docs/model/templates/): whole documents from a short spec.

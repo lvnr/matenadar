@@ -5,7 +5,7 @@ description: Install the matenadar command with Homebrew, npm, the shell or Powe
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Matenadar comes three ways: the **`matenadar` command** (a native binary for macOS, Linux and Windows), the **WebAssembly package** [`@matenadar/wasm`](/docs/reference/wasm/) for browsers and JavaScript runtimes, and the **Rust crates** for your own programs. All three are version 0.1.0 and lay out the same pages.
+Matenadar comes three ways: the **`matenadar` command** (a native binary for macOS, Linux and Windows), the **WebAssembly package** [`@matenadar/wasm`](/docs/reference/wasm/) for browsers and JavaScript runtimes, and the **Rust crates** for your own programs. All three are version 0.2.0 and lay out the same pages.
 
 ## The command line
 
@@ -66,10 +66,10 @@ Then check it:
 
 ```console
 $ matenadar --version
-matenadar 0.1.0
+matenadar 0.2.0
 ```
 
-`matenadar help` lists the commands: `build`, `epub`, `check`, `validate`, `template`, `layout`, `locate`, `fingerprint`, `apply`, `fonts`, `bench` and `serve`. The [command-line reference](/docs/reference/cli/) covers each of them.
+`matenadar help` lists the commands: `build`, `epub`, `check`, `validate`, `layout`, `locate`, `fingerprint`, `apply`, `fonts`, `bench` and `serve`. The [command-line reference](/docs/reference/cli/) covers each of them.
 
 ### Installer settings
 
@@ -77,12 +77,12 @@ Both installers read two environment variables:
 
 | Variable | Meaning | Default |
 |---|---|---|
-| `MATENADAR_VERSION` | the tag or version to install, with or without the `v` (`0.1.0`, `v0.1.0`) | the latest release |
+| `MATENADAR_VERSION` | the tag or version to install, with or without the `v` (`0.2.0`, `v0.2.0`) | the latest release |
 | `MATENADAR_INSTALL_DIR` | where to put the binary | `$HOME/.local/bin` (Windows: `$HOME\.local\bin`) |
 
 ```sh
 curl -fsSL https://github.com/lvnr/matenadar/releases/latest/download/install.sh \
-  | MATENADAR_VERSION=0.1.0 MATENADAR_INSTALL_DIR="$HOME/bin" sh
+  | MATENADAR_VERSION=0.2.0 MATENADAR_INSTALL_DIR="$HOME/bin" sh
 ```
 
 If the folder isn’t on your `PATH`, the installer says so and prints the line to add.
@@ -131,7 +131,7 @@ npm install @matenadar/wasm
 import { MatenadarClient } from '@matenadar/wasm/client';
 
 const mt = await MatenadarClient.start({
-	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.1.0/dist/matenadar.wasm',
+	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.2.0/dist/matenadar.wasm',
 });
 ```
 
@@ -145,4 +145,4 @@ The `matenadar` crate is the umbrella over the workspace, and the source of the 
 cargo add matenadar
 ```
 
-Or depend on the parts you need: `matenadar-model` (the model, validation, templates and operations, with no Typst dependency), `matenadar-typst` (layout, rendering, inspection, checks) or `matenadar-epub`. See [the Rust crates](/docs/reference/rust/).
+Or depend on the parts you need: `matenadar-model` (the model, validation, components and operations, with no Typst dependency), `matenadar-typst` (layout, rendering, inspection, checks) or `matenadar-epub`. See [the Rust crates](/docs/reference/rust/).

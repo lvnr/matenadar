@@ -96,7 +96,7 @@ Placed elements make up pages, spread sides, master layers, components, canvases
 | `stroke_align` | where a stroke lies on the edge: `center` (default), `inside` (as CSS borders and most design tools draw it), `outside` |
 | `skew` | degrees of horizontal slant |
 | `when` | conditions, all of which must hold: `recto`, `verso`, `first`, `blank`, and their `not-` forms |
-| `decorative` | art, not reading text. Its text is drawn as glyph outlines in the PDF, so display type may run into the margins and bleed without KDP’s previewer (or any reader) seeing text there, and margin checks skip it. The layout report still lists it. |
+| `decorative` | art, not reading text. Its text is drawn as glyph outlines in the PDF, so display type may run into the margins and bleed without print preflighters (or PDF readers) seeing live text there, and margin checks skip it. The layout report still lists it. |
 | `shadow` | a hard shadow: `{"dx": 3, "dy": 3, "color": "#0004"}` (needs `w` and `h`, except on text frames) |
 
 ### `text`
@@ -172,16 +172,12 @@ Word searches, crosswords, Sudoku and letter puzzles.
 - Layout: `cell` (size), `cell_h`. Type: `style` (a paragraph or character style), `set`. Drawing: `lines` (between cells), `frame` (outer border), `fill`, `radius`.
 - `highlights`: `{"from": [row, col], "to": [row, col], "fill", "stroke", "thickness"}`. These are capsules over found words, drawn under the letters; `"shape": "cells"` fills each cell instead.
 
-### Book kinds’ elements
+### Structured vector elements
 
-Each is drawn from its data, as vector, so an edit to the data redraws it; a solution page is the same element with `solved: true`. Lines are SVG; words are live text in the element’s `style`.
+Each is drawn from its data, as vector, so an edit to the data redraws it. Lines are SVG; words are live text in the element’s `style`.
 
-- **`maze`**: `rows`, one string per row of cells, a hexadecimal digit per cell giving its walls (1 top, 2 right, 4 bottom, 8 left, added up: `f` is closed); or `segments` (`[x1, y1, x2, y2]` in cells) with `size` (`[columns, rows]`) for mazes that aren’t a grid. `cell` (default the width over the columns), `start` and `end` (a cell `[row, column]`, or a point in cells: a dot and a ring), `solution` (cells or points in order), `solved`, `walls`, `path` (strokes), `marks` (the start’s and end’s colour). Walls along one line are drawn as one stroke.
-- **`logic-grid`**: `categories` (`[{"name", "items": [...]}]`, two or more, all the same length), set in the usual staircase: the first category down the side with the others across the top, the last ones down the side under it. `marks`: `{"a": [category, item], "b": [category, item], "mark": "o"}` (`"o"` a dot, `"x"` a cross, or up to three letters). `cell` (default 14 pt), `style`, `lines`, `frame`.
-- **`dots`** (dot-to-dot): `points` in the `viewbox`’s units (default points), numbered from `start` (default 1) beside each dot, outside the turn the line makes there (`labels` gives `[dx, dy]` per point instead). `breaks` (point indices) start new strokes; a stroke that ends on its first point is closed, and that point isn’t numbered again. `solved` draws the line (`line`); `dot` and `size` (the dot’s and the number’s size), `color`, `style`.
 - **`ruling`**: journal and planner rulings over `w` × `h`: `pattern` (`lines`, `dots`, `grid`, `graph`, `isodots`), `pitch` (default 0.3 in for lines, 0.2 in otherwise), `stroke`; `graph` makes every `major`-th line (default 5) `major_stroke`; `lines` take `first` (the first line’s depth) and `margin` (a vertical rule that far in, `margin_stroke`). Grids and dots are centred, so what is left over is even.
 - **`calendar`**: a month (`year`, `month`) from its first weekday, a box a day: `week_start` (`monday`, default, or `sunday`), `days` (seven names), `style` (day numbers), `header_style` and `header` (the weekday row’s height), `lines`, `outside: true` (the next and last months’ days, in `outside_color`).
-- **`craft`** (paper-craft sheets): `faces` (polygons, `points`, with `fill`, or a picture `src` with `crop`, `focus` and `filter`, cut to the face; `label`), `edges` (`from`, `to`, `kind`: `cut` (default), `mountain`, `valley` or `score`; `tab: {"depth", "angle", "side", "label"}` adds a glue tab and makes the edge a fold), `marks` (`at`, `kind`: a registration target or `dot`, `label`), `viewbox`, the line kinds’ strokes (`cut` solid, `mountain` dash-dot, `valley` dashed, `score` dotted), `glue` (the tabs’ colour), `scissors: true` (on the first cut line).
 - **`panels`** (comic pages): `rows` of `panels` (`{"h": "1fr", "panels": [...]}`; heights and widths are lengths or shares, `"2fr"`), `gutter`, `border`, `radius`, `fill`. A panel has `id`, `w`, a picture (`src`, `crop`, `focus`, `filter`, `alt`) cut to it, `fill`, `border`, and `elements` placed from its corner (balloons, captions) and free to break its border.
 - **`balloon`**: `text` or `content` in `style` (default the design’s `balloon` style) with `set`, wrapped at `w` in lines of even length. `shape`: `speech` (default) and `whisper` (dashed) ellipses, a `thought` cloud, a `shout` burst, a `caption` box. `tail` is the point the tail runs to (in the same coordinates as `x`, `y`); the balloon and its tail are one outline. `fill`, `stroke`, `inset`.
 

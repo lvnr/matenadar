@@ -3,12 +3,12 @@ title: Rust crates
 description: The matenadar umbrella crate and its feature flags, and the matenadar-model, matenadar-typst and matenadar-epub crates it re-exports.
 ---
 
-Matenadar is a Rust workspace (edition 2024, Apache-2.0). Four crates are published on crates.io, all at version 0.1.0:
+Matenadar is a Rust workspace (edition 2024, Apache-2.0). Four crates are published on crates.io, all at version 0.2.0:
 
 | Crate | What it holds | Depends on Typst |
 |---|---|---|
 | [`matenadar`](https://crates.io/crates/matenadar) | the umbrella crate, and the `matenadar` command | through its features |
-| [`matenadar-model`](https://crates.io/crates/matenadar-model) | the document model, validation, components, templates and the operations that change a document | no |
+| [`matenadar-model`](https://crates.io/crates/matenadar-model) | the document model, validation, components and the operations that change a document | no |
 | [`matenadar-typst`](https://crates.io/crates/matenadar-typst) | the generator, the Typst world, sessions, rendering, hit-testing, the layout report and checks | yes (Typst 0.15) |
 | [`matenadar-epub`](https://crates.io/crates/matenadar-epub) | EPUB 3, reflowable or one picture per page | yes |
 
@@ -39,7 +39,7 @@ For a library without the command:
 
 ```toml
 [dependencies]
-matenadar = { version = "0.1", default-features = false, features = ["typst", "epub", "embedded-fonts"] }
+matenadar = { version = "0.2", default-features = false, features = ["typst", "epub", "embedded-fonts"] }
 ```
 
 With `default-features = false` and no features, you get the model alone.
@@ -111,7 +111,7 @@ A `Session` holds one document laid out, and lays it out again after each operat
 | `fonts_used()` | `Vec<UsedFont>` |
 | `document()` | `&Document` |
 
-`CheckOptions` has `safe_pt` (default 18, that is 0.25 in), `gutter_pt` (`None` for KDP’s minimum for the page count), `min_ppi` (300) and `black_ink` (false). `inspect::report(&session)` reports every page; `report_on(&session, Some(&pages))` the pages listed.
+`CheckOptions` has `safe_pt` (default 18, that is 0.25 in), `gutter_pt` (`None` scales by page count via `spine_gutter`), `min_ppi` (300) and `black_ink` (false). `CheckOptions::kdp(pages)` returns the KDP print-on-demand preset. `inspect::report(&session)` reports every page; `report_on(&session, Some(&pages))` the pages listed.
 
 ### Changing it
 
@@ -127,17 +127,16 @@ std::fs::write("book.json", session.document().to_json())?;
 
 ## `matenadar-model`
 
-The model with **no Typst dependency**, for tools that read, write, validate, template or transform documents.
+The model with **no Typst dependency**, for tools that read, write, validate or transform documents.
 
 - `Document::from_json(&str) -> Result<Document, String>` reads a document and refuses a `matenadar` version other than `VERSION` (`"1"`); errors carry the path where reading stopped. `to_json()` writes it, pretty-printed.
 - `validate(&Document) -> Vec<Problem>`: each `Problem` has a `path` (`content[0].flow[0].style`) and a `message`.
-- `template::compose(kind, &spec) -> Result<Document, String>`, with `template::KINDS` = `picture-book`, `coloring`, `a-plus`.
 - `ops`: `Op` (serde, tagged by `"op"`) and the `Target` it addresses (`id` or `at`).
 - `walk`: visits every node of a document.
 
 ```toml
 [dependencies]
-matenadar-model = "0.1"
+matenadar-model = "0.2"
 ```
 
 ## `matenadar-typst`

@@ -13,7 +13,6 @@ matenadar <command> [arguments] [options]
 | [`epub`](#epub) | makes an EPUB 3, reflowable or fixed layout |
 | [`check`](#check) | preflight checks: overflow, text in the margin, resolution, ink, glyphs, widows, orphans |
 | [`validate`](#validate) | checks the model without laying it out |
-| [`template`](#template) | a book kind’s whole document from a spec |
 | [`layout`](#layout) | every node on every page, with its extent |
 | [`locate`](#locate) | the node and byte offset under a point |
 | [`fingerprint`](#fingerprint) | a hash per page, the same as the WebAssembly build’s |
@@ -22,7 +21,7 @@ matenadar <command> [arguments] [options]
 | [`bench`](#bench) | layout and edit timings |
 | [`serve`](#serve) | one document kept open, driven by JSON lines on stdin |
 | `help` | the usage text (also `--help`, `-h`, or no command) |
-| `--version` | prints `matenadar 0.1.0` (also `version`, `-V`) |
+| `--version` | prints `matenadar 0.2.0` (also `version`, `-V`) |
 
 ## Common options
 
@@ -35,7 +34,7 @@ matenadar <command> [arguments] [options]
 
 ### How arguments are read
 
-- The document is the first positional argument; `apply` and `template` take a second.
+- The document is the first positional argument; `apply` takes a second (`ops.json`).
 - `--bleed`, `--check`, `--json`, `--no-system-fonts`, `--embed-fonts`, `--no-live-text` and `--used` are switches. Every other `--option`, and `-o`, takes the next argument as its value.
 - Given twice, an option’s last value wins, except `--fonts`, which adds up.
 - `--pages` takes a list of pages and ranges: `1-3,7`, or `5-` for page 5 to the end. Pages outside the document are ignored.
@@ -104,13 +103,14 @@ Prints `book.epub (1.4 MB, 410 ms)`, or with `--json` `{"epub": "book.epub", "by
 ## check
 
 ```text
-matenadar check <doc.json> [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black] [--json]
+matenadar check <doc.json> [--preset kdp] [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black] [--json]
 ```
 
 | Option | Meaning | Default |
 |---|---|---|
+| `--preset NAME` | print-on-demand preset (`kdp`) | — |
 | `--safe LENGTH` | how far inside the trim live text must stay | `0.25in` |
-| `--gutter LENGTH` | the spine-side margin | KDP’s minimum for the page count |
+| `--gutter LENGTH` | the spine-side margin | page-count-scaled spine gutter |
 | `--min-ppi N` | the resolution raster images must reach | `300` |
 | `--ink black` or `color` | hold the pages to a black-ink interior | `color` (or the document’s `print.ink`) |
 
@@ -125,14 +125,6 @@ matenadar validate <doc.json> [--json]
 Checks the model without laying it out: styles, masters and components that are named but missing, colours, ids and the like. Prints `valid`, or one `path: message` line per problem (`content[0].flow[0].style: no style "lede"`). With `--json`, a list of `{"path", "message"}`. Exits with 1 when there are problems.
 
 A document that isn’t JSON, or doesn’t match the model, is an error before validation, with the path where reading stopped. A document whose `matenadar` isn’t `"1"` is refused.
-
-## template
-
-```text
-matenadar template <kind> <spec.json> [-o doc.json]
-```
-
-Composes a book kind’s document from a spec. The kinds are `picture-book`, `coloring` and `a-plus`. With `-o` it writes the document and prints `picture-book → doc.json (21 items)`; without, it prints the document. See [templates](/docs/model/templates/).
 
 ## layout
 

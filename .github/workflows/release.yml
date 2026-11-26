@@ -324,7 +324,12 @@ jobs:
           set -euo pipefail
           if [ -n "$OPTIONAL_NPM_TOKEN" ]; then
             export NODE_AUTH_TOKEN="$OPTIONAL_NPM_TOKEN"
+          else
+            # Clear setup-node's generated .npmrc (_authToken=${NODE_AUTH_TOKEN})
+            # so npm >= 11.5.1 uses OIDC Trusted Publishing cleanly.
+            unset NPM_CONFIG_USERCONFIG NODE_AUTH_TOKEN
           fi
+          echo "Using npm $(npm --version)"
 
           publish_if_new() {
             local dir="$1"

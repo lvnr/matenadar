@@ -74,7 +74,7 @@ The module is too large for some static hosts (Cloudflare’s limit is 25 MiB a 
 
 ```js
 const mt = await MatenadarClient.start({
-	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.1.0/dist/matenadar.wasm',
+	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.2.0/dist/matenadar.wasm',
 });
 ```
 
@@ -115,7 +115,6 @@ Lengths are points; positions are from the trim’s top-left corner, x to the ri
 | `addFile(path, data)` | `void` | adds or replaces a picture or drawing at `path` under the root |
 | `open(doc, check?)` | `Opened` | lays a document out: `{pages, problems, warnings, diagnostics}` |
 | `openFrom(doc, {root, fonts, check})` | `Promise<Opened & {missing}>` | opens with what the document names, read under `root` |
-| `template(kind, spec)` | document | a book kind’s document from a spec (`picture-book`, `coloring`, `a-plus`) |
 | `fonts()` | `string[]` | the font families given |
 | `close()` | `void` | closes the document |
 
@@ -228,7 +227,7 @@ interface Issue {
 
 interface CheckOptions {
 	safe?: string | number; // default 0.25in
-	gutter?: string | number; // default KDP's for the page count
+	gutter?: string | number; // default page-count-scaled spine gutter
 	min_ppi?: number;
 	ink?: 'black' | 'color';
 }
@@ -258,7 +257,7 @@ The full declarations ship in the package as `matenadar.d.ts` and `client.d.ts`.
 import { MatenadarClient } from '@matenadar/wasm/client';
 
 const mt = await MatenadarClient.start({
-	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.1.0/dist/matenadar.wasm',
+	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.2.0/dist/matenadar.wasm',
 });
 for (const font of fontFiles) await mt.addFont(font); // ArrayBuffers
 const { pages } = await mt.open(doc);

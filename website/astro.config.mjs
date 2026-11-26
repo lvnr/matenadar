@@ -71,7 +71,6 @@ export default defineConfig({
 						{ label: 'Overview', slug: 'docs/model/overview' },
 						{ label: 'The design', slug: 'docs/model/design' },
 						{ label: 'Content', slug: 'docs/model/content' },
-						{ label: 'Templates', slug: 'docs/model/templates' },
 					],
 				},
 				{

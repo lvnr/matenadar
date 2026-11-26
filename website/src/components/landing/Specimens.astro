@@ -179,7 +179,7 @@ const agentCode: Line[] = [
 	{ t: '    "code": "text-in-margin",', ref: 'pull-2 safe' },
 	{ t: '    "page": 42,', ref: 'pull-2' },
 	{ t: '    "node": "pull-2",', ref: 'pull-2' },
-	{ t: '    "message": "2 runs of live text sit closer than KDP …"', ref: 'pull-2 safe' },
+	{ t: '    "message": "2 runs of live text sit inside the safe margin …"', ref: 'pull-2 safe' },
 	{ t: '  }' },
 	{ t: ']' },
 ];
@@ -213,7 +213,7 @@ const wasmCode: Line[] = [
 	{ t: '' },
 	{ t: 'const mt = await MatenadarClient.start({', ref: 'worker' },
 	{ t: '  wasm: "https://cdn.jsdelivr.net/npm/@matenadar/wasm"', ref: 'worker cdn' },
-	{ t: '      + "@0.1.0/dist/matenadar.wasm",', ref: 'worker cdn' },
+	{ t: '      + "@0.2.0/dist/matenadar.wasm",', ref: 'worker cdn' },
 	{ t: '});', ref: 'worker' },
 	{ t: 'for (const font of fonts) await mt.addFont(font);' },
 	{ t: 'const { pages } = await mt.open(doc);', ref: 'page' },
@@ -257,7 +257,7 @@ const tabs = [
 		desc: 'Two pages under one picture.',
 		file: 'picture-book.json',
 		lang: 'JSON',
-		note: 'The gutter strip repeats across the fold; the lettered title is decorative, so it may cross the bleed and still pass KDP’s text checks.',
+		note: 'The gutter strip repeats across the fold; the lettered title is decorative, so it may cross the bleed and still pass print-margin checks.',
 		href: '/docs/model/content/#spreads',
 		more: 'Spreads and elements',
 	},
@@ -540,7 +540,7 @@ const code = { flow: render(flowCode, 'json'), spread: render(spreadCode, 'json'
 										<rect class="bleed" x="-9" y="-9" width="441" height="666" />
 										<rect class="margin" x="54" y="57.6" width="315" height="525.6" />
 										<rect class="safe" data-ref="safe" x="18" y="18" width="396" height="612" />
-										<g data-ref="safe"><text class="anno anno--safe" x="22" y="641">safe 0.25 in (KDP)</text></g>
+										<g data-ref="safe"><text class="anno anno--safe" x="22" y="641">safe 0.25 in</text></g>
 										<text class="anno anno--muted" x="0" y="-18">page 42 · verso · outside on the left</text>
 									</g>
 

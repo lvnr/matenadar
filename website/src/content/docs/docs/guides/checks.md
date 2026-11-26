@@ -1,13 +1,13 @@
 ---
 title: Preflight checks
-description: Check pages the way a printer or KDP's previewer would. Every code matenadar check reports, its severity, the options, and the JSON an agent reads.
+description: Check pages for print production issues before uploading. Every code matenadar check reports, its severity, options, presets, and the JSON an agent reads.
 ---
 
-`matenadar check` lays a document out and inspects the pages the way a printer, or KDP’s previewer, would. Every issue has a stable **code**, a **severity**, and where it can, the **page** and **node** it is about.
+`matenadar check` lays a document out and inspects every page for print-production issues. Every issue has a stable **code**, a **severity**, and where it can, the **page** and **node** it is about.
 
 ```console
 $ matenadar check book.json --safe 0.25in
-  error text-in-margin [p12 caption-3]: 2 runs of live text sit closer than KDP allows to the trim (0.250 in outside, 0.375 in at the spine); mark art as decorative or move it
+  error text-in-margin [p12 caption-3]: 2 runs of live text sit inside the safe margin (0.250 in outside, 0.375 in at the spine); mark art as decorative or move it
   warning widow [p44 p-188]: p-188 carries one line to the top of page 44
 ```
 
@@ -18,7 +18,7 @@ With no issues it prints `no issues on 48 pages`. The command exits with status 
 | Code | Severity | What it means |
 |---|---|---|
 | `overflow` | error | a frame’s text doesn’t fit (a text frame with an `h` and an `id`): “the text of *id* runs *n* pt past its frame” |
-| `text-in-margin` | error | live text closer to the trim than KDP allows: 0.25 in outside, and at the spine KDP’s minimum for the page count |
+| `text-in-margin` | error | live text inside the safe margin: 0.25 in outside, and at the spine the page-count-scaled gutter (or `--gutter`) |
 | `low-resolution` | error | a raster image under the minimum resolution (300 ppi) at its printed size |
 | `color-in-black-ink` | error | on a black-ink interior, a picture with colour in it (more than a few clearly coloured pixels, or an overall cast), or text or a shape in a colour that isn’t a grey; one report per element and page |
 | `missing-glyph` | error | no font has the glyph |
@@ -28,9 +28,9 @@ With no issues it prints `no issues on 48 pages`. The command exits with status 
 | `orphan` | warning | a paragraph leaves one line at the foot of a page |
 | `compiler` | error or warning | notices from the layout engine |
 
-### KDP’s gutter
+### Spine gutter scaling
 
-Without `--gutter`, the spine-side margin is KDP’s minimum for the book’s page count:
+Without `--gutter`, the spine-side safe margin scales by page count (`spine_gutter`, matching standard perfect-bound print-on-demand minimums such as `--preset kdp`):
 
 | Pages | Inside margin |
 |---|---|
@@ -44,8 +44,9 @@ Without `--gutter`, the spine-side margin is KDP’s minimum for the book’s pa
 
 | Option | Meaning | Default |
 |---|---|---|
+| `--preset NAME` | print-on-demand preset (`kdp`: 0.25 in safe area, page-count-scaled spine gutter, 300 ppi) | — |
 | `--safe LENGTH` | how far inside the trim live text must stay | `0.25in` |
-| `--gutter LENGTH` | the spine-side margin | KDP’s minimum for the page count |
+| `--gutter LENGTH` | the spine-side margin | page-count-scaled spine gutter |
 | `--min-ppi N` | the resolution raster images must reach | `300` |
 | `--ink black` | hold the pages to a black-ink interior even when the document doesn’t say it is one (`print.ink`); `--ink color` is the default | — |
 | `--json` | the issues as JSON | — |
@@ -65,7 +66,7 @@ $ matenadar check book.json --json
     "code": "text-in-margin",
     "page": 12,
     "node": "caption-3",
-    "message": "2 runs of live text sit closer than KDP allows to the trim (0.250 in outside, 0.375 in at the spine); mark art as decorative or move it"
+    "message": "2 runs of live text sit inside the safe margin (0.250 in outside, 0.375 in at the spine); mark art as decorative or move it"
   },
   {
     "severity": "warning",
@@ -81,7 +82,7 @@ $ matenadar check book.json --json
 
 ## Fixing what they find
 
-- **`text-in-margin` on display type.** If the type is art (a title across the bleed, a big numeral), mark the element `"decorative": true`. It is drawn as glyph outlines, so neither KDP’s previewer nor any reader sees text there, and the margin check skips it. Otherwise move it in, or give a text frame `"safe": true` to keep it inside the master’s margins.
+- **`text-in-margin` on display type.** If the type is art (a title across the bleed, a big numeral), mark the element `"decorative": true`. It is drawn as glyph outlines, so print preflighters and PDF readers don’t see live text there, and the margin check skips it. Otherwise move it in, or give a text frame `"safe": true` to keep it inside the master’s margins.
 - **`overflow`.** Give the frame more room, or let it fit its words with `"fit": "shrink"` and a `min_size`.
 - **`widow` and `orphan`.** They are prevented by default, so a report usually means something else won: a `keep_together`, a box that can’t break, or a page too short to fix. In the editor, `nudge(id, -1)` sets a paragraph a line shorter by the least tracking that does it (at most 0.02 em).
 - **`color-in-black-ink`.** Give pictures a grey filter, `"filter": {"gray": true}`, or set one for every picture with `print.filter`, and set type and shapes in greys.

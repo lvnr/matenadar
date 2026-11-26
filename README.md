@@ -4,6 +4,7 @@
 </picture>
 
 <p align="center">
+  <a href="#install">Install</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="docs/model.md">The model</a> ·
   <a href="samples/">Samples</a> ·
@@ -104,36 +105,95 @@ $ matenadar check smoke.json --safe 0.25in       # overflow, text-in-margin, wid
 
 [`docs/model.md`](docs/model.md) documents the model field by field.
 
+## Install
+
+### Command line
+
+```bash
+# Homebrew (macOS & Linux)
+brew install lvnr/tap/matenadar
+
+# npm / npx (prebuilt native binary, no Rust required)
+npx matenadar --version
+npm install -g matenadar
+
+# Shell installer (macOS & Linux)
+curl -fsSL https://github.com/lvnr/matenadar/releases/latest/download/install.sh | sh
+
+# PowerShell installer (Windows)
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/lvnr/matenadar/releases/latest/download/install.ps1 | iex"
+
+# Cargo (from source, or prebuilt via cargo-binstall)
+cargo install matenadar
+cargo binstall matenadar
+```
+
+### JavaScript / TypeScript (WebAssembly)
+
+```bash
+npm install @matenadar/wasm
+```
+
+```js
+import { Matenadar } from "@matenadar/wasm";
+
+const mt = await Matenadar.load();
+const { pages } = await mt.openFrom(doc, { root: "./book", fonts: ["./fonts"] });
+const pdf = mt.pdf();
+```
+
+In a browser, run the engine in a worker (`@matenadar/wasm/client`). You can also load `matenadar.wasm` directly from jsDelivr while keeping the worker same-origin:
+
+```js
+import { MatenadarClient } from "@matenadar/wasm/client";
+
+const mt = await MatenadarClient.start({
+  wasm: "https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.1.0/dist/matenadar.wasm",
+});
+```
+
+### Rust
+
+```bash
+cargo add matenadar
+```
+
+Or depend on individual crates directly: `matenadar-model` (no Typst dependency), `matenadar-typst`, or `matenadar-epub`.
+
 ## Quick start
 
 ```bash
-cargo build
-target/debug/matenadar build tests/fixtures/smoke.json -o smoke.pdf --png out --check
-target/debug/matenadar layout tests/fixtures/smoke.json --pages 3
-target/debug/matenadar bench tests/fixtures/smoke.json
+matenadar build tests/fixtures/smoke.json -o smoke.pdf --png out --check
+matenadar layout tests/fixtures/smoke.json --pages 3
+matenadar bench tests/fixtures/smoke.json
 ```
 
+Or build from a checkout with `cargo build` (`target/debug/matenadar`).
+
 `matenadar help` lists the commands: `build`, `epub`, `check`, `validate`,
-`layout`, `locate`, `apply`, `fonts`, `bench` and `serve`.
+`template`, `layout`, `locate`, `fingerprint`, `apply`, `fonts`, `bench` and
+`serve`.
 
 ## In the browser
 
 `scripts/wasm.sh` builds `dist/matenadar.wasm` (about 24 MB, 7 MB with
-brotli, no imports) with a worker and a client. It lays out, edits and
-renders in the browser, with undo, hit-testing, diagnostics after each edit,
-and a patch. Its pages match the command line's (`fingerprint`).
-`scripts/wasm.sh --test` runs it in Node. [`demo/editor/`](demo/editor/) is a
-page editor on the samples, built on it.
+brotli, no imports) and stages `packages/wasm/` (`@matenadar/wasm`) with a
+worker and a client. It lays out, edits and renders in the browser, with undo,
+hit-testing, diagnostics after each edit, and a patch. Its pages match the
+command line's (`fingerprint`). `scripts/wasm.sh --test` runs it in Node.
+[`demo/editor/`](demo/editor/) is a page editor on the samples, built on it.
 
 ## Layout
 
 | Path | What it holds |
 |---|---|
+| `crates/matenadar` | the umbrella library crate (`matenadar`) and the `matenadar` command |
 | `crates/matenadar-model` | the document model, validation, components, operations (no Typst) |
 | `crates/matenadar-typst` | generator, Typst world, session, inspection, checks |
 | `crates/matenadar-epub` | EPUB 3, reflowable or one picture per page |
 | `crates/matenadar-wasm` | the engine as WebAssembly: the page editor's API, a worker and a client |
-| `crates/matenadar-cli` | the `matenadar` command |
+| `packages/cli` | the `matenadar` npm CLI wrapper (`npx matenadar`) |
+| `packages/wasm` | the `@matenadar/wasm` npm package |
 | `demo/editor/` | a page editor on the samples, on the WebAssembly build |
 | `docs/model.md` | the model, field by field |
 | `samples/` | pages of real books rebuilt in Matenadar, with compare sheets |

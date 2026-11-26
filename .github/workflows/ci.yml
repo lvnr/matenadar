@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: Rust test & package check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run workspace tests
+        run: cargo test --workspace --locked
+
+      - name: Check facade crate feature combinations
+        run: |
+          cargo check -p matenadar --no-default-features --locked
+          cargo check -p matenadar --no-default-features --features typst --locked
+          cargo check -p matenadar --no-default-features --features epub --locked
+
+      - name: Verify CLI version output
+        run: |
+          cargo build --locked -p matenadar --bin matenadar
+          ./target/debug/matenadar --version
+
+      - name: Verify crates.io packaging metadata
+        run: |
+          cargo package -p matenadar-model --list --allow-dirty >/dev/null
+          cargo package -p matenadar-typst --list --allow-dirty >/dev/null
+          cargo package -p matenadar-epub --list --allow-dirty >/dev/null
+          cargo package -p matenadar --list --allow-dirty >/dev/null
+
+  wasm:
+    name: WebAssembly & npm package check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install binaryen (wasm-opt)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binaryen
+
+      - name: Build and test WebAssembly package
+        run: |
+          cargo build --locked -p matenadar --bin matenadar
+          scripts/wasm.sh --test
+
+      - name: Verify browser bundles have zero node:* imports
+        run: |
+          if grep -E '["'\'']node:' packages/wasm/dist/io-browser.js packages/wasm/dist/matenadar.browser.js packages/wasm/dist/worker.js packages/wasm/dist/client.js packages/wasm/dist/core.js; then
+            echo "error: browser-facing JS imported a node:* builtin" >&2
+            exit 1
+          fi
+
+      - name: Dry-run npm packs
+        run: |
+          npm pack --dry-run ./packages/wasm
+          node scripts/stage-npm-cli.mjs --meta-only --out out/npm
+          npm pack --dry-run ./out/npm/matenadar

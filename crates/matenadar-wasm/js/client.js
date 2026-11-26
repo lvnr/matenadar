@@ -1,23 +1,23 @@
 // The page's side of the engine: starts worker.js and gives every method
 // of Matenadar (matenadar.js) as a promise, in call order.
 //
-//   import { MatenadarClient } from "./client.js";
-//   const mt = await MatenadarClient.start({ base: "/matenadar/<commit>/" });
+//   import { MatenadarClient } from "@matenadar/wasm/client";
+//   const mt = await MatenadarClient.start();
+//   // or load the .wasm from a CDN (e.g. jsDelivr) while keeping worker.js same-origin:
+//   // const mt = await MatenadarClient.start({ wasm: "https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.1.0/dist/matenadar.wasm" });
 //   await mt.addFont(await (await fetch(url)).arrayBuffer());
 //   const { pages } = await mt.open(doc);
 //   const svg = await mt.svg(1);
-//
-// `base` is the folder holding worker.js, matenadar.js and matenadar.wasm.
 
 const METHODS = [
-  "assets", "addFont", "addFile", "open", "fonts", "close",
+  "assets", "addFont", "addFile", "open", "template", "fonts", "close",
   "pages", "spreads", "svg", "png", "rgba", "pdf", "fingerprint", "fontsUsed",
   "hit", "rects", "node", "lines", "locate", "position", "layout", "document",
   "caret", "offsetAt", "selectionRects", "textLines", "source",
   "apply", "setWords", "insertText", "deleteText", "insertBlock", "removeBlock",
   "splitBlock", "joinBlock", "markText",
   "setFields", "setPicture", "setBlock", "moveFrame", "breakBefore", "hideOnPage", "nudge", "undo", "redo",
-  "diagnostics", "check", "patch", "rebase",
+  "diagnostics", "check", "epub", "memory", "patch", "rebase",
 ];
 
 export class MatenadarClient {
@@ -26,11 +26,16 @@ export class MatenadarClient {
   #waiting = new Map();
 
   /** Starts the worker and loads the engine into it. */
-  static async start({ base, worker } = {}) {
-    const root = new URL(base ?? "./", typeof location === "undefined" ? import.meta.url : location.href);
+  static async start({ base, wasm, worker } = {}) {
+    const root = base != null
+      ? new URL(base, typeof location === "undefined" ? import.meta.url : location.href)
+      : new URL("./", import.meta.url);
     const w = worker ?? new Worker(new URL("worker.js", root), { type: "module" });
+    const wasmUrl = wasm != null
+      ? new URL(wasm, typeof location === "undefined" ? root : location.href).href
+      : new URL("matenadar.wasm", root).href;
     const client = new MatenadarClient(w);
-    await client.call("load", [new URL("matenadar.wasm", root).href]);
+    await client.call("load", [wasmUrl]);
     return client;
   }
 

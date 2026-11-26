@@ -1,0 +1,47 @@
+{
+  "name": "matenadar",
+  "version": "0.1.0",
+  "description": "Matenadar CLI: lay out, inspect, check, edit, and export books to PDF, PNG, SVG, and EPUB 3",
+  "license": "Apache-2.0",
+  "author": "Levon Arakelyan",
+  "homepage": "https://github.com/lvnr/matenadar",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lvnr/matenadar.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/lvnr/matenadar/issues"
+  },
+  "keywords": [
+    "matenadar",
+    "typst",
+    "typesetting",
+    "pdf",
+    "epub",
+    "book",
+    "layout",
+    "cli"
+  ],
+  "bin": {
+    "matenadar": "./bin/matenadar.js"
+  },
+  "files": [
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
+  "optionalDependencies": {
+    "@matenadar/cli-darwin-arm64": "0.1.0",
+    "@matenadar/cli-darwin-x64": "0.1.0",
+    "@matenadar/cli-linux-x64-gnu": "0.1.0",
+    "@matenadar/cli-linux-arm64-gnu": "0.1.0",
+    "@matenadar/cli-win32-x64-msvc": "0.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

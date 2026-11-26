@@ -2,7 +2,7 @@
 // starts it and forwards calls: {id, method, args} in, {id, result} or
 // {id, error} out. Bytes travel as transferred buffers.
 
-import { Matenadar } from "./matenadar.js";
+import { Matenadar } from "./matenadar.browser.js";
 
 let mt = null;
 
@@ -10,7 +10,7 @@ self.onmessage = async (event) => {
   const { id, method, args = [] } = event.data;
   try {
     if (method === "load") {
-      mt = await Matenadar.load(fetch(args[0]));
+      mt = await Matenadar.load(args[0]);
       self.postMessage({ id, result: true });
       return;
     }

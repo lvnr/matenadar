@@ -3,7 +3,8 @@
  * One example: the document's JSON beside what the engine made of it.
  * The JSON is the file in `examples/`, the pages are the engine's renders
  * (scripts/render-examples.py), and the boxes under Inspect are its layout
- * report. A line of JSON and the box it made light each other up.
+ * report. A line of JSON and the box it made light each other up, from
+ * either side: point at the page and the JSON scrolls to what made it.
  */
 import { jsonLines } from '../../lib/json-lines';
 
@@ -48,9 +49,13 @@ interface Props {
 	bleed?: number;
 	/** Spine edges in points from the sheet's left (cover). */
 	spine?: [number, number];
+	/** The trim's width and height, as the construction lines label them. */
+	dims?: [string, string];
+	/** Whether the plate draws its own construction layer (not inside the duo). */
+	guides?: boolean;
 }
 
-const { ex, word, title, text, file, source, excerpt, kind, flip = false, specs, alt, bleed = 0, spine } = Astro.props;
+const { ex, word, title, text, file, source, excerpt, kind, flip = false, specs, alt, bleed = 0, spine, dims, guides = true } = Astro.props;
 const ids = new Set(ex.pages.flatMap((p) => p.nodes.map((n) => n.id)));
 const lines = jsonLines(source, ids);
 const name = file.replace(/\.json$/, '');
@@ -60,7 +65,7 @@ const pagesWord = ex.page_count === 1 ? 'page' : 'pages';
 const trim = bleed * 72;
 ---
 
-<article class:list={['plate', `plate--${kind}`, { 'plate--flip': flip }]} id={`ex-${ex.id}`} data-plate>
+<article class:list={['plate', `plate--${kind}`, { 'plate--flip': flip }]} id={`ex-${ex.id}`} data-plate data-guides={guides ? 'plate' : undefined}>
 	<div class="plate__word" aria-hidden="true"><span data-drift>{word}</span></div>
 	<header class="plate__head wrap">
 		<h3 class="plate__title" data-reveal>{title}</h3>
@@ -82,7 +87,7 @@ const trim = bleed * 72;
 		</div>
 
 		<figure class="plate__result" data-result>
-			<div class="stage" data-tilt>
+			<div class="stage" data-stage data-dims={dims?.join('|')}>
 				<div class="stage__inner">
 					{
 						ex.pages.map((p, i) => (
@@ -107,6 +112,7 @@ const trim = bleed * 72;
 										<span
 											class="box"
 											data-id={n.id}
+											data-r={[n.r[0] / p.w, n.r[1] / p.h, n.r[2] / p.w, n.r[3] / p.h].map((v) => v.toFixed(5)).join(',')}
 											style={`left:${pct(n.r[0], p.w)};top:${pct(n.r[1], p.h)};width:${pct(n.r[2] - n.r[0], p.w)};height:${pct(n.r[3] - n.r[1], p.h)}`}
 										>
 											<b>{n.id}</b>
@@ -114,9 +120,7 @@ const trim = bleed * 72;
 									))}
 								</div>
 								{trim > 0 && (
-									<div class="sheet__trim" aria-hidden="true" style={`--tx:${pct(trim, p.w)};--ty:${pct(trim, p.h)}`}>
-										<i class="crop crop--tl" /><i class="crop crop--tr" /><i class="crop crop--bl" /><i class="crop crop--br" />
-									</div>
+									<div class="sheet__trim" aria-hidden="true" data-trim style={`--tx:${pct(trim, p.w)};--ty:${pct(trim, p.h)}`} />
 								)}
 								{spine && (
 									<div class="sheet__folds" aria-hidden="true">
@@ -131,7 +135,6 @@ const trim = bleed * 72;
 						))
 					}
 				</div>
-				<div class="stage__shine" aria-hidden="true"></div>
 			</div>
 			{
 				kind === 'deck' && (

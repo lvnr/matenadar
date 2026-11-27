@@ -28,7 +28,7 @@ export default defineConfig({
 	},
 	integrations: [
 		starlight({
-			title: 'Matenadar',
+			title: 'matenadar',
 			description:
 				'A typesetting engine for anything that prints, for people and agents: a JSON model laid out with Typst to PDF, SVG, PNG and EPUB 3, in the terminal and in the browser.',
 			favicon: '/favicon.svg',
@@ -67,7 +67,7 @@ export default defineConfig({
 					label: 'Getting started',
 					items: [
 						{ label: 'Introduction', slug: 'docs' },
-						{ label: 'Installing Matenadar', slug: 'docs/getting-started/install' },
+						{ label: 'Installing matenadar', slug: 'docs/getting-started/install' },
 						{ label: 'Quick start', slug: 'docs/getting-started/quick-start' },
 					],
 				},

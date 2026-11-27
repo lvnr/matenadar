@@ -1,4 +1,4 @@
-# Matenadar website
+# matenadar website
 
 The front page (`/`), the documentation (`/docs/`) and the 3D desk
 (`/fancy/`) at [matenadar.levships.com](https://matenadar.levships.com),

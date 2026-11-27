@@ -1,8 +1,8 @@
 {
   "matenadar": "1",
   "meta": {
-    "title": "Matenadar — every page, programmable",
-    "author": "Matenadar", "lang": "en-US"
+    "title": "matenadar — every page, programmable",
+    "author": "matenadar", "lang": "en-US"
   },
   "fonts": ["../fonts"],
   "design": {
@@ -85,7 +85,7 @@
         },
         {
           "type": "text", "id": "name", "x": 124, "y": 70, "w": 300,
-          "style": "name", "text": "Matenadar"
+          "style": "name", "text": "matenadar"
         },
         {
           "type": "text", "id": "line-1", "x": 68, "y": 166,

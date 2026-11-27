@@ -3,7 +3,7 @@ title: Rust crates
 description: The matenadar umbrella crate and its feature flags, and the matenadar-model, matenadar-typst and matenadar-epub crates it re-exports.
 ---
 
-Matenadar is a Rust workspace (edition 2024, Apache-2.0). Four crates are published on crates.io, all at version 0.2.0:
+**matenadar** is a Rust workspace (edition 2024, Apache-2.0). Four crates are published on crates.io, all at version 0.2.0:
 
 | Crate | What it holds | Depends on Typst |
 |---|---|---|

@@ -155,6 +155,9 @@ def render_example(binary, key, rel, long_px, show):
     else:
         (dest / f"{key}.pdf").unlink()
     fonts = sorted({f["family"] for f in json.loads(run([binary, "fonts", "--used", str(doc_path), *flags, "--json"]))})
+    # A hash per page; the WebAssembly build gives the same ones for the same
+    # document and fonts.
+    fingerprints = json.loads(run([binary, "fingerprint", str(doc_path), *flags]))["fingerprints"]
     checks = None
     if key in CHECK:
         r = subprocess.run([binary, "check", str(doc_path), "--preset", "kdp", *flags, "--json"], capture_output=True, text=True)
@@ -167,6 +170,7 @@ def render_example(binary, key, rel, long_px, show):
         "page_count": report["pages"],
         "layout_ms": round(report["layout_ms"], 1),
         "issues": len(report.get("issues", [])) + len(report.get("problems", [])),
+        "fingerprints": fingerprints,
         "pdf": {"href": f"/examples/{key}/{key}.pdf", "bytes": (dest / f"{key}.pdf").stat().st_size} if downloads else None,
         "json": {"href": f"/examples/{key}/{key}.json" if downloads else None, "bytes": doc_path.stat().st_size, "path": str(doc_path.relative_to(REPO))},
         "fonts": sorted({re.sub(r" \d+pt$", "", f) for f in fonts}),

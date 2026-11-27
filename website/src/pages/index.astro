@@ -1,20 +1,24 @@
 ---
 /**
- * Matenadar's front page. Every document on it was set by the engine from
+ * matenadar's front page. Every document on it was set by the engine from
  * the JSON shown beside it (scripts/render-examples.py); the page itself is
- * static HTML with one script for motion and the small interactions.
+ * static HTML with scripts for motion, the construction layer and the small
+ * interactions.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import Landing from '../layouts/Landing.astro';
 import Mark from '../components/Mark.astro';
+import Name from '../components/Name.astro';
 import Plate, { type Example } from '../components/landing/Plate.astro';
 import data from '../data/examples.json';
+import aldusLogo from '../assets/aldus-lockup.svg?raw';
 import { format } from '../lib/jsonfmt';
 import { jsonLines } from '../lib/json-lines';
 
 const GITHUB = 'https://github.com/lvnr/matenadar';
-const ex = data.examples as unknown as Record<string, Example & { checks?: { severity: string; code: string; page: number; node: string; message: string }[] }>;
+type Ex = Example & { fingerprints?: string[]; checks?: { severity: string; code: string; page: number; node: string; message: string }[] };
+const ex = data.examples as unknown as Record<string, Ex>;
 const version = data.version;
 // Paths from the website's folder, where the build runs.
 const read = (id: string) => fs.readFileSync(path.join(process.cwd(), 'examples', id, 'doc.json'), 'utf8');
@@ -61,43 +65,99 @@ const caps = [
 	{ name: 'serve', lead: 'Keep the document warm.', text: 'JSON lines over stdin and stdout, so an agent can change, lay out and check again in milliseconds.', href: '/docs/guides/agents/' },
 ];
 
+// The wall: covers of books made in Aldus between pages rebuilt in matenadar.
 const books = data.books as { slug: string; title: string; pages: { src: string; px: [number, number] }[] }[];
-const wall = books.flatMap((b) => b.pages.map((p) => ({ ...p, title: b.title })));
-const rowA = wall.filter((_, i) => i % 2 === 0);
-const rowB = wall.filter((_, i) => i % 2 === 1);
+const pages = books.flatMap((b) => b.pages.slice(0, 2).map((p) => ({ kind: 'page' as const, src: p.src, w: p.px[0], h: p.px[1], title: b.title })));
+const covers = [
+	{ slug: 'software-bugs', title: 'A Field Guide to Software Bugs', w: 480, h: 720 },
+	{ slug: 'i-just-had-it', title: 'I Just Had It', w: 480, h: 720 },
+	{ slug: 'english-moose', title: 'The Rules of English, Corrected by a Moose', w: 480, h: 720 },
+	{ slug: 'reverse-coloring', title: 'Reverse Coloring for People Who Can’t Draw', w: 576, h: 720 },
+	{ slug: 'logic-casebook', title: 'The Logic Casebook', w: 503, h: 720 },
+	{ slug: 'little-bookshop', title: 'Christmas at the Little Bookshop', w: 720, h: 720 },
+].map((c) => ({ kind: 'cover' as const, src: `/aldus/${c.slug}.webp`, w: c.w, h: c.h, title: c.title }));
+type WallItem = (typeof pages)[number] | (typeof covers)[number];
+const rows: WallItem[][] = [[], []];
+covers.forEach((c, i) => {
+	const row = rows[i % 2];
+	row.push(c, ...pages.splice(0, 2));
+});
+rows.forEach((row, i) => row.push(...pages.splice(0, i ? pages.length : Math.ceil(pages.length / 2))));
 
-const anywhere = [
+// Same pixels: the invoice, its real fingerprint, three ways to get it.
+const invoice = ex.invoice;
+const print = (invoice.fingerprints?.[0] ?? '').match(/.{8}/g)?.join(' ') ?? '';
+const runtimes = [
 	{
+		id: 'cli',
 		title: 'Command line',
-		text: 'One static binary for macOS, Linux and Windows. Build, check, inspect and serve.',
+		where: 'macOS · Linux · Windows',
+		text: 'One static binary, or npx. Build, check, inspect, fingerprint and serve.',
 		href: '/docs/reference/cli/',
-		code: ['npx matenadar build doc.json -o doc.pdf --check', 'brew install lvnr/tap/matenadar', 'cargo install matenadar'],
+		code: ['$ npx matenadar build invoice.json -o invoice.pdf', '$ npx matenadar fingerprint invoice.json'],
 	},
 	{
+		id: 'wasm',
 		title: 'WebAssembly',
-		text: 'The same engine in a browser worker, Node, Bun or Deno, with an editor’s API.',
+		where: 'Browser · Node · Bun · Deno',
+		text: 'The same engine in a worker or on a server, with a page editor’s API.',
 		href: '/docs/reference/wasm/',
-		code: ['import { Matenadar } from "@matenadar/wasm";', 'const mt = await Matenadar.load();', 'const { pages } = await mt.openFrom(doc, { root: "." });', 'const pdf = mt.pdf();'],
+		code: ['import { Matenadar } from "@matenadar/wasm";', 'const mt = await Matenadar.load();', 'await mt.openFrom(invoice, { root: "." });', 'mt.fingerprint();'],
 	},
 	{
+		id: 'rust',
 		title: 'Rust',
+		where: 'crates.io',
 		text: 'The umbrella crate, or only the model, the layout or the EPUB writer.',
 		href: '/docs/reference/rust/',
-		code: ['use matenadar::{Document, Paths, Session};', 'let doc = Document::from_json(&json)?;', 'let session = Session::new(doc, paths)?;', 'let pdf = session.pdf()?;'],
+		code: ['use matenadar::{Document, Paths, Session};', 'let doc = Document::from_json(&json)?;', 'let session = Session::new(doc, paths)?;', 'session.fingerprints();'],
 	},
+];
+// A light hand of colour on the code: the prompt, strings, keywords, calls.
+// One pass, so nothing it writes is read again.
+const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const TOKENS = /(^\$ )|("[^"]*")|\b(import|from|const|await|use|let)\b|\b(fingerprints?|openFrom|load|from_json|new|build)\b(?=[(\s])/g;
+const tint = (line: string) => {
+	let out = '';
+	let i = 0;
+	for (const m of line.matchAll(TOKENS)) {
+		const at = m.index ?? 0;
+		out += esc(line.slice(i, at));
+		out += m[1] ? '<span class="tk-p">$</span> ' : `<span class="tk-${m[2] ? 's' : m[3] ? 'k' : 'f'}">${esc(m[0])}</span>`;
+		i = at + m[0].length;
+	}
+	return out + esc(line.slice(i));
+};
+
+// The colour bar at the foot: the inks, their overprints, the key's tints.
+const bar = [
+	'var(--mt-cyan)',
+	'var(--mt-magenta)',
+	'var(--mt-yellow)',
+	'var(--mt-key)',
+	'color-mix(in srgb, var(--mt-cyan), var(--mt-magenta))',
+	'color-mix(in srgb, var(--mt-cyan), var(--mt-yellow))',
+	'color-mix(in srgb, var(--mt-magenta), var(--mt-yellow))',
+	'color-mix(in srgb, var(--mt-key) 75%, transparent)',
+	'color-mix(in srgb, var(--mt-key) 50%, transparent)',
+	'color-mix(in srgb, var(--mt-key) 25%, transparent)',
+	'color-mix(in srgb, var(--mt-key) 10%, transparent)',
+	'color-mix(in srgb, var(--mt-cyan) 50%, transparent)',
+	'color-mix(in srgb, var(--mt-magenta) 50%, transparent)',
+	'color-mix(in srgb, var(--mt-yellow) 50%, transparent)',
 ];
 ---
 
 <Landing
-	title="Matenadar — every page, programmable"
-	description="Matenadar is a typesetting engine for anything that prints: books, invoices, decks, posters, magazines. Describe a document in JSON and get press-ready PDF, SVG, PNG and EPUB 3 in milliseconds, from the command line, Rust or WebAssembly."
+	title="matenadar — every page, programmable"
+	description="matenadar is a typesetting engine for anything that prints: books, invoices, decks, posters, magazines. Describe a document in JSON and get press-ready PDF, SVG, PNG and EPUB 3 in milliseconds, from the command line, Rust or WebAssembly."
 	version={version}
 >
 	<header class="header" data-header>
 		<div class="header__bar">
-			<a class="brand" href="/" aria-label="Matenadar, home">
+			<a class="brand" href="/" aria-label="matenadar, home">
 				<Mark size={30} />
-				<span class="brand__name">Matenadar</span>
+				<span class="brand__name">matenadar</span>
 			</a>
 			<nav class="nav" aria-label="Site">
 				<a href="#examples">Examples</a>
@@ -116,7 +176,7 @@ const anywhere = [
 	</header>
 
 	<main id="main">
-		<section class="hero" aria-labelledby="hero-title">
+		<section class="hero" aria-labelledby="hero-title" data-guides="hero">
 			<div class="hero__screen" aria-hidden="true"></div>
 			<div class="hero__marks" aria-hidden="true">
 				<i class="crop crop--tl"></i><i class="crop crop--tr"></i><i class="crop crop--bl"></i><i class="crop crop--br"></i>
@@ -169,7 +229,7 @@ const anywhere = [
 				<div class="hero__foot">
 					<div class="hero__copy">
 						<p class="hero__lead" data-fade>
-							Matenadar typesets books, invoices, decks, posters and everything between. Describe the document in JSON and get press-ready PDF, SVG, PNG or EPUB&nbsp;3 back in milliseconds, from the command line, from Rust, or in the browser.
+							<Name /> typesets books, invoices, decks, posters and everything between. Describe the document in JSON and get press-ready PDF, SVG, PNG or EPUB&nbsp;3 back in milliseconds, from the command line, from Rust, or in the browser.
 						</p>
 						<div class="hero__actions" data-fade>
 							<a class="btn btn--primary" href="/docs/getting-started/quick-start/">Get started</a>
@@ -208,7 +268,7 @@ const anywhere = [
 			</div>
 		</section>
 
-		<section class="marquee" aria-label="What it sets">
+		<section class="marquee" aria-label="What it sets" data-guides="marquee">
 			<div class="marquee__row marquee__row--a" aria-hidden="true">
 				<div class="marquee__track">{[...kinds, ...kinds].map((k) => <span>{k}<i>·</i></span>)}</div>
 			</div>
@@ -219,13 +279,15 @@ const anywhere = [
 		</section>
 
 		<section class="showcase" id="examples" aria-labelledby="examples-title">
-			<div class="showcase__head wrap">
-				<h2 class="section-title" id="examples-title" data-reveal>
-					One model. <em>Any document.</em>
-				</h2>
-				<p class="section-lead" data-reveal>
-					Every page below was set by Matenadar from the JSON beside it, as you see it: nothing retouched, nothing mocked up. Point at a line to find what it made, or press Inspect to see the layout report.
-				</p>
+			<div class="showcase__intro" data-guides="intro">
+				<div class="showcase__head wrap">
+					<h2 class="section-title" id="examples-title" data-reveal data-baselines>
+						One model. <em>Any document.</em>
+					</h2>
+					<p class="section-lead" data-reveal>
+						Every page below was set by <Name /> from the JSON beside it, as you see it: nothing retouched, nothing mocked up. Point at the page to find the JSON that made it, or at a line to find what it made. Inspect shows the whole layout report.
+					</p>
+				</div>
 			</div>
 
 			<Plate
@@ -237,6 +299,7 @@ const anywhere = [
 				source={read('poster')}
 				kind="poster"
 				bleed={0.125}
+				dims={['18 in', '24 in']}
 				specs={['18 × 24 in + bleed', 'Bricolage Grotesque, Instrument Sans and Serif']}
 				alt="A festival poster: Solstice, a halftone sun over pink and blue hills, with the lineup for three nights."
 			/>
@@ -250,6 +313,7 @@ const anywhere = [
 				source={read('invoice')}
 				kind="page"
 				flip
+				dims={['210 mm', '297 mm']}
 				specs={['A4', 'Instrument Sans and Serif, JetBrains Mono']}
 				alt="An invoice from Halden & Vey to the Lake Sevan Arts Foundation, with five line items and a total of €16,960."
 			/>
@@ -262,6 +326,7 @@ const anywhere = [
 				file="deck.json"
 				source={read('deck')}
 				kind="deck"
+				dims={['960 pt', '540 pt']}
 				specs={['960 × 540 pt', 'Geist and Instrument Serif']}
 				alt="A four-slide pitch deck for Lucent: title slide, traction numbers, a revenue bar chart and a customer quote."
 			/>
@@ -276,6 +341,7 @@ const anywhere = [
 				excerpt="one page of seven"
 				kind="spread"
 				flip
+				dims={['6 + 6 in', '9 in']}
 				specs={['6 × 9 in', 'Adobe Caslon Pro, Big Caslon and Caveat', 'Book by Levon Arakelyan']}
 				alt="Two pages from A Field Guide to Software Bugs: The Stack Overflow, with a plate of the page inside itself, and The Infinite Loop, with ants marching in a circle."
 			/>
@@ -290,6 +356,7 @@ const anywhere = [
 				kind="cover"
 				bleed={0.125}
 				spine={[441, 484.2]}
+				dims={['12.6 in', '9 in']}
 				specs={['6 × 9 in, 0.6 in spine, 0.125 in bleed', 'Fraunces, Newsreader, Instrument Sans']}
 				alt="A full book cover wrap for The Lighthouse of Lost Pages: a lighthouse built of books on the front, blurb and reviews on the back."
 			/>
@@ -303,54 +370,71 @@ const anywhere = [
 				source={read('magazine')}
 				kind="spread"
 				flip
+				dims={['8.5 + 8.5 in', '11 in']}
 				specs={['8.5 × 11 in pages', 'Newsreader, Instrument Serif and Sans']}
 				alt="A magazine spread: hands setting metal type on the left page; the feature The weight of a letter on the right."
 			/>
 
-			<div class="duo wrap">
-				<Plate
-					ex={ex.menu}
-					word="Menu"
-					title="A menu with dot leaders."
-					text="Courses, dishes and prices, the dots run to the price on every line."
-					file="menu.json"
-					source={read('menu')}
-					kind="page"
-					specs={['7 × 14 in', 'Fraunces and Newsreader']}
-					alt="A dinner menu for Citron with a watercolour of lemons and figs, four courses and prices."
-				/>
-				<Plate
-					ex={ex.calendar}
-					word="Calendar"
-					title="A month from one element."
-					text="The grid, the weekdays and the days around the month come from a single calendar element."
-					file="calendar.json"
-					source={read('calendar')}
-					kind="page"
-					specs={['11 × 17 in', 'Instrument Serif and Sans']}
-					alt="A wall calendar page for January 2028 with a woodblock print of a lake at dawn."
-				/>
+			<div class="duo" data-guides="duo">
+				<div class="duo__in wrap">
+					<Plate
+						ex={ex.menu}
+						word="Menu"
+						title="A menu with dot leaders."
+						text="Courses, dishes and prices, the dots run to the price on every line."
+						file="menu.json"
+						source={read('menu')}
+						kind="page"
+						guides={false}
+						dims={['7 in', '14 in']}
+						specs={['7 × 14 in', 'Fraunces and Newsreader']}
+						alt="A dinner menu for Citron with a watercolour of lemons and figs, four courses and prices."
+					/>
+					<Plate
+						ex={ex.calendar}
+						word="Calendar"
+						title="A month from one element."
+						text="The grid, the weekdays and the days around the month come from a single calendar element."
+						file="calendar.json"
+						source={read('calendar')}
+						kind="page"
+						guides={false}
+						dims={['11 in', '17 in']}
+						specs={['11 × 17 in', 'Instrument Serif and Sans']}
+						alt="A wall calendar page for January 2028 with a woodblock print of a lake at dawn."
+					/>
+				</div>
 			</div>
 		</section>
 
-		<section class="books" aria-labelledby="books-title">
-			<div class="books__head wrap">
-				<h2 class="section-title" id="books-title" data-reveal>
-					Real books, <em>rebuilt page for page.</em>
-				</h2>
-				<p class="section-lead" data-reveal>
-					Levon’s published books were first made with hand-written HTML and LaTeX pipelines. To test the model, pages from eight of them were rebuilt in Matenadar from the same text and art. Every page here is the engine’s output.
-				</p>
+		<section class="aldus" id="aldus" aria-labelledby="aldus-title" data-guides="aldus">
+			<div class="aldus__head wrap">
+				<div class="aldus__intro">
+					<h2 class="section-title" id="aldus-title" data-reveal data-baselines>
+						The engine <em>behind Aldus.</em>
+					</h2>
+					<p class="section-lead" data-reveal>
+						Aldus, the publishing studio for authors, lays out its books with <Name>:</Name> the interiors, the cover wraps and the ebooks, checked before they go to print. The covers here are from books made in Aldus; the pages between them were rebuilt in <Name /> from published books.
+					</p>
+				</div>
+				<a class="bookplate" href="https://aldus.com" rel="external" data-reveal data-bookplate>
+					<span class="bookplate__logo" aria-label="Aldus" role="img" set:html={aldusLogo} />
+					<span class="bookplate__line">The publishing studio for authors</span>
+					<span class="bookplate__cta">aldus.com <span aria-hidden="true">↗</span></span>
+				</a>
 			</div>
 			<div class="wall" data-wall>
 				{
-					[rowA, rowB].map((row, r) => (
+					rows.map((row, r) => (
 						<div class:list={['wall__row', `wall__row--${r ? 'b' : 'a'}`]}>
 							<div class="wall__track">
-								{[...row, ...row].map((p, i) => (
-									<figure class="wall__page" aria-hidden={i >= row.length ? 'true' : undefined}>
-										<img src={p.src} width={p.px[0]} height={p.px[1]} alt={i < row.length ? `A page of ${p.title}, rebuilt in Matenadar` : ''} loading="lazy" decoding="async" />
-										<figcaption>{p.title}</figcaption>
+								{[...row, ...row].map((it, i) => (
+									<figure class:list={['wall__item', `wall__item--${it.kind}`]} aria-hidden={i >= row.length ? 'true' : undefined} style={`--ar:${it.w}/${it.h}`}>
+										<img src={it.src} width={it.w} height={it.h} alt={i < row.length ? (it.kind === 'cover' ? `The cover of ${it.title}, made in Aldus` : `A page of ${it.title}, rebuilt in matenadar`) : ''} loading="lazy" decoding="async" />
+										<figcaption>
+											<span>{it.title}</span>
+											<span>{it.kind === 'cover' ? 'Cover, made in Aldus' : 'Page, set by matenadar'}</span>
+										</figcaption>
 									</figure>
 								))}
 							</div>
@@ -360,18 +444,18 @@ const anywhere = [
 			</div>
 		</section>
 
-		<section class="talks" aria-labelledby="talks-title">
+		<section class="talks" aria-labelledby="talks-title" data-guides="talks">
 			<div class="talks__head wrap">
-				<h2 class="section-title" id="talks-title" data-reveal>
+				<h2 class="section-title" id="talks-title" data-reveal data-baselines>
 					The engine <em>talks back.</em>
 				</h2>
 				<p class="section-lead" data-reveal>
-					Most layout tools are black boxes: markup in, PDF out, and nobody can say why chapter four spilled onto a blank page. Matenadar reports where every node landed and what a printer would reject, in JSON that people and agents can act on.
+					Most layout tools are black boxes: markup in, PDF out, and nobody can say why chapter four spilled onto a blank page. <Name /> reports where every node landed and what a printer would reject, in JSON that people and agents can act on.
 				</p>
 			</div>
 			<div class="talks__body wrap">
 				<figure class="proof" data-proof>
-					<div class="proof__page" style={`--ar: ${draftPage.w} / ${draftPage.h}`}>
+					<div class="proof__page" style={`--ar: ${draftPage.w} / ${draftPage.h}`} data-proof-page>
 						<img src={draftPage.src} width={draftPage.px[0]} height={draftPage.px[1]} alt="A draft chapter opener: the title runs into the spine margin, the picture is low resolution and the text overflows its frame." loading="lazy" decoding="async" />
 						<div class="proof__safe" aria-hidden="true" style={`left:${pct(27, draftPage.w)};right:${pct(18, draftPage.w)};top:${pct(18, draftPage.h)};bottom:${pct(18, draftPage.h)}`}></div>
 						{
@@ -417,7 +501,7 @@ const anywhere = [
 					</div>
 				</div>
 			</div>
-			<ul class="caps wrap">
+			<ul class="caps wrap" data-caps>
 				{
 					caps.map((c) => (
 						<li class="cap" data-reveal>
@@ -432,36 +516,85 @@ const anywhere = [
 			</ul>
 		</section>
 
-		<section class="anywhere" aria-labelledby="anywhere-title">
+		<section class="anywhere" aria-labelledby="anywhere-title" data-guides="anywhere">
 			<div class="anywhere__head wrap">
-				<h2 class="section-title" id="anywhere-title" data-reveal>
+				<h2 class="section-title" id="anywhere-title" data-reveal data-baselines>
 					Same pixels <em>everywhere.</em>
 				</h2>
 				<p class="section-lead" data-reveal>
-					Every laid-out page carries a fingerprint. What someone edits live in the browser builds to the same PDF on your laptop and in CI.
+					Every laid-out page carries a fingerprint. The command line and the WebAssembly build lay the invoice out to the same one, so what someone edits in a browser builds to the same PDF on your laptop and in CI.
 				</p>
 			</div>
-			<div class="anywhere__grid wrap">
-				{
-					anywhere.map((a) => (
-						<article class="runtime" data-reveal>
-							<h3 class="runtime__title">{a.title}</h3>
-							<p class="runtime__text">{a.text}</p>
-							<pre class="runtime__code"><code>{a.code.join('\n')}</code></pre>
-							<a class="runtime__more" href={a.href}>Reference <span aria-hidden="true">→</span></a>
-						</article>
-					))
-				}
+			<div class="anywhere__body wrap" data-runtimes>
+				<div class="rt">
+					<div class="rt__tabs" role="tablist" aria-label="Where it runs">
+						{
+							runtimes.map((r, i) => (
+								<button type="button" role="tab" class="rt__tab" id={`rt-tab-${r.id}`} aria-controls={`rt-panel-${r.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-rt={r.id}>
+									<span class="rt__name">{r.title}</span>
+									<span class="rt__where">{r.where}</span>
+								</button>
+							))
+						}
+					</div>
+					<div class="rt__panels">
+						{
+							runtimes.map((r, i) => (
+								<div class="rt__panel" role="tabpanel" id={`rt-panel-${r.id}`} aria-labelledby={`rt-tab-${r.id}`} hidden={i !== 0}>
+									<p class="rt__text">{r.text}</p>
+									<pre class="rt__code"><code>{r.code.map((l) => <span class="rt__ln" set:html={tint(l) + '\n'} />)}</code></pre>
+									<p class="rt__out" data-rt-out>
+										<span class="rt__arrow" aria-hidden="true">→</span>
+										<code class="rt__hash" data-hash={print}>{print}</code>
+									</p>
+									<a class="rt__more" href={r.href}>Reference <span aria-hidden="true">→</span></a>
+								</div>
+							))
+						}
+					</div>
+				</div>
+				<figure class="press" data-press>
+					<div class="press__sheet" style={`--ar: ${invoice.pages[0].w} / ${invoice.pages[0].h}`} data-press-sheet>
+						<img src={invoice.pages[0].src} srcset={`${invoice.pages[0].small} ${Math.round(invoice.pages[0].px[0] * 0.42)}w, ${invoice.pages[0].src} ${invoice.pages[0].px[0]}w`} sizes="(min-width: 1100px) 30vw, 80vw" width={invoice.pages[0].px[0]} height={invoice.pages[0].px[1]} alt="The invoice from the examples, page 1." loading="lazy" decoding="async" />
+						<span class="press__scan" aria-hidden="true"></span>
+					</div>
+					<figcaption class="press__fp" data-press-fp>
+						<span class="press__label">invoice.json · page 1 · fingerprint</span>
+						<code class="press__hash">{print}</code>
+						<span class="press__runs">
+							{runtimes.map((r, i) => <span class:list={['press__run', { 'is-on': i === 0 }]} data-run={r.id}><i aria-hidden="true"></i>{r.title}</span>)}
+						</span>
+					</figcaption>
+				</figure>
 			</div>
 		</section>
 
-		<section class="closing" aria-labelledby="closing-title">
-			<h2 class="closing__title" id="closing-title">
+		<section class="closing" aria-labelledby="closing-title" data-guides="closing">
+			<div class="rosette" aria-hidden="true" data-rosette>
+				{
+					[
+						['c', 15, 'var(--rosette-c)'],
+						['m', 75, 'var(--rosette-m)'],
+						['y', 0, 'var(--rosette-y)'],
+						['k', 45, 'var(--rosette-k)'],
+					].map(([id, angle, color]) => (
+						<svg class={`rosette__plate rosette__plate--${id}`} data-angle={angle}>
+							<defs>
+								<pattern id={`screen-${id}`} width="9" height="9" patternUnits="userSpaceOnUse" patternTransform={`rotate(${angle})`}>
+									<circle cx="4.5" cy="4.5" r="1.55" style={`fill:${color}`} />
+								</pattern>
+							</defs>
+							<rect width="100%" height="100%" fill={`url(#screen-${id})`} />
+						</svg>
+					))
+				}
+			</div>
+			<h2 class="closing__title" id="closing-title" data-baselines>
 				<span class="closing__line" data-drift-l>Set your first</span>
 				<span class="closing__line closing__line--serif" data-drift-r>page in seconds.</span>
 			</h2>
 			<div class="closing__body wrap">
-				<div class="closing__cmd glass">
+				<div class="closing__cmd glass" data-closing-cmd>
 					<code><span class="code__prompt" aria-hidden="true">$</span> npx matenadar build doc.json -o doc.pdf --check</code>
 					<button class="install__copy" type="button" data-copy="npx matenadar build doc.json -o doc.pdf --check" aria-label="Copy the command">
 						<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2"></rect><path d="M5.5 15.5h-.2a1.8 1.8 0 0 1-1.8-1.8V5.3c0-1 .8-1.8 1.8-1.8h8.4c1 0 1.8.8 1.8 1.8v.2"></path></svg>
@@ -477,12 +610,16 @@ const anywhere = [
 		</section>
 	</main>
 
-	<footer class="footer">
-		<div class="footer__maker wrap">
+	<footer class="footer" data-guides="footer">
+		<div class="footer__top wrap">
 			<div class="maker">
-				<p class="maker__title">Made by Levon Arakelyan, in the open.</p>
+				<p class="maker__title">Made by Levon Arakelyan, <em>in the open.</em></p>
 				<p class="maker__text">
-					Matenadar started out of stubbornness: wanting one honest layout engine good enough to typeset real print books, without dragging in headless Chrome or locking manuscripts inside a proprietary editor. It is named after the Matenadaran (<span lang="hy">Մատենադարան</span>), Yerevan’s house of manuscripts, and is free under Apache-2.0.
+					<Name /> started out of stubbornness: wanting one honest layout engine good enough to typeset real print books, without dragging in headless Chrome or locking manuscripts inside a proprietary editor. It is free under Apache-2.0.
+				</p>
+				<p class="maker__hy">
+					<span class="maker__hyword" lang="hy">Մատենադարան</span>
+					<span>Named after the Matenadaran, Yerevan’s house of manuscripts. The mark is its initial, <span lang="hy">Մ</span>, drawn on a 100-unit grid.</span>
 				</p>
 			</div>
 			<nav class="footer__cols" aria-label="Footer">
@@ -502,16 +639,21 @@ const anywhere = [
 				</div>
 				<div>
 					<p class="footer__h">Elsewhere</p>
+					<a href="https://aldus.com" rel="external">Aldus</a>
 					<a href="https://levships.com" rel="external">levships.com</a>
 					<a href="https://github.com/lvnr" rel="external">@lvnr</a>
 					<a href="/fancy/">The 3D desk</a>
-					<a href={`${GITHUB}/blob/main/LICENSE`} rel="external">Apache-2.0</a>
 				</div>
 			</nav>
 		</div>
-		<div class="footer__base wrap">
-			<a class="brand brand--footer" href="/" aria-label="Matenadar, home"><Mark size={22} /><span class="brand__name">Matenadar</span></a>
-			<span>Version {version}. This page was set in Instrument Sans and Instrument Serif; its examples, by the engine.</span>
+		<div class="footer__slug wrap">
+			<span class="colorbar colorbar--long" aria-hidden="true">{bar.map((c) => <i style={`--c:${c}`}></i>)}</span>
+			<span class="footer__slugtext">matenadar {version} · Apache-2.0 · sheet 1 of 1 · set in Instrument Sans, Instrument Serif and JetBrains Mono; the examples, by the engine</span>
+			<a class="footer__top-link" href="#main">Back to the top <span aria-hidden="true">↑</span></a>
+		</div>
+		<div class="footword" aria-hidden="true" data-footword>
+			<span class="footword__screen">matenadar</span>
+			<span class="footword__ink">matenadar</span>
 		</div>
 	</footer>
 </Landing>

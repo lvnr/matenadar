@@ -2,8 +2,10 @@
  * The hero's Մ: the mark's geometry printed as a halftone, one dot per
  * screen cell, in three plates (cyan, magenta, yellow) that multiply to
  * black when they are in register. On a dark screen they are light, and
- * add up to white. The pointer pushes the dots; they spring home, and the
- * plates drift apart while they move, as a misregistered print does.
+ * add up to white. The pointer pushes the dots from anywhere in the hero,
+ * through a wide, soft field; moved fast, it also scatters them, each dot
+ * thrown its own way. They spring home, and the plates drift apart while
+ * they move, as a misregistered print does.
  *
  * Geometry is on the mark's 100-unit grid: stems at x 22.5 and 64.5, the
  * bowl a half circle of radius 21 about (43.5, 58), the arm at y 21, one
@@ -21,6 +23,9 @@ interface Dot {
 	vy: number;
 	r: number;
 	delay: number;
+	/** The dot's own heading and strength when the pointer scatters it. */
+	a: number;
+	j: number;
 }
 
 const T = 7; // half the stroke
@@ -64,6 +69,8 @@ export interface GlyphOptions {
 	/** Called with the pointer in grid units and the part under it. */
 	onPoint?: (x: number, y: number, part: Part | null) => void;
 	reduced?: boolean;
+	/** Where the pointer moves the dots: the whole hero, not just the glyph. */
+	area?: HTMLElement | null;
 }
 
 export function mountGlyph(canvas: HTMLCanvasElement, opts: GlyphOptions = {}) {
@@ -79,6 +86,7 @@ export function mountGlyph(canvas: HTMLCanvasElement, opts: GlyphOptions = {}) {
 	let raf = 0;
 	let last = 0;
 	let born = 0;
+	let moved = 0;
 	const pointer = { x: -1e4, y: -1e4, px: -1e4, py: -1e4, vx: 0, vy: 0, inside: false };
 	let shock: { x: number; y: number; t: number } | null = null;
 
@@ -118,6 +126,8 @@ export function mountGlyph(canvas: HTMLCanvasElement, opts: GlyphOptions = {}) {
 					vy: 0,
 					r: Math.sqrt(cov) * pitch * 0.47 * (size / 100),
 					delay: gx / 100,
+					a: Math.random() * Math.PI * 2,
+					j: 0.55 + Math.random() * 0.9,
 				});
 			}
 		}
@@ -142,9 +152,13 @@ export function mountGlyph(canvas: HTMLCanvasElement, opts: GlyphOptions = {}) {
 	}
 
 	function step(dt: number, now: number) {
-		const R = size * 0.16;
-		const speed = Math.min(3, Math.hypot(pointer.vx, pointer.vy) / 900);
-		const push = (0.9 + speed) * size * 18;
+		// A wide field (about four times the old reach) with a gentler push.
+		const R = size * 0.6;
+		const sp = Math.min(1, Math.hypot(pointer.vx, pointer.vy) / 2600);
+		const push = size * 9.5 * (0.6 + 0.9 * sp);
+		// Speed also scatters: each dot is thrown along its own heading.
+		const scatter = size * 22 * sp * sp;
+		const t = now / 1000;
 		const k = 120; // spring
 		const c = 13; // damping
 		let energy = 0;
@@ -158,9 +172,15 @@ export function mountGlyph(canvas: HTMLCanvasElement, opts: GlyphOptions = {}) {
 				const dy = d.y - pointer.y;
 				const dist = Math.hypot(dx, dy) || 1;
 				if (dist < R) {
-					const f = (1 - dist / R) ** 2 * push;
-					ax += (dx / dist) * f - (dy / dist) * f * 0.25;
-					ay += (dy / dist) * f + (dx / dist) * f * 0.25;
+					const fall = (1 - dist / R) ** 2;
+					const f = fall * push;
+					ax += (dx / dist) * f - (dy / dist) * f * 0.2;
+					ay += (dy / dist) * f + (dx / dist) * f * 0.2;
+					if (scatter > 0) {
+						const h = d.a + t * 2.4 * d.j;
+						ax += Math.cos(h) * scatter * fall * d.j;
+						ay += Math.sin(h) * scatter * fall * d.j;
+					}
 				}
 			}
 			if (shock) {
@@ -237,8 +257,8 @@ export function mountGlyph(canvas: HTMLCanvasElement, opts: GlyphOptions = {}) {
 		step(dt / 2, now);
 		const energy = step(dt / 2, now);
 		draw(now);
-		// At rest and untouched, stop drawing until the pointer comes back.
-		const settled = !pointer.inside && !shock && energy < 0.02 && now - born > 2600;
+		// At rest, stop drawing until the pointer moves again.
+		const settled = !shock && energy < 0.02 && now - born > 2600 && (!pointer.inside || now - moved > 500);
 		if (settled) {
 			running = false;
 			draw(now);
@@ -262,8 +282,9 @@ export function mountGlyph(canvas: HTMLCanvasElement, opts: GlyphOptions = {}) {
 		return { cx: e.clientX - rect.left, cy: e.clientY - rect.top, gx: ((e.clientX - rect.left - ox) / size) * 100, gy: ((e.clientY - rect.top - oy) / size) * 100 };
 	}
 
-	const host = canvas.parentElement || canvas;
+	const host = opts.area || canvas.parentElement || canvas;
 	function move(e: PointerEvent) {
+		if (e.pointerType === 'touch') return;
 		const p = toGrid(e);
 		if (!pointer.inside) {
 			pointer.px = p.cx;
@@ -272,7 +293,9 @@ export function mountGlyph(canvas: HTMLCanvasElement, opts: GlyphOptions = {}) {
 		pointer.x = p.cx;
 		pointer.y = p.cy;
 		pointer.inside = true;
-		opts.onPoint?.(p.gx, p.gy, partAt(p.gx, p.gy));
+		moved = performance.now();
+		const near = p.gx > -12 && p.gx < 112 && p.gy > -12 && p.gy < 112;
+		opts.onPoint?.(near ? p.gx : NaN, near ? p.gy : NaN, near ? partAt(p.gx, p.gy) : null);
 		start();
 	}
 	function leave() {
@@ -282,6 +305,8 @@ export function mountGlyph(canvas: HTMLCanvasElement, opts: GlyphOptions = {}) {
 	}
 	function down(e: PointerEvent) {
 		if (opts.reduced) return;
+		// Not when the press is meant for something: a link, a tab, the command.
+		if ((e.target as Element).closest('a, button, input, [role="tab"], .install, .hero__lead')) return;
 		const p = toGrid(e);
 		shock = { x: p.cx, y: p.cy, t: performance.now() };
 		start();

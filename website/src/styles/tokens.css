@@ -32,6 +32,15 @@
 	--mt-border-strong: rgba(11, 11, 13, 0.15);
 	--mt-border-solid: #e5e5e8;
 	--mt-hair: rgba(11, 11, 13, 0.11);
+	/* The construction layer: guides, their nodes and labels */
+	--mt-guide: rgba(11, 11, 13, 0.075);
+	--mt-guide-strong: rgba(11, 11, 13, 0.2);
+	--mt-guide-accent: rgba(47, 69, 255, 0.34);
+	/* The closing's screens, one per process ink */
+	--rosette-c: rgba(0, 163, 224, 0.5);
+	--rosette-m: rgba(229, 0, 125, 0.42);
+	--rosette-y: rgba(255, 196, 0, 0.62);
+	--rosette-k: rgba(11, 11, 13, 0.13);
 
 	/* Accent: ultramarine */
 	--mt-accent: #2f45ff;
@@ -107,6 +116,13 @@
 	--mt-border-strong: rgba(255, 255, 255, 0.14);
 	--mt-border-solid: #24242a;
 	--mt-hair: rgba(255, 255, 255, 0.11);
+	--mt-guide: rgba(255, 255, 255, 0.07);
+	--mt-guide-strong: rgba(255, 255, 255, 0.2);
+	--mt-guide-accent: rgba(125, 139, 255, 0.4);
+	--rosette-c: rgba(58, 214, 255, 0.34);
+	--rosette-m: rgba(255, 79, 176, 0.3);
+	--rosette-y: rgba(255, 225, 74, 0.26);
+	--rosette-k: rgba(255, 255, 255, 0.1);
 
 	--mt-accent: #5b6cff;
 	--mt-accent-strong: #4455ff;
@@ -164,6 +180,8 @@
 	--mt-radius-sm: 6px;
 	--mt-radius-lg: 16px;
 	--mt-ease: cubic-bezier(0.22, 1, 0.36, 1);
+	/* The rails: between the screen's edge and the text column (as guides.ts reckons them). */
+	--rail: clamp(12px, calc(max(0px, (100vw - 1360px) / 2) + clamp(20px, 4vw, 56px) - 24px), 44px);
 }
 
 ::selection {

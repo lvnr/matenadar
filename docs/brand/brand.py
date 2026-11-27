@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""The README's banner and logo, typeset by Matenadar itself.
+"""The README's banner and logo, typeset by matenadar itself.
 
-Writes one Matenadar document per drawing and theme, then lays each out to
+Writes one matenadar document per drawing and theme, then lays each out to
 SVG with the engine, so the letters arrive as outlines and GitHub needs no
 fonts. Run from the repository root after `cargo build`:
 
@@ -37,7 +37,7 @@ W, H = 960, 300  # points: 1280 × 400 px
 
 
 def tile(x, y, size, c):
-    """The mark: Men (Մ), Matenadar's initial in Armenian, drawn on a 100-unit
+    """The mark: Men (Մ), matenadar's initial in Armenian, drawn on a 100-unit
     grid with a 14-unit stroke, on a rounded tile (as website/public/favicon.svg)."""
     markup = (
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
@@ -117,7 +117,7 @@ def banner(c):
     left = 214
     elements = [
         *tile(56, 82, 136, c),
-        {"type": "lettering", "text": "Matenadar", "font": "Instrument Sans", "weight": 600, "size": 72, "color": c["ink"],
+        {"type": "lettering", "text": "matenadar", "font": "Instrument Sans", "weight": 600, "size": 72, "color": c["ink"],
          "tracking": "-0.045em", "x": left - 3, "y": 70, "decorative": True},
         {"type": "lettering", "text": "Every page, programmable.", "font": "Instrument Serif", "italic": True, "size": 30,
          "color": c["ink"], "x": left, "y": 160, "decorative": True},
@@ -129,7 +129,7 @@ def banner(c):
     ]
     return {
         "matenadar": "1",
-        "meta": {"title": "Matenadar", "author": "Matenadar", "lang": "en-US"},
+        "meta": {"title": "matenadar", "author": "matenadar", "lang": "en-US"},
         "fonts": [str(FONTS)],
         "design": {"masters": {"art": {"width": W, "height": H, "margins": {"top": 0, "bottom": 0, "left": 0, "right": 0}}}},
         "content": [{"type": "page", "id": "banner", "master": "art", "fill": c["ground"], "elements": elements}],
@@ -140,7 +140,7 @@ def logo(c):
     size = 256
     return {
         "matenadar": "1",
-        "meta": {"title": "Matenadar", "author": "Matenadar", "lang": "en-US"},
+        "meta": {"title": "matenadar", "author": "matenadar", "lang": "en-US"},
         "design": {"masters": {"art": {"width": size, "height": size, "margins": {"top": 0, "bottom": 0, "left": 0, "right": 0}}}},
         "content": [{"type": "page", "id": "logo", "master": "art", "fill": "none", "elements": tile(0, 0, size, c)}],
     }

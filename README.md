@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/brand/banner-dark.svg">
-  <img alt="Matenadar. Every page, programmable: a typesetting engine for anything that prints, for people and agents" src="docs/brand/banner-light.svg" width="100%">
+  <img alt="matenadar. Every page, programmable: a typesetting engine for anything that prints, for people and agents" src="docs/brand/banner-light.svg" width="100%">
 </picture>
 
 <p align="center">
@@ -22,9 +22,9 @@
   <a href="#rust">Rust</a>
 </p>
 
-Matenadar typesets anything that prints: books and magazines, invoices and
+**matenadar** typesets anything that prints: books and magazines, invoices and
 menus, slide decks, posters, covers and calendars. A document is a JSON model
-of sections, pages, styles, masters and components. Matenadar lays it out with
+of sections, pages, styles, masters and components. **matenadar** lays it out with
 [Typst](https://typst.app) and renders it to PDF, PNG or SVG. It can say what
 landed where, check pages the way a print-on-demand preflighter would, and
 apply edits as operations that can be undone.
@@ -34,7 +34,7 @@ with a page editor's API: find what is under the pointer, change words,
 pictures, spacing and breaks, undo, and keep the edits as a patch that the
 command line replays to the same pages.
 
-> The banner above was typeset by Matenadar itself: [`docs/brand/brand.py`](docs/brand/brand.py)
+> The banner above was typeset by **matenadar** itself: [`docs/brand/brand.py`](docs/brand/brand.py)
 > writes the documents and the engine lays them out to SVG.
 
 ## Why this shape
@@ -243,7 +243,7 @@ built on it.
 | `packages/wasm` | the `@matenadar/wasm` npm package |
 | `demo/editor/` | a page editor on the samples, running on the WebAssembly build |
 | `docs/model.md` | the document model specification, field by field |
-| `samples/` | real books rebuilt in Matenadar, with compare sheets |
+| `samples/` | real books rebuilt in **matenadar**, with compare sheets |
 | `scripts/` | build, WASM, release, installer, and review scripts |
 | `docs/brand/` | the banner and logo, and the script that typesets them |
 
@@ -257,7 +257,7 @@ built on it.
 
 ## License
 
-Matenadar is open source under the Apache License, Version 2.0: see [LICENSE](LICENSE).
+**matenadar** is open source under the Apache License, Version 2.0: see [LICENSE](LICENSE).
 
 <p align="center">
   <img src="docs/brand/logo.svg" width="56" alt="">

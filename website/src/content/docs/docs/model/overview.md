@@ -1,11 +1,11 @@
 ---
 title: The document model
-description: The shape of a Matenadar document (version 1), the asset root, print settings, and the units, colours, coordinates, fills and strokes every field uses.
+description: The shape of a matenadar document (version 1), the asset root, print settings, and the units, colours, coordinates, fills and strokes every field uses.
 sidebar:
   label: Overview
 ---
 
-A Matenadar document is JSON. It is the only source of truth: the engine generates its layout program from it on every build and never stores that program. This section of the docs distils [`docs/model.md`](https://github.com/lvnr/matenadar/blob/main/docs/model.md), the field-by-field reference in the repository.
+A **matenadar** document is JSON. It is the only source of truth: the engine generates its layout program from it on every build and never stores that program. This section of the docs distils [`docs/model.md`](https://github.com/lvnr/matenadar/blob/main/docs/model.md), the field-by-field reference in the repository.
 
 ## The document
 

@@ -34,14 +34,14 @@ const image = Astro.site ? new URL('/og.jpg', Astro.site).href : undefined;
 		<meta name="description" content={description} />
 		{canonical && <link rel="canonical" href={canonical} />}
 		<meta property="og:type" content="website" />
-		<meta property="og:site_name" content="Matenadar" />
+		<meta property="og:site_name" content="matenadar" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		{canonical && <meta property="og:url" content={canonical} />}
 		{image && <meta property="og:image" content={image} />}
 		{image && <meta property="og:image:width" content="1200" />}
 		{image && <meta property="og:image:height" content="630" />}
-		{image && <meta property="og:image:alt" content="Every page, programmable: a poster, an invoice and a slide set by Matenadar." />}
+		{image && <meta property="og:image:alt" content="Every page, programmable: a poster, an invoice and a slide set by matenadar." />}
 		{image && <meta name="twitter:image" content={image} />}
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
@@ -69,7 +69,7 @@ const image = Astro.site ? new URL('/og.jpg', Astro.site).href : undefined;
 		<script type="application/ld+json" set:html={JSON.stringify({
 			'@context': 'https://schema.org',
 			'@type': 'SoftwareApplication',
-			name: 'Matenadar',
+			name: 'matenadar',
 			applicationCategory: 'DeveloperApplication',
 			operatingSystem: 'macOS, Linux, Windows, WebAssembly',
 			description,

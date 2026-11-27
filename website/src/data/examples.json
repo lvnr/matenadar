@@ -348,8 +348,11 @@
     }
    ],
    "page_count": 1,
-   "layout_ms": 12.4,
+   "layout_ms": 8.7,
    "issues": 0,
+   "fingerprints": [
+    "592dd3e5264b3421b037b08f3269e5ef"
+   ],
    "pdf": {
     "href": "/examples/invoice/invoice.pdf",
     "bytes": 51929

@@ -1,6 +1,6 @@
 # @matenadar/wasm
 
-WebAssembly build of [Matenadar](https://github.com/lvnr/matenadar)—lay out, edit, inspect, check, and render documents to SVG, PNG, PDF, and EPUB 3 in browsers, Node, Bun, and Deno.
+WebAssembly build of [matenadar](https://github.com/lvnr/matenadar)—lay out, edit, inspect, check, and render documents to SVG, PNG, PDF, and EPUB 3 in browsers, Node, Bun, and Deno.
 
 ## Install
 

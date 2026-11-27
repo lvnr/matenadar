@@ -1,12 +1,16 @@
 /**
  * The landing page's behaviour: theme, header, install tabs, copying, the
- * hero's glyph, motion on arrival and on scroll, and the examples' pointing
- * and inspecting. Motion is the `motion` library's DOM API.
+ * hero's glyph, the construction layer, motion on arrival and on scroll,
+ * the examples' pointing and inspecting, the runtimes, the screens behind
+ * the closing and the wordmark at the foot. Motion is the `motion`
+ * library's DOM API.
  */
 import { animate, inView, scroll, stagger } from 'motion';
 import { mountGlyph } from './glyph';
+import { mountGuides } from './guides';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const ease = [0.22, 1, 0.36, 1] as const;
 const $ = <T extends Element = HTMLElement>(s: string, root: ParentNode = document) => root.querySelector<T>(s);
 const $$ = <T extends Element = HTMLElement>(s: string, root: ParentNode = document) => [...root.querySelectorAll<T>(s)];
@@ -95,6 +99,7 @@ const restText = readout?.textContent || '';
 if (canvas) {
 	mountGlyph(canvas, {
 		reduced,
+		area: glyph?.closest('section'),
 		onPoint(x, y, part) {
 			if (!readout) return;
 			if (Number.isNaN(x)) {
@@ -116,6 +121,10 @@ if (!reduced) {
 	animate('.hero__title .line__in', { transform: ['translateY(105%)', 'translateY(0%)'] }, { duration: 1.1, delay: stagger(0.12, { startDelay: 0.15 }), ease });
 	animate('[data-fade]', { opacity: [0, 1], transform: ['translateY(22px)', 'translateY(0px)'] }, { duration: 0.9, delay: stagger(0.1, { startDelay: 0.55 }), ease });
 }
+
+// ------------------------------------------------------------------ construction
+
+const guides = mountGuides({ reduced });
 
 // ------------------------------------------------------------------ reveals
 
@@ -190,6 +199,25 @@ for (const plate of $$('[data-plate]')) {
 	plate.addEventListener('pointerleave', () => light('', false));
 	$('.code__pre', plate)?.addEventListener('pointerleave', () => light('', false));
 
+	// From the page to the JSON: the innermost box under the pointer lights
+	// its lines and brings them into view.
+	for (const sheet of $$('.sheet', plate)) {
+		const boxes = $$('.box', sheet)
+			.map((b) => ({ id: b.dataset.id || '', r: (b.dataset.r || '').split(',').map(Number) }))
+			.filter((b) => b.r.length === 4)
+			.sort((a, b) => (a.r[2] - a.r[0]) * (a.r[3] - a.r[1]) - (b.r[2] - b.r[0]) * (b.r[3] - b.r[1]));
+		if (!boxes.length) continue;
+		sheet.classList.add('is-pointable');
+		sheet.addEventListener('pointermove', (e) => {
+			const rect = sheet.getBoundingClientRect();
+			const u = (e.clientX - rect.left) / rect.width;
+			const v = (e.clientY - rect.top) / rect.height;
+			const hit = boxes.find((b) => u >= b.r[0] && u <= b.r[2] && v >= b.r[1] && v <= b.r[3]);
+			light(hit ? hit.id : '', true);
+		});
+		sheet.addEventListener('pointerleave', () => light('', false));
+	}
+
 	// Inspect: the layout report's boxes over the page.
 	const inspect = $<HTMLButtonElement>('[data-inspect]', plate);
 	inspect?.addEventListener('click', () => {
@@ -223,41 +251,6 @@ for (const plate of $$('[data-plate]')) {
 		});
 	}
 
-	// The stage leans toward the pointer, on a spring.
-	const stage = $('[data-tilt]', plate);
-	const inner = stage && $('.stage__inner', stage);
-	if (stage && inner && !reduced && matchMedia('(hover: hover)').matches) {
-		let tx = 0;
-		let ty = 0;
-		let x = 0;
-		let y = 0;
-		let vx = 0;
-		let vy = 0;
-		let raf = 0;
-		const tick = () => {
-			const k = 0.08;
-			const d = 0.78;
-			vx = (vx + (tx - x) * k) * d;
-			vy = (vy + (ty - y) * k) * d;
-			x += vx;
-			y += vy;
-			inner.style.transform = `rotateY(${(x * 5).toFixed(3)}deg) rotateX(${(-y * 4).toFixed(3)}deg)`;
-			if (Math.abs(tx - x) + Math.abs(ty - y) + Math.abs(vx) + Math.abs(vy) > 0.001) raf = requestAnimationFrame(tick);
-			else raf = 0;
-		};
-		stage.addEventListener('pointermove', (e) => {
-			const r = stage.getBoundingClientRect();
-			tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-			ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
-			stage.style.setProperty('--sx', `${((e.clientX - r.left) / r.width) * 100}%`);
-			stage.style.setProperty('--sy', `${((e.clientY - r.top) / r.height) * 100}%`);
-			if (!raf) raf = requestAnimationFrame(tick);
-		});
-		stage.addEventListener('pointerleave', () => {
-			tx = ty = 0;
-			if (!raf) raf = requestAnimationFrame(tick);
-		});
-	}
 }
 
 // ------------------------------------------------------------------ talks back
@@ -281,4 +274,126 @@ if (proof) {
 		b.addEventListener('blur', () => light(''));
 		b.addEventListener('click', () => light(b.dataset.issue || ''));
 	}
+}
+
+// ------------------------------------------------------------------ same pixels
+
+/** A hash worked out again: the digits churn, then settle on the same ones. */
+function scramble(el: HTMLElement, delay = 0) {
+	const final = el.dataset.hash || (el.dataset.hash = el.textContent || '');
+	const hex = '0123456789abcdef';
+	const begin = performance.now() + delay;
+	const dur = 700;
+	const tick = (now: number) => {
+		const t = (now - begin) / dur;
+		if (t < 0) return requestAnimationFrame(tick);
+		let out = '';
+		for (let i = 0; i < final.length; i++) out += final[i] === ' ' || i / final.length < t ? final[i] : hex[(Math.random() * 16) | 0];
+		el.textContent = out;
+		if (t < 1) requestAnimationFrame(tick);
+		else el.textContent = final;
+	};
+	requestAnimationFrame(tick);
+}
+
+const runtimes = $('[data-runtimes]');
+if (runtimes) {
+	const section = runtimes.closest<HTMLElement>('section')!;
+	const tabs = $$<HTMLButtonElement>('[role="tab"]', runtimes);
+	const runs = $$('.press__run', section);
+	const scan = $('.press__scan', section);
+	const fp = $('.press__hash', section);
+	let current = 0;
+	let auto = !reduced;
+	const select = (i: number, how: 'auto' | 'pointer' | 'key' = 'auto') => {
+		if (how !== 'auto') auto = false;
+		if (i === current && how === 'auto') return;
+		current = i;
+		tabs.forEach((t, k) => {
+			const on = k === i;
+			t.setAttribute('aria-selected', String(on));
+			t.tabIndex = on ? 0 : -1;
+			const panel = document.getElementById(t.getAttribute('aria-controls') || '');
+			if (panel) panel.hidden = !on;
+		});
+		runs.forEach((r) => r.classList.toggle('is-on', r.dataset.run === tabs[i].dataset.rt));
+		if (how === 'key') tabs[i].focus();
+		guides.refresh(section);
+		if (reduced) return;
+		const hash = $('.rt__panel:not([hidden]) .rt__hash', runtimes);
+		if (hash) scramble(hash);
+		if (fp) scramble(fp, 260);
+		const panel = $('.rt__panel:not([hidden])', runtimes);
+		if (panel) animate($$('.rt__text, .rt__ln, .rt__out, .rt__more', panel), { opacity: [0, 1], transform: ['translateY(6px)', 'translateY(0px)'] }, { duration: 0.5, delay: stagger(0.04), ease });
+		if (scan) animate(scan, { transform: ['translateY(-12%)', 'translateY(1120%)'], opacity: [0, 1, 1, 0] }, { duration: 0.95, ease: 'linear' });
+		setTimeout(() => guides.pulse(section, 'connector'), 120);
+	};
+	tabs.forEach((t, i) => {
+		t.addEventListener('click', () => select(i, 'pointer'));
+		t.addEventListener('keydown', (e) => {
+			const next = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+			if (!next) return;
+			e.preventDefault();
+			select((i + next + tabs.length) % tabs.length, 'key');
+		});
+	});
+	// The runtimes take turns while the section is in view, until someone picks one.
+	inView(runtimes, () => {
+		const id = window.setInterval(() => auto && select((current + 1) % tabs.length), 5200);
+		return () => clearInterval(id);
+	});
+}
+
+// ------------------------------------------------------------------ the closing's screens
+
+// Four screens at the classic angles make a rosette; the pointer turns them
+// by a degree or two against each other, and the moiré moves.
+const rosette = $('[data-rosette]');
+if (rosette && fine && !reduced) {
+	const section = rosette.closest<HTMLElement>('section')!;
+	const plates = $$('.rosette__plate', rosette);
+	const turn = [
+		[1.6, 0.5],
+		[-1.2, 0.8],
+		[0.6, -1.4],
+		[-0.7, -0.9],
+	];
+	let tx = 0;
+	let ty = 0;
+	let x = 0;
+	let y = 0;
+	let raf = 0;
+	const tick = () => {
+		x += (tx - x) * 0.07;
+		y += (ty - y) * 0.07;
+		plates.forEach((p, i) => (p.style.transform = `rotate(${(x * turn[i][0] + y * turn[i][1]).toFixed(3)}deg)`));
+		rosette.style.setProperty('--rx', `${50 + x * 18}%`);
+		rosette.style.setProperty('--ry', `${62 + y * 14}%`);
+		raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.0008 ? requestAnimationFrame(tick) : 0;
+	};
+	section.addEventListener('pointermove', (e) => {
+		const r = section.getBoundingClientRect();
+		tx = (e.clientX - r.left) / r.width - 0.5;
+		ty = (e.clientY - r.top) / r.height - 0.5;
+		if (!raf) raf = requestAnimationFrame(tick);
+	});
+	section.addEventListener('pointerleave', () => {
+		tx = ty = 0;
+		if (!raf) raf = requestAnimationFrame(tick);
+	});
+}
+
+// ------------------------------------------------------------------ the wordmark at the foot
+
+// Screened, until the pointer passes over it: there the ink is solid.
+const footword = $('[data-footword]');
+if (footword && fine) {
+	const footer = footword.closest<HTMLElement>('footer')!;
+	footer.addEventListener('pointermove', (e) => {
+		const r = footword.getBoundingClientRect();
+		footword.style.setProperty('--mx', `${e.clientX - r.left}px`);
+		footword.style.setProperty('--my', `${e.clientY - r.top}px`);
+		footword.classList.add('is-lit');
+	});
+	footer.addEventListener('pointerleave', () => footword.classList.remove('is-lit'));
 }

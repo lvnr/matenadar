@@ -1,9 +1,9 @@
 ---
 title: Working with agents
-description: How an AI agent reads, checks and edits a Matenadar document. The layout report, locate, check --json, fingerprints, and the serve JSON-lines protocol.
+description: How an AI agent reads, checks and edits a matenadar document. The layout report, locate, check --json, fingerprints, and the serve JSON-lines protocol.
 ---
 
-Matenadar was built to be driven by programs as well as people. An agent never has to read a PDF: it can ask the engine what landed where, map a point back to the model, read checks as codes, and change the document with operations that come back with their inverses.
+**matenadar** was built to be driven by programs as well as people. An agent never has to read a PDF: it can ask the engine what landed where, map a point back to the model, read checks as codes, and change the document with operations that come back with their inverses.
 
 ## The loop
 

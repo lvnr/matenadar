@@ -3,7 +3,7 @@ title: EPUB 3
 description: Make an EPUB 3 from the same model as the print book. Reflowable text with the design as CSS, or fixed layout with live, selectable words over every page.
 ---
 
-`matenadar epub` makes an EPUB 3 from the same model as the print book. The output is checked with epubcheck in Matenadar’s tests.
+`matenadar epub` makes an EPUB 3 from the same model as the print book. The output is checked with epubcheck in **matenadar**’s tests.
 
 ```console
 $ matenadar epub book.json -o book.epub

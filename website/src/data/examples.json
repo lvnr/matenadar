@@ -1,0 +1,1552 @@
+{
+ "examples": {
+  "poster": {
+   "id": "poster",
+   "checks": null,
+   "title": "Solstice 2027 — festival poster",
+   "pages": [
+    {
+     "src": "/examples/poster/p-1.webp",
+     "small": "/examples/poster/p-1-s.webp",
+     "w": 1314.0,
+     "h": 1746.0,
+     "px": [
+      1204,
+      1600
+     ],
+     "label": "1",
+     "nodes": [
+      {
+       "id": "art",
+       "kind": "image",
+       "r": [
+        0.0,
+        0.0,
+        1314.0,
+        1746.0
+       ]
+      },
+      {
+       "id": "presents",
+       "kind": "text",
+       "r": [
+        63.0,
+        57.0,
+        495.0,
+        87.5
+       ]
+      },
+      {
+       "id": "dates",
+       "kind": "text",
+       "r": [
+        1053.0,
+        57.0,
+        1251.0,
+        87.5
+       ]
+      },
+      {
+       "id": "rule",
+       "kind": "line",
+       "r": [
+        63.0,
+        97.0,
+        1251.0,
+        99.0
+       ]
+      },
+      {
+       "id": "title",
+       "kind": "lettering",
+       "r": [
+        50.0,
+        58.0,
+        1264.0,
+        480.4
+       ]
+      },
+      {
+       "id": "lineup-fri",
+       "kind": "text",
+       "r": [
+        63.0,
+        432.84,
+        328.57,
+        624.55
+       ]
+      },
+      {
+       "id": "lineup-sat",
+       "kind": "text",
+       "r": [
+        472.0,
+        432.84,
+        735.57,
+        624.55
+       ]
+      },
+      {
+       "id": "lineup-sun",
+       "kind": "text",
+       "r": [
+        881.0,
+        432.84,
+        1148.19,
+        624.55
+       ]
+      },
+      {
+       "id": "dek",
+       "kind": "text",
+       "r": [
+        63.0,
+        1245.25,
+        811.8,
+        1482.37
+       ]
+      },
+      {
+       "id": "practical",
+       "kind": "text",
+       "r": [
+        63.0,
+        1617.72,
+        628.49,
+        1674.92
+       ]
+      },
+      {
+       "id": "tickets",
+       "kind": "group",
+       "r": [
+        1141.0,
+        1612.0,
+        1251.0,
+        1722.0
+       ]
+      },
+      {
+       "id": "colophon",
+       "kind": "text",
+       "r": [
+        1266.07,
+        189.5,
+        1283.23,
+        560.0
+       ]
+      }
+     ]
+    }
+   ],
+   "page_count": 1,
+   "layout_ms": 27.8,
+   "issues": 0,
+   "pdf": {
+    "href": "/examples/poster/poster.pdf",
+    "bytes": 920127
+   },
+   "json": {
+    "href": "/examples/poster/poster.json",
+    "bytes": 5684,
+    "path": "website/examples/poster/doc.json"
+   },
+   "fonts": [
+    "Bricolage Grotesque",
+    "Instrument Sans",
+    "Instrument Serif",
+    "JetBrains Mono"
+   ]
+  },
+  "invoice": {
+   "id": "invoice",
+   "checks": null,
+   "title": "Invoice HV-2027-014",
+   "pages": [
+    {
+     "src": "/examples/invoice/p-1.webp",
+     "small": "/examples/invoice/p-1-s.webp",
+     "w": 595.28,
+     "h": 841.89,
+     "px": [
+      1131,
+      1600
+     ],
+     "label": "1",
+     "nodes": [
+      {
+       "id": "band",
+       "kind": "rect",
+       "r": [
+        0.0,
+        0.0,
+        595.28,
+        6.0
+       ]
+      },
+      {
+       "id": "logo",
+       "kind": "group",
+       "r": [
+        48.0,
+        48.0,
+        82.0,
+        82.0
+       ]
+      },
+      {
+       "id": "studio",
+       "kind": "text",
+       "r": [
+        92.0,
+        50.65,
+        209.66,
+        82.06
+       ]
+      },
+      {
+       "id": "title",
+       "kind": "text",
+       "r": [
+        368.77,
+        27.74,
+        547.0,
+        98.5
+       ]
+      },
+      {
+       "id": "number",
+       "kind": "text",
+       "r": [
+        475.0,
+        96.48,
+        547.0,
+        107.04
+       ]
+      },
+      {
+       "id": "issued",
+       "kind": "text",
+       "r": [
+        48.0,
+        142.79,
+        117.59,
+        169.38
+       ]
+      },
+      {
+       "id": "due",
+       "kind": "text",
+       "r": [
+        172.8,
+        142.79,
+        234.92,
+        169.38
+       ]
+      },
+      {
+       "id": "project",
+       "kind": "text",
+       "r": [
+        297.6,
+        142.79,
+        407.55,
+        169.38
+       ]
+      },
+      {
+       "id": "terms",
+       "kind": "text",
+       "r": [
+        447.0,
+        142.79,
+        501.08,
+        169.38
+       ]
+      },
+      {
+       "id": "billed-to",
+       "kind": "text",
+       "r": [
+        48.0,
+        204.79,
+        179.12,
+        271.75
+       ]
+      },
+      {
+       "id": "from",
+       "kind": "text",
+       "r": [
+        226.0,
+        204.79,
+        332.42,
+        271.75
+       ]
+      },
+      {
+       "id": "amount-due",
+       "kind": "group",
+       "r": [
+        392.0,
+        200.0,
+        547.28,
+        286.0
+       ]
+      },
+      {
+       "id": "items",
+       "kind": "text",
+       "r": [
+        47.63,
+        329.79,
+        547.66,
+        578.38
+       ]
+      },
+      {
+       "id": "totals",
+       "kind": "text",
+       "r": [
+        326.75,
+        606.05,
+        547.53,
+        668.51
+       ]
+      },
+      {
+       "id": "payment",
+       "kind": "text",
+       "r": [
+        48.0,
+        600.79,
+        201.6,
+        650.78
+       ]
+      },
+      {
+       "id": "thanks",
+       "kind": "text",
+       "r": [
+        417.03,
+        694.96,
+        553.24,
+        739.16
+       ]
+      },
+      {
+       "id": "footer",
+       "kind": "text",
+       "r": [
+        48.0,
+        777.09,
+        325.68,
+        785.63
+       ]
+      }
+     ]
+    }
+   ],
+   "page_count": 1,
+   "layout_ms": 8.7,
+   "issues": 0,
+   "fingerprints": [
+    "592dd3e5264b3421b037b08f3269e5ef"
+   ],
+   "pdf": {
+    "href": "/examples/invoice/invoice.pdf",
+    "bytes": 51929
+   },
+   "json": {
+    "href": "/examples/invoice/invoice.json",
+    "bytes": 12927,
+    "path": "website/examples/invoice/doc.json"
+   },
+   "fonts": [
+    "Instrument Sans",
+    "Instrument Serif",
+    "JetBrains Mono"
+   ]
+  },
+  "deck": {
+   "id": "deck",
+   "checks": null,
+   "title": "Lucent — Series A",
+   "pages": [
+    {
+     "src": "/examples/deck/p-1.webp",
+     "small": "/examples/deck/p-1-s.webp",
+     "w": 960.0,
+     "h": 540.0,
+     "px": [
+      1600,
+      900
+     ],
+     "label": "1",
+     "nodes": [
+      {
+       "id": "hero",
+       "kind": "image",
+       "r": [
+        400.0,
+        0.0,
+        960.0,
+        540.0
+       ]
+      },
+      {
+       "id": "logo",
+       "kind": "group",
+       "r": [
+        56.0,
+        54.0,
+        157.53,
+        80.52
+       ]
+      },
+      {
+       "id": "kicker",
+       "kind": "text",
+       "r": [
+        56.0,
+        186.47,
+        178.36,
+        202.07
+       ]
+      },
+      {
+       "id": "title",
+       "kind": "text",
+       "r": [
+        56.0,
+        202.55,
+        483.01,
+        349.75
+       ]
+      },
+      {
+       "id": "sub",
+       "kind": "text",
+       "r": [
+        56.0,
+        360.21,
+        379.31,
+        412.21
+       ]
+      }
+     ]
+    },
+    {
+     "src": "/examples/deck/p-2.webp",
+     "small": "/examples/deck/p-2-s.webp",
+     "w": 960.0,
+     "h": 540.0,
+     "px": [
+      1600,
+      900
+     ],
+     "label": "2",
+     "nodes": [
+      {
+       "id": "pages",
+       "kind": "text",
+       "r": [
+        56.0,
+        166.62,
+        316.34,
+        288.66
+       ]
+      },
+      {
+       "id": "latency",
+       "kind": "text",
+       "r": [
+        345.0,
+        166.62,
+        603.91,
+        271.11
+       ]
+      },
+      {
+       "id": "customers",
+       "kind": "text",
+       "r": [
+        634.0,
+        166.62,
+        881.35,
+        288.66
+       ]
+      },
+      {
+       "id": "spark",
+       "kind": "path",
+       "r": [
+        56.0,
+        330.0,
+        904.0,
+        450.0
+       ]
+      }
+     ]
+    },
+    {
+     "src": "/examples/deck/p-3.webp",
+     "small": "/examples/deck/p-3-s.webp",
+     "w": 960.0,
+     "h": 540.0,
+     "px": [
+      1600,
+      900
+     ],
+     "label": "3",
+     "nodes": []
+    },
+    {
+     "src": "/examples/deck/p-4.webp",
+     "small": "/examples/deck/p-4-s.webp",
+     "w": 960.0,
+     "h": 540.0,
+     "px": [
+      1600,
+      900
+     ],
+     "label": "4",
+     "nodes": [
+      {
+       "id": "quote-text",
+       "kind": "text",
+       "r": [
+        56.0,
+        112.38,
+        807.85,
+        231.38
+       ]
+      }
+     ]
+    }
+   ],
+   "page_count": 4,
+   "layout_ms": 11.5,
+   "issues": 0,
+   "pdf": {
+    "href": "/examples/deck/deck.pdf",
+    "bytes": 206981
+   },
+   "json": {
+    "href": "/examples/deck/deck.json",
+    "bytes": 12280,
+    "path": "website/examples/deck/doc.json"
+   },
+   "fonts": [
+    "Geist",
+    "Instrument Serif"
+   ]
+  },
+  "cover": {
+   "id": "cover",
+   "checks": null,
+   "title": "The Lighthouse of Lost Pages — cover wrap",
+   "pages": [
+    {
+     "src": "/examples/cover/p-1.webp",
+     "small": "/examples/cover/p-1-s.webp",
+     "w": 925.2,
+     "h": 666.0,
+     "px": [
+      2200,
+      1583
+     ],
+     "label": "1",
+     "nodes": [
+      {
+       "id": "art",
+       "kind": "image",
+       "r": [
+        0.0,
+        0.0,
+        925.2,
+        666.0
+       ]
+      },
+      {
+       "id": "kicker",
+       "kind": "text",
+       "r": [
+        675.6,
+        65.6,
+        724.4,
+        84.1
+       ]
+      },
+      {
+       "id": "title",
+       "kind": "text",
+       "r": [
+        525.88,
+        81.6,
+        874.13,
+        192.25
+       ]
+      },
+      {
+       "id": "author",
+       "kind": "text",
+       "r": [
+        641.84,
+        594.19,
+        758.16,
+        623.79
+       ]
+      },
+      {
+       "id": "spine-title",
+       "kind": "text",
+       "r": [
+        451.16,
+        137.54,
+        470.89,
+        362.46
+       ]
+      },
+      {
+       "id": "spine-author",
+       "kind": "text",
+       "r": [
+        454.52,
+        501.16,
+        469.32,
+        558.84
+       ]
+      },
+      {
+       "id": "imprint",
+       "kind": "group",
+       "r": [
+        451.05,
+        609.45,
+        476.15,
+        634.55
+       ]
+      },
+      {
+       "id": "hook",
+       "kind": "text",
+       "r": [
+        48.0,
+        59.1,
+        351.97,
+        114.14
+       ]
+      },
+      {
+       "id": "blurb",
+       "kind": "text",
+       "r": [
+        48.0,
+        142.34,
+        402.13,
+        307.81
+       ]
+      },
+      {
+       "id": "reviews",
+       "kind": "text",
+       "r": [
+        48.0,
+        363.94,
+        281.9,
+        430.28
+       ]
+      },
+      {
+       "id": "publisher",
+       "kind": "group",
+       "r": [
+        47.45,
+        588.45,
+        166.06,
+        614.95
+       ]
+      },
+      {
+       "id": "barcode",
+       "kind": "group",
+       "r": [
+        261.0,
+        535.0,
+        405.0,
+        621.0
+       ]
+      }
+     ]
+    }
+   ],
+   "page_count": 1,
+   "layout_ms": 19.6,
+   "issues": 0,
+   "pdf": {
+    "href": "/examples/cover/cover.pdf",
+    "bytes": 437821
+   },
+   "json": {
+    "href": "/examples/cover/cover.json",
+    "bytes": 7715,
+    "path": "website/examples/cover/doc.json"
+   },
+   "fonts": [
+    "Fraunces",
+    "Instrument Sans",
+    "Newsreader"
+   ]
+  },
+  "magazine": {
+   "id": "magazine",
+   "checks": null,
+   "title": "Margin, issue 12 — The weight of a letter",
+   "pages": [
+    {
+     "src": "/examples/magazine/p-1.webp",
+     "small": "/examples/magazine/p-1-s.webp",
+     "w": 612.0,
+     "h": 792.0,
+     "px": [
+      1082,
+      1400
+     ],
+     "label": "48",
+     "nodes": [
+      {
+       "id": "photo",
+       "kind": "image",
+       "r": [
+        -9.0,
+        -9.0,
+        612.0,
+        801.0
+       ]
+      },
+      {
+       "id": "photo-caption",
+       "kind": "text",
+       "r": [
+        48.0,
+        708.61,
+        254.6,
+        727.33
+       ]
+      },
+      {
+       "id": "folio-left",
+       "kind": "text",
+       "r": [
+        48.0,
+        760.6,
+        89.76,
+        769.75
+       ]
+      }
+     ]
+    },
+    {
+     "src": "/examples/magazine/p-2.webp",
+     "small": "/examples/magazine/p-2-s.webp",
+     "w": 612.0,
+     "h": 792.0,
+     "px": [
+      1082,
+      1400
+     ],
+     "label": "49",
+     "nodes": [
+      {
+       "id": "running",
+       "kind": "text",
+       "r": [
+        468.36,
+        30.6,
+        564.0,
+        39.75
+       ]
+      },
+      {
+       "id": "opener",
+       "kind": "text",
+       "r": [
+        54.0,
+        58.94,
+        507.34,
+        290.39
+       ]
+      },
+      {
+       "id": "story",
+       "kind": "text",
+       "r": [
+        54.0,
+        294.05,
+        566.07,
+        664.95
+       ]
+      },
+      {
+       "id": "loupe",
+       "kind": "image",
+       "r": [
+        319.0,
+        552.0,
+        453.0,
+        686.0
+       ]
+      },
+      {
+       "id": "loupe-caption",
+       "kind": "text",
+       "r": [
+        464.0,
+        590.61,
+        562.55,
+        619.27
+       ]
+      },
+      {
+       "id": "folio-right",
+       "kind": "text",
+       "r": [
+        504.8,
+        760.6,
+        564.0,
+        769.75
+       ]
+      }
+     ]
+    }
+   ],
+   "page_count": 3,
+   "layout_ms": 34.9,
+   "issues": 0,
+   "pdf": {
+    "href": "/examples/magazine/magazine.pdf",
+    "bytes": 683849
+   },
+   "json": {
+    "href": "/examples/magazine/magazine.json",
+    "bytes": 8523,
+    "path": "website/examples/magazine/doc.json"
+   },
+   "fonts": [
+    "Instrument Sans",
+    "Instrument Serif",
+    "Newsreader"
+   ]
+  },
+  "menu": {
+   "id": "menu",
+   "checks": null,
+   "title": "Citron — dinner menu",
+   "pages": [
+    {
+     "src": "/examples/menu/p-1.webp",
+     "small": "/examples/menu/p-1-s.webp",
+     "w": 504.0,
+     "h": 1008.0,
+     "px": [
+      800,
+      1600
+     ],
+     "label": "1",
+     "nodes": [
+      {
+       "id": "art",
+       "kind": "image",
+       "r": [
+        252.0,
+        -33.67,
+        520.0,
+        323.67
+       ]
+      },
+      {
+       "id": "name",
+       "kind": "text",
+       "r": [
+        42.0,
+        49.72,
+        238.9,
+        155.75
+       ]
+      },
+      {
+       "id": "tagline",
+       "kind": "text",
+       "r": [
+        46.0,
+        151.29,
+        138.48,
+        191.38
+       ]
+      },
+      {
+       "id": "courses",
+       "kind": "text",
+       "r": [
+        46.0,
+        319.14,
+        458.0,
+        925.3
+       ]
+      },
+      {
+       "id": "footer",
+       "kind": "text",
+       "r": [
+        141.45,
+        936.86,
+        364.18,
+        958.62
+       ]
+      }
+     ]
+    }
+   ],
+   "page_count": 1,
+   "layout_ms": 14.4,
+   "issues": 0,
+   "pdf": {
+    "href": "/examples/menu/menu.pdf",
+    "bytes": 548124
+   },
+   "json": {
+    "href": "/examples/menu/menu.json",
+    "bytes": 7771,
+    "path": "website/examples/menu/doc.json"
+   },
+   "fonts": [
+    "Fraunces",
+    "Instrument Sans",
+    "Newsreader"
+   ]
+  },
+  "calendar": {
+   "id": "calendar",
+   "checks": null,
+   "title": "Wall calendar 2028 — January",
+   "pages": [
+    {
+     "src": "/examples/calendar/p-1.webp",
+     "small": "/examples/calendar/p-1-s.webp",
+     "w": 792.0,
+     "h": 1224.0,
+     "px": [
+      1035,
+      1600
+     ],
+     "label": "1",
+     "nodes": [
+      {
+       "id": "art",
+       "kind": "image",
+       "r": [
+        48.0,
+        48.0,
+        744.0,
+        512.0
+       ]
+      },
+      {
+       "id": "art-caption",
+       "kind": "text",
+       "r": [
+        48.0,
+        523.17,
+        296.07,
+        534.15
+       ]
+      },
+      {
+       "id": "month",
+       "kind": "text",
+       "r": [
+        44.0,
+        561.3,
+        343.04,
+        717.3
+       ]
+      },
+      {
+       "id": "year",
+       "kind": "text",
+       "r": [
+        50.0,
+        700.84,
+        102.14,
+        727.68
+       ]
+      },
+      {
+       "id": "dec-title",
+       "kind": "text",
+       "r": [
+        494.0,
+        596.28,
+        558.37,
+        606.65
+       ]
+      },
+      {
+       "id": "december",
+       "kind": "calendar",
+       "r": [
+        493.75,
+        617.95,
+        604.25,
+        708.25
+       ]
+      },
+      {
+       "id": "feb-title",
+       "kind": "text",
+       "r": [
+        634.0,
+        596.28,
+        692.06,
+        606.65
+       ]
+      },
+      {
+       "id": "february",
+       "kind": "calendar",
+       "r": [
+        633.75,
+        617.95,
+        744.25,
+        708.25
+       ]
+      },
+      {
+       "id": "grid",
+       "kind": "calendar",
+       "r": [
+        47.7,
+        759.16,
+        744.3,
+        1156.3
+       ]
+      },
+      {
+       "id": "foot-left",
+       "kind": "text",
+       "r": [
+        48.0,
+        1190.06,
+        169.59,
+        1199.82
+       ]
+      },
+      {
+       "id": "foot-right",
+       "kind": "text",
+       "r": [
+        650.69,
+        1190.06,
+        744.0,
+        1199.82
+       ]
+      }
+     ]
+    }
+   ],
+   "page_count": 1,
+   "layout_ms": 19.2,
+   "issues": 0,
+   "pdf": {
+    "href": "/examples/calendar/calendar.pdf",
+    "bytes": 760739
+   },
+   "json": {
+    "href": "/examples/calendar/calendar.json",
+    "bytes": 4387,
+    "path": "website/examples/calendar/doc.json"
+   },
+   "fonts": [
+    "Instrument Sans",
+    "Instrument Serif"
+   ]
+  },
+  "field-guide": {
+   "id": "field-guide",
+   "checks": null,
+   "title": "A Field Guide to Software Bugs (sample pages)",
+   "pages": [
+    {
+     "src": "/examples/field-guide/p-1.webp",
+     "small": "/examples/field-guide/p-1-s.webp",
+     "w": 432.0,
+     "h": 648.0,
+     "px": [
+      933,
+      1400
+     ],
+     "label": "6",
+     "nodes": []
+    },
+    {
+     "src": "/examples/field-guide/p-2.webp",
+     "small": "/examples/field-guide/p-2-s.webp",
+     "w": 432.0,
+     "h": 648.0,
+     "px": [
+      933,
+      1400
+     ],
+     "label": "7",
+     "nodes": []
+    }
+   ],
+   "page_count": 7,
+   "layout_ms": 36.7,
+   "issues": 0,
+   "pdf": null,
+   "json": {
+    "href": null,
+    "bytes": 78489,
+    "path": "samples/a-field-guide-to-software-bugs/doc.json"
+   },
+   "fonts": [
+    "Adobe Caslon Pro",
+    "Big Caslon",
+    "Caveat",
+    "JetBrains Mono"
+   ]
+  },
+  "draft": {
+   "id": "draft",
+   "checks": [
+    {
+     "severity": "error",
+     "code": "overflow",
+     "page": 1,
+     "node": "opening",
+     "message": "the text of opening runs 29.0 pt past its frame"
+    },
+    {
+     "severity": "error",
+     "code": "low-resolution",
+     "page": 1,
+     "node": "plate",
+     "message": "an image prints at 124 ppi (560×586 px over 4.50×4.71 in); 300 needed"
+    },
+    {
+     "severity": "error",
+     "code": "text-in-margin",
+     "page": 1,
+     "node": "title",
+     "message": "1 runs of live text sit closer than KDP allows to the trim (0.250 in outside, 0.375 in at the spine); mark art as decorative or move it"
+    }
+   ],
+   "title": "The Lighthouse of Lost Pages — chapter one, draft",
+   "pages": [
+    {
+     "src": "/examples/draft/p-1.webp",
+     "small": "/examples/draft/p-1-s.webp",
+     "w": 432.0,
+     "h": 648.0,
+     "px": [
+      800,
+      1200
+     ],
+     "label": "1",
+     "nodes": [
+      {
+       "id": "number",
+       "kind": "text",
+       "r": [
+        63.0,
+        59.28,
+        128.33,
+        74.08
+       ]
+      },
+      {
+       "id": "title",
+       "kind": "text",
+       "r": [
+        10.0,
+        74.54,
+        338.09,
+        111.53
+       ]
+      },
+      {
+       "id": "plate",
+       "kind": "image",
+       "r": [
+        63.0,
+        128.0,
+        387.0,
+        358.0
+       ]
+      },
+      {
+       "id": "opening",
+       "kind": "text",
+       "r": [
+        63.0,
+        380.35,
+        389.05,
+        500.69
+       ]
+      }
+     ]
+    }
+   ],
+   "page_count": 1,
+   "layout_ms": 9.6,
+   "issues": 0,
+   "pdf": {
+    "href": "/examples/draft/draft.pdf",
+    "bytes": 134375
+   },
+   "json": {
+    "href": "/examples/draft/draft.json",
+    "bytes": 2261,
+    "path": "website/examples/draft/doc.json"
+   },
+   "fonts": [
+    "Fraunces",
+    "Newsreader"
+   ]
+  }
+ },
+ "books": [
+  {
+   "slug": "a-field-guide-to-software-bugs",
+   "title": "A Field Guide to Software Bugs",
+   "pages": [
+    {
+     "src": "/examples/books/a-field-guide-to-software-bugs-1.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/a-field-guide-to-software-bugs-3.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/a-field-guide-to-software-bugs-5.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/a-field-guide-to-software-bugs-6.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/a-field-guide-to-software-bugs-7.webp",
+     "px": [
+      560,
+      840
+     ]
+    }
+   ],
+   "layout_ms": 32.2
+  },
+  {
+   "slug": "the-twenty-fourth-clue",
+   "title": "The Twenty-Fourth Clue",
+   "pages": [
+    {
+     "src": "/examples/books/the-twenty-fourth-clue-2.webp",
+     "px": [
+      560,
+      725
+     ]
+    },
+    {
+     "src": "/examples/books/the-twenty-fourth-clue-4.webp",
+     "px": [
+      560,
+      725
+     ]
+    },
+    {
+     "src": "/examples/books/the-twenty-fourth-clue-6.webp",
+     "px": [
+      560,
+      725
+     ]
+    },
+    {
+     "src": "/examples/books/the-twenty-fourth-clue-7.webp",
+     "px": [
+      560,
+      725
+     ]
+    },
+    {
+     "src": "/examples/books/the-twenty-fourth-clue-9.webp",
+     "px": [
+      560,
+      725
+     ]
+    }
+   ],
+   "layout_ms": 45.1
+  },
+  {
+   "slug": "idioms-of-the-world",
+   "title": "Idioms of the World, Drawn Literally",
+   "pages": [
+    {
+     "src": "/examples/books/idioms-of-the-world-1.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/idioms-of-the-world-2.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/idioms-of-the-world-3.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/idioms-of-the-world-4.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/idioms-of-the-world-6.webp",
+     "px": [
+      560,
+      840
+     ]
+    }
+   ],
+   "layout_ms": 54.0
+  },
+  {
+   "slug": "the-machine-in-the-back-of-the-book",
+   "title": "The Machine in the Back of the Book",
+   "pages": [
+    {
+     "src": "/examples/books/the-machine-in-the-back-of-the-book-1.webp",
+     "px": [
+      560,
+      800
+     ]
+    },
+    {
+     "src": "/examples/books/the-machine-in-the-back-of-the-book-2.webp",
+     "px": [
+      560,
+      800
+     ]
+    },
+    {
+     "src": "/examples/books/the-machine-in-the-back-of-the-book-3.webp",
+     "px": [
+      560,
+      800
+     ]
+    },
+    {
+     "src": "/examples/books/the-machine-in-the-back-of-the-book-5.webp",
+     "px": [
+      560,
+      800
+     ]
+    },
+    {
+     "src": "/examples/books/the-machine-in-the-back-of-the-book-6.webp",
+     "px": [
+      560,
+      800
+     ]
+    }
+   ],
+   "layout_ms": 38.8
+  },
+  {
+   "slug": "i-just-had-it",
+   "title": "I Just Had It",
+   "pages": [
+    {
+     "src": "/examples/books/i-just-had-it-1.webp",
+     "px": [
+      560,
+      800
+     ]
+    },
+    {
+     "src": "/examples/books/i-just-had-it-2.webp",
+     "px": [
+      560,
+      800
+     ]
+    },
+    {
+     "src": "/examples/books/i-just-had-it-3.webp",
+     "px": [
+      560,
+      800
+     ]
+    },
+    {
+     "src": "/examples/books/i-just-had-it-4.webp",
+     "px": [
+      560,
+      800
+     ]
+    }
+   ],
+   "layout_ms": 79.8
+  },
+  {
+   "slug": "reverse-coloring",
+   "title": "Reverse Coloring",
+   "pages": [
+    {
+     "src": "/examples/books/reverse-coloring-1.webp",
+     "px": [
+      560,
+      700
+     ]
+    },
+    {
+     "src": "/examples/books/reverse-coloring-2.webp",
+     "px": [
+      560,
+      700
+     ]
+    },
+    {
+     "src": "/examples/books/reverse-coloring-4.webp",
+     "px": [
+      560,
+      700
+     ]
+    },
+    {
+     "src": "/examples/books/reverse-coloring-5.webp",
+     "px": [
+      560,
+      700
+     ]
+    },
+    {
+     "src": "/examples/books/reverse-coloring-6.webp",
+     "px": [
+      560,
+      700
+     ]
+    }
+   ],
+   "layout_ms": 61.6
+  },
+  {
+   "slug": "third-shift-handbook",
+   "title": "Third Shift Handbook",
+   "pages": [
+    {
+     "src": "/examples/books/third-shift-handbook-1.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/third-shift-handbook-3.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/third-shift-handbook-5.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/third-shift-handbook-6.webp",
+     "px": [
+      560,
+      840
+     ]
+    },
+    {
+     "src": "/examples/books/third-shift-handbook-7.webp",
+     "px": [
+      560,
+      840
+     ]
+    }
+   ],
+   "layout_ms": 54.5
+  },
+  {
+   "slug": "christmas-word-search",
+   "title": "Christmas Word Search",
+   "pages": [
+    {
+     "src": "/examples/books/christmas-word-search-2.webp",
+     "px": [
+      560,
+      700
+     ]
+    },
+    {
+     "src": "/examples/books/christmas-word-search-4.webp",
+     "px": [
+      560,
+      700
+     ]
+    },
+    {
+     "src": "/examples/books/christmas-word-search-5.webp",
+     "px": [
+      560,
+      700
+     ]
+    },
+    {
+     "src": "/examples/books/christmas-word-search-6.webp",
+     "px": [
+      560,
+      700
+     ]
+    },
+    {
+     "src": "/examples/books/christmas-word-search-7.webp",
+     "px": [
+      560,
+      700
+     ]
+    }
+   ],
+   "layout_ms": 35.0
+  }
+ ],
+ "version": "0.2.0"
+}

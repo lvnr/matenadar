@@ -1,7 +1,7 @@
 {
   "name": "matenadar",
   "version": "0.2.0",
-  "description": "Matenadar CLI: lay out, inspect, check, edit, and export books to PDF, PNG, SVG, and EPUB 3",
+  "description": "Matenadar CLI: lay out, inspect, check, edit, and export documents to PDF, PNG, SVG, and EPUB 3",
   "license": "Apache-2.0",
   "author": "Levon Arakelyan",
   "homepage": "https://github.com/lvnr/matenadar",

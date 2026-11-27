@@ -1,6 +1,6 @@
 # @matenadar/wasm
 
-WebAssembly build of [Matenadar](https://github.com/lvnr/matenadar)—lay out, edit, inspect, check, and render books to SVG, PNG, PDF, and EPUB 3 in browsers, Node, Bun, and Deno.
+WebAssembly build of [matenadar](https://github.com/lvnr/matenadar)—lay out, edit, inspect, check, and render documents to SVG, PNG, PDF, and EPUB 3 in browsers, Node, Bun, and Deno.
 
 ## Install
 
@@ -40,7 +40,7 @@ const { pages } = await mt.open(doc);
 const svg = await mt.svg(1);
 ```
 
-See the [documentation](https://matenadar-docs.levships.com/docs/reference/wasm/) and [main repository](https://github.com/lvnr/matenadar) for the full document model and editing API.
+See the [documentation](https://matenadar.levships.com/docs/reference/wasm/) and [main repository](https://github.com/lvnr/matenadar) for the full document model and editing API.
 
 ## License
 

@@ -1,12 +1,15 @@
 ---
-title: Matenadar
-description: A book and page layout engine for people and agents. How the JSON model, Typst, the outputs and the WebAssembly build fit together.
+title: matenadar
+head:
+  - tag: title
+    content: matenadar documentation
+description: A typesetting engine for anything that prints, for people and agents. How the JSON model, Typst, the outputs and the WebAssembly build fit together.
 ---
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 import Pipeline from '../../../components/docs/Pipeline.astro';
 
-A document is a JSON model of sections, pages, styles, masters and components. Matenadar lays it out with [Typst](https://typst.app) and renders it to PDF, PNG or SVG. It can say what landed where, check pages the way a print-on-demand preflighter would, and apply edits as operations that can be undone.
+**matenadar** typesets anything that prints: books and magazines, invoices and menus, slide decks, posters, covers and calendars. A document is a JSON model of sections, pages, styles, masters and components. **matenadar** lays it out with [Typst](https://typst.app) and renders it to PDF, PNG or SVG. It can say what landed where, check pages the way a print-on-demand preflighter would, and apply edits as operations that can be undone.
 
 It makes EPUB 3 from the same model, and runs in the browser as WebAssembly with a page editor’s API: find what is under the pointer, change words, pictures, spacing and breaks, undo, and keep the edits as a patch that the command line replays to the same pages.
 
@@ -15,7 +18,7 @@ It makes EPUB 3 from the same model, and runs in the browser as WebAssembly with
 <Pipeline />
 
 1. **You write the model.** A document is JSON (`"matenadar": "1"`): a `design` (colours, fonts, styles, masters, components) and `content` (flowing sections, hand-laid pages and two-page spreads). See [the document model](/docs/model/overview/).
-2. **Matenadar generates a Typst program from it, every time.** That program is never stored or shown as a source of truth. People, visual editors and AI agents change books only through the model and its [operations](/docs/guides/operations/).
+2. **matenadar generates a Typst program from it, every time.** That program is never stored or shown as a source of truth. People, visual editors and AI agents change documents only through the model and its [operations](/docs/guides/operations/).
 3. **Typst lays it out.** Knuth–Plass line breaking, hyphenation, widow and orphan control, footnotes, tables that split, variable fonts, right-to-left and CJK text. Builds are fast and deterministic.
 4. **You get pages, and a report on them.** PDF, SVG and PNG; a [layout report](/docs/guides/agents/) with every node’s box on every page; `locate` from a point back to a node and character; [preflight checks](/docs/guides/checks/) with stable codes; [EPUB 3](/docs/guides/epub/), reflowable or fixed layout.
 
@@ -23,13 +26,13 @@ The same engine is built to WebAssembly as [`@matenadar/wasm`](/docs/reference/w
 
 ## Why this shape
 
-**The model is the only source of truth.** The Typst program is generated on every build and never kept, so the command line, a page editor in the browser and an agent all make the same book from the same JSON, and every change is an operation with an inverse.
+**The model is the only source of truth.** The Typst program is generated on every build and never kept, so the command line, a page editor in the browser and an agent all make the same document from the same JSON, and every change is an operation with an inverse.
 
-**Typst does the hard typesetting.** Matenadar doesn’t reimplement line breaking or page building; it describes the book and lets a modern, fast typesetter set it.
+**Typst does the hard typesetting.** **matenadar** doesn’t reimplement line breaking or page building; it describes the document and lets a modern, fast typesetter set it.
 
-**Designed pages are first-class.** Fixed pages with placed elements, masters with conditional layers, margin notes, letter grids, lettering drawn as outlines, QR codes, inline SVG, pen marks, shadows and components. Books that once needed a hand-written HTML/CSS engine can be expressed directly.
+**Designed pages are first-class.** Fixed pages with placed elements, masters with conditional layers, margin notes, letter grids, lettering drawn as outlines, QR codes, inline SVG, pen marks, shadows and components. Posters, covers, decks and picture books that once needed a hand-written HTML/CSS engine can be expressed directly.
 
-**Agents are first-class.** Errors carry JSON paths. `layout` reports every node’s extent on every page. `locate` maps a point back to a node and character. `check` gives codes an agent can act on. `serve` keeps a book open and lays it out again in milliseconds after each operation.
+**Agents are first-class.** Errors carry JSON paths. `layout` reports every node’s extent on every page. `locate` maps a point back to a node and character. `check` gives codes an agent can act on. `serve` keeps a document open and lays it out again in milliseconds after each operation.
 
 ## What is in the repository
 
@@ -44,12 +47,13 @@ The same engine is built to WebAssembly as [`@matenadar/wasm`](/docs/reference/w
 | `packages/wasm` | the `@matenadar/wasm` npm package |
 | `demo/editor/` | a page editor on the samples, on the WebAssembly build |
 | `docs/model.md` | the model, field by field |
-| `samples/` | pages of real books rebuilt in Matenadar, with compare sheets |
+| `samples/` | pages of real books rebuilt in **matenadar**, with compare sheets |
+| `website/` | this site: the front page, these docs, and the examples the front page shows (`website/examples/`) |
 
 ## Status
 
 - The model, generator, checks, operations, `serve` and `bench` work.
-- Eight books are partly rebuilt under `samples/` (39 pages), each with notes on how close it gets and which engine gaps remain.
+- Eight books are partly rebuilt under `samples/` (39 pages), each with notes on how close it gets and which engine gaps remain. The front page’s examples (a poster, an invoice, a deck, a cover, a magazine, a menu and a calendar) are under `website/examples/`.
 - Print: decorative elements are drawn as outlines, so display type can cross the margins and the bleed and still pass print-margin text checks.
 - EPUB 3, reflowable or fixed layout, passes epubcheck.
 - The WebAssembly build lays out, edits and renders in the browser, and its pages match the command line’s.
@@ -57,8 +61,8 @@ The same engine is built to WebAssembly as [`@matenadar/wasm`](/docs/reference/w
 ## Start here
 
 <CardGrid>
-	<LinkCard title="Install Matenadar" description="Homebrew, npm, Cargo, the shell installers, or the WebAssembly package." href="/docs/getting-started/install/" />
-	<LinkCard title="Quick start" description="Your first book: from JSON to PDF, PNG, EPUB and a clean preflight." href="/docs/getting-started/quick-start/" />
+	<LinkCard title="Install matenadar" description="Homebrew, npm, Cargo, the shell installers, or the WebAssembly package." href="/docs/getting-started/install/" />
+	<LinkCard title="Quick start" description="Your first document: from JSON to PDF, PNG, EPUB and a clean preflight." href="/docs/getting-started/quick-start/" />
 	<LinkCard title="The document model" description="Units, colours, styles, masters, sections, pages, spreads and elements." href="/docs/model/overview/" />
 	<LinkCard title="Working with agents" description="layout, locate, check --json, and the serve JSON-lines loop." href="/docs/guides/agents/" />
 </CardGrid>

@@ -1,7 +1,7 @@
 {
   "name": "@matenadar/wasm",
   "version": "0.2.0",
-  "description": "Matenadar layout engine in WebAssembly: lay out, edit, inspect, and render books to SVG, PNG, PDF, and EPUB 3 in browsers and Node",
+  "description": "Matenadar layout engine in WebAssembly: lay out, edit, inspect, and render documents to SVG, PNG, PDF, and EPUB 3 in browsers and Node",
   "license": "Apache-2.0",
   "author": "Levon Arakelyan",
   "type": "module",

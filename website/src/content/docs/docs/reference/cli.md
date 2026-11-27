@@ -186,5 +186,5 @@ matenadar serve
 Keeps one document laid out in memory, driven by JSON lines on stdin: `{"id", "method", "params"}` in, `{"id", "result"}` or `{"id", "error"}` out, one line each. The methods are `open`, `apply`, `render`, `pdf`, `check`, `layout`, `locate`, `position`, `document`, `save` and `quit`. See [`serve`](/docs/guides/agents/#serve) for their parameters and results.
 
 :::note[Debugging the generator]
-`matenadar debug-typst <doc.json>` prints the Typst program generated for a document. It is a tool for working on Matenadar itself, not part of the stable interface: books are always changed through the model.
+`matenadar debug-typst <doc.json>` prints the Typst program generated for a document. It is a tool for working on **matenadar** itself, not part of the stable interface: documents are always changed through the model.
 :::

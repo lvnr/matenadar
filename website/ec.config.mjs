@@ -1,14 +1,15 @@
 // @ts-check
 // Expressive Code for the docs: two quiet themes in the site's colours,
-// crisp white and deep obsidian, with cobalt for functions.
+// crisp white and deep obsidian, with cobalt for functions. The values are
+// the landing page's code tokens (--mt-code-* in src/styles/tokens.css).
 import { defineEcConfig, ExpressiveCodeTheme } from '@astrojs/starlight/expressive-code';
 
 /** @param {'light' | 'dark'} type */
 function codeTheme(type) {
 	const c =
 		type === 'light'
-			? { bg: '#fafafa', fg: '#18181b', muted: '#71717a', comment: '#a1a1aa', keyword: '#7c3aed', string: '#15803d', number: '#b45309', func: '#2563eb', sel: '#2563eb24' }
-			: { bg: '#0c0d10', fg: '#e4e4e7', muted: '#71717a', comment: '#6b6b75', keyword: '#c4b5fd', string: '#86efac', number: '#fcd34d', func: '#93c5fd', sel: '#60a5fa38' };
+			? { bg: '#fafafa', fg: '#1b1b20', muted: '#8a8a93', comment: '#a3a3ab', keyword: '#8a2be2', string: '#0f7a45', number: '#b3470f', func: '#2338f0', sel: '#2f45ff24' }
+			: { bg: '#0d0d10', fg: '#e2e2e6', muted: '#6b6b75', comment: '#5e5e68', keyword: '#c9a8ff', string: '#7ee2a8', number: '#ffc46b', func: '#95a1ff', sel: '#5b6cff38' };
 	return new ExpressiveCodeTheme({
 		name: `matenadar-${type}`,
 		type,

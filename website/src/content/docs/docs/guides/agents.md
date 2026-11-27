@@ -1,9 +1,9 @@
 ---
 title: Working with agents
-description: How an AI agent reads, checks and edits a Matenadar book. The layout report, locate, check --json, fingerprints, and the serve JSON-lines protocol.
+description: How an AI agent reads, checks and edits a matenadar document. The layout report, locate, check --json, fingerprints, and the serve JSON-lines protocol.
 ---
 
-Matenadar was built to be driven by programs as well as people. An agent never has to read a PDF: it can ask the engine what landed where, map a point back to the model, read checks as codes, and change the book with operations that come back with their inverses.
+**matenadar** was built to be driven by programs as well as people. An agent never has to read a PDF: it can ask the engine what landed where, map a point back to the model, read checks as codes, and change the document with operations that come back with their inverses.
 
 ## The loop
 
@@ -13,7 +13,7 @@ Matenadar was built to be driven by programs as well as people. An agent never h
 4. **Change.** Write [operations](/docs/guides/operations/) against node ids and apply them; keep the inverses.
 5. **Repeat** until `check` is clean, then build.
 
-For a long session, use [`serve`](#serve) so the book stays laid out between steps.
+For a long session, use [`serve`](#serve) so the document stays laid out between steps.
 
 ## The layout report
 
@@ -78,7 +78,7 @@ $ matenadar bench book.json --edits 50
 }
 ```
 
-`bench` lays the book out, then makes small edits (inserting a word at the start of paragraphs with ids, each undone) and reports how long it takes to lay it out again: what an editor or an agent loop feels. The numbers here are illustrative.
+`bench` lays the document out, then makes small edits (inserting a word at the start of paragraphs with ids, each undone) and reports how long it takes to lay it out again: what an editor or an agent loop feels. The numbers here are illustrative.
 
 ## `serve`
 

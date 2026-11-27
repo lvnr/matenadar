@@ -1,7 +1,8 @@
 /*
  * Starlight in Matenadar's system: crisp white or deep obsidian, cobalt
- * accents, Geist for everything but code, JetBrains Mono for code.
- * Unlayered, so it sits over Starlight's cascade layers.
+ * accents, Instrument Sans for reading, Instrument Serif for page titles,
+ * JetBrains Mono for code. Unlayered, so it sits over Starlight's cascade
+ * layers.
  */
 
 :root {
@@ -89,7 +90,6 @@
 body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	font-feature-settings: 'ss01', 'cv11';
 }
 
 /* ---------------------------------------------------------------- header */
@@ -166,17 +166,20 @@ starlight-theme-select select {
 
 /* ---------------------------------------------------------------- page title */
 
+/* The one place the docs use the serif: the title of the page, set large. */
 h1#_top {
-	font-weight: 650;
-	letter-spacing: -0.04em;
+	font-family: var(--mt-serif);
+	font-size: clamp(2.6rem, 4.6vw, 3.5rem);
+	font-weight: 400;
+	line-height: 1.02;
+	letter-spacing: -0.015em;
 	color: var(--mt-fg);
 	text-wrap: balance;
 }
 
 [data-has-hero] h1#_top,
 .hero h1 {
-	font-size: clamp(2.5rem, 6vw, 3.75rem);
-	letter-spacing: -0.045em;
+	font-size: clamp(2.8rem, 6vw, 4.25rem);
 }
 
 .content-panel + .content-panel {

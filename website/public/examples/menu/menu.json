@@ -1,0 +1,246 @@
+{
+  "matenadar": "1",
+  "meta": {
+    "title": "Citron — dinner menu", "author": "Citron",
+    "lang": "en-GB"
+  },
+  "fonts": ["../fonts"],
+  "design": {
+    "colors": {
+      "paper": "#ffffff", "ink": "#1d2117", "olive": "#4b5a2b",
+      "fig": "#7b3452", "muted": "#7a7a6c", "rule": "#dcdccf"
+    },
+    "base": {
+      "font": "Newsreader", "size": 10.5, "line_height": 1.35,
+      "color": "ink", "features": ["onum"]
+    },
+    "styles": {
+      "name": {
+        "font": "Fraunces", "italic": true, "size": 86,
+        "weight": 380, "line_height": 0.9, "tracking": "-0.03em",
+        "color": "olive", "variations": {"SOFT": 100, "WONK": 1}
+      },
+      "tag": {
+        "font": "Instrument Sans", "size": 9.5, "weight": 500,
+        "color": "muted", "line_height": 1.5
+      },
+      "sec": {
+        "font": "Fraunces", "italic": true, "size": 21,
+        "weight": 420, "color": "fig", "space_before": "16pt",
+        "space_after": "8pt", "keep_with_next": true,
+        "variations": {"SOFT": 100},
+        "rule_below": {
+          "stroke": {"width": 0.6, "color": "rule"}, "gap": "6pt"
+        }
+      },
+      "item": {
+        "font": "Fraunces", "size": 12.5, "weight": 560,
+        "line_height": 1.25, "keep_with_next": true,
+        "features": ["lnum", "tnum"], "variations": {"SOFT": 50}
+      },
+      "desc": {
+        "italic": true, "size": 10, "color": "muted",
+        "space_after": "6pt", "line_height": 1.3,
+        "variations": {"opsz": 10}
+      },
+      "note": {
+        "font": "Instrument Sans", "size": 8, "color": "muted",
+        "line_height": 1.5, "align": "center"
+      }
+    },
+    "spans": {"dots": {"color": "rule"}},
+    "masters": {
+      "card": {
+        "width": "7in", "height": "14in",
+        "margins": {
+          "top": 48, "bottom": 48, "left": 46, "right": 46
+        },
+        "fill": "paper"
+      }
+    }
+  },
+  "content": [
+    {
+      "type": "page", "id": "menu", "master": "card",
+      "elements": [
+        {
+          "type": "image", "id": "art", "src": "art/citrus.jpg",
+          "x": 252, "y": -34, "w": 268, "h": 358, "fit": "contain",
+          "alt": "A watercolour sprig of lemons, figs, olives, rosemary and orange blossom."
+        },
+        {
+          "type": "text", "id": "name", "x": 42, "y": 64, "w": 240,
+          "style": "name", "text": "Citron"
+        },
+        {
+          "type": "text", "id": "tagline", "x": 46, "y": 150,
+          "w": 200, "style": "tag",
+          "text": "Kitchen and wine bar\nDinner, spring 2027\n12 Orchard Row"
+        },
+        {
+          "type": "line", "x1": 46, "y1": 228, "x2": 126, "y2": 228,
+          "stroke": {"width": 1.2, "color": "olive"}
+        },
+        {
+          "type": "text", "id": "courses", "x": 46, "y": 318,
+          "w": 412,
+          "blocks": [
+            {
+              "type": "p", "style": "sec",
+              "set": {"space_before": 0}, "text": "To start"
+            },
+            {
+              "type": "p", "id": "olives", "style": "item",
+              "content": [
+                "Warm olives",
+                {"leader": ".", "span": "dots"},
+                "6"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Orange peel, fennel seed, thyme"
+            },
+            {
+              "type": "p", "id": "burrata", "style": "item",
+              "content": [
+                "Burrata",
+                {"leader": ".", "span": "dots"},
+                "14"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Blood orange, pistachio, mint, good oil"
+            },
+            {
+              "type": "p", "id": "sardines", "style": "item",
+              "content": [
+                "Grilled sardines",
+                {"leader": ".", "span": "dots"},
+                "13"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Lemon, salsa verde, toasted sourdough"
+            },
+            {"type": "p", "style": "sec", "text": "From the garden"},
+            {
+              "type": "p", "id": "cabbage", "style": "item",
+              "content": [
+                "Charred hispi cabbage",
+                {"leader": ".", "span": "dots"},
+                "12"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Anchovy butter, lemon crumbs"
+            },
+            {
+              "type": "p", "id": "tomatoes", "style": "item",
+              "content": [
+                "Tomatoes and figs",
+                {"leader": ".", "span": "dots"},
+                "13"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Basil, aged balsamic, sea salt"
+            },
+            {
+              "type": "p", "id": "fregola", "style": "item",
+              "content": [
+                "Fregola",
+                {"leader": ".", "span": "dots"},
+                "15"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Courgette, preserved lemon, ricotta salata"
+            },
+            {"type": "p", "style": "sec", "text": "From the hearth"},
+            {
+              "type": "p", "id": "lamb", "style": "item",
+              "content": [
+                "Lamb shoulder",
+                {"leader": ".", "span": "dots"},
+                "28"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Rosemary, white beans, gremolata"
+            },
+            {
+              "type": "p", "id": "bream", "style": "item",
+              "content": [
+                "Sea bream",
+                {"leader": ".", "span": "dots"},
+                "26"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Fennel, Amalfi lemon, capers"
+            },
+            {
+              "type": "p", "id": "tagliatelle", "style": "item",
+              "content": [
+                "Tagliatelle",
+                {"leader": ".", "span": "dots"},
+                "19"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Brown butter, sage, cured yolk"
+            },
+            {"type": "p", "style": "sec", "text": "To finish"},
+            {
+              "type": "p", "id": "tart", "style": "item",
+              "content": [
+                "Lemon tart",
+                {"leader": ".", "span": "dots"},
+                "9"
+              ]
+            },
+            {"type": "p", "style": "desc", "text": "Crème fraîche"},
+            {
+              "type": "p", "id": "figs", "style": "item",
+              "content": [
+                "Roasted figs",
+                {"leader": ".", "span": "dots"},
+                "10"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "text": "Honey, thyme, mascarpone"
+            },
+            {
+              "type": "p", "id": "cake", "style": "item",
+              "content": [
+                "Olive oil cake",
+                {"leader": ".", "span": "dots"},
+                "8"
+              ]
+            },
+            {
+              "type": "p", "style": "desc",
+              "set": {"space_after": 0}, "text": "Rosemary syrup"
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "footer", "x": 46, "y": 936,
+          "w": 412, "style": "note",
+          "text": "Please tell us about any allergies before you order.\nA discretionary 12.5% service is added to tables of six or more."
+        }
+      ]
+    }
+  ]
+}

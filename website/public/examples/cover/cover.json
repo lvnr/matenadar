@@ -1,0 +1,224 @@
+{
+  "matenadar": "1",
+  "meta": {
+    "title": "The Lighthouse of Lost Pages — cover wrap",
+    "author": "Isla Varen", "lang": "en-GB"
+  },
+  "fonts": ["../fonts"],
+  "design": {
+    "colors": {
+      "cream": "#f7efe1", "teal": "#023f45", "coral": "#ff9b70",
+      "ink": "#10201f", "white": "#ffffff"
+    },
+    "base": {
+      "font": "Newsreader", "size": 11.5, "line_height": 1.42,
+      "color": "cream"
+    },
+    "styles": {
+      "title": {
+        "font": "Fraunces", "size": 50, "weight": 560,
+        "line_height": 0.98, "tracking": "-0.02em",
+        "align": "center", "variations": {"SOFT": 100, "WONK": 1}
+      },
+      "kicker": {
+        "font": "Fraunces", "italic": true, "size": 15,
+        "align": "center", "color": "coral",
+        "variations": {"SOFT": 100}
+      },
+      "author": {
+        "font": "Fraunces", "size": 24, "weight": 500,
+        "align": "center", "tracking": "0.01em",
+        "variations": {"SOFT": 100}
+      },
+      "praise": {
+        "font": "Fraunces", "italic": true, "size": 13,
+        "align": "center", "line_height": 1.3,
+        "variations": {"SOFT": 100}
+      },
+      "spine-title": {
+        "font": "Fraunces", "size": 16, "weight": 560,
+        "align": "center", "variations": {"SOFT": 100}
+      },
+      "spine-author": {
+        "font": "Fraunces", "size": 12, "weight": 500,
+        "align": "center", "variations": {"SOFT": 100}
+      },
+      "hook": {
+        "font": "Fraunces", "italic": true, "size": 23,
+        "line_height": 1.16, "tracking": "-0.01em",
+        "variations": {"SOFT": 100}
+      },
+      "blurb": {
+        "space_after": "7pt", "hyphenate": true, "align": "justify"
+      },
+      "quote": {
+        "font": "Newsreader", "italic": true, "size": 11.5,
+        "line_height": 1.35, "space_after": "2pt"
+      },
+      "source": {
+        "font": "Instrument Sans", "size": 8.5, "weight": 500,
+        "color": "coral", "space_after": "10pt"
+      },
+      "small": {
+        "font": "Instrument Sans", "size": 7.5, "color": "#6b7372"
+      }
+    },
+    "masters": {
+      "wrap": {
+        "width": "12.85in", "height": "9.25in",
+        "margins": {"top": 0, "bottom": 0, "left": 0, "right": 0}
+      }
+    }
+  },
+  "content": [
+    {
+      "type": "page", "id": "wrap", "master": "wrap",
+      "elements": [
+        {
+          "type": "image", "id": "art", "src": "art/lighthouse.jpg",
+          "x": 0, "y": 0, "w": "12.85in", "h": "9.25in",
+          "focus": [1, 0.5],
+          "alt": "A lighthouse built of stacked old books on a rocky island at dusk; its beam is a stream of loose pages flying out over a teal sea."
+        },
+        {
+          "type": "text", "id": "kicker", "x": 520, "y": 64,
+          "w": 360, "style": "kicker", "text": "A novel"
+        },
+        {
+          "type": "text", "id": "title", "x": 520, "y": 88,
+          "w": 360, "style": "title",
+          "text": "The Lighthouse\nof Lost Pages"
+        },
+        {
+          "type": "text", "id": "author", "x": 520, "y": 592,
+          "w": 360, "style": "author", "text": "Isla Varen",
+          "scrim": {
+            "color": "#06262a", "opacity": 0.55, "feather": "26pt",
+            "inset": "12pt", "shape": "ellipse"
+          }
+        },
+        {
+          "type": "text", "id": "spine-title", "x": 472.6, "y": 40,
+          "w": 420, "rotate": 90, "origin": "top-left",
+          "style": "spine-title",
+          "text": "The Lighthouse of Lost Pages"
+        },
+        {
+          "type": "text", "id": "spine-author", "x": 470.6,
+          "y": 470, "w": 120, "rotate": 90, "origin": "top-left",
+          "style": "spine-author", "text": "Isla Varen"
+        },
+        {
+          "type": "group", "id": "imprint", "x": 451.6, "y": 610,
+          "w": 24, "h": 24,
+          "children": [
+            {
+              "type": "ellipse", "x": 0, "y": 0, "w": 24, "h": 24,
+              "stroke": {"width": 1.1, "color": "cream"}
+            },
+            {
+              "type": "path", "x": 0, "y": 0, "w": 24, "h": 24,
+              "d": "M12 5 L12 19 M8 9 L16 9 M9.5 19 L14.5 19",
+              "stroke": {
+                "width": 1.3, "color": "cream", "cap": "round"
+              }
+            }
+          ]
+        },
+        {
+          "type": "text", "id": "hook", "x": 48, "y": 60, "w": 352,
+          "style": "hook",
+          "text": "Every lighthouse keeps a book.\nThis one keeps all of them."
+        },
+        {
+          "type": "text", "id": "blurb", "x": 48, "y": 140,
+          "w": 352,
+          "blocks": [
+            {
+              "type": "p", "style": "blurb",
+              "text": "On the island of Corrach the lighthouse is built from books: every story the sea has ever taken, stacked stone-tight and lit from within. When its keeper vanishes on the longest night of the year, her apprentice, Wren, inherits the light and a single instruction. Never let a page go dark."
+            },
+            {
+              "type": "p", "style": "blurb",
+              "text": "But the pages are leaving. Each night more of them lift from the tower and fly out over the water, and with every one that goes, someone on the mainland forgets a little of who they were. To call them home, Wren must sail after them, out past the edge of the chart."
+            }
+          ],
+          "scrim": {
+            "color": "teal", "opacity": 0.62, "feather": "26pt",
+            "inset": "16pt", "radius": "10pt"
+          }
+        },
+        {
+          "type": "text", "id": "reviews", "x": 48, "y": 362,
+          "w": 352,
+          "blocks": [
+            {
+              "type": "p", "style": "quote",
+              "text": "“Tender, strange and impossible to put down.”"
+            },
+            {
+              "type": "p", "style": "source",
+              "text": "The Harbour Review"
+            },
+            {
+              "type": "p", "style": "quote",
+              "text": "“Reads like a lantern held up to the dark.”"
+            },
+            {
+              "type": "p", "style": "source",
+              "text": "Northern Lights Quarterly"
+            }
+          ]
+        },
+        {
+          "type": "group", "id": "publisher", "x": 48, "y": 586,
+          "w": 160, "h": 30,
+          "children": [
+            {
+              "type": "ellipse", "x": 0, "y": 3, "w": 24, "h": 24,
+              "stroke": {"width": 1.1, "color": "cream"}
+            },
+            {
+              "type": "path", "x": 0, "y": 3, "w": 24, "h": 24,
+              "d": "M12 5 L12 19 M8 9 L16 9 M9.5 19 L14.5 19",
+              "stroke": {
+                "width": 1.3, "color": "cream", "cap": "round"
+              }
+            },
+            {
+              "type": "text", "x": 32, "y": 3, "w": 128,
+              "content": [
+                {
+                  "text": "Lantern House", "font": "Fraunces",
+                  "size": 12, "weight": 560,
+                  "variations": {"SOFT": 100}
+                },
+                {"br": true},
+                {
+                  "text": "Fiction · £10.99",
+                  "font": "Instrument Sans", "size": 7.5,
+                  "color": "coral"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "group", "id": "barcode", "x": 261, "y": 535,
+          "w": 144, "h": 86,
+          "children": [
+            {
+              "type": "rect", "x": 0, "y": 0, "w": 144, "h": 86,
+              "fill": "white"
+            },
+            {
+              "type": "text", "x": 0, "y": 36, "w": 144,
+              "style": "small", "set": {"align": "center"},
+              "text": "Barcode area, 2 × 1.2 in"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

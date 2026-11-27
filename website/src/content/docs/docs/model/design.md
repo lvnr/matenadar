@@ -3,7 +3,7 @@ title: The design
 description: Colours, font stacks, paragraph and character styles, hyphenation exceptions, figure numbering, masters and components.
 ---
 
-`design` holds everything a book looks like, apart from the content: named colours and font stacks, text styles, the masters pages are cut from, reusable components, hyphenation exceptions and figure numbering.
+`design` holds everything a document looks like, apart from the content: named colours and font stacks, text styles, the masters pages are cut from, reusable components, hyphenation exceptions and figure numbering.
 
 ```json
 "design": {

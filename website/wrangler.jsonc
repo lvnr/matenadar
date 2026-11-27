@@ -1,10 +1,11 @@
 // Cloudflare Workers Static Assets: the static build in ./dist, no Worker script.
-//   npm run build && npx wrangler deploy
+//   npm run deploy    (astro build, the 3D desk into dist/fancy/, wrangler deploy)
+// The old docs host redirects here: redirect/wrangler.jsonc.
 {
-	"name": "matenadar-docs",
+	"name": "matenadar",
 	"compatibility_date": "2026-11-26",
 	"routes": [
-		{ "pattern": "matenadar-docs.levships.com", "custom_domain": true }
+		{ "pattern": "matenadar.levships.com", "custom_domain": true }
 	],
 	"assets": {
 		"directory": "./dist",

@@ -3,7 +3,7 @@ title: Content
 description: Sections that flow through masters, pages laid out by hand, two-page spreads, on_page, placed elements, blocks and inline runs.
 ---
 
-`content` is the book, in order. Each item is one of three kinds:
+`content` is the document, in order. Each item is one of three kinds:
 
 - a **section**: a flow of blocks poured through the pages of a master,
 - a **page**: laid out by hand from placed elements,

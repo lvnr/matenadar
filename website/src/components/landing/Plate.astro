@@ -1,0 +1,160 @@
+---
+/**
+ * One example: the document's JSON beside what the engine made of it.
+ * The JSON is the file in `examples/`, the pages are the engine's renders
+ * (scripts/render-examples.py), and the boxes under Inspect are its layout
+ * report. A line of JSON and the box it made light each other up, from
+ * either side: point at the page and the JSON scrolls to what made it.
+ */
+import { jsonLines } from '../../lib/json-lines';
+
+export interface Page {
+	src: string;
+	small: string;
+	w: number;
+	h: number;
+	px: [number, number];
+	label: string;
+	nodes: { id: string; kind: string; r: [number, number, number, number] }[];
+}
+export interface Example {
+	id: string;
+	pages: Page[];
+	page_count: number;
+	layout_ms: number;
+	issues: number;
+	pdf: { href: string; bytes: number } | null;
+	json: { href: string | null; bytes: number; path: string };
+	fonts: string[];
+}
+
+interface Props {
+	ex: Example;
+	/** The giant word behind the plate. */
+	word: string;
+	title: string;
+	text: string;
+	/** The file name the panel and the command use. */
+	file: string;
+	/** The JSON shown, when not the whole file (an excerpt). */
+	source: string;
+	excerpt?: string;
+	kind: 'page' | 'poster' | 'deck' | 'spread' | 'cover';
+	flip?: boolean;
+	/** A line under the result: trim, stock, what to notice. */
+	specs: string[];
+	/** Alternative text for the pages. */
+	alt: string;
+	/** Inches of bleed included in the sheet (poster, cover): marks the trim. */
+	bleed?: number;
+	/** Spine edges in points from the sheet's left (cover). */
+	spine?: [number, number];
+	/** The trim's width and height, as the construction lines label them. */
+	dims?: [string, string];
+	/** Whether the plate draws its own construction layer (not inside the duo). */
+	guides?: boolean;
+}
+
+const { ex, word, title, text, file, source, excerpt, kind, flip = false, specs, alt, bleed = 0, spine, dims, guides = true } = Astro.props;
+const ids = new Set(ex.pages.flatMap((p) => p.nodes.map((n) => n.id)));
+const lines = jsonLines(source, ids);
+const name = file.replace(/\.json$/, '');
+const kb = (b: number) => (b < 1024 * 1024 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1024 / 1024).toFixed(1)} MB`);
+const pct = (v: number, of: number) => `${((v / of) * 100).toFixed(3)}%`;
+const pagesWord = ex.page_count === 1 ? 'page' : 'pages';
+const trim = bleed * 72;
+---
+
+<article class:list={['plate', `plate--${kind}`, { 'plate--flip': flip }]} id={`ex-${ex.id}`} data-plate data-guides={guides ? 'plate' : undefined}>
+	<div class="plate__word" aria-hidden="true"><span data-drift>{word}</span></div>
+	<header class="plate__head wrap">
+		<h3 class="plate__title" data-reveal>{title}</h3>
+		<p class="plate__text" data-reveal>{text}</p>
+	</header>
+	<div class="plate__body wrap">
+		<div class="plate__code glass" data-code>
+			<div class="code__bar">
+				<span class="code__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+				<span class="code__file">{file}</span>
+				<span class="code__meta">{excerpt ?? `${kb(ex.json.bytes)} · ${lines.length} lines`}</span>
+				<button class="code__copy" type="button" data-copy-from={`#code-${ex.id}`} aria-label={`Copy ${file}`}>Copy</button>
+			</div>
+			<pre class="code__pre" tabindex="0" aria-label={`${file}, the document`}><code id={`code-${ex.id}`}>{lines.map((l) => <span class="ln" data-id={l.id} set:html={l.html + '\n'} />)}</code></pre>
+			<div class="code__run">
+				<span class="code__cmd"><span class="code__prompt" aria-hidden="true">$</span> matenadar build {file} -o {name}.pdf</span>
+				<span class="code__out">{ex.page_count} {pagesWord} · {ex.layout_ms} ms · {ex.issues === 1 ? '1 issue' : `${ex.issues} issues`}</span>
+			</div>
+		</div>
+
+		<figure class="plate__result" data-result>
+			<div class="stage" data-stage data-dims={dims?.join('|')}>
+				<div class="stage__inner">
+					{
+						ex.pages.map((p, i) => (
+							<div
+								class:list={['sheet', { 'sheet--active': i === 0 }]}
+								style={`--ar: ${p.w} / ${p.h}`}
+								data-sheet={i}
+							>
+								<img
+									src={p.src}
+									srcset={`${p.small} ${Math.round(p.px[0] * 0.42)}w, ${p.src} ${p.px[0]}w`}
+									sizes={kind === 'cover' ? '(min-width: 1100px) 60vw, 92vw' : kind === 'spread' ? '(min-width: 1100px) 28vw, 46vw' : '(min-width: 1100px) 40vw, 90vw'}
+									width={p.px[0]}
+									height={p.px[1]}
+									alt={i === 0 ? alt : ''}
+									loading="lazy"
+									decoding="async"
+									draggable="false"
+								/>
+								<div class="sheet__boxes" aria-hidden="true">
+									{p.nodes.map((n) => (
+										<span
+											class="box"
+											data-id={n.id}
+											data-r={[n.r[0] / p.w, n.r[1] / p.h, n.r[2] / p.w, n.r[3] / p.h].map((v) => v.toFixed(5)).join(',')}
+											style={`left:${pct(n.r[0], p.w)};top:${pct(n.r[1], p.h)};width:${pct(n.r[2] - n.r[0], p.w)};height:${pct(n.r[3] - n.r[1], p.h)}`}
+										>
+											<b>{n.id}</b>
+										</span>
+									))}
+								</div>
+								{trim > 0 && (
+									<div class="sheet__trim" aria-hidden="true" data-trim style={`--tx:${pct(trim, p.w)};--ty:${pct(trim, p.h)}`} />
+								)}
+								{spine && (
+									<div class="sheet__folds" aria-hidden="true">
+										<i style={`left:${pct(spine[0], p.w)}`} />
+										<i style={`left:${pct(spine[1], p.w)}`} />
+										<span class="fold-label" style={`left:${pct(trim + (spine[0] - trim) / 2, p.w)}`}>Back</span>
+										<span class="fold-label fold-label--spine" style={`left:${pct((spine[0] + spine[1]) / 2, p.w)}`}>Spine</span>
+										<span class="fold-label" style={`left:${pct((spine[1] + p.w - trim) / 2, p.w)}`}>Front</span>
+									</div>
+								)}
+							</div>
+						))
+					}
+				</div>
+			</div>
+			{
+				kind === 'deck' && (
+					<div class="deck-nav" role="tablist" aria-label="Slides">
+						{ex.pages.map((p, i) => (
+							<button type="button" role="tab" class="deck-nav__thumb" aria-selected={i === 0 ? 'true' : 'false'} data-slide={i} aria-label={`Slide ${i + 1}`}>
+								<img src={p.small} alt="" width={Math.round(p.px[0] * 0.42)} height={Math.round(p.px[1] * 0.42)} loading="lazy" decoding="async" />
+							</button>
+						))}
+					</div>
+				)
+			}
+			<figcaption class="plate__caption">
+				<span class="plate__specs">{specs.join(' · ')}</span>
+				<span class="plate__actions">
+					{ids.size > 0 && <button class="chip" type="button" data-inspect aria-pressed="false">Inspect</button>}
+					{ex.pdf && <a class="chip" href={ex.pdf.href} download>PDF · {kb(ex.pdf.bytes)}</a>}
+					{ex.json.href && <a class="chip" href={ex.json.href} download>JSON</a>}
+				</span>
+			</figcaption>
+		</figure>
+	</div>
+</article>

@@ -3,7 +3,7 @@ title: WebAssembly API
 description: The @matenadar/wasm package. Matenadar.load, openFrom, MatenadarClient.start with a jsDelivr CDN module, and every method of the page editor's API, from matenadar.d.ts.
 ---
 
-`@matenadar/wasm` is the engine built to WebAssembly. It lays out, edits, inspects, checks and renders books to SVG, PNG, PDF and EPUB 3 in browsers, workers, Node (18 and later), Bun and Deno, and it lays out exactly as the command line does: the same document, fonts and pictures give the same pages, which `fingerprint()` shows.
+`@matenadar/wasm` is the engine built to WebAssembly. It lays out, edits, inspects, checks and renders documents to SVG, PNG, PDF and EPUB 3 in browsers, workers, Node (18 and later), Bun and Deno, and it lays out exactly as the command line does: the same document, fonts and pictures give the same pages, which `fingerprint()` shows.
 
 ```sh
 npm install @matenadar/wasm
@@ -99,7 +99,7 @@ for (const path of files) await mt.addFile(path, await (await fetch(`/book/${pat
 const { pages, diagnostics } = await mt.open(doc);
 ```
 
-Give the browser **every face the book uses**, bold and italic included. `matenadar fonts --used doc.json` lists the faces a command-line layout drew with and the file each came from; `fontsUsed()` gives the browser’s. The command line also has Typst’s own faces built in; a WebAssembly build made with `scripts/wasm.sh --embedded-fonts` adds them too (about 5 MB).
+Give the browser **every face the document uses**, bold and italic included. `matenadar fonts --used doc.json` lists the faces a command-line layout drew with and the file each came from; `fontsUsed()` gives the browser’s. The command line also has Typst’s own faces built in; a WebAssembly build made with `scripts/wasm.sh --embedded-fonts` adds them too (about 5 MB).
 
 ## Methods
 

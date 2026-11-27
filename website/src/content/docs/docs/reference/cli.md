@@ -21,7 +21,7 @@ matenadar <command> [arguments] [options]
 | [`bench`](#bench) | layout and edit timings |
 | [`serve`](#serve) | one document kept open, driven by JSON lines on stdin |
 | `help` | the usage text (also `--help`, `-h`, or no command) |
-| `--version` | prints `matenadar 0.2.0` (also `version`, `-V`) |
+| `--version` | prints `matenadar 0.3.0` (also `version`, `-V`) |
 
 ## Common options
 
@@ -35,8 +35,8 @@ matenadar <command> [arguments] [options]
 ### How arguments are read
 
 - The document is the first positional argument; `apply` takes a second (`ops.json`).
-- `--bleed`, `--check`, `--json`, `--no-system-fonts`, `--embed-fonts`, `--no-live-text` and `--used` are switches. Every other `--option`, and `-o`, takes the next argument as its value.
-- Given twice, an option’s last value wins, except `--fonts`, which adds up.
+- `--bleed`, `--check`, `--json`, `--no-system-fonts`, `--embed-fonts`, `--no-live-text`, `--used` and `--no-tagged` are switches. Every other `--option`, and `-o`, takes the next argument as its value.
+- Given twice, an option’s last value wins, except `--fonts`, `--pdf-standard` and `--attach`, which add up.
 - `--pages` takes a list of pages and ranges: `1-3,7`, or `5-` for page 5 to the end. Pages outside the document are ignored.
 - Lengths are as in the model: `0.25in`, `6mm`, `18pt`, `18`.
 
@@ -53,7 +53,8 @@ Commands that lay a document out validate it first, and stop with every problem 
 ## build
 
 ```text
-matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check] [--json]
+matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check]
+                [--pdf-standard STD] [--no-tagged] [--attach SPEC] [--max-ppi N] [--pdf-timestamp ISO] [--json]
 ```
 
 Lays the document out and writes the PDF.
@@ -67,6 +68,11 @@ Lays the document out and writes the PDF.
 | `--pages LIST` | which pages to write as PNG and SVG (the PDF has them all) | all |
 | `--bleed` | draw PNG and SVG pages with their bleed | off |
 | `--check` | run the [checks](#check) after building (with `check`’s options) | off |
+| `--pdf-standard STD` | PDF standard (repeatable): `1.4`–`2.0`, `a-1b`–`a-4e`, `ua-1` | from `doc.pdf` (`1.7`) |
+| `--no-tagged` | disable tagged PDF structure | tagged on |
+| `--attach SPEC` | embed a file (repeatable): `path` or `name:path[:mime[:relationship[:description]]]` | — |
+| `--max-ppi N` | deterministically downsample oversized raster images to at most `N` PPI | from `doc.print.max_ppi` |
+| `--pdf-timestamp ISO` | UTC creation timestamp (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SSZ`) | deterministic fallback when required |
 
 ```console
 $ matenadar build book.json -o book.pdf --png proofs --dpi 150 --pages 1-4 --check
@@ -183,7 +189,7 @@ Lays the document out, then makes `--edits` small edits (inserting a word at the
 matenadar serve
 ```
 
-Keeps one document laid out in memory, driven by JSON lines on stdin: `{"id", "method", "params"}` in, `{"id", "result"}` or `{"id", "error"}` out, one line each. The methods are `open`, `apply`, `render`, `pdf`, `check`, `layout`, `locate`, `position`, `document`, `save` and `quit`. See [`serve`](/docs/guides/agents/#serve) for their parameters and results.
+Keeps one document laid out in memory, driven by JSON lines on stdin: `{"id", "method", "params"}` in, `{"id", "result"}` or `{"id", "error"}` out, one line each. The methods are `open`, `apply`, `render`, `pdf`, `notes`, `check`, `layout`, `locate`, `position`, `document`, `save` and `quit`. See [`serve`](/docs/guides/agents/#serve) for their parameters and results.
 
 :::note[Debugging the generator]
 `matenadar debug-typst <doc.json>` prints the Typst program generated for a document. It is a tool for working on **matenadar** itself, not part of the stable interface: documents are always changed through the model.

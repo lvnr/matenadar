@@ -74,7 +74,7 @@ The module is too large for some static hosts (Cloudflare’s limit is 25 MiB a 
 
 ```js
 const mt = await MatenadarClient.start({
-	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.2.0/dist/matenadar.wasm',
+	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.3.0/dist/matenadar.wasm',
 });
 ```
 
@@ -122,12 +122,13 @@ Lengths are points; positions are from the trim’s top-left corner, x to the ri
 
 | Method | Returns | |
 |---|---|---|
-| `pages()` | `PageInfo[]` | every page’s trim, bleed per side, recto or verso, item, master and margins |
+| `pages()` | `PageInfo[]` | every page’s trim, bleed per side, recto or verso, item, master, margins and speaker `notes` |
 | `spreads()` | `number[][]` | pages as they face each other: `[[1], [2, 3], …]` |
+| `notes(page)` | `string \| null` | speaker notes for a 1-based page, or `null` |
 | `svg(page, {bleed})` | `string` | a page as SVG |
 | `png(page, {scale, dpi, bleed})` | `Uint8Array` | a page as PNG; `scale` is pixels per point (1 = 72 dpi), or give `dpi` |
 | `rgba(page, {scale, bleed})` | `{width, height, data}` | straight RGBA pixels, for a canvas |
-| `pdf()` | `Uint8Array` | the whole document as PDF |
+| `pdf(options?)` | `Uint8Array` | the whole document as PDF (`{standard, standards, tagged, attachments, max_ppi, timestamp}`) |
 | `fingerprint()` | `string[]` | a hash per page, as `matenadar fingerprint` gives |
 | `fontsUsed()` | `UsedFont[]` | the faces the layout drew with, and on which pages |
 
@@ -203,6 +204,17 @@ interface PageInfo {
 	trim: { w: number; h: number }; // the trim box is [0, 0, w, h]
 	bleed: { top: number; right: number; bottom: number; left: number };
 	margins: { top: number; bottom: number; inside: number; outside: number } | null;
+	notes?: string;
+}
+
+interface PdfOptions {
+	standard?: '1.4' | '1.5' | '1.6' | '1.7' | '2.0' | 'a-1b' | 'a-1a' | 'a-2b' | 'a-2u' | 'a-2a' | 'a-3b' | 'a-3u' | 'a-3a' | 'a-4' | 'a-4f' | 'a-4e' | 'ua-1';
+	standards?: PdfOptions['standard'][];
+	tagged?: boolean;
+	attachments?: { name: string; data?: ArrayBuffer | ArrayBufferView | string; src?: string; mime?: string; description?: string; relationship?: 'data' | 'source' | 'alternative' | 'supplement' | 'unspecified' }[];
+	max_ppi?: number;
+	maxPpi?: number;
+	timestamp?: string;
 }
 
 interface Rect { x0: number; y0: number; x1: number; y1: number }
@@ -257,7 +269,7 @@ The full declarations ship in the package as `matenadar.d.ts` and `client.d.ts`.
 import { MatenadarClient } from '@matenadar/wasm/client';
 
 const mt = await MatenadarClient.start({
-	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.2.0/dist/matenadar.wasm',
+	wasm: 'https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.3.0/dist/matenadar.wasm',
 });
 for (const font of fontFiles) await mt.addFont(font); // ArrayBuffers
 const { pages } = await mt.open(doc);

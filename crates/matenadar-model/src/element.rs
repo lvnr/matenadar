@@ -127,6 +127,8 @@ pub enum Element {
     Calendar(crate::widgets::Calendar),
     Panels(crate::widgets::Panels),
     Balloon(crate::widgets::Balloon),
+    Barcode(crate::widgets::BarcodeEl),
+    Chart(crate::widgets::ChartEl),
 }
 
 impl Element {
@@ -146,6 +148,8 @@ impl Element {
             Element::Calendar(e) => &e.place,
             Element::Panels(e) => &e.place,
             Element::Balloon(e) => &e.place,
+            Element::Barcode(e) => &e.place,
+            Element::Chart(e) => &e.place,
             Element::Line(_) => return None,
         })
     }
@@ -175,6 +179,8 @@ impl Element {
             Element::Calendar(_) => "calendar",
             Element::Panels(_) => "panels",
             Element::Balloon(_) => "balloon",
+            Element::Barcode(_) => "barcode",
+            Element::Chart(_) => "chart",
         }
     }
 }

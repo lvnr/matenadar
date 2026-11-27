@@ -377,12 +377,57 @@ pub struct Margins {
     pub right: Option<Length>,
 }
 
+/// Ergonomic page-size preset names accepted by `Master.preset`.
+pub const MASTER_PRESETS: [&str; 13] = [
+    "a4",
+    "a4-landscape",
+    "a5",
+    "a5-landscape",
+    "a3",
+    "letter",
+    "letter-landscape",
+    "legal",
+    "16:9",
+    "4:3",
+    "social",
+    "social-portrait",
+    "social-story",
+];
+
+/// Exact `(width, height)` trim dimensions for a named `Master.preset`.
+pub fn master_preset_size(preset: &str) -> Option<(Length, Length)> {
+    use crate::units::{PT_PER_IN, PT_PER_MM};
+    let mm = |v: f64| Length::Pt(v * PT_PER_MM);
+    let inch = |v: f64| Length::Pt(v * PT_PER_IN);
+    Some(match preset.trim().to_ascii_lowercase().as_str() {
+        "a4" => (mm(210.0), mm(297.0)),
+        "a4-landscape" => (mm(297.0), mm(210.0)),
+        "a5" => (mm(148.0), mm(210.0)),
+        "a5-landscape" => (mm(210.0), mm(148.0)),
+        "a3" => (mm(297.0), mm(420.0)),
+        "letter" => (inch(8.5), inch(11.0)),
+        "letter-landscape" => (inch(11.0), inch(8.5)),
+        "legal" => (inch(8.5), inch(14.0)),
+        "16:9" => (Length::Pt(960.0), Length::Pt(540.0)),
+        "4:3" => (Length::Pt(720.0), Length::Pt(540.0)),
+        "social" => (Length::Pt(1080.0), Length::Pt(1080.0)),
+        "social-portrait" => (Length::Pt(1080.0), Length::Pt(1350.0)),
+        "social-story" => (Length::Pt(1080.0), Length::Pt(1920.0)),
+        _ => return None,
+    })
+}
+
 /// A page master: the trim, the flow area, and what is drawn on every page.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Master {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inherits: Option<String>,
+    /// Ergonomic page-size shorthand (`"a4"`, `"letter"`, `"a5"`, `"16:9"`,
+    /// `"4:3"`, `"social"`…). Expands to exact trim dimensions when `width`
+    /// or `height` is omitted.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preset: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub width: Option<Length>,
     #[serde(skip_serializing_if = "Option::is_none")]

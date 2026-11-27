@@ -43,6 +43,16 @@ pub enum Block {
     Lof(Lof),
     /// Blocks that must stay on one page.
     Keep(Keep),
+    /// A single horizontal row of cells with track widths and gutters.
+    Row(Row),
+    /// A two-dimensional flow grid of cells with tracks, gutters, and spans.
+    Grid(Grid),
+    /// A horizontal divider rule in the flow.
+    Rule(RuleBlock),
+    /// A 1D vector barcode in the flow.
+    Barcode(BarcodeBlock),
+    /// A vector chart in the flow.
+    Chart(ChartBlock),
 }
 
 impl Block {
@@ -64,6 +74,11 @@ impl Block {
             Block::Keep(b) => b.id.as_deref(),
             Block::Columns(b) => b.id.as_deref(),
             Block::PageBreak(b) => b.id.as_deref(),
+            Block::Row(b) => b.id.as_deref(),
+            Block::Grid(b) => b.id.as_deref(),
+            Block::Rule(b) => b.id.as_deref(),
+            Block::Barcode(b) => b.id.as_deref(),
+            Block::Chart(b) => b.id.as_deref(),
             Block::Space(_) | Block::ColumnBreak(_) => None,
         }
     }
@@ -88,6 +103,11 @@ impl Block {
             Block::Toc(_) => "toc",
             Block::Lof(_) => "lof",
             Block::Keep(_) => "keep",
+            Block::Row(_) => "row",
+            Block::Grid(_) => "grid",
+            Block::Rule(_) => "rule",
+            Block::Barcode(_) => "barcode",
+            Block::Chart(_) => "chart",
         }
     }
 }
@@ -559,6 +579,159 @@ pub struct Keep {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     pub blocks: Vec<Block>,
+}
+
+/// One cell inside a `row` or `grid` flow block.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct LayoutCell {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    pub blocks: Vec<Block>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub colspan: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rowspan: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fill: Option<Fill>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stroke: Option<Border>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radius: Option<Radius>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inset: Option<Insets>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub align: Option<Align>,
+    /// Vertical alignment: `"top"` (default), `"middle"`, or `"bottom"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valign: Option<String>,
+    /// Default paragraph style for blocks inside this cell.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub style: Option<String>,
+}
+
+/// A horizontal row of layout cells (`"type": "row"`).
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Row {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Column track widths (`"auto"`, `"1fr"`, `"120pt"`, `"30%"`…). Defaults
+    /// to equal `"1fr"` tracks matching the number of cells.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub columns: Vec<Track>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gutter: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub align: Option<Align>,
+    /// Vertical alignment across cells: `"top"` (default), `"middle"`, `"bottom"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valign: Option<String>,
+    /// May split across pages (default false).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub breakable: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub style: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_before: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_after: Option<Length>,
+    pub cells: Vec<LayoutCell>,
+}
+
+/// A 2D layout grid of cells (`"type": "grid"`).
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Grid {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Column track widths (`"auto"`, `"1fr"`, `"2fr"`, `"120pt"`, `"30%"`…).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub columns: Vec<Track>,
+    /// Optional explicit row track heights.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub rows: Vec<Track>,
+    /// Shorthand gutter for both axes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gutter: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub column_gutter: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub row_gutter: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub align: Option<Align>,
+    /// Vertical alignment in cells: `"top"` (default), `"middle"`, `"bottom"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valign: Option<String>,
+    /// May split across pages (default true).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub breakable: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub style: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_before: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_after: Option<Length>,
+    pub cells: Vec<LayoutCell>,
+}
+
+/// A horizontal divider rule in the flow (`"type": "rule"`).
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct RuleBlock {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stroke: Option<crate::style::Stroke>,
+    /// Rule width (default `"100%"`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub width: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub align: Option<Align>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_before: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_after: Option<Length>,
+}
+
+/// A 1D vector barcode as a flow block (`"type": "barcode"`).
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct BarcodeBlock {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub w: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub align: Option<Align>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_before: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_after: Option<Length>,
+    #[serde(flatten)]
+    pub spec: crate::widgets::BarcodeSpec,
+}
+
+/// A print-crisp vector chart as a flow block (`"type": "chart"`).
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct ChartBlock {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub w: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub align: Option<Align>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_before: Option<Length>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub space_after: Option<Length>,
+    #[serde(flatten)]
+    pub spec: crate::widgets::ChartSpec,
 }
 
 /// Inline content: text runs, notes, fields, references and line breaks.

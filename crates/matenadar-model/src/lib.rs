@@ -28,16 +28,34 @@ pub mod widgets;
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
-pub use block::{Block, Inline, Run};
+pub use block::{
+    BarcodeBlock, Block, ChartBlock, Grid, Inline, LayoutCell, Row, RuleBlock, Run,
+};
 pub use component::Component;
 pub use element::{Element, Place};
 pub use ops::{Op, OpError};
-pub use style::{Design, Master, Style, TextStyle};
+pub use style::{Design, MASTER_PRESETS, Master, Style, TextStyle, master_preset_size};
 pub use units::{Color, Length};
 pub use validate::{Problem, validate};
+pub use widgets::{BarcodeEl, BarcodeSpec, ChartEl, ChartSeries, ChartSpec};
 
 /// The model version this crate reads and writes.
 pub const VERSION: &str = "1";
+
+/// Valid PDF standard identifiers (`pdf.standard` / `pdf.standards`).
+pub const PDF_STANDARDS: [&str; 17] = [
+    "1.4", "1.5", "1.6", "1.7", "2.0", "a-1b", "a-1a", "a-2b", "a-2u", "a-2a", "a-3b", "a-3u",
+    "a-3a", "a-4", "a-4f", "a-4e", "ua-1",
+];
+
+/// Valid PDF/A-3 associated file relationships (`pdf.attachments[].relationship`).
+pub const PDF_RELATIONSHIPS: [&str; 5] = [
+    "data",
+    "source",
+    "alternative",
+    "supplement",
+    "unspecified",
+];
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Document {
@@ -58,6 +76,83 @@ pub struct Document {
     /// How the book is printed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub print: Option<Print>,
+    /// PDF export compliance settings (standards, tagging, embedded files).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pdf: Option<PdfConfig>,
+}
+
+/// PDF export settings: standards (PDF/A-2b, PDF/A-3b, PDF/UA-1…), tagging,
+/// and embedded file attachments (e.g. Factur-X / ZUGFeRD XML).
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct PdfConfig {
+    /// Single PDF standard shorthand (`"1.7"`, `"a-2b"`, `"a-3b"`, `"ua-1"`…).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub standard: Option<String>,
+    /// List of compatible PDF standards (e.g. `["a-3b", "ua-1"]`).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub standards: Vec<String>,
+    /// Emit tagged PDF structure (default true; forced true for PDF/UA-1).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tagged: Option<bool>,
+    /// Files embedded in the PDF (`/EmbeddedFiles`, `/AF` for PDF/A-3).
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub attachments: Vec<PdfAttachment>,
+}
+
+impl PdfConfig {
+    /// Combined, deduplicated standard names from `standard` and `standards`.
+    pub fn resolved_standards(&self) -> Vec<String> {
+        let mut out = Vec::new();
+        if let Some(s) = &self.standard
+            && !out.contains(s)
+        {
+            out.push(s.clone());
+        }
+        for s in &self.standards {
+            if !out.contains(s) {
+                out.push(s.clone());
+            }
+        }
+        out
+    }
+}
+
+/// A file embedded into the exported PDF.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+pub struct PdfAttachment {
+    /// Filename stored inside the PDF (e.g. `"factur-x.xml"`).
+    pub name: String,
+    /// Asset path relative to the document's root.
+    pub src: String,
+    /// MIME type (e.g. `"text/xml"`, `"application/xml"`, `"text/csv"`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mime: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// Associated file relationship: `"data"`, `"source"`, `"alternative"`,
+    /// `"supplement"`, or `"unspecified"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub relationship: Option<String>,
+}
+
+/// Speaker notes on a page, section, or spread: omitted from standard page
+/// renders and exposed via inspection/WASM APIs.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum Notes {
+    Text(String),
+    Runs(Vec<block::Inline>),
+}
+
+impl Notes {
+    pub fn plain_text(&self) -> String {
+        match self {
+            Notes::Text(s) => s.clone(),
+            Notes::Runs(runs) => block::plain_text(runs),
+        }
+    }
 }
 
 /// How the book is printed: what the checks hold it to.
@@ -72,6 +167,10 @@ pub struct Print {
     /// `{"gray": true, "contrast": 3}` for black ink).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub filter: Option<element::Filter>,
+    /// Target maximum PPI for deterministic Lanczos-3 downsampling of
+    /// oversized raster images during PDF export (e.g. `300` or `150`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_ppi: Option<f64>,
 }
 
 impl Document {
@@ -138,6 +237,14 @@ impl Item {
             Item::Spread(_) => "spread",
         }
     }
+
+    pub fn notes(&self) -> Option<&Notes> {
+        match self {
+            Item::Section(s) => s.notes.as_ref(),
+            Item::Page(p) => p.notes.as_ref(),
+            Item::Spread(s) => s.notes.as_ref(),
+        }
+    }
 }
 
 /// Two facing pages, a verso and the recto after it, under one picture:
@@ -186,6 +293,9 @@ pub struct Spread {
     pub page_from: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub numbering: Option<String>,
+    /// Speaker notes for presenter views (omitted from standard renders).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub notes: Option<Notes>,
 }
 
 /// One page of a spread: its own picture (or its part of the spread's),
@@ -236,6 +346,9 @@ pub struct Section {
     /// Paragraph style of the flow (default the master's, then `body`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub style: Option<String>,
+    /// Speaker notes for presenter views (omitted from standard renders).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub notes: Option<Notes>,
     pub flow: Vec<Block>,
 }
 
@@ -263,6 +376,9 @@ pub struct Page {
     pub start: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fill: Option<style::Fill>,
+    /// Speaker notes for presenter views (omitted from standard renders).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub notes: Option<Notes>,
     pub elements: Vec<Element>,
     /// The page laid out again and again: dated pages, a page per prompt.
     #[serde(default, skip_serializing_if = "Option::is_none")]

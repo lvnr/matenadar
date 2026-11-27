@@ -163,3 +163,110 @@ pub struct Balloon {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inset: Option<Length>,
 }
+
+/// Supported 1D barcode formats.
+pub const BARCODE_FORMATS: [&str; 6] = [
+    "code128",
+    "gs1-128",
+    "ean13",
+    "isbn13",
+    "upca",
+    "code39",
+];
+
+/// Supported chart kinds.
+pub const CHART_KINDS: [&str; 6] = ["bar", "line", "area", "donut", "pie", "sparkline"];
+
+/// Core fields shared by placed `barcode` elements and flow `barcode` blocks.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct BarcodeSpec {
+    pub data: String,
+    /// `"code128"` (default), `"gs1-128"`, `"ean13"`, `"isbn13"`, `"upca"`, or `"code39"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub format: Option<String>,
+    /// Bar colour (default black).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub color: Option<Color>,
+    /// Background fill (default transparent).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub background: Option<Color>,
+    /// Quiet zone modules on left and right (default format-dependent, typically 10).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quiet: Option<u32>,
+    /// Draw human-readable text beneath the bars (default true).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub show_text: Option<bool>,
+    /// Named style or span for the human-readable digits underneath.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text_style: Option<String>,
+}
+
+/// A 1D vector barcode placed on a page, master, or canvas.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct BarcodeEl {
+    #[serde(flatten)]
+    pub place: Place,
+    #[serde(flatten)]
+    pub spec: BarcodeSpec,
+}
+
+/// One data series inside a `chart`.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct ChartSeries {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub color: Option<Color>,
+    pub values: Vec<f64>,
+}
+
+/// Core fields shared by placed `chart` elements and flow `chart` blocks.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct ChartSpec {
+    /// `"bar"`, `"line"`, `"area"`, `"donut"`, `"pie"`, or `"sparkline"`.
+    pub kind: String,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub labels: Vec<String>,
+    pub series: Vec<ChartSeries>,
+    /// Bar orientation: `"vertical"` (default) or `"horizontal"`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub orientation: Option<String>,
+    /// Stack series in `"bar"` and `"area"` charts (default false).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stacked: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub show_legend: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub show_grid: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub show_values: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value_prefix: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value_suffix: Option<String>,
+    /// Named style or span for labels, axis ticks, legend and title.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub style: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
+    /// Gridline colour (default light grey).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grid_color: Option<Color>,
+    /// Inner cutout ratio (`0.0`–`0.85`) for `"donut"` (default `0.58`; `0.0` for `"pie"`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inner_radius: Option<f64>,
+}
+
+/// A print-crisp vector chart placed on a page, master, or canvas.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct ChartEl {
+    #[serde(flatten)]
+    pub place: Place,
+    #[serde(flatten)]
+    pub spec: ChartSpec,
+}

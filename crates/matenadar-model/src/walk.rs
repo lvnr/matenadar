@@ -85,6 +85,16 @@ pub fn block<'a>(path: &str, b: &'a Block, f: &mut dyn FnMut(&str, Node<'a>)) {
                 element(&format!("{path}.elements[{i}]"), e, f);
             }
         }
+        Block::Row(r) => {
+            for (i, c) in r.cells.iter().enumerate() {
+                blocks(&format!("{path}.cells[{i}].blocks"), &c.blocks, f);
+            }
+        }
+        Block::Grid(g) => {
+            for (i, c) in g.cells.iter().enumerate() {
+                blocks(&format!("{path}.cells[{i}].blocks"), &c.blocks, f);
+            }
+        }
         _ => {}
     }
 }

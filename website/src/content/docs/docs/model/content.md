@@ -30,6 +30,7 @@ A section is a flow poured through pages of a master:
 | `page_from` | restarts the page count |
 | `title`, `vars` | feed fields in the master’s layers: `{"field": "section.title"}`, `{"field": "section.chapter"}` |
 | `style` | the default paragraph style of the flow |
+| `notes` | optional speaker notes (string or inline runs), accepted on sections, pages and spreads; omitted from renders and exposed via `PageInfo.notes` and `notes(page)` |
 | `flow` | the [blocks](#blocks) |
 
 ## Pages
@@ -180,6 +181,8 @@ Each is drawn from its data, as vector, so an edit to the data redraws it. Lines
 - **`calendar`**: a month (`year`, `month`) from its first weekday, a box a day: `week_start` (`monday`, default, or `sunday`), `days` (seven names), `style` (day numbers), `header_style` and `header` (the weekday row’s height), `lines`, `outside: true` (the next and last months’ days, in `outside_color`).
 - **`panels`** (comic pages): `rows` of `panels` (`{"h": "1fr", "panels": [...]}`; heights and widths are lengths or shares, `"2fr"`), `gutter`, `border`, `radius`, `fill`. A panel has `id`, `w`, a picture (`src`, `crop`, `focus`, `filter`, `alt`) cut to it, `fill`, `border`, and `elements` placed from its corner (balloons, captions) and free to break its border.
 - **`balloon`**: `text` or `content` in `style` (default the design’s `balloon` style) with `set`, wrapped at `w` in lines of even length. `shape`: `speech` (default) and `whisper` (dashed) ellipses, a `thought` cloud, a `shout` burst, a `caption` box. `tail` is the point the tail runs to (in the same coordinates as `x`, `y`); the balloon and its tail are one outline. `fill`, `stroke`, `inset`.
+- **`barcode`**: pure-Rust 1D vector barcodes (also available as a flow block): `data`, `format` (`code128` default, `gs1-128`, `ean13`, `isbn13`, `upca`, `code39`), `w`, `h`, `color`, `background`, `quiet` (modules), `show_text` (default `true`), `text_style`. Check digits for `ean13`, `isbn13` and `upca` are computed automatically when omitted.
+- **`chart`**: print-crisp vector SVG charts with live Typst text labels (also available as a flow block): `kind` (`bar`, `line`, `area`, `donut`, `pie`, `sparkline`), `w`, `h`, `labels`, `series` (`[{"name", "color", "values"}]`), `orientation` (`vertical` default, `horizontal` for `bar`), `stacked`, `show_legend`, `show_grid`, `show_values`, `value_prefix`, `value_suffix`, `style`, `title`, `grid_color`, `inner_radius` (0–0.9 for `donut`).
 
 ## Blocks
 
@@ -205,6 +208,11 @@ Blocks make up flows, text frames, boxes and block components.
 | `toc` | the contents: `depth`, `style` (default `toc-1`, `toc-2`…), `leader` (such as `"."`) |
 | `lof` | the list of figures: every numbered figure’s number, caption and page; `style` (default `lof`, then `toc-1`), `leader` |
 | `keep` | `blocks` that stay on one page |
+| `row` | horizontal flow layout: `id`, `columns` (lengths, `"auto"`, `"1fr"`, `"2fr"`, `"30%"`), `gutter`, `align`, `valign`, `breakable` (default `false`), `style`, `space_before`, `space_after`, `cells` (`{"id", "blocks", "colspan", "rowspan", "fill", "stroke", "radius", "inset", "align", "valign", "style"}`) |
+| `grid` | 2D flow grid: `id`, `columns`, `rows`, `gutter`, `column_gutter`, `row_gutter`, `align`, `valign`, `breakable` (default `true`), `style`, `space_before`, `space_after`, `cells` (same cell shape as `row`, with full `id` tracking and `ops` support) |
+| `rule` | horizontal divider: `id`, `stroke`, `width` (default `"100%"`), `align`, `space_before`, `space_after` |
+| `barcode` | 1D vector barcode in flow: `id`, `data`, `format`, `w`, `h`, `align`, `color`, `background`, `quiet`, `show_text`, `text_style`, `space_before`, `space_after` |
+| `chart` | vector SVG + live-text chart in flow: `id`, `kind`, `w`, `h`, `align`, `labels`, `series`, `orientation`, `stacked`, `show_legend`, `show_grid`, `show_values`, `value_prefix`, `value_suffix`, `style`, `title`, `grid_color`, `inner_radius`, `space_before`, `space_after` |
 
 **Plates.** A figure’s `plate` is `half` (half the text area, at the foot of a page unless `float: top`), `full` (a page of its own within the margins: the whole picture as large as it fits, its caption under it) or `bleed` (a page of its own to the bleed, the master’s elements hidden there, the caption on a panel at the foot of the text area). Plates float: the text runs on past them.
 

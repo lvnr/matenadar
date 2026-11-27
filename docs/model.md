@@ -10,7 +10,8 @@ layout program from it on every build and never stores that program.
   "fonts": ["design/fonts"],
   "design": {"colors": {}, "fonts": {}, "base": {}, "styles": {}, "spans": {}, "masters": {}, "components": {}, "hyphenation": {}, "figures": {}},
   "content": [ {"type": "section", …}, {"type": "page", …}, {"type": "spread", …} ],
-  "print": {"ink": "black"}
+  "print": {"ink": "black", "max_ppi": 300},
+  "pdf": {"standard": "a-3b", "tagged": true, "attachments": [{"name": "factur-x.xml", "src": "data/factur-x.xml", "mime": "text/xml", "relationship": "data"}]}
 }
 ```
 
@@ -19,12 +20,25 @@ layout program from it on every build and never stores that program.
 - **Asset root:** image, SVG and font paths are relative to it. On the command
   line it defaults to the document's folder; `--root` sets it. Nothing outside
   it can be read.
-- `print`: how the book is printed, which the checks hold it to.
+- `print`: how the document is printed, which the checks and exporter hold it to.
   - `ink`: `"black"` (a black-ink interior: anything drawn in colour is
     reported, `color-in-black-ink`) or `"color"`.
   - `filter`: a filter for every raster picture that sets none of its own,
     such as `{"gray": true, "contrast": 3}` (see Pictures). A picture opts
     out with `"filter": {}`.
+  - `max_ppi`: optional target maximum PPI for deterministic Lanczos-3
+    downsampling of oversized raster images during PDF export (SVGs and
+    images already at or below `max_ppi` are left untouched).
+- `pdf`: PDF export compliance and attachments.
+  - `standard`: single PDF standard shorthand (`"1.4"`–`"2.0"`, `"a-1b"`,
+    `"a-1a"`, `"a-2b"`, `"a-2u"`, `"a-2a"`, `"a-3b"`, `"a-3u"`, `"a-3a"`,
+    `"a-4"`, `"a-4f"`, `"a-4e"`, `"ua-1"`).
+  - `standards`: list of compatible standards (e.g. `["a-3b", "ua-1"]`).
+  - `tagged`: emit tagged PDF structure (default `true`).
+  - `attachments`: files embedded in the PDF (`/EmbeddedFiles`, `/AF` for
+    PDF/A-3): `{"name", "src", "mime", "description", "relationship"}`, where
+    `relationship` is `"data"`, `"source"`, `"alternative"`, `"supplement"`,
+    or `"unspecified"`.
 
 ## Units, colours, coordinates
 
@@ -152,6 +166,7 @@ A master is a page size, a flow area and what is drawn on every page:
 
 ```json
 "body": {
+  "preset": "a4",
   "width": "6in", "height": "9in", "bleed": "0.125in",
   "margins": {"top": "0.8in", "bottom": "0.9in", "inside": "0.8in", "outside": "0.7in"},
   // or the same on every page: {"top", "bottom", "left", "right"}
@@ -164,6 +179,13 @@ A master is a page size, a flow area and what is drawn on every page:
   "inherits": "another master"
 }
 ```
+
+`preset` fills in standard trim dimensions when `width` or `height` are omitted
+(explicit `width`/`height` override it): `a4` (210 × 297 mm), `a4-landscape`,
+`a5` (148 × 210 mm), `a5-landscape`, `a3` (297 × 420 mm), `letter` (8.5 × 11 in),
+`letter-landscape`, `legal` (8.5 × 14 in), `16:9` (960 × 540 pt), `4:3` (720 ×
+540 pt), `social` (1080 × 1080 pt), `social-portrait` (1080 × 1350 pt), and
+`social-story` (1080 × 1920 pt).
 
 Margins mirror (`inside` is the spine side) unless `left` or `right` is
 given.
@@ -221,6 +243,9 @@ A section is a flow poured through pages of a master:
 - `page_from` restarts the page count.
 - `title` and `vars` feed fields in the master's layers:
   `{"field": "section.title"}`, `{"field": "section.chapter"}`.
+- `notes`: optional speaker notes (a plain string or list of inline runs),
+  accepted on sections, pages, and spreads. Omitted from standard renders and
+  exposed via `PageInfo.notes` and `Session::notes(page)` / `mt.notes(page)`.
 
 ### Pages
 
@@ -433,6 +458,17 @@ Lines are SVG; words are live text in the element's `style`.
   a `thought` cloud, a `shout` burst, a `caption` box. `tail` is the point the
   tail runs to (in the same coordinates as `x`, `y`); the balloon and its tail
   are one outline. `fill`, `stroke`, `inset`.
+- **`barcode`**: pure-Rust 1D vector barcodes (also available as a flow block):
+  `data`, `format` (`code128` default, `gs1-128`, `ean13`, `isbn13`, `upca`,
+  `code39`), `w`, `h`, `color`, `background`, `quiet` (modules), `show_text`
+  (default `true`), `text_style`. Check digits for `ean13`, `isbn13`, and
+  `upca` are computed automatically when omitted.
+- **`chart`**: print-crisp vector SVG charts with live Typst text labels (also
+  available as a flow block): `kind` (`bar`, `line`, `area`, `donut`, `pie`,
+  `sparkline`), `w`, `h`, `labels`, `series` (`[{"name", "color", "values"}]`),
+  `orientation` (`vertical` default, `horizontal` for `bar`), `stacked` (bool),
+  `show_legend`, `show_grid`, `show_values`, `value_prefix`, `value_suffix`,
+  `style`, `title`, `grid_color`, `inner_radius` (0–0.9 for `donut`).
 
 ## Blocks (in flows and frames)
 
@@ -456,6 +492,11 @@ Lines are SVG; words are live text in the element's `style`.
 | `toc` | the contents: `depth`, `style` (default `toc-1`, `toc-2`…), `leader` (such as `"."`) |
 | `lof` | the list of figures: every numbered figure's number, caption and page; `style` (default `lof`, then `toc-1`), `leader` |
 | `keep` | `blocks` that stay on one page |
+| `row` | horizontal multi-column layout in flow: `id`, `columns` (lengths, `"auto"`, `"1fr"`, `"2fr"`, `"30%"`; defaults to equal `"1fr"` per cell), `gutter`, `align`, `valign` (`top`, `middle`, `bottom`), `breakable` (default `false`), `style`, `space_before`, `space_after`, `cells` (each `{"id", "blocks", "colspan", "rowspan", "fill", "stroke", "radius", "inset", "align", "valign", "style"}`) |
+| `grid` | 2D grid layout in flow: `id`, `columns`, `rows`, `gutter`, `column_gutter`, `row_gutter`, `align`, `valign`, `breakable` (default `true`), `style`, `space_before`, `space_after`, `cells` (same cell shape as `row`, with full `id` tracking and `ops` support) |
+| `rule` | horizontal divider in flow: `id`, `stroke`, `width` (default `"100%"`), `align`, `space_before`, `space_after` |
+| `barcode` | 1D vector barcode in flow: `id`, `data`, `format`, `w`, `h`, `align`, `color`, `background`, `quiet`, `show_text`, `text_style`, `space_before`, `space_after` |
+| `chart` | vector SVG + live-text chart in flow: `id`, `kind`, `w`, `h`, `align`, `labels`, `series`, `orientation`, `stacked`, `show_legend`, `show_grid`, `show_values`, `value_prefix`, `value_suffix`, `style`, `title`, `grid_color`, `inner_radius`, `space_before`, `space_after` |
 
 ## Inline content (runs)
 
@@ -604,7 +645,7 @@ diagnostics (checked again only on the pages that changed):
 | | |
 |---|---|
 | Loading | `assets(doc)`, `addFont(bytes)`, `addFonts(...sources)`, `addFile(path, bytes)`, `open(doc, check)`, `openFrom(doc, {root, fonts, check})`, `fonts()`, `close()` |
-| Pages | `pages()` (trim, bleed per side, recto or verso, master, margins), `spreads()`, `svg(page, {bleed})`, `png(page, {scale, bleed})`, `rgba(page, {scale, bleed})` (for a canvas), `pdf()`, `fingerprint()`, `fontsUsed()` |
+| Pages | `pages()` (trim, bleed per side, recto or verso, master, margins, speaker `notes`), `spreads()`, `notes(page)`, `svg(page, {bleed})`, `png(page, {scale, bleed})`, `rgba(page, {scale, bleed})` (for a canvas), `pdf({standard, standards, tagged, attachments, max_ppi, timestamp})`, `fingerprint()`, `fontsUsed()` |
 | Finding | `hit(page, x, y)` (the innermost node, its extent on the page, the byte offset in its words, the element around it and every ancestor), `rects(id)`, `node(id)`, `lines(id)`, `locate`, `position`, `layout`, `document()` |
 | Words | `setWords(id, runs)`, `insertText(id, offset, text)` and `deleteText(id, start, end)` (marks kept), `insertBlock({after}, block)`, `removeBlock(id)`; `splitBlock(id, offset, newId, end)` (the words after the offset go to a new block after it, with its style and overrides but not those of a paragraph's start; a heading split at its end is followed by a paragraph; with `end`, the words `offset..end` go first, as Enter over a selection does, in the same step), `joinBlock(id)` (to the paragraph or heading before it: `{into, offset}`), `markText(id, start, end, field, value)` (`em`, `strong`, `span`, `color`, `size`, `tracking`, `case`… on a range of a paragraph's, heading's or text frame's words; null takes the mark off) |
 | The caret | offsets are bytes of the node's plain text: `caret(id, offset, {upstream})` (`{page, x, y, h}`, `y` the line's top; where a line breaks inside a word, `upstream` keeps the caret at the end of the line before), `offsetAt(id, page, x, y)` (the nearest place in the words to a point), `selectionRects(id, start, end)` (a rectangle per line), `textLines(id)` (`[{page, rect, start, end}]`). They follow the glyphs, so they work in text frames (whose words are the frame's, blank lines included) and beside a drop cap |
@@ -630,7 +671,7 @@ then `http://localhost:5199/demo/editor/`.
 ## Command line
 
 ```
-matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check] [--json]
+matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check] [--pdf-standard STD] [--no-tagged] [--attach SPEC] [--max-ppi N] [--pdf-timestamp ISO] [--json]
 matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--no-live-text] [--cover image.jpg] [--identifier urn:isbn:…]
 matenadar check <doc.json> [--preset kdp] [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black] [--json]
 matenadar validate <doc.json>

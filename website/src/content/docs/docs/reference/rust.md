@@ -3,7 +3,7 @@ title: Rust crates
 description: The matenadar umbrella crate and its feature flags, and the matenadar-model, matenadar-typst and matenadar-epub crates it re-exports.
 ---
 
-**matenadar** is a Rust workspace (edition 2024, Apache-2.0). Four crates are published on crates.io, all at version 0.2.0:
+**matenadar** is a Rust workspace (edition 2024, Apache-2.0). Four crates are published on crates.io, all at version 0.3.0:
 
 | Crate | What it holds | Depends on Typst |
 |---|---|---|
@@ -39,7 +39,7 @@ For a library without the command:
 
 ```toml
 [dependencies]
-matenadar = { version = "0.2", default-features = false, features = ["typst", "epub", "embedded-fonts"] }
+matenadar = { version = "0.3", default-features = false, features = ["typst", "epub", "embedded-fonts"] }
 ```
 
 With `default-features = false` and no features, you get the model alone.
@@ -99,6 +99,8 @@ A `Session` holds one document laid out, and lays it out again after each operat
 | `compile_time()` | the last layout’s `Duration` |
 | `problems()`, `warnings()` | `&[String]`: problems generating the layout (a missing file), and the layout engine’s warnings |
 | `pdf()` | `Result<Vec<u8>, EngineError>` |
+| `pdf_with_options(&PdfOptions)` | `Result<Vec<u8>, EngineError>`: PDF standards, tagging, programmatic `/AF` attachments, `max_ppi`, and `timestamp` |
+| `notes(page)` | `Option<String>`: speaker notes for a 1-based page |
 | `png(page, dpi, bleed)` | `Option<Vec<u8>>` |
 | `svg(page, bleed)` | `Option<String>` |
 | `rgba(page, scale, bleed)` | `Option<(u32, u32, Vec<u8>)>` |
@@ -136,7 +138,7 @@ The model with **no Typst dependency**, for tools that read, write, validate or 
 
 ```toml
 [dependencies]
-matenadar-model = "0.2"
+matenadar-model = "0.3"
 ```
 
 ## `matenadar-typst`

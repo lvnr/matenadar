@@ -64,6 +64,42 @@ pub struct PageInfo {
     pub bleed: Sides,
     /// The master's margins (the text area's distance from the trim).
     pub margins: Option<Margins>,
+    /// Speaker notes from the owning page, section, or spread (omitted from renders).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub notes: Option<String>,
+}
+
+/// An in-memory file attachment passed programmatically to [`Session::pdf_with_options`].
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct PdfAttachmentData {
+    /// Filename stored inside the PDF (e.g. `"factur-x.xml"`).
+    pub name: String,
+    /// Raw file bytes.
+    pub data: Vec<u8>,
+    /// Optional MIME type (e.g. `"text/xml"`, `"application/xml"`).
+    pub mime: Option<String>,
+    pub description: Option<String>,
+    /// `"data"`, `"source"`, `"alternative"`, `"supplement"`, or `"unspecified"`.
+    pub relationship: Option<String>,
+}
+
+/// Options for [`Session::pdf_with_options`]. Unset fields inherit from the
+/// document's `pdf` and `print` configuration.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct PdfOptions {
+    /// PDF standards to enforce (e.g. `["a-3b"]`, `["a-2b"]`, `["ua-1"]`, `["1.7"]`).
+    pub standards: Vec<String>,
+    /// Emit tagged PDF structure (`None` inherits `doc.pdf.tagged`, default `true`).
+    pub tagged: Option<bool>,
+    /// Extra programmatic in-memory attachments merged with `doc.pdf.attachments`.
+    pub attachments: Vec<PdfAttachmentData>,
+    /// Optional target maximum PPI for deterministic Lanczos-3 downsampling of
+    /// oversized raster images (`None` inherits `doc.print.max_ppi`).
+    pub max_ppi: Option<f32>,
+    /// Optional ISO-8601 UTC timestamp (`"YYYY-MM-DD"` or `"YYYY-MM-DDTHH:MM:SSZ"`).
+    /// When omitted and PDF/A or embedded attachments require a creation date,
+    /// a deterministic UTC timestamp is used.
+    pub timestamp: Option<String>,
 }
 
 /// A font face the layout drew with.
@@ -379,7 +415,9 @@ impl Session {
             .map(|(i, p)| {
                 let page = i + 1;
                 let item = starts.iter().rev().find(|s| s.0 <= page).map(|s| s.1.clone());
-                let master = item.as_deref().and_then(|id| self.doc.content.iter().find(|c| c.id() == id)).and_then(|c| c.master().map(str::to_string));
+                let item_ref = item.as_deref().and_then(|id| self.doc.content.iter().find(|c| c.id() == id));
+                let master = item_ref.and_then(|c| c.master().map(str::to_string));
+                let notes = item_ref.and_then(|c| c.notes()).map(matenadar_model::Notes::plain_text);
                 let margins = master.as_deref().and_then(|m| self.doc.design.master(m)).map(|m| {
                     let mg = m.margins.unwrap_or_default();
                     let recto = page % 2 == 1;
@@ -399,9 +437,15 @@ impl Session {
                     trim: Size { w: p.frame.width().to_pt(), h: p.frame.height().to_pt() },
                     bleed: Sides { top: p.bleed.top.to_pt(), right: p.bleed.right.to_pt(), bottom: p.bleed.bottom.to_pt(), left: p.bleed.left.to_pt() },
                     margins,
+                    notes,
                 }
             })
             .collect()
+    }
+
+    /// Speaker notes for 1-based `page`, if the owning page, section, or spread has any.
+    pub fn notes(&self, page: usize) -> Option<String> {
+        self.pages().into_iter().find(|p| p.page == page).and_then(|p| p.notes)
     }
 
     /// The font faces the layout drew with, and where each came from: what
@@ -456,8 +500,76 @@ impl Session {
     }
 
     pub fn pdf(&self) -> Result<Vec<u8>, EngineError> {
-        let opts = typst_pdf::PdfOptions { ident: typst::foundations::Smart::Custom(self.doc.meta.title.clone()), ..Default::default() };
-        typst_pdf::pdf(&self.layout, &opts).map_err(diagnostics)
+        self.pdf_with_options(&PdfOptions::default())
+    }
+
+    /// Exports the document as PDF with explicit standards, tagging,
+    /// programmatic embedded attachments, and optional deterministic image
+    /// downsampling (`max_ppi`).
+    pub fn pdf_with_options(&self, opts: &PdfOptions) -> Result<Vec<u8>, EngineError> {
+        let std_names: Vec<String> = if !opts.standards.is_empty() {
+            opts.standards.clone()
+        } else {
+            self.doc.pdf.as_ref().map(|p| p.resolved_standards()).unwrap_or_default()
+        };
+        let standards = parse_pdf_standards(&std_names)?;
+        let tagged = opts
+            .tagged
+            .or_else(|| self.doc.pdf.as_ref().and_then(|p| p.tagged))
+            .unwrap_or(true);
+        let max_ppi = opts
+            .max_ppi
+            .or_else(|| self.doc.print.as_ref().and_then(|p| p.max_ppi).map(|v| v as f32));
+
+        let mut export_layout = if opts.attachments.is_empty() {
+            None
+        } else {
+            let virt = self.virt.snapshot();
+            let mut extra = String::new();
+            for (i, att) in opts.attachments.iter().enumerate() {
+                if att.name.trim().is_empty() {
+                    return Err(EngineError("PDF attachment name cannot be empty".into()));
+                }
+                let vpath = virt.insert(&format!("pdf-att-{i}.bin"), att.data.clone());
+                extra.push_str(&crate::generate::pdf_attach_stmt(
+                    &att.name,
+                    &vpath,
+                    att.mime.as_deref(),
+                    att.description.as_deref(),
+                    att.relationship.as_deref(),
+                ));
+            }
+            let source = format!("{}\n{extra}", self.generated.source);
+            let world = MtWorld::new(source, self.files.clone(), self.fonts.clone(), virt);
+            let (layout, _) = compile(&world)?;
+            Some(crate::effects::apply(layout, &self.generated.effects))
+        };
+
+        if let Some(ppi) = max_ppi {
+            let base = export_layout.take().unwrap_or_else(|| self.layout.clone());
+            export_layout = Some(crate::resample::downsample_document(base, ppi));
+        }
+
+        let has_attachments = !opts.attachments.is_empty()
+            || self.doc.pdf.as_ref().is_some_and(|p| !p.attachments.is_empty());
+        let needs_date = has_attachments || std_names.iter().any(|s| s.trim().to_ascii_lowercase().starts_with("a-"));
+        let timestamp = match opts.timestamp.as_deref() {
+            Some(ts) => Some(parse_pdf_timestamp(ts)?),
+            None if needs_date => Some(typst_pdf::Timestamp::new_utc(
+                typst::foundations::Datetime::from_ymd_hms(2026, 1, 1, 0, 0, 0).expect("valid fallback date"),
+            )),
+            None => None,
+        };
+
+        let target = export_layout.as_ref().unwrap_or(&self.layout);
+        let typst_opts = typst_pdf::PdfOptions {
+            ident: typst::foundations::Smart::Custom(self.doc.meta.title.clone()),
+            timestamp,
+            standards,
+            tagged,
+            ..Default::default()
+        };
+        typst_pdf::pdf(target, &typst_opts).map_err(diagnostics)
     }
 
     pub fn svg(&self, page: usize, bleed: bool) -> Option<String> {
@@ -576,6 +688,77 @@ pub(crate) fn compile(world: &MtWorld) -> Result<(PagedDocument, Vec<String>), E
         .filter(|m| !m.contains("layout did not converge") || true)
         .collect();
     warned.output.map(|d| (d, warnings)).map_err(diagnostics)
+}
+
+fn parse_pdf_standards(names: &[String]) -> Result<typst_pdf::PdfStandards, EngineError> {
+    use typst_pdf::PdfStandard;
+    if names.is_empty() {
+        return Ok(typst_pdf::PdfStandards::default());
+    }
+    let mut list = Vec::with_capacity(names.len());
+    for raw in names {
+        let s = match raw.trim().to_ascii_lowercase().as_str() {
+            "1.4" => PdfStandard::V_1_4,
+            "1.5" => PdfStandard::V_1_5,
+            "1.6" => PdfStandard::V_1_6,
+            "1.7" => PdfStandard::V_1_7,
+            "2.0" => PdfStandard::V_2_0,
+            "a-1b" | "pdf/a-1b" => PdfStandard::A_1b,
+            "a-1a" | "pdf/a-1a" => PdfStandard::A_1a,
+            "a-2b" | "pdf/a-2b" => PdfStandard::A_2b,
+            "a-2u" | "pdf/a-2u" => PdfStandard::A_2u,
+            "a-2a" | "pdf/a-2a" => PdfStandard::A_2a,
+            "a-3b" | "pdf/a-3b" => PdfStandard::A_3b,
+            "a-3u" | "pdf/a-3u" => PdfStandard::A_3u,
+            "a-3a" | "pdf/a-3a" => PdfStandard::A_3a,
+            "a-4" | "pdf/a-4" => PdfStandard::A_4,
+            "a-4f" | "pdf/a-4f" => PdfStandard::A_4f,
+            "a-4e" | "pdf/a-4e" => PdfStandard::A_4e,
+            "ua-1" | "pdf/ua-1" => PdfStandard::Ua_1,
+            other => {
+                return Err(EngineError(format!(
+                    "unknown PDF standard \"{other}\" (use {})",
+                    matenadar_model::PDF_STANDARDS.join(", ")
+                )));
+            }
+        };
+        list.push(s);
+    }
+    typst_pdf::PdfStandards::new(&list).map_err(|e| EngineError(e.message().to_string()))
+}
+
+fn parse_pdf_timestamp(raw: &str) -> Result<typst_pdf::Timestamp, EngineError> {
+    let s = raw.trim().trim_end_matches('Z');
+    let (date_part, time_part) = match s.split_once('T') {
+        Some((d, t)) => (d, Some(t)),
+        None => (s, None),
+    };
+    let d: Vec<&str> = date_part.split('-').collect();
+    if d.len() != 3 {
+        return Err(EngineError(format!("invalid PDF timestamp \"{raw}\" (use YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ)")));
+    }
+    let y: i32 = d[0].parse().map_err(|_| EngineError(format!("invalid year in timestamp \"{raw}\"")))?;
+    let m: u8 = d[1].parse().map_err(|_| EngineError(format!("invalid month in timestamp \"{raw}\"")))?;
+    let day: u8 = d[2].parse().map_err(|_| EngineError(format!("invalid day in timestamp \"{raw}\"")))?;
+    let (hh, mm, ss) = if let Some(tp) = time_part {
+        let t: Vec<&str> = tp.split(':').collect();
+        if t.len() < 2 || t.len() > 3 {
+            return Err(EngineError(format!("invalid time in timestamp \"{raw}\"")));
+        }
+        let h: u8 = t[0].parse().map_err(|_| EngineError(format!("invalid hour in timestamp \"{raw}\"")))?;
+        let min: u8 = t[1].parse().map_err(|_| EngineError(format!("invalid minute in timestamp \"{raw}\"")))?;
+        let sec: u8 = if t.len() == 3 {
+            t[2].split('.').next().unwrap_or("0").parse().map_err(|_| EngineError(format!("invalid second in timestamp \"{raw}\"")))?
+        } else {
+            0
+        };
+        (h, min, sec)
+    } else {
+        (0, 0, 0)
+    };
+    let dt = typst::foundations::Datetime::from_ymd_hms(y, m, day, hh, mm, ss)
+        .ok_or_else(|| EngineError(format!("out-of-range PDF timestamp \"{raw}\"")))?;
+    Ok(typst_pdf::Timestamp::new_utc(dt))
 }
 
 fn diagnostics(errors: typst::ecow::EcoVec<typst::diag::SourceDiagnostic>) -> EngineError {

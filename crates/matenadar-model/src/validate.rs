@@ -63,6 +63,11 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
         {
             report(&format!("{path}.inherits"), format!("no master \"{parent}\""));
         }
+        if let Some(preset) = &m.preset
+            && crate::style::master_preset_size(preset).is_none()
+        {
+            report(&format!("{path}.preset"), format!("\"{preset}\" is not a known master preset (use {})", crate::style::MASTER_PRESETS.join(", ")));
+        }
         let resolved = d.master(name).unwrap_or_default();
         if resolved.width.is_none() || (resolved.height.is_none() && resolved.grow != Some(true)) {
             report(&path, "a master needs a width and a height (its own or inherited), or a width and grow".into());
@@ -120,6 +125,32 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
         check_word("print.ink", &p.ink, &["black", "color"], &mut report);
         if let Some(Err(e)) = p.filter.as_ref().map(|f| f.check()) {
             report("print.filter", e);
+        }
+        if let Some(ppi) = p.max_ppi
+            && (!ppi.is_finite() || ppi <= 0.0)
+        {
+            report("print.max_ppi", "max_ppi must be a positive number".into());
+        }
+    }
+    if let Some(pdf) = &doc.pdf {
+        if let Some(s) = &pdf.standard
+            && !crate::PDF_STANDARDS.contains(&s.as_str())
+        {
+            report("pdf.standard", format!("\"{s}\" is not a supported PDF standard (use {})", crate::PDF_STANDARDS.join(", ")));
+        }
+        for (i, s) in pdf.standards.iter().enumerate() {
+            if !crate::PDF_STANDARDS.contains(&s.as_str()) {
+                report(&format!("pdf.standards[{i}]"), format!("\"{s}\" is not a supported PDF standard (use {})", crate::PDF_STANDARDS.join(", ")));
+            }
+        }
+        for (i, att) in pdf.attachments.iter().enumerate() {
+            if att.name.trim().is_empty() {
+                report(&format!("pdf.attachments[{i}].name"), "an attachment needs a name".into());
+            }
+            if att.src.trim().is_empty() {
+                report(&format!("pdf.attachments[{i}].src"), "an attachment needs a src".into());
+            }
+            check_word(&format!("pdf.attachments[{i}].relationship"), &att.relationship, &crate::PDF_RELATIONSHIPS, &mut report);
         }
     }
 
@@ -268,6 +299,25 @@ pub fn validate(doc: &Document) -> Vec<Problem> {
             {
                 check_text(&format!("{path}.set"), &set.text, &color_name, &mut report);
             }
+            if let Block::Row(r) = b {
+                check_word(&format!("{path}.valign"), &r.valign, &["top", "middle", "center", "bottom"], &mut report);
+                check_layout_cells(path, &r.cells, d, &color_name, &mut seen, &mut report);
+            }
+            if let Block::Grid(g) = b {
+                check_word(&format!("{path}.valign"), &g.valign, &["top", "middle", "center", "bottom"], &mut report);
+                check_layout_cells(path, &g.cells, d, &color_name, &mut seen, &mut report);
+            }
+            if let Block::Rule(r) = b
+                && let Some(s) = &r.stroke
+            {
+                check_stroke(&format!("{path}.stroke"), s, &color_name, &mut report);
+            }
+            if let Block::Barcode(bc) = b {
+                check_barcode(path, &bc.spec, d, &color_name, &mut report);
+            }
+            if let Block::Chart(ch) = b {
+                check_chart(path, &ch.spec, d, &color_name, &mut report);
+            }
         }
         Node::Element(e) => {
             if let Some(id) = e.id() {
@@ -326,6 +376,8 @@ fn block_styles(b: &Block) -> Vec<(&'static str, &str)> {
         Block::Code(x) => push(&mut v, "style", &x.style),
         Block::Margin(x) => push(&mut v, "style", &x.style),
         Block::Lof(x) => push(&mut v, "style", &x.style),
+        Block::Row(x) => push(&mut v, "style", &x.style),
+        Block::Grid(x) => push(&mut v, "style", &x.style),
         _ => {}
     }
     v
@@ -516,6 +568,125 @@ fn check_element(
             {
                 report(&format!("{path}.style"), format!("no style \"{st}\""));
             }
+        }
+        Element::Barcode(bc) => {
+            need(&bc.place, true, true, report);
+            check_barcode(path, &bc.spec, d, color_name, report);
+        }
+        Element::Chart(ch) => {
+            need(&ch.place, true, true, report);
+            check_chart(path, &ch.spec, d, color_name, report);
+        }
+    }
+}
+
+fn check_layout_cells(
+    path: &str,
+    cells: &[crate::block::LayoutCell],
+    d: &crate::Design,
+    color_name: &dyn Fn(&str) -> bool,
+    seen: &mut dyn FnMut(&str, &str, &mut dyn FnMut(&str, String)),
+    report: &mut dyn FnMut(&str, String),
+) {
+    for (i, c) in cells.iter().enumerate() {
+        let cp = format!("{path}.cells[{i}]");
+        if let Some(id) = &c.id {
+            seen(id, &format!("{cp}.id"), report);
+        }
+        if let Some(st) = &c.style
+            && !d.styles.contains_key(st)
+        {
+            report(&format!("{cp}.style"), format!("no style \"{st}\""));
+        }
+        if let Some(f) = &c.fill {
+            check_fill(&format!("{cp}.fill"), f, color_name, report);
+        }
+        if let Some(s) = &c.stroke {
+            check_border(&format!("{cp}.stroke"), s, color_name, report);
+        }
+        check_word(&format!("{cp}.valign"), &c.valign, &["top", "middle", "center", "bottom"], report);
+        if c.colspan == Some(0) {
+            report(&format!("{cp}.colspan"), "colspan must be at least 1".into());
+        }
+        if c.rowspan == Some(0) {
+            report(&format!("{cp}.rowspan"), "rowspan must be at least 1".into());
+        }
+    }
+}
+
+fn check_barcode(
+    path: &str,
+    b: &crate::widgets::BarcodeSpec,
+    d: &crate::Design,
+    color_name: &dyn Fn(&str) -> bool,
+    report: &mut dyn FnMut(&str, String),
+) {
+    if b.data.is_empty() {
+        report(&format!("{path}.data"), "a barcode needs data".into());
+    }
+    check_word(&format!("{path}.format"), &b.format, &crate::widgets::BARCODE_FORMATS, report);
+    if !b.data.is_empty() {
+        match b.format.as_deref().unwrap_or("code128") {
+            "ean13" | "isbn13" => {
+                let digits: String = b.data.chars().filter(|c| !matches!(c, '-' | ' ')).collect();
+                if !digits.chars().all(|c| c.is_ascii_digit()) || !(digits.len() == 12 || digits.len() == 13) {
+                    report(&format!("{path}.data"), "ean13/isbn13 expects 12 or 13 digits".into());
+                }
+            }
+            "upca" => {
+                let digits: String = b.data.chars().filter(|c| !matches!(c, '-' | ' ')).collect();
+                if !digits.chars().all(|c| c.is_ascii_digit()) || !(digits.len() == 11 || digits.len() == 12) {
+                    report(&format!("{path}.data"), "upca expects 11 or 12 digits".into());
+                }
+            }
+            _ => {}
+        }
+    }
+    if let Some(c) = &b.color {
+        check_color(&format!("{path}.color"), c, color_name, report);
+    }
+    if let Some(c) = &b.background {
+        check_color(&format!("{path}.background"), c, color_name, report);
+    }
+    if let Some(st) = &b.text_style
+        && !d.styles.contains_key(st)
+        && !d.spans.contains_key(st)
+    {
+        report(&format!("{path}.text_style"), format!("no style \"{st}\""));
+    }
+}
+
+fn check_chart(
+    path: &str,
+    c: &crate::widgets::ChartSpec,
+    d: &crate::Design,
+    color_name: &dyn Fn(&str) -> bool,
+    report: &mut dyn FnMut(&str, String),
+) {
+    if !crate::widgets::CHART_KINDS.contains(&c.kind.as_str()) {
+        report(&format!("{path}.kind"), format!("\"{}\" is not one of {}", c.kind, crate::widgets::CHART_KINDS.join(", ")));
+    }
+    if c.series.is_empty() || c.series.iter().all(|s| s.values.is_empty()) {
+        report(&format!("{path}.series"), "a chart needs at least one series with values".into());
+    }
+    check_word(&format!("{path}.orientation"), &c.orientation, &["vertical", "horizontal"], report);
+    if let Some(st) = &c.style
+        && !d.styles.contains_key(st)
+        && !d.spans.contains_key(st)
+    {
+        report(&format!("{path}.style"), format!("no style \"{st}\""));
+    }
+    if let Some(gc) = &c.grid_color {
+        check_color(&format!("{path}.grid_color"), gc, color_name, report);
+    }
+    if let Some(r) = c.inner_radius
+        && !(0.0..=0.9).contains(&r)
+    {
+        report(&format!("{path}.inner_radius"), "inner_radius runs from 0 to 0.9".into());
+    }
+    for (i, s) in c.series.iter().enumerate() {
+        if let Some(col) = &s.color {
+            check_color(&format!("{path}.series[{i}].color"), col, color_name, report);
         }
     }
 }

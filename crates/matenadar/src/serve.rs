@@ -6,7 +6,8 @@
 //! - `open`: `{"doc": {…} | "path": "doc.json", "root": "…", "fonts": [], "system_fonts": true}`
 //! - `apply`: `{"ops": [op…]}`. Returns the changes, with inverses and changed pages.
 //! - `render`: `{"page": 3, "format": "png" | "svg", "dpi": 100, "bleed": false, "out": "p3.png"}`
-//! - `pdf`: `{"out": "book.pdf"}`
+//! - `pdf`: `{"out": "book.pdf", "standard": "a-3b", "standards": [...], "tagged": true, "max_ppi": 300, "attachments": [{"name", "path" | "data_base64", "mime", "description", "relationship"}]}`
+//! - `notes`: `{"page": 1}` (speaker notes for the page, or null)
 //! - `check`: `{"safe": "0.25in", "min_ppi": 300}`
 //! - `layout`: `{"pages": [1, 2]}`
 //! - `locate`: `{"page", "x", "y"}`
@@ -19,7 +20,7 @@ use std::path::PathBuf;
 
 use anyhow::{Result, anyhow};
 use matenadar_model::{Document, Op};
-use matenadar_typst::{CheckOptions, Paths, Session, check, inspect};
+use matenadar_typst::{CheckOptions, Paths, PdfAttachmentData, PdfOptions, Session, check, inspect};
 use serde_json::{Value, json};
 
 pub fn serve() -> Result<()> {
@@ -106,8 +107,13 @@ fn handle(session: &mut Option<Session>, method: &str, p: &Value) -> Result<Valu
         }
         "pdf" => {
             let out = str_of("out").ok_or_else(|| anyhow!("out"))?;
-            std::fs::write(out, s.pdf().map_err(|e| anyhow!("{e}"))?)?;
+            let opts = parse_pdf_options(p)?;
+            std::fs::write(out, s.pdf_with_options(&opts).map_err(|e| anyhow!("{e}"))?)?;
             Ok(json!({"out": out, "pages": s.page_count()}))
+        }
+        "notes" => {
+            let page = p.get("page").and_then(Value::as_u64).ok_or_else(|| anyhow!("page"))? as usize;
+            Ok(json!(s.notes(page)))
         }
         "check" => {
             let mut o = CheckOptions::default();
@@ -146,4 +152,73 @@ fn handle(session: &mut Option<Session>, method: &str, p: &Value) -> Result<Valu
         }
         other => Err(anyhow!("unknown method \"{other}\"")),
     }
+}
+
+fn parse_pdf_options(p: &Value) -> Result<PdfOptions> {
+    let mut standards = Vec::new();
+    if let Some(s) = p.get("standard").and_then(Value::as_str) {
+        standards.push(s.to_string());
+    }
+    if let Some(arr) = p.get("standards").and_then(Value::as_array) {
+        for item in arr {
+            if let Some(s) = item.as_str() {
+                standards.push(s.to_string());
+            }
+        }
+    }
+    let tagged = p.get("tagged").and_then(Value::as_bool);
+    let max_ppi = p.get("max_ppi").and_then(Value::as_f64).map(|v| v as f32);
+    let mut attachments = Vec::new();
+    if let Some(arr) = p.get("attachments").and_then(Value::as_array) {
+        for item in arr {
+            let name = item.get("name").and_then(Value::as_str).ok_or_else(|| anyhow!("attachment needs name"))?.to_string();
+            let data = if let Some(path) = item.get("path").and_then(Value::as_str) {
+                std::fs::read(path)?
+            } else if let Some(b64) = item.get("data_base64").and_then(Value::as_str) {
+                decode_base64(b64)?
+            } else {
+                return Err(anyhow!("attachment \"{name}\" needs path or data_base64"));
+            };
+            attachments.push(PdfAttachmentData {
+                name,
+                data,
+                mime: item.get("mime").and_then(Value::as_str).map(str::to_string),
+                description: item.get("description").and_then(Value::as_str).map(str::to_string),
+                relationship: item.get("relationship").and_then(Value::as_str).map(str::to_string),
+            });
+        }
+    }
+    Ok(PdfOptions {
+        standards,
+        tagged,
+        attachments,
+        max_ppi,
+        timestamp: p.get("timestamp").and_then(Value::as_str).map(str::to_string),
+    })
+}
+
+fn decode_base64(input: &str) -> Result<Vec<u8>> {
+    let mut out = Vec::with_capacity(input.len() * 3 / 4);
+    let mut buf = 0u32;
+    let mut bits = 0u32;
+    for b in input.bytes() {
+        if b.is_ascii_whitespace() || b == b'=' {
+            continue;
+        }
+        let val = match b {
+            b'A'..=b'Z' => (b - b'A') as u32,
+            b'a'..=b'z' => (b - b'a' + 26) as u32,
+            b'0'..=b'9' => (b - b'0' + 52) as u32,
+            b'+' => 62,
+            b'/' => 63,
+            _ => return Err(anyhow!("invalid base64 byte")),
+        };
+        buf = (buf << 6) | val;
+        bits += 6;
+        if bits >= 8 {
+            bits -= 8;
+            out.push(((buf >> bits) & 0xff) as u8);
+        }
+    }
+    Ok(out)
 }

@@ -103,7 +103,8 @@ or `{"id": 1, "error": "…"}`. A line that isn’t JSON gets `{"id": null, "err
 | `open` | `doc` (the document itself) or `path`; `root` (default `.`); `fonts` (folders); `system_fonts` (default true) | `{pages, layout_ms, problems, warnings}`; an invalid document is an error listing its problems |
 | `apply` | `ops`: a list of operations | the changes, with inverses and changed pages, as `matenadar apply` prints them |
 | `render` | `page`, `out` (a file), `format` (`png`, the default, or `svg`), `dpi` (100), `bleed` (false) | `{out}` |
-| `pdf` | `out` | `{out, pages}` |
+| `pdf` | `out`, and optionally `standard`, `standards`, `tagged`, `max_ppi`, `timestamp`, `attachments` (`[{name, path \| data_base64, mime, description, relationship}]`) | `{out, pages}` |
+| `notes` | `page` | speaker notes string, or `null` |
 | `check` | `safe` (`"0.25in"`), `min_ppi` | the issues |
 | `layout` | `pages` (a list of numbers; all when left out) | the layout report |
 | `locate` | `page`, `x`, `y` | `{node, offset}` or `null` |

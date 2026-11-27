@@ -164,6 +164,27 @@ pub fn font_size(l: Length) -> Length {
     }
 }
 
+/// Emits a Typst `#pdf.attach(...)` call embedding `vpath` bytes under `name`.
+pub(crate) fn pdf_attach_stmt(
+    name: &str,
+    vpath: &str,
+    mime: Option<&str>,
+    description: Option<&str>,
+    relationship: Option<&str>,
+) -> String {
+    let mut args = vec![str_lit(name), format!("read({}, encoding: none)", str_lit(vpath))];
+    if let Some(m) = mime.filter(|s| !s.trim().is_empty()) {
+        args.push(format!("mime-type: {}", str_lit(m)));
+    }
+    if let Some(d) = description.filter(|s| !s.trim().is_empty()) {
+        args.push(format!("description: {}", str_lit(d)));
+    }
+    if let Some(rel) = relationship.filter(|r| matches!(*r, "data" | "source" | "alternative" | "supplement")) {
+        args.push(format!("relationship: {}", str_lit(rel)));
+    }
+    format!("#pdf.attach({})\n", args.join(", "))
+}
+
 /// Generates the Typst program for `doc`, whose pictures and drawings are in `files`.
 pub fn generate(doc: &Document, fonts: &Fonts, virt: &Virtual, files: &Files) -> Generated {
     virt.clear();
@@ -420,8 +441,39 @@ impl<'a> Gen<'a> {
     fn document(&mut self) {
         let doc = self.doc;
         self.raw(PRELUDE);
-        let author = doc.meta.author.clone().unwrap_or_default();
-        self.raw(&format!("\n#set document(title: {}, author: {})\n", str_lit(&doc.meta.title), str_lit(&author)));
+        let mut doc_args = vec![format!("title: {}", str_lit(&doc.meta.title))];
+        if let Some(a) = doc.meta.author.as_deref().filter(|s| !s.is_empty()) {
+            doc_args.push(format!("author: {}", str_lit(a)));
+        }
+        if let Some(s) = doc.meta.subject.as_deref().filter(|s| !s.is_empty()) {
+            doc_args.push(format!("description: {}", str_lit(s)));
+        }
+        if !doc.meta.keywords.is_empty() {
+            let kws: Vec<String> = doc.meta.keywords.iter().map(|k| str_lit(k)).collect();
+            doc_args.push(format!("keywords: ({},)", kws.join(", ")));
+        }
+        self.raw(&format!("\n#set document({})\n", doc_args.join(", ")));
+        if let Some(lang) = doc.meta.lang.as_deref().filter(|s| !s.trim().is_empty()) {
+            let mut parts = lang.trim().splitn(2, '-');
+            let l = parts.next().unwrap_or("en");
+            match parts.next() {
+                Some(r) if r.len() == 2 && r.chars().all(|c| c.is_ascii_alphabetic()) => {
+                    self.raw(&format!("#set text(lang: {}, region: {})\n", str_lit(l), str_lit(&r.to_ascii_uppercase())));
+                }
+                _ => self.raw(&format!("#set text(lang: {})\n", str_lit(l))),
+            }
+        }
+        if let Some(pdf) = &doc.pdf {
+            for att in &pdf.attachments {
+                match self.assets.read(&att.src) {
+                    Some(bytes) => {
+                        let vpath = self.file("bin", bytes.to_vec());
+                        self.raw(&pdf_attach_stmt(&att.name, &vpath, att.mime.as_deref(), att.description.as_deref(), att.relationship.as_deref()));
+                    }
+                    None => self.problem(format!("missing file \"{}\"", att.src)),
+                }
+            }
+        }
         // Blank pages inserted to start a section on the right side take
         // the first master's size.
         if let Some(m) = self.first_master() {

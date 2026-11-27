@@ -62,10 +62,7 @@ fast and deterministic.
 <td valign="top">
 
 **Designed pages are first-class.**
-Fixed pages with placed elements, masters with conditional layers, margin
-notes, letter grids, lettering drawn as outlines, QR codes, inline SVG, pen
-marks, shadows and components. Books that once needed a hand-written
-HTML/CSS engine can be expressed directly.
+Fixed pages with placed elements, masters with presets (`a4`, `letter`, `16:9`, `social`…) and conditional layers, flow `row`/`grid`/`rule` layouts, vector 1D barcodes, print-crisp charts, speaker notes, PDF/A-3b + Factur-X attachments, deterministic `max_ppi` downsampling, margin notes, letter grids, lettering drawn as outlines, QR codes, inline SVG, pen marks, shadows and components. Documents that once needed a hand-written HTML/CSS engine can be expressed directly.
 
 </td>
 <td valign="top">
@@ -161,7 +158,7 @@ In a browser, run the engine off the main thread with `@matenadar/wasm/client`. 
 import { MatenadarClient } from "@matenadar/wasm/client";
 
 const mt = await MatenadarClient.start({
-  wasm: "https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.2.0/dist/matenadar.wasm",
+  wasm: "https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.3.0/dist/matenadar.wasm",
 });
 await mt.addFont(await (await fetch("/fonts/LibertinusSerif-Regular.otf")).arrayBuffer());
 const { pages } = await mt.open(doc);
@@ -249,7 +246,7 @@ built on it.
 
 ## Status
 
-- The model, generator, preflight checks, reversible operations, `serve`, and `bench` are working and shipped in `v0.1.0`.
+- The model, generator, preflight checks, reversible operations, `serve`, `bench`, flow `row`/`grid`/`rule`, vector barcodes & charts, PDF/A & PDF/UA standards + `/AF` attachments, speaker `notes`, `Master.preset`, and deterministic `max_ppi` downsampling ship in `v0.3.0`.
 - Eight real books are partly rebuilt under [`samples/`](samples/) (39 pages), with notes on how close each gets and remaining engine gaps.
 - Print: decorative lettering is drawn as outlines so display type can cross margins and bleed while passing KDP text checks.
 - EPUB 3 export (reflowable and fixed layout with live text) passes `epubcheck`.

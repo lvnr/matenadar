@@ -3,18 +3,24 @@
 //! a page back to the node and character it shows, and checks the result
 //! the way a printer would.
 
+pub mod barcode;
 pub mod caret;
+pub mod chart;
 pub mod check;
 pub mod editor;
 pub mod effects;
 pub mod generate;
 pub mod glyphs;
 pub mod inspect;
+pub mod resample;
 pub mod session;
 pub mod tone;
 pub mod world;
 
 pub use check::{CheckOptions, Issue, Severity, check};
 pub use editor::Editor;
-pub use session::{Change, Changes, EngineError, PageInfo, Paths, Session, SourceExport, SourceNode, UsedFont, source_of};
+pub use session::{
+    Change, Changes, EngineError, PageInfo, Paths, PdfAttachmentData, PdfOptions, Session,
+    SourceExport, SourceNode, UsedFont, source_of,
+};
 pub use world::{Files, Fonts};

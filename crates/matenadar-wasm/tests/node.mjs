@@ -223,4 +223,98 @@ if (process.env.MATENADAR_BIN) {
   console.log("parity: the command line's fingerprints match");
 }
 
+// ---- v0.3: row/grid/rule, barcode, chart, notes, presets, PDF/A-3b + Factur-X ----
+{
+  const v3Doc = {
+    matenadar: "1",
+    meta: { title: "v0.3 WASM Check", lang: "en-US" },
+    design: {
+      base: { font: family, size: 10, line_height: 1.35 },
+      masters: {
+        slide: { preset: "16:9", margins: { top: 36, bottom: 36, inside: 42, outside: 42 } },
+      },
+    },
+    content: [
+      {
+        type: "section",
+        id: "v3-s1",
+        master: "slide",
+        notes: "Speaker note for slide one.",
+        flow: [
+          {
+            type: "row",
+            id: "v3-row",
+            columns: ["1fr", "220pt"],
+            gutter: 16,
+            cells: [
+              {
+                id: "v3-c1",
+                blocks: [
+                  {
+                    type: "chart",
+                    id: "v3-chart",
+                    kind: "bar",
+                    w: 500,
+                    h: 160,
+                    title: "Revenue",
+                    labels: ["Q1", "Q2", "Q3"],
+                    series: [{ name: "2026", values: [12, 19, 27] }],
+                    show_values: true,
+                    value_prefix: "$",
+                    value_suffix: "k",
+                  },
+                ],
+              },
+              {
+                id: "v3-c2",
+                blocks: [
+                  { type: "barcode", id: "v3-bc", data: "978-0-306-40615-7", format: "isbn13", w: 180, h: 60 },
+                  { type: "rule", id: "v3-rule", space_before: 8, space_after: 8 },
+                  { type: "p", id: "v3-p", text: "Ready for export." },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+  const v3Open = mt.open(v3Doc);
+  assert.equal(v3Open.pages, 1);
+  assert.deepEqual(v3Open.problems, []);
+  const v3Pages = mt.pages();
+  assert.equal(v3Pages[0].trim.w, 960);
+  assert.equal(v3Pages[0].trim.h, 540);
+  assert.equal(v3Pages[0].notes, "Speaker note for slide one.");
+  assert.equal(mt.notes(1), "Speaker note for slide one.");
+  assert.ok(!mt.svg(1).includes("Speaker note for slide one."));
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?><rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"/>`;
+  const pdfA3 = mt.pdf({
+    standard: "a-3b",
+    tagged: true,
+    max_ppi: 150,
+    attachments: [{ name: "factur-x.xml", data: xml, mime: "text/xml", relationship: "data", description: "Factur-X" }],
+  });
+  const latin1 = Buffer.from(pdfA3).toString("latin1");
+  assert.ok(latin1.startsWith("%PDF-"));
+  assert.ok(latin1.includes("/EmbeddedFiles"), "WASM PDF/A-3b has /EmbeddedFiles");
+  assert.ok(latin1.includes("/AF"), "WASM PDF/A-3b has /AF");
+  assert.ok(latin1.includes("/AFRelationship/Data") || latin1.includes("/AFRelationship /Data"), "WASM PDF/A-3b has /AFRelationship /Data");
+  assert.ok(latin1.includes("factur-x.xml"), "WASM PDF/A-3b embeds factur-x.xml");
+
+  if (process.env.MATENADAR_BIN) {
+    const { execFileSync } = await import("node:child_process");
+    const { mkdtempSync, writeFileSync, mkdirSync, copyFileSync } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const dir = mkdtempSync(join(tmpdir(), "matenadar-v3-parity-"));
+    mkdirSync(join(dir, "fonts"));
+    fontFiles.forEach((font, i) => copyFileSync(font, join(dir, `fonts/font-${i}.otf`)));
+    writeFileSync(join(dir, "doc.json"), JSON.stringify(v3Doc));
+    const out = JSON.parse(execFileSync(process.env.MATENADAR_BIN, ["fingerprint", join(dir, "doc.json"), "--root", dir, "--fonts", join(dir, "fonts"), "--no-system-fonts"], { encoding: "utf8" }));
+    assert.deepEqual(out.fingerprints, mt.fingerprint(), "v0.3 row/chart/barcode/rule fingerprints match between native and WASM");
+    console.log("parity: v0.3 primitives match native CLI bit-for-bit");
+  }
+}
+
 console.log(`ok: ${opened.pages} pages, svg ${svg.length} chars, pdf ${pdf.length} bytes`);

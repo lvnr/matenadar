@@ -37,6 +37,8 @@ export interface PageInfo {
   bleed: { top: number; right: number; bottom: number; left: number };
   /** The master's margins: the text area's distance from the trim. */
   margins: { top: number; bottom: number; inside: number; outside: number } | null;
+  /** Speaker notes from the owning page, section, or spread (omitted from renders). */
+  notes?: string;
 }
 
 export interface NodeRef {
@@ -173,6 +175,46 @@ type Bytes = ArrayBuffer | ArrayBufferView;
 /** A font or file source: bytes, a URL, or (in Node) a file or a folder read through. */
 export type Source = Bytes | URL | string;
 
+export type PdfStandard =
+  | "1.4" | "1.5" | "1.6" | "1.7" | "2.0"
+  | "a-1b" | "a-1a"
+  | "a-2b" | "a-2u" | "a-2a"
+  | "a-3b" | "a-3u" | "a-3a"
+  | "a-4" | "a-4f" | "a-4e"
+  | "ua-1";
+
+export type PdfRelationship = "data" | "source" | "alternative" | "supplement" | "unspecified";
+
+export interface PdfAttachmentInput {
+  /** Filename stored inside the PDF (e.g. "factur-x.xml"). */
+  name: string;
+  /** Raw bytes or UTF-8 string content. Omit if using `src`. */
+  data?: Bytes | string;
+  /** Path of a file previously registered with `addFile()`. */
+  src?: string;
+  /** Optional MIME type (e.g. "text/xml", "application/xml"). */
+  mime?: string;
+  description?: string;
+  relationship?: PdfRelationship;
+}
+
+export interface PdfOptions {
+  /** Single PDF standard shorthand (e.g. "a-3b", "a-2b", "ua-1", "1.7"). */
+  standard?: PdfStandard;
+  /** Multiple PDF standards (e.g. ["a-2b", "ua-1"]). */
+  standards?: PdfStandard[];
+  /** Emit tagged PDF structure (inherits `doc.pdf.tagged`, default true). */
+  tagged?: boolean;
+  /** Extra programmatic embedded files merged with `doc.pdf.attachments`. */
+  attachments?: PdfAttachmentInput[];
+  /** Deterministic Lanczos-3 max PPI for oversized raster images (inherits `doc.print.max_ppi`). */
+  max_ppi?: number;
+  /** Alias for `max_ppi`. */
+  maxPpi?: number;
+  /** Optional ISO-8601 UTC timestamp (`"YYYY-MM-DD"` or `"YYYY-MM-DDTHH:MM:SSZ"`). */
+  timestamp?: string;
+}
+
 export interface EpubOptions {
   /** "reflowable" (default), or "fixed": each page a picture with its typeset words over it as live text. */
   layout?: "reflowable" | "fixed";
@@ -202,10 +244,11 @@ export interface MatenadarApi {
 
   pages(): PageInfo[];
   spreads(): number[][];
+  notes(page: number): string | null;
   svg(page: number, options?: { bleed?: boolean }): string;
   png(page: number, options?: RenderOptions): Uint8Array;
   rgba(page: number, options?: RenderOptions): Pixels;
-  pdf(): Uint8Array;
+  pdf(options?: PdfOptions): Uint8Array;
   fingerprint(): string[];
   fontsUsed(): UsedFont[];
 
@@ -260,10 +303,11 @@ export declare class Matenadar implements MatenadarApi {
   close(): void;
   pages(): PageInfo[];
   spreads(): number[][];
+  notes(page: number): string | null;
   svg(page: number, options?: { bleed?: boolean }): string;
   png(page: number, options?: RenderOptions): Uint8Array;
   rgba(page: number, options?: RenderOptions): Pixels;
-  pdf(): Uint8Array;
+  pdf(options?: PdfOptions): Uint8Array;
   fingerprint(): string[];
   fontsUsed(): UsedFont[];
   hit(page: number, x: number, y: number): Hit | null;

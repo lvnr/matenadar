@@ -36,7 +36,7 @@ impl Style {
 impl Master {
     pub fn with(&self, over: &Master) -> Master {
         let mut out = self.clone();
-        overlay!(out, over; width, height, grow, bleed, margins, columns, gutter, fill, notes, style);
+        overlay!(out, over; preset, width, height, grow, bleed, margins, columns, gutter, fill, notes, style);
         if !over.background.is_empty() {
             out.background = over.background.clone();
         }
@@ -88,6 +88,16 @@ impl Design {
         let mut out = Master::default();
         for n in chain.iter().rev() {
             out = out.with(&self.masters[n]);
+        }
+        if let Some(preset) = out.preset.as_deref()
+            && let Some((pw, ph)) = crate::style::master_preset_size(preset)
+        {
+            if out.width.is_none() {
+                out.width = Some(pw);
+            }
+            if out.height.is_none() && out.grow != Some(true) {
+                out.height = Some(ph);
+            }
         }
         Some(out)
     }

@@ -4,14 +4,14 @@
 //   import { MatenadarClient } from "@matenadar/wasm/client";
 //   const mt = await MatenadarClient.start();
 //   // or load the .wasm from a CDN (e.g. jsDelivr) while keeping worker.js same-origin:
-//   // const mt = await MatenadarClient.start({ wasm: "https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.1.0/dist/matenadar.wasm" });
+//   // const mt = await MatenadarClient.start({ wasm: "https://cdn.jsdelivr.net/npm/@matenadar/wasm@0.3.0/dist/matenadar.wasm" });
 //   await mt.addFont(await (await fetch(url)).arrayBuffer());
 //   const { pages } = await mt.open(doc);
 //   const svg = await mt.svg(1);
 
 const METHODS = [
   "assets", "addFont", "addFile", "open", "fonts", "close",
-  "pages", "spreads", "svg", "png", "rgba", "pdf", "fingerprint", "fontsUsed",
+  "pages", "spreads", "notes", "svg", "png", "rgba", "pdf", "fingerprint", "fontsUsed",
   "hit", "rects", "node", "lines", "locate", "position", "layout", "document",
   "caret", "offsetAt", "selectionRects", "textLines", "source",
   "apply", "setWords", "insertText", "deleteText", "insertBlock", "removeBlock",

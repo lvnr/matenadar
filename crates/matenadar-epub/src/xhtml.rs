@@ -413,6 +413,48 @@ impl<'a> Writer<'a> {
                 self.blocks(&k.blocks, style, assets);
                 self.out.push_str("</div>\n");
             }
+            Block::Row(r) => {
+                self.out.push_str(&format!("<div class=\"mt-row\"{}>\n", Self::id_attr(r.id.as_deref())));
+                for cell in &r.cells {
+                    let st = cell.style.as_deref().or(r.style.as_deref()).or(style);
+                    self.out.push_str(&format!("<div class=\"mt-cell\"{}>\n", Self::id_attr(cell.id.as_deref())));
+                    self.blocks(&cell.blocks, st, assets);
+                    self.out.push_str("</div>\n");
+                }
+                self.out.push_str("</div>\n");
+            }
+            Block::Grid(g) => {
+                self.out.push_str(&format!("<div class=\"mt-grid\"{}>\n", Self::id_attr(g.id.as_deref())));
+                for cell in &g.cells {
+                    let st = cell.style.as_deref().or(g.style.as_deref()).or(style);
+                    self.out.push_str(&format!("<div class=\"mt-cell\"{}>\n", Self::id_attr(cell.id.as_deref())));
+                    self.blocks(&cell.blocks, st, assets);
+                    self.out.push_str("</div>\n");
+                }
+                self.out.push_str("</div>\n");
+            }
+            Block::Rule(r) => {
+                self.out.push_str(&format!("<hr{} />\n", Self::id_attr(r.id.as_deref())));
+            }
+            Block::Barcode(bc) => {
+                let w = bc.w.and_then(|l| l.pt()).unwrap_or(180.0);
+                let h = bc.h.and_then(|l| l.pt()).unwrap_or(56.0);
+                let el = serde_json::json!({"type": "barcode", "x": 0, "y": 0, "w": w, "h": h, "data": bc.spec.data, "format": bc.spec.format, "color": bc.spec.color, "background": bc.spec.background, "quiet": bc.spec.quiet, "show_text": bc.spec.show_text, "text_style": bc.spec.text_style});
+                self.drawing(bc.id.as_deref(), &[el], &[], w, Some(h), assets);
+            }
+            Block::Chart(ch) => {
+                let w = ch.w.and_then(|l| l.pt()).unwrap_or(self.measure);
+                let h = ch.h.and_then(|l| l.pt()).unwrap_or(170.0);
+                let mut el = serde_json::to_value(&ch.spec).unwrap_or_default();
+                if let Some(obj) = el.as_object_mut() {
+                    obj.insert("type".into(), serde_json::json!("chart"));
+                    obj.insert("x".into(), serde_json::json!(0));
+                    obj.insert("y".into(), serde_json::json!(0));
+                    obj.insert("w".into(), serde_json::json!(w));
+                    obj.insert("h".into(), serde_json::json!(h));
+                }
+                self.drawing(ch.id.as_deref(), &[el], &[], w, Some(h), assets);
+            }
         }
     }
 

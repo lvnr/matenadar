@@ -509,8 +509,205 @@ impl Gen<'_> {
                 self.flow(&x.blocks, &cx.style.clone(), cx.scaled);
                 self.raw("]\n");
             }
+            Block::Row(r) => {
+                let cols: Vec<matenadar_model::block::Track> = if r.columns.is_empty() {
+                    vec![matenadar_model::block::Track::Word("1fr".into()); r.cells.len().max(1)]
+                } else {
+                    r.columns.clone()
+                };
+                self.layout_grid(
+                    r.id.as_deref(),
+                    &cols,
+                    &[],
+                    r.gutter,
+                    None,
+                    r.align,
+                    r.valign.as_deref(),
+                    r.breakable.unwrap_or(false),
+                    r.style.as_deref(),
+                    r.space_before,
+                    r.space_after,
+                    &r.cells,
+                    cx,
+                );
+            }
+            Block::Grid(g) => {
+                let cols: Vec<matenadar_model::block::Track> = if g.columns.is_empty() {
+                    vec![matenadar_model::block::Track::Word("1fr".into())]
+                } else {
+                    g.columns.clone()
+                };
+                self.layout_grid(
+                    g.id.as_deref(),
+                    &cols,
+                    &g.rows,
+                    g.column_gutter.or(g.gutter),
+                    g.row_gutter.or(g.gutter),
+                    g.align,
+                    g.valign.as_deref(),
+                    g.breakable.unwrap_or(true),
+                    g.style.as_deref(),
+                    g.space_before,
+                    g.space_after,
+                    &g.cells,
+                    cx,
+                );
+            }
+            Block::Rule(r) => {
+                let stroke = r.stroke.as_ref().map(|s| self.pal.stroke(s, cx.scaled)).unwrap_or_else(|| "0.5pt + luma(60%)".into());
+                let width = r.width.map(|l| l.typst()).unwrap_or_else(|| "100%".into());
+                let al = align_word(r.align);
+                let above = r.space_before.map(|l| l.typst()).unwrap_or_else(|| "0.6em".into());
+                let below = r.space_after.map(|l| l.typst()).unwrap_or_else(|| "0.6em".into());
+                self.raw(&format!("#block(width: 100%, above: {above}, below: {below}, breakable: false)["));
+                self.label(r.id.as_deref());
+                self.raw(&format!("#align({al}, line(length: {width}, stroke: {stroke}))]\n"));
+            }
+            Block::Barcode(bc) => {
+                let avail = self.content_width_pt();
+                let w = bc.w.map(|l| l.resolve(11.0, avail)).unwrap_or(180.0);
+                let h = bc.h.map(|l| l.resolve(11.0, avail)).unwrap_or(56.0);
+                let al = align_word(bc.align);
+                let above = bc.space_before.map(|l| l.typst()).unwrap_or_else(|| "0.6em".into());
+                let below = bc.space_after.map(|l| l.typst()).unwrap_or_else(|| "0.6em".into());
+                let body = self.barcode_body(&bc.spec, w, h);
+                self.raw(&format!("#block(width: 100%, above: {above}, below: {below}, breakable: false)["));
+                self.label(bc.id.as_deref());
+                self.raw(&format!("#align({al}, {body})]\n"));
+            }
+            Block::Chart(ch) => {
+                let avail = self.content_width_pt();
+                let default_h = if ch.spec.kind.eq_ignore_ascii_case("sparkline") { 28.0 } else { 170.0 };
+                let w = ch.w.map(|l| l.resolve(11.0, avail)).unwrap_or(avail);
+                let h = ch.h.map(|l| l.resolve(11.0, avail)).unwrap_or(default_h);
+                let al = align_word(ch.align);
+                let above = ch.space_before.map(|l| l.typst()).unwrap_or_else(|| "0.6em".into());
+                let below = ch.space_after.map(|l| l.typst()).unwrap_or_else(|| "0.6em".into());
+                let body = self.chart_body(&ch.spec, w, h);
+                self.raw(&format!("#block(width: 100%, above: {above}, below: {below}, breakable: false)["));
+                self.label(ch.id.as_deref());
+                self.raw(&format!("#align({al}, {body})]\n"));
+            }
         }
         self.node(b.id(), b.kind(), start);
+    }
+
+    fn content_width_pt(&self) -> f64 {
+        let Some(m) = self.master_now.as_ref() else { return 360.0 };
+        let g = super::PageGeom::of(m);
+        (g.w - g.margins[2] - g.margins[3]).max(72.0)
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn layout_grid(
+        &mut self,
+        id: Option<&str>,
+        columns: &[matenadar_model::block::Track],
+        rows: &[matenadar_model::block::Track],
+        col_gutter: Option<matenadar_model::Length>,
+        row_gutter: Option<matenadar_model::Length>,
+        align: Option<Align>,
+        valign: Option<&str>,
+        breakable: bool,
+        style: Option<&str>,
+        space_before: Option<matenadar_model::Length>,
+        space_after: Option<matenadar_model::Length>,
+        cells: &[matenadar_model::block::LayoutCell],
+        cx: &FlowCx,
+    ) {
+        let st = style.map(|n| self.style_var(n)).unwrap_or_else(|| cx.style.clone());
+        let cols: Vec<String> = columns.iter().map(track).collect();
+        let mut gargs = vec![format!("columns: ({},)", cols.join(", "))];
+        if !rows.is_empty() {
+            let rs: Vec<String> = rows.iter().map(track).collect();
+            gargs.push(format!("rows: ({},)", rs.join(", ")));
+        }
+        if let Some(cg) = col_gutter {
+            gargs.push(format!("column-gutter: {}", cg.typst()));
+        }
+        if let Some(rg) = row_gutter {
+            gargs.push(format!("row-gutter: {}", rg.typst()));
+        }
+        let h_al = align_word(align);
+        let v_al = valign_word(valign);
+        gargs.push(format!("align: {h_al} + {v_al}"));
+
+        let above = space_before.map(|l| l.typst()).unwrap_or_else(|| "0pt".into());
+        let below = space_after.map(|l| l.typst()).unwrap_or_else(|| "0pt".into());
+        self.raw(&format!("#block(width: 100%, breakable: {breakable}, above: {above}, below: {below})["));
+        self.label(id);
+        self.raw(&format!("#grid({}", gargs.join(", ")));
+
+        let auto_cols: Vec<bool> = columns
+            .iter()
+            .map(|c| matches!(c, matenadar_model::block::Track::Word(w) if w.trim() == "auto"))
+            .collect();
+        let ncols = columns.len().max(1);
+        let mut col_cursor = 0usize;
+
+        for cell in cells {
+            let span = cell.colspan.unwrap_or(1).max(1) as usize;
+            let col_idx = col_cursor % ncols;
+            let hug = (col_idx..(col_idx + span).min(ncols)).all(|i| auto_cols.get(i).copied().unwrap_or(false));
+            col_cursor += span;
+
+            self.raw(", ");
+            let cell_start = self.out.len();
+            let mut cargs = Vec::new();
+            if let Some(n) = cell.colspan {
+                cargs.push(format!("colspan: {n}"));
+            }
+            if let Some(n) = cell.rowspan {
+                cargs.push(format!("rowspan: {n}"));
+            }
+            if cell.align.is_some() || cell.valign.is_some() {
+                let ca = align_word(cell.align.or(align));
+                let cv = valign_word(cell.valign.as_deref().or(valign));
+                cargs.push(format!("align: {ca} + {cv}"));
+            }
+            let use_box = cell.radius.is_some();
+            if !use_box {
+                if let Some(f) = &cell.fill {
+                    cargs.push(format!("fill: {}", self.pal.fill(f)));
+                }
+                if let Some(s) = &cell.stroke {
+                    cargs.push(format!("stroke: {}", self.pal.border(s, cx.scaled)));
+                }
+                if let Some(i) = &cell.inset {
+                    cargs.push(format!("inset: {}", insets(i, cx.scaled)));
+                }
+            } else {
+                cargs.push("inset: 0pt".into());
+            }
+            let cst = cell.style.as_deref().map(|n| self.style_var(n)).unwrap_or_else(|| st.clone());
+            self.raw(&format!("grid.cell({})[", cargs.join(", ")));
+            if use_box {
+                let mut bargs = vec!["width: 100%".to_string()];
+                if let Some(f) = &cell.fill {
+                    bargs.push(format!("fill: {}", self.pal.fill(f)));
+                }
+                if let Some(s) = &cell.stroke {
+                    bargs.push(format!("stroke: {}", self.pal.border(s, cx.scaled)));
+                }
+                if let Some(r) = &cell.radius {
+                    bargs.push(format!("radius: {}", radius(r, cx.scaled)));
+                }
+                if let Some(i) = &cell.inset {
+                    bargs.push(format!("inset: {}", insets(i, cx.scaled)));
+                }
+                self.raw(&format!("#block({})[", bargs.join(", ")));
+            }
+            self.label(cell.id.as_deref());
+            let outer = std::mem::replace(&mut self.hug, hug);
+            self.flow(&cell.blocks, &cst, cx.scaled);
+            self.hug = outer;
+            if use_box {
+                self.raw("]");
+            }
+            self.raw("]");
+            self.node(cell.id.as_deref(), "cell", cell_start);
+        }
+        self.raw(")]\n");
     }
 
     /// A figure's caption (after `sep`, in code mode), with its label and
@@ -867,6 +1064,14 @@ pub fn align_word(a: Option<Align>) -> &'static str {
         Some(Align::Right) => "right",
         Some(Align::Center) => "center",
         _ => "left",
+    }
+}
+
+pub fn valign_word(v: Option<&str>) -> &'static str {
+    match v {
+        Some("middle") | Some("center") => "horizon",
+        Some("bottom") => "bottom",
+        _ => "top",
     }
 }
 

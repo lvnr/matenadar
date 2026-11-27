@@ -283,6 +283,16 @@ impl Gen<'_> {
             Element::Calendar(c) => self.calendar(c, &place),
             Element::Panels(p) => self.panels(p, &place),
             Element::Balloon(b) => self.balloon(b, &place),
+            Element::Barcode(bc) => {
+                let w = place.w.and_then(|l| l.pt()).unwrap_or(160.0);
+                let h = place.h.and_then(|l| l.pt()).unwrap_or(56.0);
+                self.barcode_body(&bc.spec, w, h)
+            }
+            Element::Chart(ch) => {
+                let w = place.w.and_then(|l| l.pt()).unwrap_or(280.0);
+                let h = place.h.and_then(|l| l.pt()).unwrap_or(160.0);
+                self.chart_body(&ch.spec, w, h)
+            }
             Element::Line(_) => unreachable!(),
         };
         let mut body = body;

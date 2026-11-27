@@ -10,6 +10,21 @@ function bytes(data) {
   return new Uint8Array(data);
 }
 
+const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+function toBase64(buf) {
+  let out = "";
+  for (let i = 0; i < buf.length; i += 3) {
+    const a = buf[i];
+    const b = i + 1 < buf.length ? buf[i + 1] : 0;
+    const c = i + 2 < buf.length ? buf[i + 2] : 0;
+    const n = (a << 16) | (b << 8) | c;
+    out += B64[(n >> 18) & 63] + B64[(n >> 12) & 63];
+    out += i + 1 < buf.length ? B64[(n >> 6) & 63] : "=";
+    out += i + 2 < buf.length ? B64[n & 63] : "=";
+  }
+  return out;
+}
+
 export function createMatenadar(io, defaultWasmUrl) {
   return class Matenadar {
     #x;
@@ -127,9 +142,40 @@ export function createMatenadar(io, defaultWasmUrl) {
       return { width: head.getUint32(0, true), height: head.getUint32(4, true), data: new Uint8ClampedArray(out.buffer, out.byteOffset + 8) };
     }
 
-    /** The whole document as PDF bytes. */
-    pdf() {
-      return this.#call("pdf", {}, "bytes");
+    /**
+     * The whole document as PDF bytes.
+     * Optional `options`: `{ standard?, standards?, tagged?, attachments?, max_ppi? }` (or `maxPpi`).
+     * Each attachment: `{ name, data?: Uint8Array | ArrayBuffer | string, src?, mime?, description?, relationship? }`.
+     */
+    pdf(options = {}) {
+      const params = {};
+      if (options.standard !== undefined) params.standard = options.standard;
+      if (options.standards !== undefined) params.standards = options.standards;
+      if (options.tagged !== undefined) params.tagged = options.tagged;
+      if (options.timestamp !== undefined) params.timestamp = options.timestamp;
+      const maxPpi = options.max_ppi ?? options.maxPpi;
+      if (maxPpi !== undefined) params.max_ppi = maxPpi;
+      if (options.attachments !== undefined) {
+        params.attachments = options.attachments.map((att) => {
+          const item = { name: att.name };
+          if (att.mime !== undefined) item.mime = att.mime;
+          if (att.description !== undefined) item.description = att.description;
+          if (att.relationship !== undefined) item.relationship = att.relationship;
+          if (att.data !== undefined) {
+            const raw = typeof att.data === "string" ? encoder.encode(att.data) : bytes(att.data);
+            item.data_base64 = toBase64(raw);
+          } else if (att.src !== undefined) {
+            item.src = att.src;
+          }
+          return item;
+        });
+      }
+      return this.#call("pdf", params, "bytes");
+    }
+
+    /** Speaker notes for a 1-based page, or null if none. */
+    notes(page) {
+      return this.#call("notes", { page });
     }
 
     /** A hash per page; `matenadar fingerprint` gives the same for the same pages. */

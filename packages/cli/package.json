@@ -1,6 +1,6 @@
 {
   "name": "matenadar",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Matenadar CLI: lay out, inspect, check, edit, and export documents to PDF, PNG, SVG, and EPUB 3",
   "license": "Apache-2.0",
   "author": "Levon Arakelyan",
@@ -32,11 +32,11 @@
     "LICENSE"
   ],
   "optionalDependencies": {
-    "@matenadar/cli-darwin-arm64": "0.2.0",
-    "@matenadar/cli-darwin-x64": "0.2.0",
-    "@matenadar/cli-linux-x64-gnu": "0.2.0",
-    "@matenadar/cli-linux-arm64-gnu": "0.2.0",
-    "@matenadar/cli-win32-x64-msvc": "0.2.0"
+    "@matenadar/cli-darwin-arm64": "0.3.0",
+    "@matenadar/cli-darwin-x64": "0.3.0",
+    "@matenadar/cli-linux-x64-gnu": "0.3.0",
+    "@matenadar/cli-linux-arm64-gnu": "0.3.0",
+    "@matenadar/cli-win32-x64-msvc": "0.3.0"
   },
   "publishConfig": {
     "access": "public"

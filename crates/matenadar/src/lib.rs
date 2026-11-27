@@ -22,12 +22,15 @@ pub use matenadar_typst as typst;
 pub use matenadar_epub as epub;
 
 pub use matenadar_model::{
-    Block, Color, Component, Design, Document, Element, Inline, Item, Length, Master, Meta,
-    OnPage, Op, OpError, Place, Print, Problem, Run, Style, TextStyle, VERSION, validate,
+    BarcodeBlock, BarcodeEl, BarcodeSpec, Block, ChartBlock, ChartEl, ChartSeries, ChartSpec,
+    Color, Component, Design, Document, Element, Grid, Inline, Item, LayoutCell, Length,
+    MASTER_PRESETS, Master, Meta, Notes, OnPage, Op, OpError, PdfAttachment, PdfConfig, Place,
+    Print, Problem, Row, RuleBlock, Run, Style, TextStyle, VERSION, master_preset_size, validate,
 };
 
 #[cfg(feature = "typst")]
 pub use matenadar_typst::{
     Change, Changes, CheckOptions, Editor, EngineError, Files, Fonts, Issue, PageInfo, Paths,
-    Session, Severity, SourceExport, SourceNode, UsedFont, check, inspect, source_of,
+    PdfAttachmentData, PdfOptions, Session, Severity, SourceExport, SourceNode, UsedFont, check,
+    inspect, source_of,
 };

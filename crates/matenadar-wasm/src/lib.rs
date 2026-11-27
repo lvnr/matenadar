@@ -41,7 +41,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use matenadar_model::{Document, Op};
-use matenadar_typst::{CheckOptions, Editor, Files, Fonts, Paths, Session, check, inspect};
+use matenadar_typst::{CheckOptions, Editor, Files, Fonts, Paths, PdfAttachmentData, PdfOptions, Session, check, inspect};
 use serde_json::{Value, json};
 use typst::foundations::Bytes;
 
@@ -234,7 +234,11 @@ impl Engine {
                 out.extend_from_slice(&data);
                 Out::Bytes(out)
             }
-            "pdf" => Out::Bytes(e.session().pdf().map_err(|e| e.to_string())?),
+            "pdf" => {
+                let opts = pdf_options(e.session(), p)?;
+                Out::Bytes(e.session().pdf_with_options(&opts).map_err(|e| e.to_string())?)
+            }
+            "notes" => Out::Json(json!(e.session().notes(page()?))),
             "fingerprint" => Out::Json(json!(e.session().fingerprints())),
             "fonts_used" => Out::Json(json!(e.session().fonts_used())),
             "hit" => Out::Json(json!(e.hit(page()?, num_of("x")?, num_of("y")?))),
@@ -362,4 +366,93 @@ fn check_options(p: &Value) -> Result<CheckOptions> {
     }
     o.black_ink = p.get("ink").and_then(Value::as_str) == Some("black");
     Ok(o)
+}
+
+fn pdf_options(session: &Session, p: &Value) -> Result<PdfOptions> {
+    if p.is_null() {
+        return Ok(PdfOptions::default());
+    }
+    let mut standards = Vec::new();
+    if let Some(s) = p.get("standard").and_then(Value::as_str) {
+        standards.push(s.to_string());
+    }
+    if let Some(arr) = p.get("standards").and_then(Value::as_array) {
+        for item in arr {
+            if let Some(s) = item.as_str() {
+                standards.push(s.to_string());
+            }
+        }
+    }
+    let tagged = p.get("tagged").and_then(Value::as_bool);
+    let max_ppi = p.get("max_ppi").and_then(Value::as_f64).map(|v| v as f32);
+    let mut attachments = Vec::new();
+    if let Some(arr) = p.get("attachments").and_then(Value::as_array) {
+        for item in arr {
+            let name = item
+                .get("name")
+                .and_then(Value::as_str)
+                .ok_or_else(|| "PDF attachment needs name".to_string())?
+                .to_string();
+            let data = if let Some(b64) = item.get("data_base64").and_then(Value::as_str) {
+                decode_base64(b64)?
+            } else if let Some(arr) = item.get("data").and_then(Value::as_array) {
+                let mut buf = Vec::with_capacity(arr.len());
+                for v in arr {
+                    let n = v.as_u64().ok_or_else(|| format!("attachment \"{name}\" data must be bytes"))?;
+                    buf.push(u8::try_from(n).map_err(|_| format!("attachment \"{name}\" byte out of range"))?);
+                }
+                buf
+            } else if let Some(s) = item.get("data").and_then(Value::as_str) {
+                s.as_bytes().to_vec()
+            } else if let Some(src) = item.get("src").and_then(Value::as_str) {
+                session
+                    .files()
+                    .read(src)
+                    .ok_or_else(|| format!("no file {src}: give it with addFile first"))?
+                    .to_vec()
+            } else {
+                return Err(format!("attachment \"{name}\" needs data, data_base64, or src"));
+            };
+            attachments.push(PdfAttachmentData {
+                name,
+                data,
+                mime: item.get("mime").and_then(Value::as_str).map(str::to_string),
+                description: item.get("description").and_then(Value::as_str).map(str::to_string),
+                relationship: item.get("relationship").and_then(Value::as_str).map(str::to_string),
+            });
+        }
+    }
+    Ok(PdfOptions {
+        standards,
+        tagged,
+        attachments,
+        max_ppi,
+        timestamp: p.get("timestamp").and_then(Value::as_str).map(str::to_string),
+    })
+}
+
+fn decode_base64(input: &str) -> Result<Vec<u8>> {
+    let mut out = Vec::with_capacity(input.len() * 3 / 4);
+    let mut buf = 0u32;
+    let mut bits = 0u32;
+    for b in input.bytes() {
+        if b.is_ascii_whitespace() || b == b'=' {
+            continue;
+        }
+        let val = match b {
+            b'A'..=b'Z' => (b - b'A') as u32,
+            b'a'..=b'z' => (b - b'a' + 26) as u32,
+            b'0'..=b'9' => (b - b'0' + 52) as u32,
+            b'+' => 62,
+            b'/' => 63,
+            _ => return Err("invalid base64 in PDF attachment".into()),
+        };
+        buf = (buf << 6) | val;
+        bits += 6;
+        if bits >= 8 {
+            bits -= 8;
+            out.push(((buf >> bits) & 0xff) as u8);
+        }
+    }
+    Ok(out)
 }

@@ -173,6 +173,13 @@ impl Virtual {
     pub fn clear(&self) {
         self.0.lock().expect("virtual files").clear();
     }
+
+    /// Independent copy of all current virtual files (used when exporting with
+    /// extra programmatic PDF attachments without mutating the live session).
+    pub fn snapshot(&self) -> Self {
+        let copy = self.0.lock().expect("virtual files").clone();
+        Self(Arc::new(Mutex::new(copy)))
+    }
 }
 
 /// The document's own files (pictures, drawings): given in memory, or read

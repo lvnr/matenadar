@@ -10,12 +10,13 @@ mod serve;
 
 use anyhow::{Context, Result, anyhow, bail};
 use matenadar_model::{Document, Op, validate};
-use matenadar_typst::{CheckOptions, Paths, Session, Severity, check, inspect};
+use matenadar_typst::{CheckOptions, Paths, PdfAttachmentData, PdfOptions, Session, Severity, check, inspect};
 
 const HELP: &str = "matenadar — lays out Matenadar documents
 
 Usage:
   matenadar build <doc.json> [-o out.pdf] [--png DIR] [--svg DIR] [--dpi N] [--pages 1-3,7] [--bleed] [--check]
+                  [--pdf-standard STD] [--no-tagged] [--attach SPEC] [--max-ppi N]
   matenadar epub <doc.json> [-o out.epub] [--layout reflowable|fixed] [--dpi 200] [--embed-fonts] [--no-live-text]
                  [--cover image.jpg] [--identifier urn:isbn:…]
   matenadar check <doc.json> [--preset kdp] [--safe 0.25in] [--gutter 0.375in] [--min-ppi 300] [--ink black]
@@ -28,6 +29,12 @@ Usage:
   matenadar bench <doc.json> [--edits 50]
   matenadar serve                       (JSON lines on stdin; see serve.rs)
   matenadar --version                   (print the matenadar version)
+
+PDF build options:
+  --pdf-standard STD  PDF standard (repeatable): 1.4..2.0, a-1b..a-4e, ua-1
+  --no-tagged         disable PDF tagging
+  --attach SPEC       embed file (repeatable): path or name:path[:mime[:relationship[:description]]]
+  --max-ppi N         deterministically downsample oversized raster images to at most N PPI
 
 Common options:
   --root DIR          asset root (default: the document's folder)
@@ -48,7 +55,7 @@ impl Args {
         let cmd = it.next().unwrap_or_else(|| "help".into());
         let mut pos = Vec::new();
         let mut opts = Vec::new();
-        let flags = ["--bleed", "--check", "--json", "--no-system-fonts", "--embed-fonts", "--no-live-text", "--used"];
+        let flags = ["--bleed", "--check", "--json", "--no-system-fonts", "--embed-fonts", "--no-live-text", "--used", "--no-tagged"];
         let mut rest: Vec<String> = it.collect();
         rest.reverse();
         while let Some(a) = rest.pop() {
@@ -147,7 +154,8 @@ fn run() -> Result<ExitCode> {
             let s = session(&args)?;
             let doc_path = args.doc_path()?;
             let out = args.get("-o").map(PathBuf::from).unwrap_or_else(|| doc_path.with_extension("pdf"));
-            let pdf = s.pdf().map_err(|e| anyhow!("PDF export failed: {e}"))?;
+            let pdf_opts = pdf_options(&args)?;
+            let pdf = s.pdf_with_options(&pdf_opts).map_err(|e| anyhow!("PDF export failed: {e}"))?;
             fs::write(&out, pdf)?;
             let wanted = pages(args.get("--pages"), s.page_count())?;
             let dpi: f32 = args.get("--dpi").map(str::parse).transpose()?.unwrap_or(100.0);
@@ -339,6 +347,51 @@ fn run() -> Result<ExitCode> {
         }
         other => bail!("unknown command \"{other}\"\n\n{HELP}"),
     }
+}
+
+fn pdf_options(args: &Args) -> Result<PdfOptions> {
+    let standards: Vec<String> = args
+        .all("--pdf-standard")
+        .into_iter()
+        .flat_map(|s| s.split(','))
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(str::to_string)
+        .collect();
+    let tagged = args.flag("--no-tagged").then_some(false);
+    let max_ppi = match args.get("--max-ppi") {
+        Some(v) => {
+            let ppi: f32 = v.parse().with_context(|| format!("invalid --max-ppi \"{v}\""))?;
+            if !ppi.is_finite() || ppi <= 0.0 {
+                bail!("--max-ppi must be greater than 0");
+            }
+            Some(ppi)
+        }
+        None => None,
+    };
+    let mut attachments = Vec::new();
+    for spec in args.all("--attach") {
+        attachments.push(parse_attach(spec)?);
+    }
+    Ok(PdfOptions { standards, tagged, attachments, max_ppi, timestamp: args.get("--pdf-timestamp").map(str::to_string) })
+}
+
+fn parse_attach(spec: &str) -> Result<PdfAttachmentData> {
+    let parts: Vec<&str> = spec.splitn(5, ':').collect();
+    let (name, path, mime, relationship, description) = if parts.len() == 1 {
+        let p = Path::new(parts[0]);
+        let name = p
+            .file_name()
+            .and_then(|n| n.to_str())
+            .ok_or_else(|| anyhow!("invalid --attach path \"{spec}\""))?
+            .to_string();
+        (name, parts[0], None, None, None)
+    } else {
+        let non_empty = |idx: usize| parts.get(idx).copied().filter(|s| !s.is_empty()).map(str::to_string);
+        (parts[0].to_string(), parts[1], non_empty(2), non_empty(3), non_empty(4))
+    };
+    let data = fs::read(path).with_context(|| format!("reading --attach file \"{path}\""))?;
+    Ok(PdfAttachmentData { name, data, mime, description, relationship })
 }
 
 fn check_options(args: &Args) -> Result<CheckOptions> {

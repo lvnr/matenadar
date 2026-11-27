@@ -139,6 +139,7 @@ A master is a page size, a flow area and what is drawn on every page:
 }
 ```
 
+- **`preset`** fills in standard trim dimensions when `width` or `height` are omitted (explicit `width`/`height` override it): `a4` (210 × 297 mm), `a4-landscape`, `a5` (148 × 210 mm), `a5-landscape`, `a3` (297 × 420 mm), `letter` (8.5 × 11 in), `letter-landscape`, `legal` (8.5 × 14 in), `16:9` (960 × 540 pt), `4:3` (720 × 540 pt), `social` (1080 × 1080 pt), `social-portrait` (1080 × 1350 pt), and `social-story` (1080 × 1920 pt).
 - **Margins** mirror (`inside` is the spine side) unless `left` or `right` is given: `{"top", "bottom", "left", "right"}` is the same on every page.
 - **`columns`** and **`gutter`** divide the flow area.
 - **`style`** is the default paragraph style of flows on this master.

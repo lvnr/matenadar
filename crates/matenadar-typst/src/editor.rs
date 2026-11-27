@@ -302,7 +302,26 @@ impl Editor {
         let mut out = std::collections::HashSet::new();
         walk(self.session.document(), &mut |_, n| {
             let id = match n {
-                Node::Block(b) => b.id(),
+                Node::Block(b) => {
+                    match b {
+                        Block::Row(r) => {
+                            for cell in &r.cells {
+                                if let Some(cid) = &cell.id {
+                                    out.insert(cid.clone());
+                                }
+                            }
+                        }
+                        Block::Grid(g) => {
+                            for cell in &g.cells {
+                                if let Some(cid) = &cell.id {
+                                    out.insert(cid.clone());
+                                }
+                            }
+                        }
+                        _ => {}
+                    }
+                    b.id()
+                }
                 Node::Element(e) => e.id(),
                 Node::Item(i) => Some(i.id()),
                 Node::Inline(_) => None,
@@ -640,6 +659,8 @@ impl Editor {
             }
             match n {
                 Node::Block(b) if b.id() == Some(id) => out = Some(b.kind()),
+                Node::Block(Block::Row(r)) if r.cells.iter().any(|c| c.id.as_deref() == Some(id)) => out = Some("cell"),
+                Node::Block(Block::Grid(g)) if g.cells.iter().any(|c| c.id.as_deref() == Some(id)) => out = Some("cell"),
                 Node::Element(e) if e.id() == Some(id) => out = Some(element_kind(e)),
                 Node::Item(i) if i.id() == id => out = Some(i.kind()),
                 _ => {}

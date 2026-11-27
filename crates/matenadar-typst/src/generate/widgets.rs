@@ -7,7 +7,7 @@ use matenadar_model::block::{Para, Track, content_of};
 use matenadar_model::element::{Element, ImageEl, Place};
 use matenadar_model::style::{Stroke, TextStyle};
 use matenadar_model::units::num;
-use matenadar_model::widgets::{Balloon, Calendar, Panels, Ruling};
+use matenadar_model::widgets::{Balloon, BarcodeSpec, Calendar, ChartSpec, Panels, Ruling};
 
 use super::Gen;
 use super::typ::str_lit;
@@ -348,6 +348,95 @@ impl Gen<'_> {
             if longest.len() == 1 { "," } else { "" },
             num(fx),
             num(fy)
+        )
+    }
+
+    pub(super) fn barcode_body(&mut self, spec: &BarcodeSpec, w: f64, h: f64) -> String {
+        let bc = match crate::barcode::encode(&spec.data, spec.format.as_deref(), spec.quiet) {
+            Ok(bc) => bc,
+            Err(err) => {
+                self.problem(err);
+                return "none".into();
+            }
+        };
+        let bar_svg = spec.color.as_ref().map(|c| self.pal.svg(c)).unwrap_or_else(|| "#000000".into());
+        let bar_typ = spec.color.as_ref().map(|c| self.pal.color(c)).unwrap_or_else(|| "black".into());
+        let bg_svg = spec.background.as_ref().map(|c| self.pal.svg(c));
+        let bg_typ = spec.background.as_ref().map(|c| self.pal.color(c));
+        let show_text = spec.show_text.unwrap_or(true);
+        let text_h = if show_text { (h * 0.22).clamp(8.5, 13.0) } else { 0.0 };
+        let bars_h = (h - text_h).max(8.0);
+        let svg_doc = crate::barcode::to_svg(&bc, w, bars_h, &bar_svg, bg_svg.as_deref(), show_text);
+        let file = self.file("svg", svg_doc.into_bytes());
+        if !show_text {
+            return format!(
+                "box(width: {}pt, height: {}pt, image({}, width: {}pt, height: {}pt))",
+                num(w),
+                num(h),
+                str_lit(&file),
+                num(w),
+                num(h)
+            );
+        }
+        let font_size = (text_h * 0.78).clamp(6.5, 10.5);
+        let has_size = spec.text_style.as_deref().is_some_and(|n| {
+            self.doc.design.styles.get(n).and_then(|s| s.text.size).is_some()
+                || self.doc.design.spans.get(n).and_then(|s| s.size).is_some()
+        });
+        let ts = self.text_of(spec.text_style.as_deref(), (!has_size).then_some(font_size));
+        let fill_arg = bg_typ.map(|bg| format!(", fill: {bg}")).unwrap_or_default();
+        let label = super::escape::escape(&bc.label).0;
+        format!(
+            "box(width: {}pt, height: {}pt{fill_arg}, {{ \
+                place(top + left, image({}, width: {}pt, height: {}pt)); \
+                let ts = {ts}; \
+                place(top + left, dx: 0pt, dy: {}pt, box(width: {}pt, height: {}pt, align(center + horizon, {{ set text(fill: {bar_typ}, tracking: 0.06em); mt-span(ts, text(top-edge: \"cap-height\", bottom-edge: \"baseline\", [{label}])) }}))); \
+            }})",
+            num(w),
+            num(h),
+            str_lit(&file),
+            num(w),
+            num(bars_h),
+            num(bars_h),
+            num(w),
+            num(text_h),
+        )
+    }
+
+    pub(super) fn chart_body(&mut self, spec: &ChartSpec, w: f64, h: f64) -> String {
+        let rendered = crate::chart::render(spec, w, h, &|c| self.pal.svg(c));
+        let file = self.file("svg", rendered.svg.into_bytes());
+        let cs = self.text_of(spec.style.as_deref(), None);
+        let mut labels_out = String::new();
+        for lbl in &rendered.labels {
+            let al = match lbl.align {
+                "center" => "center",
+                "right" => "right",
+                _ => "left",
+            };
+            let weight = if lbl.bold { ", weight: \"bold\"" } else { "" };
+            let fill = if lbl.muted { ", fill: luma(42%)" } else { "" };
+            let escaped = super::escape::escape(&lbl.text).0;
+            labels_out.push_str(&format!(
+                "place(top + left, dx: {}pt, dy: {}pt, box(width: {}pt, height: {}pt, align({al} + horizon, mt-span(cs, text(size: {}pt{weight}{fill}, top-edge: \"cap-height\", bottom-edge: \"baseline\", [{escaped}]))))); ",
+                num(lbl.x),
+                num(lbl.y),
+                num(lbl.w),
+                num(lbl.h),
+                num(lbl.size_pt),
+            ));
+        }
+        format!(
+            "box(width: {}pt, height: {}pt, {{ \
+                let cs = {cs}; \
+                place(top + left, image({}, width: {}pt, height: {}pt)); \
+                {labels_out}\
+            }})",
+            num(w),
+            num(h),
+            str_lit(&file),
+            num(w),
+            num(h),
         )
     }
 }

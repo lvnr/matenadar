@@ -24,19 +24,21 @@ A **matenadar** document is JSON. It is the only source of truth: the engine gen
     {"type": "spread", "…": "…"}
   ],
   "on_page": {},
-  "print": {"ink": "black"}
+  "print": {"ink": "black", "max_ppi": 300},
+  "pdf": {"standard": "a-3b", "tagged": true, "attachments": []}
 }
 ```
 
 | Field | What it is |
 |---|---|
 | `matenadar` | the model version. This engine reads `"1"` and refuses anything else. |
-| `meta` | `title`, `author` and `lang` (BCP 47). Fields such as `{"field": "doc.title"}` read them, and EPUB uses them. |
+| `meta` | `title`, `author`, `subject`, `keywords` and `lang` (BCP 47). Fields such as `{"field": "doc.title"}` read them, and PDF/UA and EPUB use them. |
 | `fonts` | font folders, relative to the asset root, searched before the system’s fonts |
 | `design` | colours, font stacks, text styles, masters, components, hyphenation exceptions and figure numbering: [the design](/docs/model/design/) |
 | `content` | the document, in order: flowing sections, hand-laid pages and two-page spreads: [content](/docs/model/content/) |
 | `on_page` | changes to the page where a node lands, keyed by the node’s id: [on the page of a node](/docs/model/content/#on-the-page-of-a-node) |
-| `print` | how the document is printed, which the checks hold it to |
+| `print` | how the document is printed, which the checks and exporter hold it to |
+| `pdf` | PDF compliance (`standard`, `standards`, `tagged`) and embedded `/AF` file attachments |
 
 ### The asset root
 
@@ -46,6 +48,14 @@ Image, SVG and font paths are relative to the **asset root**. On the command lin
 
 - `ink`: `"black"` for a black-ink interior, so anything drawn in colour is reported as `color-in-black-ink`, or `"color"`.
 - `filter`: a filter for every raster picture that sets none of its own, such as `{"gray": true, "contrast": 3}`. A picture opts out with `"filter": {}`. See [pictures](/docs/model/content/#image).
+- `max_ppi`: optional target maximum PPI for deterministic Lanczos-3 downsampling of oversized raster images during PDF export (SVGs and images already at or below `max_ppi` are left untouched).
+
+### PDF compliance and attachments
+
+- `standard`: single PDF standard shorthand (`"1.4"`–`"2.0"`, `"a-1b"`, `"a-1a"`, `"a-2b"`, `"a-2u"`, `"a-2a"`, `"a-3b"`, `"a-3u"`, `"a-3a"`, `"a-4"`, `"a-4f"`, `"a-4e"`, `"ua-1"`).
+- `standards`: list of compatible standards (e.g. `["a-3b", "ua-1"]`).
+- `tagged`: emit tagged PDF structure (default `true`).
+- `attachments`: embedded files (`/EmbeddedFiles`, `/AF` for PDF/A-3 / Factur-X): `{"name", "src", "mime", "description", "relationship"}`, where `relationship` is `"data"`, `"source"`, `"alternative"`, `"supplement"` or `"unspecified"`.
 
 ### Ids
 
